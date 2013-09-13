@@ -1,0 +1,20 @@
+
+- структура проекта
+  CMake скрипты - посмотреть что нового для Qt5 и сделать
+  в начале делать все в одном проекте, потом растусовывать по либам по мере разрастания там, где сразу неочевидно
+
+- QtSingleApplication - найти замену для Qt5
+  https://github.com/itay-grudev/SingleApplication
+
+- либа для общения по REST.
+  RestDispatcher
+  поддержка авторизация с учетом того, что сессия экспайрится
+  затем получение списка папок. В главной папке тоже могут быть файлы, т.е. ее надо делать тоже selectable
+
+- Логгер
+
+- TrayIcon + menu
+
+- Basic settings window - скачивание и показ папок
+
+- FileSystemWatcher - использовать либо QFileSystemWatcher, либо Util::FileSystemWatcher из Qt Creator
