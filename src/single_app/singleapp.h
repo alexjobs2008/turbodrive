@@ -3,10 +3,10 @@
 
 #include "localserver.h"
 
-#include <QGuiApplication>
-#include <QLocalSocket>
+#include <QtWidgets/QApplication>
+#include <QtNetwork/QLocalSocket>
 
-class SingleApplication : public QGuiApplication
+class SingleApplication : public QApplication
 {
     Q_OBJECT
 public:

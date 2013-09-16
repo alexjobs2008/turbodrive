@@ -1,11 +1,17 @@
+#include "single_app/singleapp.h"
 #include "mainwindow.h"
-#include <QApplication>
+//#include <QApplication>
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
-    MainWindow w;
-    w.show();
+	SingleApplication app(argc, argv);
 
-    return a.exec();
+	if(app.shouldContinue())
+	{
+		MainWindow w;
+		w.show();
+		return app.exec();
+	}
+
+	return 0;
 }

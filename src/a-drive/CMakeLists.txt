@@ -5,6 +5,8 @@ message("Generating project ${PROJECT_NAME} in ${CMAKE_CURRENT_BINARY_DIR}")
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+INCLUDE_DIRECTORIES("..")
+
 set(CMAKE_AUTOMOC ON)
 
 find_package(Qt5Widgets)
@@ -38,4 +40,8 @@ add_executable(${PROJECT_NAME}
 qt5_use_modules(${PROJECT_NAME}
     Core
     Widgets
+)
+
+target_link_libraries(${PROJECT_NAME}
+    single_app
 )

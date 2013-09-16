@@ -64,7 +64,7 @@ void LocalServer::slotNewConnection()
 void LocalServer::slotOnData(QString data)
 {
     if(data.contains("CMD:", Qt::CaseInsensitive)){
-        onSGC(data);
+        onCMD(data);
     }
     else
     {

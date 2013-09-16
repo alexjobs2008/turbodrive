@@ -5,7 +5,7 @@ int main(int argc, char *argv[])
     SingleApplication app(argc, argv);
 
     if(app.shouldContinue())
-        app.exec();
+        return app.exec();
 
     return 0;
 }

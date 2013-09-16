@@ -1,10 +1,10 @@
 #ifndef LOCALSERVER_H
 #define LOCALSERVER_H
 
-#include <QThread>
-#include <QVector>
-#include <QLocalServer>
-#include <QLocalSocket>
+#include <QtCore/QThread>
+#include <QtCore/QVector>
+#include <QtNetwork/QLocalServer>
+#include <QtNetwork/QLocalSocket>
 
 class LocalServer : public QThread
 {

@@ -1,7 +1,7 @@
 #include "singleapp.h"
 
 SingleApplication::SingleApplication(int argc, char *argv[])
-    : QGuiApplication(argc, argv)
+    : QApplication(argc, argv)
 {
     _shouldContinue = false;
 
@@ -23,7 +23,7 @@ SingleApplication::SingleApplication(int argc, char *argv[])
     }
 }
 
-Application::~SingleApplication()
+SingleApplication::~SingleApplication()
 {
     if(_shouldContinue)
         server->terminate();    
