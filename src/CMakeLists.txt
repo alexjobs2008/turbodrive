@@ -12,6 +12,11 @@ else ()
     message (FATAL_ERROR "ERROR: Environment variable QTDIR is not set.")
 endif ()
 
+
+# QSystemTrayIcon that supports states & animations
+add_subdirectory("animated_system_tray_icon")
+
+
 # Single app lib and its local server name definition
 add_definitions(-DLOCAL_SERVER_NAME="AssistentDriveSA")
 add_subdirectory("single_app")

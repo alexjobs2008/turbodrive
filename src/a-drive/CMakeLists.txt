@@ -20,8 +20,17 @@ set(SOURCES
     mainwindow.cpp
 )
 
-source_group(h FILES ${HEADERS})
-source_group(cpp FILES ${SOURCES})
+set(QRC_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/res/res.qrc)
+
+if(WIN32)
+    set(RC_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/res/res.rc)
+endif()
+
+qt5_add_resources(MOCED_RESOURCES ${QRC_RESOURCES})
+
+source_group(_h FILES ${HEADERS})
+source_group(_cpp FILES ${SOURCES})
+source_group(_res FILES ${QRC_RESOURCES} ${RC_RESOURCES})
 
 if(WIN32)
     set(GUI_TYPE WIN32)
@@ -35,6 +44,8 @@ add_executable(${PROJECT_NAME}
     ${GUI_TYPE}
     ${HEADERS}
     ${SOURCES}
+    ${MOCED_RESOURCES}
+    ${RC_RESOURCES}
 )
 
 qt5_use_modules(${PROJECT_NAME}
@@ -44,4 +55,5 @@ qt5_use_modules(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     single_app
+    animated_system_tray_icon
 )
