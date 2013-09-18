@@ -12,10 +12,14 @@ public:
 
      struct State
      {
+         State() {};
+         
          State(const QString& name, const QPixmap& pixmap)
-			 : name(name)			 
-		 {
-			 frames << pixmap;
+             : name(name)
+             , delay(40)
+             , currentFrame(0)
+		 {			 
+             frames << pixmap;
 		 };
 		 
 		 inline bool isAnimated()
@@ -26,6 +30,7 @@ public:
 		 QString name;
          QVector<QPixmap> frames;
 		 int delay; // delay between showing the next frame, in milliseconds
+         int currentFrame;
      };
 
     AnimatedSystemTrayIcon(QObject *parent = 0);
@@ -39,7 +44,7 @@ protected:
 
 private:
     QMap<QString, State*> states;
-	QString currentState;
+	State *currentState;
 	int timerId;
 
 };

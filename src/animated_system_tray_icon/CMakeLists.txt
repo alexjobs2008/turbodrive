@@ -29,3 +29,5 @@ qt5_use_modules(${PROJECT_NAME}
 IF(UNIX)
 	set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS -fPIC)
 ENDIF(UNIX)
+
+add_subdirectory("test")

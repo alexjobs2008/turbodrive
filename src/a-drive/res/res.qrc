@@ -1,13 +1,5 @@
 <RCC>
     <qresource prefix="/">
         <file>appicon.ico</file>
-
-        <file>temp/ice-cream1.png</file>
-        <file>temp/ice-cream2.png</file>
-        <file>temp/ice-cream3.png</file>
-        <file>temp/ice-cream4.png</file>
-        <file>temp/ice-cream5.png</file>
-        <file>temp/ice-cream6.png</file>
-        <file>temp/ice-cream7.png</file>
     </qresource>
 </RCC>
