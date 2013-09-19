@@ -1,5 +1,5 @@
 #include "mainwindow.h"
-#include "animated_system_tray_icon.h"
+#include "AnimatedSystemTrayIcon.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)

@@ -1,4 +1,4 @@
-#include "animated_system_tray_icon.h"
+#include "AnimatedSystemTrayIcon.h"
 
 #include <QtCore/QTimerEvent>
 

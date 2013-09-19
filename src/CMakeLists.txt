@@ -12,14 +12,19 @@ else ()
     message (FATAL_ERROR "ERROR: Environment variable QTDIR is not set.")
 endif ()
 
+# 3rd-party libs
+add_subdirectory("3rdParty")
 
 # QSystemTrayIcon that supports states & animations
-add_subdirectory("animated_system_tray_icon")
+add_subdirectory("AnimatedSystemTrayIcon")
 
 
 # Single app lib and its local server name definition
 add_definitions(-DLOCAL_SERVER_NAME="AssistentDriveSA")
-add_subdirectory("single_app")
+add_subdirectory("SingleApp")
+
+# connection controller detects states of Internet connection
+add_subdirectory("connection_controller")
 
 # The desktop app
-add_subdirectory("a-drive")
+add_subdirectory("aDrive")

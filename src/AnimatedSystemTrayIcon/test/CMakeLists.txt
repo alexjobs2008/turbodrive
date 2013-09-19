@@ -1,4 +1,4 @@
-project(aDrive)
+project(test_AnimatedSysTrayIcon)
 cmake_minimum_required(VERSION 2.8.11)
 message("Generating project ${PROJECT_NAME} in ${CMAKE_CURRENT_BINARY_DIR}")
 
@@ -20,17 +20,13 @@ set(SOURCES
     mainwindow.cpp
 )
 
-set(QRC_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/res/res.qrc)
-
-if(WIN32)
-    set(RC_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/res/res.rc)
-endif()
+set(QRC_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/res.qrc)
 
 qt5_add_resources(MOCED_RESOURCES ${QRC_RESOURCES})
 
 source_group(_h FILES ${HEADERS})
 source_group(_cpp FILES ${SOURCES})
-source_group(_res FILES ${QRC_RESOURCES} ${RC_RESOURCES})
+source_group(_res FILES ${QRC_RESOURCES})
 
 if(WIN32)
     set(GUI_TYPE WIN32)
@@ -45,15 +41,12 @@ add_executable(${PROJECT_NAME}
     ${HEADERS}
     ${SOURCES}
     ${MOCED_RESOURCES}
-    ${RC_RESOURCES}
 )
 
 qt5_use_modules(${PROJECT_NAME}
-    Core
     Widgets
 )
 
 target_link_libraries(${PROJECT_NAME}
-    single_app
-    animated_system_tray_icon
+    AnimatedSystemTrayIcon
 )
