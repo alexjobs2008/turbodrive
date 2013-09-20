@@ -5,9 +5,9 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , counter(0)
 {
-	trayIcon = new AnimatedSystemTrayIcon(this);
+    trayIcon = new AnimatedSystemTrayIcon(this);
 
-	AnimatedSystemTrayIcon::State *animatedState = new AnimatedSystemTrayIcon::
+    AnimatedSystemTrayIcon::State *animatedState = new AnimatedSystemTrayIcon::
         State("AnimatedState", QPixmap(":/img/ice-cream2.png"));
     
     animatedState->frames
