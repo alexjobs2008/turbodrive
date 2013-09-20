@@ -1,7 +1,12 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QSystemTrayIcon>
+
+class AnimatedSystemTrayIcon;
+class QMenu;
+class QAction;
 
 class MainWindow : public QMainWindow
 {
@@ -10,6 +15,29 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
+private slots:
+    void on_actionOpenFolder_triggered();
+    void on_actionPause_triggered();
+    void on_actionResume_triggered();
+    void on_actionPreferences_triggered();
+    void on_actionExit_triggered();
+
+    void on_trayIcon_activated(QSystemTrayIcon::ActivationReason reason);
+
+private:
+    void createActions();
+    void createTrayIcon();
+
+    AnimatedSystemTrayIcon *trayIcon;
+    QMenu *trayMenu;
+    
+    QAction *actionOpenFolder;
+    QAction *actionPause;
+    QAction *actionResume;
+    QAction *actionPreferences;
+    QAction *actionExit;
+    
 };
 
 #endif // MAINWINDOW_H
