@@ -5,7 +5,9 @@
 #include <QtWidgets/QStyledItemDelegate>
 #include <QtGui/QResizeEvent>
 
-class QListView;
+class QListWidget;
+class QListWidgetItem;
+class QStackedWidget;
 class QStyledItemDelegate;
 class QLabel;
 
@@ -23,6 +25,8 @@ protected:
     virtual void resizeEvent(QResizeEvent *event);
 
 private slots:
+    void onTabChanged(QListWidgetItem *, QListWidgetItem *);
+
     void accept();
     void reject();
 
@@ -30,7 +34,8 @@ private slots:
 private:
     void setupListView();
 
-    QListView* tabs;
+    QListWidget* tabs;
+    QStackedWidget *stackedWidget;
 
 };
 

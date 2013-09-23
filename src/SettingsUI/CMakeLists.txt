@@ -11,10 +11,20 @@ find_package(Qt5Widgets)
 
 set(HEADERS
     SettingsWidget.h
+    GeneralWidget.h
+    AccountWidget.h
+    ConnectionWidget.h
+    AdvancedWidget.h
+    AboutWidget.h
 )
 
 set(SOURCES
     SettingsWidget.cpp
+    GeneralWidget.cpp
+    AccountWidget.cpp
+    ConnectionWidget.cpp
+    AdvancedWidget.cpp
+    AboutWidget.cpp
 )
 
 set(QRC_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/res/settingsUI.qrc)

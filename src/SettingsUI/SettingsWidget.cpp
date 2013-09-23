@@ -1,5 +1,10 @@
 #include "SettingsWidget.h"
 #include "QsLog/QsLog.h"
+#include "GeneralWidget.h"
+#include "AccountWidget.h"
+#include "ConnectionWidget.h"
+#include "AdvancedWidget.h"
+#include "AboutWidget.h"
 
 #include <QtCore/qglobal.h>
 #include <QtWidgets/QDialogButtonBox>
@@ -9,6 +14,12 @@
 #include <QtCore/QStringListModel>
 #include <QtGui/QPainter>
 #include <QtWidgets/QLabel>
+
+#define SETTINGS_PAGE_GENERAL 0
+#define SETTINGS_PAGE_ACCOUNT 1
+#define SETTINGS_PAGE_CONNECTION 2
+#define SETTINGS_PAGE_ADVANCED 3
+#define SETTINGS_PAGE_ABOUT 4
 
 SettingsWidget::SettingsWidget(QWidget *parent)
     : QFrame(parent)
@@ -22,7 +33,13 @@ SettingsWidget::SettingsWidget(QWidget *parent)
         | Qt::WindowTitleHint
         | Qt::WindowCloseButtonHint);
 
-    setMinimumWidth(404); // windows. TODO: mac
+#ifdef Q_OS_MACX
+    setMinimumWidth(414);
+#endif
+
+#ifdef Q_OS_WIN
+    setMinimumWidth(404);
+#endif
 
     QDialogButtonBox *buttonBox =
         new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
@@ -35,12 +52,37 @@ SettingsWidget::SettingsWidget(QWidget *parent)
     setupListView();
     
     QVBoxLayout *layoutMain = new QVBoxLayout(this);
+#ifdef Q_OS_MACX
+    layoutMain->setContentsMargins(0, 6, 0, 0);
+#endif
+    
+#ifdef Q_OS_WIN
     layoutMain->setContentsMargins(0, 0, 0, 0);
+#endif
 
-    QStackedWidget *stackedWidget = new QStackedWidget(this);
+    stackedWidget = new QStackedWidget(this);
+
+    GeneralWidget *generalWidget = new GeneralWidget(this);
+    AccountWidget *accountWidget = new AccountWidget(this);
+    ConnectionWidget *connectionWidget = new ConnectionWidget(this);
+    AdvancedWidget *advancedWidget = new AdvancedWidget(this);
+    AboutWidget *aboutWidget = new AboutWidget(stackedWidget);
+    
+    stackedWidget->addWidget(generalWidget);
+    stackedWidget->addWidget(accountWidget);
+    stackedWidget->addWidget(connectionWidget);
+    stackedWidget->addWidget(advancedWidget);
+    stackedWidget->addWidget(aboutWidget);
+
+    connect(tabs, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
+        this, SLOT(onTabChanged(QListWidgetItem*, QListWidgetItem*)));
+
+    QFrame *separator = new QFrame(this);
+    separator->setFrameShape(QFrame::HLine);
     
     layoutMain->addWidget(tabs);
     layoutMain->addWidget(stackedWidget);
+    layoutMain->addWidget(separator);
     layoutMain->addWidget(buttonBox);
 }
 
@@ -56,23 +98,33 @@ void SettingsWidget::resizeEvent(QResizeEvent *event)
 
 void SettingsWidget::setupListView()
 {
-    QListWidget *list = new QListWidget(this);
-    list->setFlow(QListView::LeftToRight);
-    list->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    list->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    list->setMaximumHeight(64);
-    list->setIconSize(QSize(32, 32));
+    tabs = new QListWidget(this);
+    tabs->setFlow(QListView::LeftToRight);
+    tabs->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    tabs->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    tabs->setMaximumHeight(64);
+    tabs->setIconSize(QSize(32, 32));
 
-    list->setItemDelegate(new Delegate(this));
+    tabs->setItemDelegate(new Delegate(this));
 
-    new QListWidgetItem(QIcon(":/general.png"), tr("General"), list);
-    new QListWidgetItem(QIcon(":/account.png"), tr("Account"), list);
-    new QListWidgetItem(QIcon(":/connection.png"), tr("Connection"), list);
-    new QListWidgetItem(QIcon(":/advanced.png"), tr("Advanced"), list);
-    new QListWidgetItem(QIcon(":/about.png"), tr("About"), list);
-
-    tabs = list;
+    new QListWidgetItem(QIcon(":/general.png"),
+        tr("General"), tabs, SETTINGS_PAGE_GENERAL);
+    new QListWidgetItem(QIcon(":/account.png"),
+        tr("Account"), tabs, SETTINGS_PAGE_ACCOUNT);
+    new QListWidgetItem(QIcon(":/connection.png"),
+        tr("Connection"), tabs, SETTINGS_PAGE_CONNECTION);
+    new QListWidgetItem(QIcon(":/advanced.png"),
+        tr("Advanced"), tabs, SETTINGS_PAGE_ADVANCED);
+    new QListWidgetItem(QIcon(":/about.png"),
+        tr("About"), tabs, SETTINGS_PAGE_ABOUT);
 }
+
+void SettingsWidget::onTabChanged(QListWidgetItem *current,
+                                  QListWidgetItem *previous)
+{
+    stackedWidget->setCurrentIndex(current->type());
+}
+
 
 void SettingsWidget::accept()
 {
