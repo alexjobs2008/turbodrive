@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include "AnimatedSystemTrayIcon/AnimatedSystemTrayIcon.h"
+#include "Settings/settings.h"
+#include "SettingsUI/SettingsWidget.h"
 #include "QsLog/QsLog.h"
 
 #include <QtCore/QCoreApplication>
@@ -15,12 +17,14 @@ MainWindow::MainWindow(QWidget *parent)
     
     createActions();
     createTrayIcon();
+    createSettingsWidget();
 
     QMetaObject::connectSlotsByName(this);
 }
 
 MainWindow::~MainWindow()
 {
+    delete settingsWidget;
 }
 
 void MainWindow::createActions()
@@ -41,7 +45,7 @@ void MainWindow::createActions()
     actionPreferences->setObjectName("actionPreferences");
     actionPreferences->setIcon(QIcon(":/icons/preferences.png"));
 
-    actionExit = new QAction(tr("Stop && Exit"), this);
+    actionExit = new QAction(tr("Exit"), this);
     actionExit->setObjectName("actionExit");
 }
 
@@ -71,6 +75,19 @@ void MainWindow::createTrayIcon()
     trayIcon->show();
 }
 
+void MainWindow::createSettingsWidget()
+{
+    settingsWidget = new SettingsWidget();
+    
+    settingsWidget->setWindowTitle(
+        QString("%1 %2 %3")
+        .arg(localizedOrganizationName)
+        .arg(localizedApplicationName)
+        .arg(tr("Preferences")));
+    
+    settingsWidget->setWindowIcon(QIcon(":/icons/preferences.png"));
+}
+
 void MainWindow::on_actionOpenFolder_triggered()
 {
     QString homePath =
@@ -96,7 +113,7 @@ void MainWindow::on_actionResume_triggered()
 
 void MainWindow::on_actionPreferences_triggered()
 {
-
+    settingsWidget->show();
 }
 
 void MainWindow::on_actionExit_triggered()

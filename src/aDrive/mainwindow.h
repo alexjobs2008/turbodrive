@@ -5,6 +5,7 @@
 #include <QtWidgets/QSystemTrayIcon>
 
 class AnimatedSystemTrayIcon;
+class SettingsWidget;
 class QMenu;
 class QAction;
 
@@ -28,8 +29,11 @@ private slots:
 private:
     void createActions();
     void createTrayIcon();
+    void createSettingsWidget();
 
     AnimatedSystemTrayIcon *trayIcon;
+    SettingsWidget* settingsWidget;
+
     QMenu *trayMenu;
     
     QAction *actionOpenFolder;
@@ -37,6 +41,8 @@ private:
     QAction *actionResume;
     QAction *actionPreferences;
     QAction *actionExit;
+
+
     
 };
 

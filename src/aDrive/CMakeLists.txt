@@ -5,9 +5,6 @@ message("Generating project ${PROJECT_NAME} in ${CMAKE_CURRENT_BINARY_DIR}")
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-INCLUDE_DIRECTORIES("..")
-INCLUDE_DIRECTORIES("../3rdParty")
-
 set(CMAKE_AUTOMOC ON)
 
 find_package(Qt5Widgets)
@@ -57,5 +54,7 @@ qt5_use_modules(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
     SingleApp
     AnimatedSystemTrayIcon
+    Settings
+    SettingsUI
     QsLog
 )
