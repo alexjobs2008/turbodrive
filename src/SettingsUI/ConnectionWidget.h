@@ -43,6 +43,10 @@ private:
     QWidget *userNameWidget;
     QWidget *passwordWidget;
     QComboBox *cbProxyType;
+
+    QRadioButton *rbProxyHttp;
+    QRadioButton *rbProxySocks;
+
     QLineEdit *leProxyServer;
     QLineEdit *leProxyPort;
     QCheckBox *cProxyAuthRequired;
@@ -51,3 +55,4 @@ private:
 };
 
 #endif CONNECTION_WIDGET_H
+

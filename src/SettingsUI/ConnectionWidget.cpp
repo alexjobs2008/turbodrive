@@ -49,6 +49,9 @@ QBoxLayout* ConnectionWidget::createBandwidthControls()
 
     lDownloadLimit = new QLabel(tr("kB/s"), gbDownload);
 
+    leDownloadLimit->setDisabled(true);
+    lDownloadLimit->setDisabled(true);
+
     blDownloadLimit->addWidget(rbDownloadLimit);
     blDownloadLimit->addWidget(leDownloadLimit);
     blDownloadLimit->addWidget(lDownloadLimit);
@@ -75,6 +78,9 @@ QBoxLayout* ConnectionWidget::createBandwidthControls()
     leUploadLimit->setAlignment(Qt::AlignRight);
 
     lUploadLimit = new QLabel(tr("kB/s"), gbUpload);
+
+    leUploadLimit->setDisabled(true);
+    lUploadLimit->setDisabled(true);
 
     blUploadLimit->addWidget(rbUploadLimit);
     blUploadLimit->addWidget(leUploadLimit);
@@ -118,11 +124,19 @@ QWidget* ConnectionWidget::createProxyControls()
     QLabel *lProxyType = new QLabel(tr("Proxy type:"), gbProxy);    
     lProxyType->setMinimumWidth(MIN_CONNECTION_TAB_LABEL_WIDTH);
     lProxyType->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    cbProxyType = new QComboBox(gbProxy);
-    cbProxyType->addItem("HTTP", 3); // QNetworkProxy::HttpProxy
-    cbProxyType->addItem("SOCKS", 1); // QNetworkProxy::Socks5Proxy
+    
+//     cbProxyType = new QComboBox(gbProxy);
+//     cbProxyType->addItem("HTTP", 3); // QNetworkProxy::HttpProxy
+//     cbProxyType->addItem("SOCKS", 1); // QNetworkProxy::Socks5Proxy
+    
+    rbProxyHttp = new QRadioButton("HTTP", gbProxy);
+    rbProxySocks = new QRadioButton("SOCKS", gbProxy);
+    
     blProxyType->addWidget(lProxyType);
-    blProxyType->addWidget(cbProxyType);
+    blProxyType->addWidget(rbProxyHttp);
+    blProxyType->addSpacing(8);
+    blProxyType->addWidget(rbProxySocks);
+//    blProxyType->addWidget(cbProxyType);
     blProxyType->addStretch(1);
 
     // Server and port
@@ -133,7 +147,7 @@ QWidget* ConnectionWidget::createProxyControls()
     leProxyServer = new QLineEdit(gbProxy);
     QLabel *lColon = new QLabel(":", gbProxy);
     leProxyPort = new QLineEdit(gbProxy);
-    leProxyPort->setMaximumWidth(32);
+    leProxyPort->setMaximumWidth(48);
     leProxyPort->setAlignment(Qt::AlignRight);
 
     blProxyServer->addWidget(lProxyServer);
@@ -156,6 +170,7 @@ QWidget* ConnectionWidget::createProxyControls()
 
     // Username
     userNameWidget = new QWidget(gbProxy);
+    userNameWidget->setDisabled(true);
     QHBoxLayout *blProxyUsername = new QHBoxLayout(userNameWidget);
     blProxyUsername->setContentsMargins(0, 0, 0, 0);
     QLabel *lProxyUsername = new QLabel(tr("Username:"), gbProxy);
@@ -168,6 +183,7 @@ QWidget* ConnectionWidget::createProxyControls()
 
     // Password
     passwordWidget = new QWidget(gbProxy);
+    passwordWidget->setDisabled(true);
     QHBoxLayout *blProxyPassword = new QHBoxLayout(passwordWidget);
     blProxyPassword->setContentsMargins(0, 0, 0, 0);
     QLabel *lProxyPassword = new QLabel(tr("Password:"), gbProxy);
@@ -180,6 +196,7 @@ QWidget* ConnectionWidget::createProxyControls()
 
     // Manual proxy layout
     manualProxySettingsWidget = new QWidget(gbProxy);
+    manualProxySettingsWidget->setDisabled(true);
     QVBoxLayout *blManualProxySettings = new QVBoxLayout(manualProxySettingsWidget);
     blManualProxySettings->setContentsMargins(0, 0, 0, 0);
     blManualProxySettings->addLayout(blProxyType);
@@ -218,4 +235,5 @@ void ConnectionWidget::on_cProxyAuthRequired_toggled(bool checked)
     userNameWidget->setEnabled(checked);
     passwordWidget->setEnabled(checked);
 }
+
 
