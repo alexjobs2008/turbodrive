@@ -79,6 +79,7 @@ SettingsWidget::SettingsWidget(QWidget *parent)
 
     QFrame *separator = new QFrame(this);
     separator->setFrameShape(QFrame::HLine);
+    separator->setStyleSheet("QFrame {margin-left: 8px; margin-right: 8px};");
     
     layoutMain->addWidget(tabs);
     layoutMain->addWidget(stackedWidget);

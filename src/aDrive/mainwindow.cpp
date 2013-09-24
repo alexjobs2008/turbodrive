@@ -9,6 +9,7 @@
 #include <QtCore/QUrl>
 #include <QtWidgets/QMenu>
 #include <QtGui/QDesktopServices>
+#include <QtWidgets/QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -114,6 +115,13 @@ void MainWindow::on_actionResume_triggered()
 void MainWindow::on_actionPreferences_triggered()
 {
     settingsWidget->show();
+    
+    settingsWidget->setWindowState(
+        (settingsWidget->windowState() & ~Qt::WindowMinimized)
+        | Qt::WindowActive);
+    
+    settingsWidget->raise();  // for MacOS
+    settingsWidget->activateWindow(); // for Windows
 }
 
 void MainWindow::on_actionExit_triggered()
@@ -126,4 +134,7 @@ void MainWindow::on_trayIcon_activated(QSystemTrayIcon::ActivationReason reason)
 {
     if (reason == QSystemTrayIcon::DoubleClick)
         actionOpenFolder->trigger();
+
+    if (reason == QSystemTrayIcon::Trigger)
+        QMessageBox::information(0, "", "test");
 }

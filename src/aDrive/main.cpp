@@ -9,14 +9,16 @@
 
 int main(int argc, char *argv[])
 {
-	SingleApplication app(argc, argv);
+	
+    
+    SingleApplication app(argc, argv);
 
 	if(app.shouldContinue())
 	{
         QCoreApplication::setOrganizationName("Assistent");
         QCoreApplication::setOrganizationDomain("www.assistent.by");
         QCoreApplication::setApplicationName("Drive");
-        QCoreApplication::setApplicationVersion("1.0b");        
+        QCoreApplication::setApplicationVersion("1.0a");        
         
         using namespace QsLogging;
 
