@@ -20,6 +20,7 @@ public:
     ~SettingsWidget();
 
 signals:
+    void openFolder();
 
 protected:
     virtual void resizeEvent(QResizeEvent *event);

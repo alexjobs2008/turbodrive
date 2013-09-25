@@ -63,7 +63,12 @@ SettingsWidget::SettingsWidget(QWidget *parent)
     stackedWidget = new QStackedWidget(this);
 
     GeneralWidget *generalWidget = new GeneralWidget(this);
+    
     AccountWidget *accountWidget = new AccountWidget(this);
+    connect(accountWidget, SIGNAL(openFolder()), this, SIGNAL(openFolder()));
+    
+    
+    
     ConnectionWidget *connectionWidget = new ConnectionWidget(this);
     AdvancedWidget *advancedWidget = new AdvancedWidget(this);
     AboutWidget *aboutWidget = new AboutWidget(stackedWidget);
@@ -177,5 +182,5 @@ void Delegate::paint(QPainter *painter, const QStyleOptionViewItem & option,
         , Qt::AlignBottom | Qt::AlignHCenter);
 
     // draw selection and hover overlay
-    QStyledItemDelegate::paint(painter, option, QModelIndex());
+    QStyledItemDelegate::paint(painter, option, helperIndex);
 }
