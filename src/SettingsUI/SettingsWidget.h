@@ -33,7 +33,7 @@ private slots:
 
 
 private:
-    void setupListView();
+    void setupListView();    
 
     QListWidget* tabs;
     QStackedWidget *stackedWidget;
@@ -53,6 +53,8 @@ public:
     virtual void paint(QPainter * painter, const QStyleOptionViewItem & option,
                        const QModelIndex & index) const;
 private:
+    static void printStyleOptionStates(const QStyleOptionViewItem & option, int i);
+
     QModelIndex helperIndex;
     QLabel *label;
 };

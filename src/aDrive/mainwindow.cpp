@@ -87,6 +87,9 @@ void MainWindow::createSettingsWidget()
         .arg(tr("Preferences")));
     
     settingsWidget->setWindowIcon(QIcon(":/icons/preferences.png"));
+
+    connect(settingsWidget, SIGNAL(openFolder()),
+        actionOpenFolder, SLOT(trigger()));
 }
 
 void MainWindow::on_actionOpenFolder_triggered()

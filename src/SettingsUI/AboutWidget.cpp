@@ -30,7 +30,7 @@ AboutWidget::AboutWidget(QWidget *parent)
         new QLabel("<a href=\"http://assistent.by\">www.assistent.by</a>", info);
     www->setOpenExternalLinks(true);
 
-    QLabel *copyright = new QLabel("Copyright (c) 2013, Assistent Inc.");
+    QLabel *copyright = new QLabel("Copyright (c) 2013, Assistent");
 
     //infoLayout->addSpacing(16);
     infoLayout->addWidget(appName, 0, Qt::AlignRight);

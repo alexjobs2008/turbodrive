@@ -5,6 +5,9 @@
         <file>advanced.png</file>
         <file>connection.png</file>
         <file>general.png</file>
+
         <file>clouds.png</file>
+        <file>folder.png</file>
+        <file>hline.png</file>
     </qresource>
 </RCC>

@@ -9,6 +9,12 @@ class AccountWidget : public QFrame
 public:
     AccountWidget(QWidget *parent = 0);
 
+signals:
+    void openFolder();
+
+private slots:
+    void on_folderLabel_linkActivated(const QString &);
+
 };
 
 #endif ACCOUNT_WIDGET_H

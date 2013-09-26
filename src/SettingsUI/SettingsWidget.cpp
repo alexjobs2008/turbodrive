@@ -62,18 +62,16 @@ SettingsWidget::SettingsWidget(QWidget *parent)
 
     stackedWidget = new QStackedWidget(this);
 
-    GeneralWidget *generalWidget = new GeneralWidget(this);
+    //GeneralWidget *generalWidget = new GeneralWidget(this);
     
     AccountWidget *accountWidget = new AccountWidget(this);
     connect(accountWidget, SIGNAL(openFolder()), this, SIGNAL(openFolder()));
     
-    
-    
     ConnectionWidget *connectionWidget = new ConnectionWidget(this);
-    AdvancedWidget *advancedWidget = new AdvancedWidget(this);
+    AdvancedWidgetV2 *advancedWidget = new AdvancedWidgetV2(this);
     AboutWidget *aboutWidget = new AboutWidget(stackedWidget);
     
-    stackedWidget->addWidget(generalWidget);
+    //stackedWidget->addWidget(generalWidget);
     stackedWidget->addWidget(accountWidget);
     stackedWidget->addWidget(connectionWidget);
     stackedWidget->addWidget(advancedWidget);
@@ -82,12 +80,30 @@ SettingsWidget::SettingsWidget(QWidget *parent)
     connect(tabs, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
         this, SLOT(onTabChanged(QListWidgetItem*, QListWidgetItem*)));
 
-    QFrame *separator = new QFrame(this);
-    separator->setFrameShape(QFrame::HLine);
-    separator->setStyleSheet("QFrame {margin-left: 8px; margin-right: 8px};");
+     QFrame *separator = new QFrame(this);
+
+     separator->setStyleSheet("QFrame {"
+         "border-image: url(\":/hline.png\") 1 0 1 0;"
+         "border-top: 1px transparent;"
+         "border-bottom: 1px transparent;"
+         "border-left: 0px transparent;"
+         "border-right: 0px transparent;"
+         "margin: 0 6px 0 6px;"
+          "min-height: 1px;"
+          "max-height: 1px;"
+         "};");
+
+//      separator->setStyleSheet("QDialogButtonBox {"
+//          "border-image: url(:/hline.png) 1 3 1 3;"
+//          "min-width: 100px;"
+//          "max-width: 100px;"
+//          "};");
     
+    layoutMain->setSpacing(0);
     layoutMain->addWidget(tabs);
+    layoutMain->addSpacing(4);
     layoutMain->addWidget(stackedWidget);
+    layoutMain->addSpacing(2);
     layoutMain->addWidget(separator);
     layoutMain->addWidget(buttonBox);
 }
@@ -113,28 +129,30 @@ void SettingsWidget::setupListView()
 
     tabs->setItemDelegate(new Delegate(this));
 
-    new QListWidgetItem(QIcon(":/general.png"),
-        tr("General"), tabs, SETTINGS_PAGE_GENERAL);
-    new QListWidgetItem(QIcon(":/account.png"),
-        tr("Account"), tabs, SETTINGS_PAGE_ACCOUNT);
+//    new QListWidgetItem(QIcon(":/general.png"),
+//        tr("General"), tabs, SETTINGS_PAGE_GENERAL);
+    tabs->setCurrentItem(new QListWidgetItem(QIcon(":/account.png"),
+        tr("Account"), tabs, SETTINGS_PAGE_ACCOUNT));
     new QListWidgetItem(QIcon(":/connection.png"),
         tr("Connection"), tabs, SETTINGS_PAGE_CONNECTION);
     new QListWidgetItem(QIcon(":/advanced.png"),
         tr("Advanced"), tabs, SETTINGS_PAGE_ADVANCED);
     new QListWidgetItem(QIcon(":/about.png"),
         tr("About"), tabs, SETTINGS_PAGE_ABOUT);
+
+    
 }
 
 void SettingsWidget::onTabChanged(QListWidgetItem *current,
                                   QListWidgetItem *previous)
 {
-    stackedWidget->setCurrentIndex(current->type());
+    stackedWidget->setCurrentIndex(current->type() - 1);
 }
 
 
 void SettingsWidget::accept()
 {
-
+    close();
 }
 
 void SettingsWidget::reject()
@@ -166,9 +184,21 @@ QSize Delegate::sizeHint(const QStyleOptionViewItem & option,
     return QSize(80, 48);
 }
 
-void Delegate::paint(QPainter *painter, const QStyleOptionViewItem & option,
+void Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                      const QModelIndex & index) const
 {
+//     if (index.column() == 0)
+//         printStyleOptionStates(option, index.column());
+    
+    QStyleOptionViewItem optionCopy = option;
+
+    // no need to draw focus rect and don't draw grayed out
+    optionCopy.state = optionCopy.state & ~QStyle::State_HasFocus | QStyle::State_Active;
+
+#ifdef Q_OS_MACX
+    QStyledItemDelegate::paint(painter, optionCopy, helperIndex);
+#endif
+
     QIcon icon =
         index.model()->data(index, Qt::DecorationRole).value<QIcon>();
 
@@ -181,6 +211,89 @@ void Delegate::paint(QPainter *painter, const QStyleOptionViewItem & option,
         , index.model()->data(index, Qt::DisplayRole).toString()
         , Qt::AlignBottom | Qt::AlignHCenter);
 
-    // draw selection and hover overlay
-    QStyledItemDelegate::paint(painter, option, helperIndex);
+    
+#ifdef Q_OS_WIN
+    QStyledItemDelegate::paint(painter, optionCopy, helperIndex);
+#endif
+}
+
+void Delegate::printStyleOptionStates(const QStyleOptionViewItem & option, int i)
+{
+    QLOG_INFO() << "=== " << i << " ========================================";    
+    
+    if (option.state & QStyle::State_None)
+        QLOG_INFO() << "QStyle::State_None";
+
+    if (option.state & QStyle::State_Active)
+        QLOG_INFO() << "QStyle::State_Active";
+
+    if (option.state & QStyle::State_AutoRaise)
+        QLOG_INFO() << "QStyle::State_AutoRaise";
+
+    if (option.state & QStyle::State_Children)
+        QLOG_INFO() << "QStyle::State_Children";
+
+    if (option.state & QStyle::State_DownArrow)
+        QLOG_INFO() << "QStyle::State_DownArrow";
+
+    if (option.state & QStyle::State_Editing)
+        QLOG_INFO() << "QStyle::State_Editing";
+
+    if (option.state & QStyle::State_Enabled)
+        QLOG_INFO() << "QStyle::State_Enabled";
+
+    if (option.state & QStyle::State_MouseOver)
+        QLOG_INFO() << "QStyle::State_MouseOver";
+
+    if (option.state & QStyle::State_HasFocus)
+        QLOG_INFO() << "QStyle::State_HasFocus";
+
+    if (option.state & QStyle::State_Horizontal)
+        QLOG_INFO() << "QStyle::State_Horizontal";
+
+    if (option.state & QStyle::State_KeyboardFocusChange)
+        QLOG_INFO() << "QStyle::State_KeyboardFocusChange";
+
+    if (option.state & QStyle::State_NoChange)
+        QLOG_INFO() << "QStyle::State_NoChange";
+
+    if (option.state & QStyle::State_Off)
+        QLOG_INFO() << "QStyle::State_Off";
+
+    if (option.state & QStyle::State_On)
+        QLOG_INFO() << "QStyle::State_On";
+
+    if (option.state & QStyle::State_Raised)
+        QLOG_INFO() << "QStyle::State_Raised";
+
+    if (option.state & QStyle::State_ReadOnly)
+        QLOG_INFO() << "QStyle::State_ReadOnly";
+
+    if (option.state & QStyle::State_Selected)
+        QLOG_INFO() << "QStyle::State_Selected";
+
+    if (option.state & QStyle::State_Item)
+        QLOG_INFO() << "QStyle::State_Item";
+
+    if (option.state & QStyle::State_Open)
+        QLOG_INFO() << "QStyle::State_Open";
+
+    if (option.state & QStyle::State_Sibling)
+        QLOG_INFO() << "QStyle::State_Sibling";
+
+    if (option.state & QStyle::State_Sunken)
+        QLOG_INFO() << "QStyle::State_Sunken";
+
+    if (option.state & QStyle::State_UpArrow)
+        QLOG_INFO() << "QStyle::State_UpArrow";
+
+    if (option.state & QStyle::State_Mini)
+        QLOG_INFO() << "QStyle::State_Mini";
+
+    if (option.state & QStyle::State_Small)
+        QLOG_INFO() << "QStyle::State_Small";
+
+    QLOG_INFO() << "--------------------------------------------------------";
+
+
 }

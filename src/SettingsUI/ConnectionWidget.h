@@ -2,6 +2,7 @@
 #define CONNECTION_WIDGET_H
 
 #include <QtWidgets/QFrame>
+#include <QtWidgets/QDialog>
 
 class QRadioButton;
 class QLineEdit;
@@ -9,6 +10,8 @@ class QLabel;
 class QBoxLayout;
 class QComboBox;
 class QCheckBox;
+class QPushButton;
+
 
 class ConnectionWidget : public QFrame
 {
@@ -18,9 +21,9 @@ public:
 
 private slots:
     void on_rbDownloadNoLimit_toggled(bool checked);
-    void on_rbUploadNoLimit_toggled(bool checked);
+    void on_rbUploadNoLimit_toggled(bool checked);    
     void on_rbManualProxy_toggled(bool checked);
-    void on_cProxyAuthRequired_toggled(bool checked);    
+    void on_pbProxyConfigure_clicked(bool checked);
 
 private:
     QBoxLayout* createBandwidthControls();
@@ -37,9 +40,22 @@ private:
 
     QRadioButton *rbNoProxy;
     QRadioButton *rbAutoProxy;
-    QRadioButton *rbManualProxy;
+    QRadioButton *rbManualProxy;    
 
     QWidget *manualProxySettingsWidget;
+    QPushButton *pbProxyConfigure;
+};
+
+class ProxySettingsDialog : public QDialog
+{
+    Q_OBJECT
+public:
+    ProxySettingsDialog(QWidget *parent = 0, Qt::WindowFlags f = 0);
+
+private slots:    
+    void on_cProxyAuthRequired_toggled(bool checked);    
+
+private:    
     QWidget *userNameWidget;
     QWidget *passwordWidget;
     QComboBox *cbProxyType;
