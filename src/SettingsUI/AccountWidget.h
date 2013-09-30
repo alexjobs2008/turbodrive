@@ -11,9 +11,11 @@ public:
 
 signals:
     void openFolder();
+    void logout();
 
 private slots:
     void on_folderLabel_linkActivated(const QString &);
+    void on_pbLogout_clicked(bool checked);
 
 };
 

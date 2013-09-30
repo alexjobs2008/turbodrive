@@ -26,7 +26,11 @@ add_subdirectory("AnimatedSystemTrayIcon")
 add_definitions(-DLOCAL_SERVER_NAME="AssistentDriveSA")
 add_subdirectory("SingleApp")
 
+add_subdirectory("Util")
+
 add_subdirectory("Settings")
+
+add_subdirectory("LoginUI")
 
 add_subdirectory("SettingsUI")
 

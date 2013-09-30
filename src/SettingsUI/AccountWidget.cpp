@@ -15,7 +15,8 @@ AccountWidget::AccountWidget(QWidget *parent)
     QPushButton *pbResetPassword = new QPushButton(tr("Reset Password"), this);
     pbResetPassword->setMaximumWidth(104);
     pbResetPassword->setMinimumWidth(104);
-    QPushButton *pbLogout = new QPushButton(tr("Logout..."), this);
+    QPushButton *pbLogout = new QPushButton(tr("Logout"), this);
+    pbLogout->setObjectName("pbLogout");
     pbLogout->setMaximumWidth(104);
     QHBoxLayout *blButtons = new QHBoxLayout();
     blButtons->addWidget(pbResetPassword);
@@ -59,5 +60,9 @@ void AccountWidget::on_folderLabel_linkActivated(const QString &link)
     Q_UNUSED(link);
 
     emit openFolder();
+}
 
+void AccountWidget::on_pbLogout_clicked(bool checked)
+{
+    emit logout();
 }

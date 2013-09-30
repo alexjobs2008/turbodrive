@@ -2,6 +2,12 @@
 
 #include <QtCore/QTimerEvent>
 
+AnimatedSystemTrayIcon& AnimatedSystemTrayIcon::instance()
+{
+    static AnimatedSystemTrayIcon myself;
+    return myself;
+}
+
 AnimatedSystemTrayIcon::AnimatedSystemTrayIcon(QObject *parent)
 	: QSystemTrayIcon(parent)
 	, currentState(0)

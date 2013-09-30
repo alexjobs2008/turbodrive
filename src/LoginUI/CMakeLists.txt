@@ -1,4 +1,4 @@
-project(SettingsUI)
+project(LoginUI)
 cmake_minimum_required(VERSION 2.8.11)
 message("Generating project ${PROJECT_NAME} in ${CMAKE_CURRENT_BINARY_DIR}")
 
@@ -10,22 +10,16 @@ set(CMAKE_AUTOMOC ON)
 find_package(Qt5Widgets)
 
 set(HEADERS
-    SettingsWidget.h
-    AccountWidget.h
-    ConnectionWidget.h
-    AdvancedWidget.h
-    AboutWidget.h
+    LoginController.h
+    LoginWidget.h
 )
 
 set(SOURCES
-    SettingsWidget.cpp
-    AccountWidget.cpp
-    ConnectionWidget.cpp
-    AdvancedWidget.cpp
-    AboutWidget.cpp
+    LoginController.cpp
+    LoginWidget.cpp
 )
 
-set(QRC_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/res/settingsUI.qrc)
+set(QRC_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/res/loginUI.qrc)
 
 qt5_add_resources(MOCED_RESOURCES ${QRC_RESOURCES})
 

@@ -1,4 +1,5 @@
 #include "AboutWidget.h"
+#include "Util/AppStrings.h"
 
 #include <QtWidgets/QBoxLayout>
 #include <QtWidgets/QLabel>
@@ -15,29 +16,43 @@ AboutWidget::AboutWidget(QWidget *parent)
     QWidget *info = new QWidget(this);
     QVBoxLayout *infoLayout = new QVBoxLayout(info);
 
-    QLabel *appName = new QLabel(info);
-    appName->setText(QString("%1 %2")
-        .arg(QCoreApplication::organizationName())
-        .arg(QCoreApplication::applicationName()));
+    QLabel *labelCompanyName = new QLabel(info);
+    labelCompanyName->setObjectName("labelCompanyName");
+    labelCompanyName->setText(Strings::companyName);
 
-    appName->setStyleSheet("QLabel {font-size: 12pt;};");
+    QLabel *labelAppName = new QLabel(info);
+    labelAppName->setObjectName("labelAppName");
+    labelAppName->setText(Strings::appName);
 
-    QLabel *appVersion = new QLabel(info);
-    appVersion->
-        setText(QString("v%1").arg(QCoreApplication::applicationVersion()));
+    labelAppName->setStyleSheet("QLabel {font-size: 12pt;};");
 
-    QLabel *www =
-        new QLabel("<a href=\"http://assistent.by\">www.assistent.by</a>", info);
-    www->setOpenExternalLinks(true);
+    QLabel *labelAppVersion = new QLabel(info);
+    labelAppVersion->setObjectName("labelAppVersion");
+    labelAppVersion->setText(QString("v%1").arg(Strings::appVersion));
 
-    QLabel *copyright = new QLabel("Copyright (c) 2013, Assistent");
+    QLabel *labelHomepage = new QLabel(tr("Homepage:"), this);
+    labelHomepage->setObjectName("labelHomepage");
+    
+    QLabel *labelHomepageLink = new QLabel(
+        QString("<a href=\"%1\">%2</a>")
+        .arg(Strings::websiteLink)
+        .arg(Strings::websiteText)
+        , info);
+    labelHomepageLink->setObjectName("labelHomepageLink");
+    labelHomepageLink->setOpenExternalLinks(true);
 
-    //infoLayout->addSpacing(16);
-    infoLayout->addWidget(appName, 0, Qt::AlignRight);
-    infoLayout->addWidget(appVersion, 0, Qt::AlignRight);    
-    infoLayout->addWidget(www, 0, Qt::AlignRight);
+    QLabel *labelCopyright = new QLabel(Strings::copyright);
+    labelCopyright->setObjectName("labelCopyright");
+    labelCopyright->setAlignment(Qt::AlignRight);
+
+    infoLayout->setSpacing(0);
+    infoLayout->addWidget(labelCompanyName, 0, Qt::AlignRight);
+    infoLayout->addWidget(labelAppName, 0, Qt::AlignRight);
+    infoLayout->addWidget(labelAppVersion, 0, Qt::AlignRight);    
+    infoLayout->addWidget(labelHomepage, 0, Qt::AlignRight);    
+    infoLayout->addWidget(labelHomepageLink, 0, Qt::AlignRight);
     infoLayout->addStretch(1);
-    infoLayout->addWidget(copyright, 0, Qt::AlignRight);
+    infoLayout->addWidget(labelCopyright, 0, Qt::AlignRight);
     
     mainLayout->addWidget(pic);
     mainLayout->addWidget(info, 1);

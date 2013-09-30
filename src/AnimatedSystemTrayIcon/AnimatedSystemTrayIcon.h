@@ -33,7 +33,7 @@ public:
          int currentFrame;
      };
 
-    AnimatedSystemTrayIcon(QObject *parent = 0);
+    static AnimatedSystemTrayIcon& instance();
 	~AnimatedSystemTrayIcon();
 
 	void appendState(State *state);
@@ -43,6 +43,9 @@ protected:
 	virtual void timerEvent(QTimerEvent * event);
 
 private:
+    Q_DISABLE_COPY(AnimatedSystemTrayIcon)
+    explicit AnimatedSystemTrayIcon(QObject *parent = 0);    
+
     QMap<QString, State*> states;
 	State *currentState;
 	int timerId;

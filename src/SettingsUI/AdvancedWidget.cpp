@@ -1,9 +1,11 @@
 ﻿#include "AdvancedWidget.h"
+#include "Util/AppStrings.h"
+#include "Settings/settings.h"
 
 #include <QtWidgets/QBoxLayout>
 #include <QtWidgets/QLabel>
-#include <QtWidgets/QGroupBox>
 #include <QtWidgets/QLineEdit>
+#include <QtWidgets/QGroupBox>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QFileDialog>
@@ -18,9 +20,14 @@ AdvancedWidget::AdvancedWidget(QWidget *parent)
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     
     QGroupBox *gbLocation =
-        new QGroupBox(tr("Assistent Drive folder location"), this);
+        new QGroupBox(QString("%1 %2 %3:")
+            .arg(Strings::companyName)
+            .arg(Strings::appName)
+            .arg(tr("folder location"))
+            , this);
 
     QLineEdit *leLocation = new QLineEdit(gbLocation);
+    leLocation->setText(Settings::instance().folder());
     QPushButton *pbLocation = new QPushButton(tr("Move..."), gbLocation);
     pbLocation->setObjectName("pbMove");
     QHBoxLayout *blLocation = new QHBoxLayout(gbLocation);
@@ -49,8 +56,6 @@ AdvancedWidget::AdvancedWidget(QWidget *parent)
     QHBoxLayout *blLanguage = new QHBoxLayout(gbLanguage);
     blLanguage->addWidget(cbLanguage, 1);
 
-
-
     mainLayout->addWidget(gbLocation);
     mainLayout->addWidget(gbSync);
     mainLayout->addWidget(gbLanguage);
@@ -72,7 +77,10 @@ AdvancedWidgetV2::AdvancedWidgetV2(QWidget *parent)
     QLabel *lLocation = new QLabel(tr("Drive folder:"), this);
     lLocation->setMinimumWidth(MIN_ADVANCED_TAB_LABEL_WIDTH);
     lLocation->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    QLineEdit *leLocation = new QLineEdit(this);
+    leLocation = new QLineEdit(this);
+    leLocation->setEnabled(false);
+    leLocation->setText(
+        QDir::toNativeSeparators(Settings::instance().folder()));
     QPushButton *pbLocation = new QPushButton(tr("Move..."), this);
     pbLocation->setObjectName("pbMove");
 
@@ -130,9 +138,9 @@ AdvancedWidgetV2::AdvancedWidgetV2(QWidget *parent)
     lAligner2->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     QCheckBox *cAutostart =
         new QCheckBox(tr("Start Drive on system startup"), this);
-    cAutostart->setChecked(true);
+    cAutostart->setChecked(Settings::instance().autostart());
     cAutostart->setObjectName("cAutostart");
-    cAutostart->setChecked(true);
+    cAutostart->setChecked(Settings::instance().autostart());
     blAutostart->addWidget(lAligner2);
     blAutostart->addWidget(cAutostart);
     blAutostart->addStretch(1);
@@ -153,5 +161,13 @@ AdvancedWidgetV2::AdvancedWidgetV2(QWidget *parent)
 
 void AdvancedWidgetV2::on_pbMove_clicked(bool checked)
 {
-    QString path = QFileDialog::getExistingDirectory(0, "", "", QFileDialog::ShowDirsOnly);
+    QString path = QFileDialog::getExistingDirectory(this
+        , QString(tr("Choose Folder to Move %1 Into")).arg(Strings::appName)        
+        , Settings::instance().folder()
+        , QFileDialog::ShowDirsOnly);
+
+    if (path != QString())
+    {
+        leLocation->setText(QDir::toNativeSeparators(path));
+    }
 }

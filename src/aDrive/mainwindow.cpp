@@ -1,11 +1,12 @@
 #include "mainwindow.h"
+#include "Util/AppStrings.h"
 #include "AnimatedSystemTrayIcon/AnimatedSystemTrayIcon.h"
 #include "Settings/settings.h"
 #include "SettingsUI/SettingsWidget.h"
+#include "LoginUI/LoginController.h"
 #include "QsLog/QsLog.h"
 
 #include <QtCore/QCoreApplication>
-#include <QtCore/QStandardPaths>
 #include <QtCore/QUrl>
 #include <QtWidgets/QMenu>
 #include <QtGui/QDesktopServices>
@@ -14,8 +15,6 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    setAttribute(Qt::WA_DeleteOnClose);
-    
     createActions();
     createTrayIcon();
     createSettingsWidget();
@@ -25,7 +24,6 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-    delete settingsWidget;
 }
 
 void MainWindow::createActions()
@@ -52,10 +50,13 @@ void MainWindow::createActions()
 
 void MainWindow::createTrayIcon()
 {
-    trayIcon = new AnimatedSystemTrayIcon(this);
-    trayIcon->setObjectName("trayIcon");
+    //trayIcon = new AnimatedSystemTrayIcon(this);
+
+    AnimatedSystemTrayIcon &trayIcon = AnimatedSystemTrayIcon::instance();
+
+    trayIcon.setObjectName("trayIcon");
     
-    trayIcon->appendState(new AnimatedSystemTrayIcon::
+    trayIcon.appendState(new AnimatedSystemTrayIcon::
         State("Base", QPixmap(":/icons/tray_base.png")));
 
     trayMenu = new QMenu(this);
@@ -69,36 +70,37 @@ void MainWindow::createTrayIcon()
 
     trayMenu->setDefaultAction(actionOpenFolder);
 
-    trayIcon->setContextMenu(trayMenu);
-
-    trayIcon->setToolTip(QCoreApplication::applicationName());
-
-    trayIcon->show();
+    trayIcon.setContextMenu(trayMenu);
+    trayIcon.setToolTip(QCoreApplication::applicationName());
+    trayIcon.show();
 }
 
 void MainWindow::createSettingsWidget()
 {
-    settingsWidget = new SettingsWidget();
+    settingsWidget = QSharedPointer<SettingsWidget>(new SettingsWidget());
+
+    settingsWidget->setObjectName("settingsWidget");
     
     settingsWidget->setWindowTitle(
         QString("%1 %2 %3")
-        .arg(localizedOrganizationName)
-        .arg(localizedApplicationName)
+        .arg(Strings::companyName)
+        .arg(Strings::appName)
         .arg(tr("Preferences")));
     
     settingsWidget->setWindowIcon(QIcon(":/icons/preferences.png"));
 
-    connect(settingsWidget, SIGNAL(openFolder()),
+    connect(settingsWidget.data(), SIGNAL(openFolder()),
         actionOpenFolder, SLOT(trigger()));
+
+    connect(settingsWidget.data(), SIGNAL(logout()),
+        this, SLOT(on_settingsWidget_logout()));
 }
 
 void MainWindow::on_actionOpenFolder_triggered()
 {
-    QString homePath =
-        QStandardPaths::standardLocations(QStandardPaths::HomeLocation).at(0);
-    
     QDesktopServices::openUrl(
-        QUrl(QString("file:///%1").arg(homePath), QUrl::TolerantMode));
+        QUrl(QString("file:///%1").arg(Settings::instance().folder())
+        , QUrl::TolerantMode));
 }
 
 void MainWindow::on_actionPause_triggered()
@@ -130,6 +132,7 @@ void MainWindow::on_actionPreferences_triggered()
 void MainWindow::on_actionExit_triggered()
 {
     QLOG_TRACE() << "Exiting";
+    LoginController::instance().closeAll();
     close();
 }
 
@@ -140,4 +143,11 @@ void MainWindow::on_trayIcon_activated(QSystemTrayIcon::ActivationReason reason)
 
     if (reason == QSystemTrayIcon::Trigger)
         QMessageBox::information(0, "", "test");
+}
+
+void MainWindow::on_settingsWidget_logout()
+{
+    settingsWidget->hide();
+    
+    LoginController::instance().showLoginForm();
 }

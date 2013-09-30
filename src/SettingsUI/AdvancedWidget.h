@@ -3,6 +3,8 @@
 
 #include <QtWidgets/QFrame>
 
+class QLineEdit;
+
 class AdvancedWidget : public QFrame
 {
     Q_OBJECT
@@ -20,8 +22,11 @@ class AdvancedWidgetV2 : public QFrame
 public:
     AdvancedWidgetV2(QWidget *parent = 0);
 
-    private slots:
-        void on_pbMove_clicked(bool checked);
+private slots:
+    void on_pbMove_clicked(bool checked);
+
+private:
+    QLineEdit *leLocation;
 
 };
 

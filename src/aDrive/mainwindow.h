@@ -3,8 +3,8 @@
 
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QSystemTrayIcon>
+#include <QtCore/QSharedPointer>
 
-class AnimatedSystemTrayIcon;
 class SettingsWidget;
 class QMenu;
 class QAction;
@@ -25,14 +25,14 @@ private slots:
     void on_actionExit_triggered();
 
     void on_trayIcon_activated(QSystemTrayIcon::ActivationReason reason);
+    void on_settingsWidget_logout();
 
 private:
     void createActions();
     void createTrayIcon();
     void createSettingsWidget();
 
-    AnimatedSystemTrayIcon *trayIcon;
-    SettingsWidget* settingsWidget;
+    QSharedPointer<SettingsWidget> settingsWidget;    
 
     QMenu *trayMenu;
     

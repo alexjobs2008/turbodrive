@@ -254,7 +254,7 @@ ProxySettingsDialog::ProxySettingsDialog(QWidget *parent, Qt::WindowFlags f)
     leProxyPassword->setEchoMode(QLineEdit::Password);
     blProxyPassword->addWidget(lProxyPassword);
     blProxyPassword->addWidget(leProxyPassword);
-    blProxyPassword->addStretch(1);    
+    blProxyPassword->addStretch(1);
 
     // Layout    
     QVBoxLayout *blManualProxySettings = new QVBoxLayout();    

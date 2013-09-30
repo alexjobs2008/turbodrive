@@ -21,12 +21,17 @@ public:
 
 signals:
     void openFolder();
+    void logout();
 
 protected:
     virtual void resizeEvent(QResizeEvent *event);
 
 private slots:
     void onTabChanged(QListWidgetItem *, QListWidgetItem *);
+
+    void onSettingsGotDirty();
+
+    void on_pbOK_clicked(bool checked);
 
     void accept();
     void reject();

@@ -1,6 +1,7 @@
 #include "SettingsWidget.h"
 #include "QsLog/QsLog.h"
-#include "GeneralWidget.h"
+#include "Settings/settings.h"
+
 #include "AccountWidget.h"
 #include "ConnectionWidget.h"
 #include "AdvancedWidget.h"
@@ -11,6 +12,7 @@
 #include <QtWidgets/QBoxLayout>
 #include <QtWidgets/QListWidget>
 #include <QtWidgets/QStackedWidget>
+#include <QtWidgets/QPushButton>
 #include <QtCore/QStringListModel>
 #include <QtGui/QPainter>
 #include <QtWidgets/QLabel>
@@ -27,6 +29,7 @@ SettingsWidget::SettingsWidget(QWidget *parent)
     Q_INIT_RESOURCE(settingsUI);
 
     // avoid app close on window close
+    setAttribute(Qt::WA_DeleteOnClose, false);
     setAttribute(Qt::WA_QuitOnClose, false);
 
     setWindowFlags(Qt::CustomizeWindowHint
@@ -41,13 +44,13 @@ SettingsWidget::SettingsWidget(QWidget *parent)
     setMinimumWidth(404);
 #endif
 
-    QDialogButtonBox *buttonBox =
-        new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-
-    buttonBox->setContentsMargins(8, 8, 8, 8);
-
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+//     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
+//         | QDialogButtonBox::Cancel | QDialogButtonBox::Apply);
+// 
+//     buttonBox->setContentsMargins(8, 8, 8, 8);
+// 
+//     connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+//     connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
     setupListView();
     
@@ -62,8 +65,6 @@ SettingsWidget::SettingsWidget(QWidget *parent)
 
     stackedWidget = new QStackedWidget(this);
 
-    //GeneralWidget *generalWidget = new GeneralWidget(this);
-    
     AccountWidget *accountWidget = new AccountWidget(this);
     connect(accountWidget, SIGNAL(openFolder()), this, SIGNAL(openFolder()));
     
@@ -71,41 +72,60 @@ SettingsWidget::SettingsWidget(QWidget *parent)
     AdvancedWidgetV2 *advancedWidget = new AdvancedWidgetV2(this);
     AboutWidget *aboutWidget = new AboutWidget(stackedWidget);
     
-    //stackedWidget->addWidget(generalWidget);
     stackedWidget->addWidget(accountWidget);
     stackedWidget->addWidget(connectionWidget);
     stackedWidget->addWidget(advancedWidget);
     stackedWidget->addWidget(aboutWidget);
 
-    connect(tabs, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
-        this, SLOT(onTabChanged(QListWidgetItem*, QListWidgetItem*)));
+    QFrame *separator = new QFrame(this);
 
-     QFrame *separator = new QFrame(this);
+    separator->setStyleSheet("QFrame {"
+        "border-image: url(\":/hline.png\") 1 0 1 0;"
+        "border-top: 1px transparent;"
+        "border-bottom: 1px transparent;"
+        "border-left: 0px transparent;"
+        "border-right: 0px transparent;"
+        "margin: 0 6px 0 6px;"
+        "min-height: 1px;"
+        "max-height: 1px;"
+        "};");
 
-     separator->setStyleSheet("QFrame {"
-         "border-image: url(\":/hline.png\") 1 0 1 0;"
-         "border-top: 1px transparent;"
-         "border-bottom: 1px transparent;"
-         "border-left: 0px transparent;"
-         "border-right: 0px transparent;"
-         "margin: 0 6px 0 6px;"
-          "min-height: 1px;"
-          "max-height: 1px;"
-         "};");
+    QHBoxLayout *blButtonBox = new QHBoxLayout(this);
+    blButtonBox->setContentsMargins(8, 8, 8, 8);
+    blButtonBox->setSpacing(8);
 
-//      separator->setStyleSheet("QDialogButtonBox {"
-//          "border-image: url(:/hline.png) 1 3 1 3;"
-//          "min-width: 100px;"
-//          "max-width: 100px;"
-//          "};");
-    
+    QPushButton *pbHelp = new QPushButton(tr("Help"), this);
+    pbHelp->setObjectName("pbHelp");
+    QPushButton *pbOK = new QPushButton(tr("OK"), this);
+    pbOK->setObjectName("pbOK");
+    QPushButton *pbCancel = new QPushButton(tr("Cancel"), this);
+    pbCancel->setObjectName("pbCancel");
+    QPushButton *pbApply = new QPushButton(tr("Apply"), this);
+    pbApply->setObjectName("pbApply");
+
+    blButtonBox->addWidget(pbHelp);
+    blButtonBox->addStretch(1);
+    blButtonBox->addWidget(pbOK);
+    blButtonBox->addWidget(pbCancel);
+    blButtonBox->addWidget(pbApply);
+
     layoutMain->setSpacing(0);
     layoutMain->addWidget(tabs);
     layoutMain->addSpacing(4);
     layoutMain->addWidget(stackedWidget);
     layoutMain->addSpacing(2);
     layoutMain->addWidget(separator);
-    layoutMain->addWidget(buttonBox);
+    layoutMain->addLayout(blButtonBox);
+
+    connect(tabs, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
+        this, SLOT(onTabChanged(QListWidgetItem*, QListWidgetItem*)));
+
+    connect(accountWidget, SIGNAL(logout()), this, SIGNAL(logout()));
+
+    connect(&Settings::instance(), SIGNAL(gotDirty()),
+        this, SLOT(onSettingsGotDirty()));
+
+    QMetaObject::connectSlotsByName(this);
 }
 
 SettingsWidget::~SettingsWidget()
@@ -149,6 +169,17 @@ void SettingsWidget::onTabChanged(QListWidgetItem *current,
     stackedWidget->setCurrentIndex(current->type() - 1);
 }
 
+void SettingsWidget::onSettingsGotDirty()
+{
+
+}
+
+void SettingsWidget::on_pbOK_clicked(bool checked)
+{
+    Q_UNUSED(checked)
+
+    close();
+}
 
 void SettingsWidget::accept()
 {
