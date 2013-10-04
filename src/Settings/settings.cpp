@@ -102,16 +102,18 @@ void Settings::set(const QString& settingName, QVariant value, Kind kind)
         
         QVariant oldValue;
 
-        QLOG_DEBUG() << "Real " << settingName << ". Value: " << value.toInt();
+        QLOG_TRACE() << "Setting" << settingName << "change:" << value;
 
         if (settings->contains(settingName))
         {
             oldValue = settings->value(settingName);
-
-            QLOG_DEBUG() << "OLD value :"<< oldValue.toInt();
-
+            QLOG_TRACE() << "Old" << settingName << "value was:" << oldValue;
             if (oldValue == value)
+            {
+                QLOG_TRACE() <<
+                    "Not applying the settings, since the value hasn't changed";
                 return;
+            }
         }
 
         settings->setValue(settingName, value);
@@ -119,7 +121,9 @@ void Settings::set(const QString& settingName, QVariant value, Kind kind)
     }
     else
     {
-        QLOG_DEBUG() << "Candiate " << settingName << ". Value: " << value.toInt();
+        QLOG_TRACE() << "Candidate setting" <<
+            settingName << "change:" << value;
+
         candidateSettings.insert(settingName, value);
         emit dirtyStateChanged(true);
     }
