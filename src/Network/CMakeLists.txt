@@ -10,12 +10,15 @@ set(CMAKE_AUTOMOC ON)
 find_package(Qt5Network)
 
 set(HEADERS
+    RestTypedefs.h
+    RestResource.h
     RestNetworkAccessManager.h
-    RestDispatcher.h
+    RestDispatcher.h    
     ConnectionController.h
 )
 
 set(SOURCES
+    RestResource.cpp
     RestNetworkAccessManager.cpp
     RestDispatcher.cpp
     ConnectionController.cpp

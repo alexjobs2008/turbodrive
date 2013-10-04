@@ -7,7 +7,13 @@ class RestDispatcher : public QObject
 {
     Q_OBJECT
 public:
-    RestDispatcher(QObject *parent = 0);
+    static RestDispatcher& instance();
+
+    void request(const RestResource::RequestRef& request);
+    void cancelAll(const RestResourceRef& resource);
+    void cancelAll();
+
+    //RestDispatcher(QObject *parent = 0);
 
 signals:
 
