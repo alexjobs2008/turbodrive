@@ -1,4 +1,4 @@
-project(connection_controller)
+project(Network)
 cmake_minimum_required(VERSION 2.8.11)
 message("Generating project ${PROJECT_NAME} in ${CMAKE_CURRENT_BINARY_DIR}")
 
@@ -10,11 +10,15 @@ set(CMAKE_AUTOMOC ON)
 find_package(Qt5Network)
 
 set(HEADERS
-    connection_controller.h
+    RestNetworkAccessManager.h
+    RestDispatcher.h
+    ConnectionController.h
 )
 
 set(SOURCES
-    connection_controller.cpp
+    RestNetworkAccessManager.cpp
+    RestDispatcher.cpp
+    ConnectionController.cpp
 )
 
 source_group(_h FILES ${HEADERS})

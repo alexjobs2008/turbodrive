@@ -1,4 +1,4 @@
-#include "connection_controller.h"
+#include "ConnectionController.h"
 
 ConnectionController::ConnectionController(QObject *parent)
     : QObject(parent)
