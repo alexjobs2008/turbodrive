@@ -1,4 +1,6 @@
 #include "LoginWidget.h"
+#include "Settings/settings.h"
+#include "QsLog/QsLog.h"
 
 #include <QtGui/QIcon>
 #include <QtWidgets/QBoxLayout>
@@ -37,7 +39,7 @@ LoginWidget::LoginWidget(QWidget *parent)
     QLabel *lUsername = new QLabel(tr("Email:"), this);
     lUsername->setMinimumWidth(MIN_CONNECTION_TAB_LABEL_WIDTH);
     lUsername->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    QLineEdit *leUsername = new QLineEdit(this);
+    leUsername = new QLineEdit(this);
     blUsername->addWidget(lUsername);
     blUsername->addWidget(leUsername);
     blUsername->addStretch(1);
@@ -49,7 +51,7 @@ LoginWidget::LoginWidget(QWidget *parent)
     QLabel *lPassword = new QLabel(tr("Password:"), this);
     lPassword->setMinimumWidth(MIN_CONNECTION_TAB_LABEL_WIDTH);
     lPassword->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    QLineEdit *lePassword = new QLineEdit(this);
+    lePassword = new QLineEdit(this);
     lePassword->setEchoMode(QLineEdit::Password);
     blPassword->addWidget(lPassword);
     blPassword->addWidget(lePassword);
@@ -57,8 +59,7 @@ LoginWidget::LoginWidget(QWidget *parent)
 
     QHBoxLayout *blForgot = new QHBoxLayout();
     QLabel *lHelper = new QLabel(this);
-    lHelper->setMinimumWidth(MIN_CONNECTION_TAB_LABEL_WIDTH + 48);
-    
+    lHelper->setMinimumWidth(MIN_CONNECTION_TAB_LABEL_WIDTH + 48);    
     
     QLabel *www =
         new QLabel("<a href=\"http://assistent.by\">Forgot password?</a>", this);
@@ -71,6 +72,8 @@ LoginWidget::LoginWidget(QWidget *parent)
     QHBoxLayout *blButtons = new QHBoxLayout();
     QPushButton *pbCreateAccount = new QPushButton(tr(" Create Account "), this);
     QPushButton *pbLogin = new QPushButton(tr("Login"), this);
+    pbLogin->setObjectName("login");
+
     pbLogin->setDefault(true);
 
     blButtons->addWidget(pbCreateAccount);
@@ -89,4 +92,24 @@ LoginWidget::LoginWidget(QWidget *parent)
     layout->addStretch(1);
     layout->addLayout(blButtons);
     layout->addSpacing(4);
+
+    leUsername->setText(Settings::instance().get(Settings::email).toString());
+    lePassword->setText(Settings::instance().get(Settings::password).toString());
+
+    QMetaObject::connectSlotsByName(this);
+}
+
+void LoginWidget::on_login_clicked(bool checked)
+{
+    Q_UNUSED(checked)   
+
+    Settings::instance().set(Settings::email,
+        leUsername->text().trimmed(), Settings::RealSetting);
+
+    Settings::instance().set(Settings::password,
+        lePassword->text().trimmed(), Settings::RealSetting);
+
+    QLOG_TRACE() << "Login from UI requested";
+    emit loginRequest();
+    //close();
 }
