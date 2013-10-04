@@ -12,35 +12,62 @@ private:
     Q_DISABLE_COPY(Settings);
 
 public:
+
+    static const QString email;
+    static const QString password;
+    static const QString folderPath;
+    static const QString desktopNotifications;    
+    static const QString autostart;
+    static const QString language;
+    static const QString limitDownload;
+    static const QString limitUpload;
+    static const QString downloadSpeed;
+    static const QString uploadSpeed;
+    static const QString proxyUsage;
+    static const QString proxyCustomSettings;
+
+    enum Kind
+    {
+        RealSetting = 0,
+        CandidateSetting
+    };
+
     static Settings& instance();
 
-    QString folder() const;
-    void setFolder(const QString& folderPath);
+    QVariant get(const QString& settingName) const;
     
-    bool autostart() const;
-    void setAutostart(bool isOn);
+    void set(const QString& settingName, QVariant value,
+        Kind kind = CandidateSetting);
 
-    bool desktopNotifications() const;
-    void setDesktopNotifications(bool isOn);
+    static QList<int> supportedLanguages();
 
 public slots:
-
-#ifndef Q_OS_MACX
     void apply();
-#endif
+    void cancel();
 
-signals:
-    void autostartChanged(bool isOn);
-    void folderChanged(const QString& folderPath);
-    void desktopNotificationsChanged(bool isOn);
+signals:    
+    // emitted when real (not candidate) settings changed:
+    void settingChanged(const QString& settingName, QVariant oldValue,
+        QVariant newValue);
 
-    void gotDirty();
+    // this signal emitted when candidate (not real) settings changed:
+    // - if a setting has been changed, but not applied yet: isOn == true
+    // - if candidate settings were applied: : isOn == false
+    void dirtyStateChanged(bool isDirty);
+
+    // helper signals:
+    void folderPathChanged(const QString& folderPath);
 
 private:
+    QVariant defaultSettingValue(const QString& settingName) const;
     QString defaultFolderPath() const;
+
+    bool applyImmediately;
+    QMap<QString, QVariant> candidateSettings;
 
     QSettings *settings;
 };
+
 
 #ifdef Q_OS_WIN
 

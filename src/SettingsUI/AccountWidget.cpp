@@ -9,8 +9,10 @@ AccountWidget::AccountWidget(QWidget *parent)
     : QFrame(parent)
 {
     QLabel *loggedAsLabel = new QLabel(tr("Logged in as:"), this);
+    QLabel *nameLabel = new QLabel("Ann Fedoruk", this);
     QLabel *loginLabel = new QLabel("mobile@turboheads.by", this);
-    loginLabel->setStyleSheet("QLabel {font-weight: bold};");
+    nameLabel->setStyleSheet("QLabel {font-weight: bold};");
+    loginLabel->setStyleSheet(nameLabel->styleSheet());
     
     QPushButton *pbResetPassword = new QPushButton(tr("Reset Password"), this);
     pbResetPassword->setMaximumWidth(104);
@@ -43,6 +45,7 @@ AccountWidget::AccountWidget(QWidget *parent)
     leftLayout->addStretch(1);
 
     rightLayout->addWidget(loggedAsLabel);
+    rightLayout->addWidget(nameLabel);
     rightLayout->addWidget(loginLabel);
     rightLayout->addSpacing(8);
     rightLayout->addLayout(blButtons);

@@ -10,6 +10,7 @@ class QListWidgetItem;
 class QStackedWidget;
 class QStyledItemDelegate;
 class QLabel;
+class QPushButton;
 
 
 class SettingsWidget : public QFrame
@@ -27,21 +28,22 @@ protected:
     virtual void resizeEvent(QResizeEvent *event);
 
 private slots:
-    void onTabChanged(QListWidgetItem *, QListWidgetItem *);
+    void on_tabs_currentItemChanged(QListWidgetItem*, QListWidgetItem*);
 
-    void onSettingsGotDirty();
+    void on_help_clicked(bool checked);
+    void on_OK_clicked(bool checked);
+    void on_cancel_clicked(bool checked);
+    void on_apply_clicked(bool checked);
 
-    void on_pbOK_clicked(bool checked);
-
-    void accept();
-    void reject();
-
+    void onSettingsDirtyChanged(bool isDirty);
 
 private:
-    void setupListView();    
+    void setupListView();
 
     QListWidget* tabs;
     QStackedWidget *stackedWidget;
+
+    QPushButton *pbApply;
 
 };
 

@@ -11,10 +11,12 @@ find_package(Qt5Core)
 
 set(HEADERS
     settings.h
+    proxySettings.h
 )
 
 set(SOURCES
     settings.cpp
+    proxySettings.cpp
 )
 
 source_group(_h FILES ${HEADERS})

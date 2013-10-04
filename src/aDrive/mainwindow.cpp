@@ -99,7 +99,8 @@ void MainWindow::createSettingsWidget()
 void MainWindow::on_actionOpenFolder_triggered()
 {
     QDesktopServices::openUrl(
-        QUrl(QString("file:///%1").arg(Settings::instance().folder())
+        QUrl(QString("file:///%1").arg(
+            Settings::instance().get(Settings::folderPath).toString())
         , QUrl::TolerantMode));
 }
 

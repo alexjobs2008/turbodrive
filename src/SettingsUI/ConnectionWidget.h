@@ -11,6 +11,7 @@ class QBoxLayout;
 class QComboBox;
 class QCheckBox;
 class QPushButton;
+struct ProxySettings;
 
 
 class ConnectionWidget : public QFrame
@@ -20,21 +21,27 @@ public:
     ConnectionWidget(QWidget *parent = 0);
 
 private slots:
-    void on_rbDownloadNoLimit_toggled(bool checked);
-    void on_rbUploadNoLimit_toggled(bool checked);    
-    void on_rbManualProxy_toggled(bool checked);
-    void on_pbProxyConfigure_clicked(bool checked);
+    void on_downloadNoLimit_toggled(bool checked);
+    void on_uploadNoLimit_toggled(bool checked);
+    
+    void on_noProxy_toggled(bool checked);
+    void on_autoProxy_toggled(bool checked);
+    void on_manualProxy_toggled(bool checked);
+    
+    void on_proxyConfigure_clicked(bool checked);
 
 private:
     QBoxLayout* createBandwidthControls();
     QWidget* createProxyControls();
-
+    void setFromSettings();
 
     QRadioButton *rbDownloadNoLimit;
+    QRadioButton *rbDownloadLimit;
     QLineEdit *leDownloadLimit;
     QLabel *lDownloadLimit;
 
     QRadioButton *rbUploadNoLimit;
+    QRadioButton *rbUploadLimit;
     QLineEdit *leUploadLimit;
     QLabel *lUploadLimit;
 
@@ -51,8 +58,12 @@ class ProxySettingsDialog : public QDialog
     Q_OBJECT
 public:
     ProxySettingsDialog(QWidget *parent = 0, Qt::WindowFlags f = 0);
+    ProxySettings proxySettings() const;
 
-private slots:    
+public slots:
+    int exec();
+
+private slots:        
     void on_cProxyAuthRequired_toggled(bool checked);    
 
 private:    

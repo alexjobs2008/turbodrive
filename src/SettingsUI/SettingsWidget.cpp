@@ -69,7 +69,7 @@ SettingsWidget::SettingsWidget(QWidget *parent)
     connect(accountWidget, SIGNAL(openFolder()), this, SIGNAL(openFolder()));
     
     ConnectionWidget *connectionWidget = new ConnectionWidget(this);
-    AdvancedWidgetV2 *advancedWidget = new AdvancedWidgetV2(this);
+    AdvancedWidget *advancedWidget = new AdvancedWidget(this);
     AboutWidget *aboutWidget = new AboutWidget(stackedWidget);
     
     stackedWidget->addWidget(accountWidget);
@@ -95,13 +95,14 @@ SettingsWidget::SettingsWidget(QWidget *parent)
     blButtonBox->setSpacing(8);
 
     QPushButton *pbHelp = new QPushButton(tr("Help"), this);
-    pbHelp->setObjectName("pbHelp");
+    pbHelp->setObjectName("help");
     QPushButton *pbOK = new QPushButton(tr("OK"), this);
-    pbOK->setObjectName("pbOK");
+    pbOK->setObjectName("OK");
     QPushButton *pbCancel = new QPushButton(tr("Cancel"), this);
-    pbCancel->setObjectName("pbCancel");
-    QPushButton *pbApply = new QPushButton(tr("Apply"), this);
-    pbApply->setObjectName("pbApply");
+    pbCancel->setObjectName("cancel");
+    pbApply = new QPushButton(tr("Apply"), this);
+    pbApply->setObjectName("apply");
+    pbApply->setEnabled(false);
 
     blButtonBox->addWidget(pbHelp);
     blButtonBox->addStretch(1);
@@ -117,13 +118,10 @@ SettingsWidget::SettingsWidget(QWidget *parent)
     layoutMain->addWidget(separator);
     layoutMain->addLayout(blButtonBox);
 
-    connect(tabs, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
-        this, SLOT(onTabChanged(QListWidgetItem*, QListWidgetItem*)));
-
     connect(accountWidget, SIGNAL(logout()), this, SIGNAL(logout()));
 
-    connect(&Settings::instance(), SIGNAL(gotDirty()),
-        this, SLOT(onSettingsGotDirty()));
+    connect(&Settings::instance(), SIGNAL(dirtyStateChanged(bool)),
+        this, SLOT(onSettingsDirtyChanged(bool)));
 
     QMetaObject::connectSlotsByName(this);
 }
@@ -141,6 +139,7 @@ void SettingsWidget::resizeEvent(QResizeEvent *event)
 void SettingsWidget::setupListView()
 {
     tabs = new QListWidget(this);
+    tabs->setObjectName("tabs");
     tabs->setFlow(QListView::LeftToRight);
     tabs->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     tabs->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -149,8 +148,6 @@ void SettingsWidget::setupListView()
 
     tabs->setItemDelegate(new Delegate(this));
 
-//    new QListWidgetItem(QIcon(":/general.png"),
-//        tr("General"), tabs, SETTINGS_PAGE_GENERAL);
     tabs->setCurrentItem(new QListWidgetItem(QIcon(":/account.png"),
         tr("Account"), tabs, SETTINGS_PAGE_ACCOUNT));
     new QListWidgetItem(QIcon(":/connection.png"),
@@ -163,32 +160,41 @@ void SettingsWidget::setupListView()
     
 }
 
-void SettingsWidget::onTabChanged(QListWidgetItem *current,
-                                  QListWidgetItem *previous)
+void SettingsWidget::on_tabs_currentItemChanged(QListWidgetItem *current,
+                                                QListWidgetItem *previous)
 {
     stackedWidget->setCurrentIndex(current->type() - 1);
 }
 
-void SettingsWidget::onSettingsGotDirty()
+void SettingsWidget::onSettingsDirtyChanged(bool isDirty)
 {
-
+    pbApply->setEnabled(isDirty);
 }
 
-void SettingsWidget::on_pbOK_clicked(bool checked)
+void SettingsWidget::on_help_clicked(bool checked)
 {
     Q_UNUSED(checked)
-
     close();
 }
 
-void SettingsWidget::accept()
+void SettingsWidget::on_OK_clicked(bool checked)
 {
+    Q_UNUSED(checked)
+    Settings::instance().apply();
     close();
 }
 
-void SettingsWidget::reject()
+void SettingsWidget::on_cancel_clicked(bool checked)
 {
+    Q_UNUSED(checked)
+    Settings::instance().cancel();
     close();
+}
+
+void SettingsWidget::on_apply_clicked(bool checked)
+{
+    Q_UNUSED(checked)
+    Settings::instance().apply();
 }
 
 Delegate::Delegate(QObject *parent)

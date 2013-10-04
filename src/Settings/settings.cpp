@@ -1,21 +1,45 @@
 #include "settings.h"
+#include "proxySettings.h"
+#include "Util/AppStrings.h"
+#include "QsLog/QsLog.h"
 
+#include <QtCore/QMetaType>
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDir>
 #include <QtCore/QStandardPaths>
+#include <QtCore/QLocale>
 
-static const QString sFolder("folder");
+const QString Settings::email("email");
+const QString Settings::password("password");
+const QString Settings::folderPath("folderPath");
+const QString Settings::desktopNotifications("desktopNotifications");
+const QString Settings::autostart("autostart");
+const QString Settings::language("language");
+const QString Settings::limitDownload("limitDownload");
+const QString Settings::limitUpload("limitUpload");
+const QString Settings::downloadSpeed("downloadSpeed");
+const QString Settings::uploadSpeed("uploadSpeed");
+const QString Settings::proxyUsage("proxyUsage");
+const QString Settings::proxyCustomSettings("proxySettings");
 
-static const QString sEmail("email");
-static const QString sPassword("password");
-
-static const QString sAutostart("autostart");
-static const QString sDesktopNotifications("desktopNotifications");
+#define DEFAULT_DOWNLOAD_SPEED 50
+#define DEFAULT_UPLOAD_SPEED 50
 
 Settings::Settings(QObject *parent)
     : QObject(parent)
 {
+    qRegisterMetaType<ProxyUsage>("ProxyUsage");
+    qRegisterMetaTypeStreamOperators<ProxyUsage>("ProxyUsage");
+    qRegisterMetaType<ProxySettings>("ProxySettings");
+    qRegisterMetaTypeStreamOperators<ProxySettings>("ProxySettings");
+
     settings = new QSettings(this);
+
+#ifdef Q_OS_MAC
+    applyImmediately = true
+#else
+    applyImmediately = false;
+#endif
 }
 
 Settings::~Settings()
@@ -28,79 +52,166 @@ Settings& Settings::instance()
     return settings;
 }
 
-QString Settings::folder() const
+QVariant Settings::get(const QString& settingName) const
 {
-    return settings->value(sFolder, defaultFolderPath()).toString();
-}
-
-void Settings::setFolder(const QString& folderPath)
-{
-    if (settings->contains(sFolder)
-        && settings->value(sFolder).toString() == folderPath)
-        return;
-
-    settings->setValue(sFolder, folderPath);
-    emit folderChanged(folderPath);
-}
-
-bool Settings::autostart() const
-{
+    if (settingName == autostart)
+    {
 #ifdef Q_OS_WIN
-    return WindowsAutoexec::get();
+        return WindowsAutoexec::get();
 #endif
 
 #ifdef Q_OS_MACX
-    return false;
+        return false;
 #endif
+    }
+    
+    QLOG_DEBUG() << "getting setting value: " << settingName;
+    if (settingName == proxyUsage)
+    {
+        QLOG_DEBUG() << "obtaining proxyUsage...";
+        if (settings->contains(settingName))
+        {
+            QLOG_DEBUG() << "we have it: " << settings->value(settingName).toInt();
+            QLOG_DEBUG() << "returning: " << settings->value(settingName);
+            return settings->value(settingName);
+        }
+        else
+        {
+            QLOG_DEBUG() << "we DON'T have it";
+        }
+    }
+
+    return settings->value(settingName, defaultSettingValue(settingName));
 }
 
-void Settings::setAutostart(bool isOn)
+void Settings::set(const QString& settingName, QVariant value, Kind kind)
 {
+    if (applyImmediately || kind == RealSetting)
+    {
+        if (settingName == autostart)
+        {
 #ifdef Q_OS_WIN
-    if (autostart() == isOn)
-        return;
-
-    WindowsAutoexec::set(isOn);
-    emit autostartChanged(isOn);        
+            if (WindowsAutoexec::get() != value.toBool())
+                WindowsAutoexec::set(value.toBool());
+            
+            return;
+#else
+            return;
 #endif
+        }
+        
+        QVariant oldValue;
 
-#ifdef Q_OS_MACX
-    return false;
-#endif    
+        QLOG_DEBUG() << "Real " << settingName << ". Value: " << value.toInt();
+
+        if (settings->contains(settingName))
+        {
+            oldValue = settings->value(settingName);
+
+            QLOG_DEBUG() << "OLD value :"<< oldValue.toInt();
+
+            if (oldValue == value)
+                return;
+        }
+
+        settings->setValue(settingName, value);
+        emit settingChanged(settingName, oldValue, value);
+    }
+    else
+    {
+        QLOG_DEBUG() << "Candiate " << settingName << ". Value: " << value.toInt();
+        candidateSettings.insert(settingName, value);
+        emit dirtyStateChanged(true);
+    }
 }
 
-bool Settings::desktopNotifications() const
+QList<int> Settings::supportedLanguages()
 {
-    return settings->value(sDesktopNotifications, true).toBool();
+    QList<int> langs;
+    langs << QLocale::English << QLocale::Russian;
+    return langs;
 }
-
-void Settings::setDesktopNotifications(bool isOn)
-{
-    if (settings->contains(sDesktopNotifications)
-        && settings->value(sDesktopNotifications).toBool() == isOn)
-        return;
-
-    settings->setValue(sDesktopNotifications, isOn);
-    emit desktopNotificationsChanged(isOn);
-}
-
-#ifndef Q_OS_MACX
 
 void Settings::apply()
 {
+    if (applyImmediately)
+        return;
 
+    if (!candidateSettings.size())
+        return;
+
+    QMapIterator<QString, QVariant> i(candidateSettings);
+    while (i.hasNext()) {
+        i.next();
+        set(i.key(), i.value(), RealSetting);        
+    }
+
+    candidateSettings.clear();
+    emit dirtyStateChanged(false);
 }
 
-#endif
-
-QString Settings::defaultFolderPath() const
+void Settings::cancel()
 {
-    QString homePath =
-        QStandardPaths::standardLocations(QStandardPaths::HomeLocation).at(0);
+    if (applyImmediately)
+        return;
 
-    return QString("%1/%2").arg(homePath).arg("Drive");
+    candidateSettings.clear();
+    emit dirtyStateChanged(false);
 }
 
+QVariant Settings::defaultSettingValue(const QString& settingName) const
+{
+    if (settingName == folderPath)
+    {
+        QString homePath = QStandardPaths::
+            standardLocations(QStandardPaths::HomeLocation).at(0);
+
+        return QString("%1/%2").arg(homePath).arg(Strings::appNameEn);
+    }
+
+    if (settingName == desktopNotifications)
+        return true;
+
+    if (settingName == email)
+        return QString();
+
+    if (settingName == password)
+        return QString();
+
+    if (settingName == language)
+        return QLocale::English;
+
+    if (settingName == limitDownload)
+        return false;
+
+    if (settingName == limitUpload)
+        return false;
+    
+    if (settingName == downloadSpeed)
+        return DEFAULT_DOWNLOAD_SPEED;
+
+    if (settingName == uploadSpeed)
+        return DEFAULT_UPLOAD_SPEED;
+
+    if (settingName == proxyUsage)
+        return ProxyUsage::NoProxy;   
+
+
+    if (settingName == proxyCustomSettings)
+    {
+        ProxySettings proxySettings;
+        proxySettings.kind = ProxySettings::HttpServer;
+        proxySettings.server = QString();
+        proxySettings.port = QString();
+        proxySettings.loginRequired = false;
+        proxySettings.username = QString();
+        proxySettings.password = QString();
+        return QVariant::fromValue(proxySettings);
+    }
+
+    QLOG_DEBUG() << "Setting" << settingName << "has no default value.";
+    return QVariant();
+}
 
 #ifdef Q_OS_WIN
 

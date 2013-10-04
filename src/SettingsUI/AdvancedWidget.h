@@ -4,6 +4,8 @@
 #include <QtWidgets/QFrame>
 
 class QLineEdit;
+class QCheckBox;
+class QComboBox;
 
 class AdvancedWidget : public QFrame
 {
@@ -12,21 +14,19 @@ public:
     AdvancedWidget(QWidget *parent = 0);
 
 private slots:
-    void on_pbMove_clicked(bool checked);
-
-};
-
-class AdvancedWidgetV2 : public QFrame
-{
-    Q_OBJECT
-public:
-    AdvancedWidgetV2(QWidget *parent = 0);
-
-private slots:
-    void on_pbMove_clicked(bool checked);
+    void on_desktopNotifications_toggled(bool checked);
+    void on_moveFolder_clicked(bool checked);
+    void on_folderPath_textChanged(const QString &text);
+    void on_autostart_toggled(bool checked);
+    void on_language_currentIndexChanged(int index);
 
 private:
-    QLineEdit *leLocation;
+    void setFromSettings();
+
+    QLineEdit *leFolderPath;
+    QCheckBox *cNotifications;
+    QCheckBox *cAutostart;
+    QComboBox *cbLanguage;
 
 };
 

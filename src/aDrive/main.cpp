@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
         logger.addDestination(debugDestination);
         logger.addDestination(fileDestination);
 
-        QLOG_INFO() << "Started";
+        QLOG_TRACE() << "Started";
         
         MainWindow w;
         return app.exec();
