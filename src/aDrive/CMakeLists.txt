@@ -56,6 +56,7 @@ target_link_libraries(${PROJECT_NAME}
     AnimatedSystemTrayIcon
     Settings
     SettingsUI
+    Network
     LoginUI
     QsLog
 )

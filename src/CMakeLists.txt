@@ -34,8 +34,7 @@ add_subdirectory("LoginUI")
 
 add_subdirectory("SettingsUI")
 
-# connection controller detects states of Internet connection
-add_subdirectory("connection_controller")
+add_subdirectory("Network")
 
 # The desktop app
 add_subdirectory("aDrive")
