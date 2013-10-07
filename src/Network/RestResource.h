@@ -46,9 +46,11 @@ public:
         bool isCanceled;
     };
 
+    typedef QSharedPointer<Request> RequestRef;
+
     struct Reply
     {
-        Reply(const RestResourceRequestRef& restResourceRequest
+        Reply(const RequestRef& restResourceRequest
             , QNetworkReply* reply);
 
         Reply(const RestResourceRef& restResource
@@ -62,7 +64,6 @@ public:
         QNetworkReply* reply;
     };
 
-    typedef QSharedPointer<Request> RequestRef;
     typedef QSharedPointer<Reply> ReplyRef;
 
 public:

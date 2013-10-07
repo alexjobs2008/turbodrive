@@ -45,8 +45,10 @@ void RestResource::requestFinished(const ReplyRef& requestReply, bool& authentic
     }
 
     int status = requestReply->reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-    if (status == 403)
+    
+    if (status == 403 || status == 401)
     {
+        QLOG_TRACE() << "Code" << status << ": authorization required";
         authenticationRequired = true;
         return;
     }
@@ -162,14 +164,3 @@ void RestResource::cancelAll() const
 {
     RestDispatcher::instance().cancelAll(self());
 }
-
-// const RestResource::HeaderList& RestResource::protoHeaders()
-// {
-//     static HeaderList sHeaders;
-//     if (sHeaders.isEmpty())
-//     {
-//         sHeaders.append(HeaderPair(kAcceptHeader, "application/x-protobuf"));
-//         sHeaders.append(HeaderPair(kContentTypeHeader, "application/x-protobuf"));
-//     }
-//     return sHeaders;
-// }
