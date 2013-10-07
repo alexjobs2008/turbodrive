@@ -27,13 +27,10 @@ add_definitions(-DLOCAL_SERVER_NAME="AssistentDriveSA")
 add_subdirectory("SingleApp")
 
 add_subdirectory("Util")
-
+add_subdirectory("UtilUI")
 add_subdirectory("Settings")
-
-add_subdirectory("LoginUI")
-
 add_subdirectory("SettingsUI")
-
+add_subdirectory("LoginUI")
 add_subdirectory("Network")
 
 # The desktop app

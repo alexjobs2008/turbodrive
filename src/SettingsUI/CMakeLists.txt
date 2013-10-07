@@ -15,6 +15,7 @@ set(HEADERS
     ConnectionWidget.h
     AdvancedWidget.h
     AboutWidget.h
+    SelectiveSyncDialog.h
 )
 
 set(SOURCES
@@ -23,6 +24,7 @@ set(SOURCES
     ConnectionWidget.cpp
     AdvancedWidget.cpp
     AboutWidget.cpp
+    SelectiveSyncDialog.cpp
 )
 
 set(QRC_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/res/settingsUI.qrc)
@@ -37,6 +39,7 @@ add_library(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${MOCED_RESOURCES})
 
 target_link_libraries(${PROJECT_NAME}
     Settings
+    UtilUI
 )
 
 qt5_use_modules(${PROJECT_NAME}
