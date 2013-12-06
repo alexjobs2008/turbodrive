@@ -12,14 +12,22 @@ class QStyledItemDelegate;
 class QLabel;
 class QPushButton;
 
+namespace Drive
+{
+
+struct ProfileData;
+class AccountWidget;
 
 class SettingsWidget : public QFrame
 {
     Q_OBJECT
 public:
-    SettingsWidget(QWidget *parent = 0);
-    ~SettingsWidget();
+    
+    static SettingsWidget& instance();
 
+public slots:
+    void onProfileDataUpdated(const ProfileData& profileData);
+    
 signals:
     void openFolder();
     void logout();
@@ -30,7 +38,7 @@ protected:
 private slots:
     void on_tabs_currentItemChanged(QListWidgetItem*, QListWidgetItem*);
 
-    void on_help_clicked(bool checked);
+    void on_help_linkActivated(const QString& link);
     void on_OK_clicked(bool checked);
     void on_cancel_clicked(bool checked);
     void on_apply_clicked(bool checked);
@@ -38,12 +46,20 @@ private slots:
     void onSettingsDirtyChanged(bool isDirty);
 
 private:
+    Q_DISABLE_COPY(SettingsWidget)
+    SettingsWidget(QWidget *parent = 0);
+    ~SettingsWidget();
+
     void setupListView();
+
+    static const QString linkHelp;
 
     QListWidget* tabs;
     QStackedWidget *stackedWidget;
 
     QPushButton *pbApply;
+
+    AccountWidget *accountWidget;
 
 };
 
@@ -66,5 +82,6 @@ private:
     QLabel *label;
 };
 
+}
 
 #endif SETTINGS_WIDGET_H

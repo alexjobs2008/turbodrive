@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model:Screen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:model="http://wireframesketcher.com/1.0/model.ecore">
+  <widgets xsi:type="model:Window" id="1" x="77" y="46" text="Assistant.Drive" measuredWidth="400" measuredHeight="300"/>
+  <widgets xsi:type="model:TabbedPane" id="3" x="77" y="75" width="400" height="271" text="Account, Sync Options, Network, About" measuredWidth="400" measuredHeight="271" selection="0">
+    <items x="10" y="0" width="65" height="27" text="Account"/>
+    <items x="75" y="0" width="90" height="27" text="Sync Options"/>
+    <items x="165" y="0" width="65" height="27" text="Network"/>
+    <items x="230" y="0" width="53" height="27" text="About"/>
+    <font/>
+  </widgets>
+  <hRuler/>
+  <vRuler/>
+  <font/>
+</model:Screen>

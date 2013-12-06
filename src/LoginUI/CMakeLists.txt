@@ -10,13 +10,13 @@ set(CMAKE_AUTOMOC ON)
 find_package(Qt5Widgets)
 
 set(HEADERS
-    LoginController.h
     LoginWidget.h
+    FirstSettingsWidget.h
 )
 
 set(SOURCES
-    LoginController.cpp
     LoginWidget.cpp
+    FirstSettingsWidget.cpp
 )
 
 set(QRC_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/res/loginUI.qrc)

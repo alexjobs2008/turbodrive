@@ -7,6 +7,9 @@ class QLineEdit;
 class QCheckBox;
 class QComboBox;
 
+namespace Drive
+{
+
 class AdvancedWidget : public QFrame
 {
     Q_OBJECT
@@ -29,5 +32,7 @@ private:
     QComboBox *cbLanguage;
 
 };
+
+}
 
 #endif ADVANCED_WIDGET_H

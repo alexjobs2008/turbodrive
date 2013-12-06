@@ -11,7 +11,7 @@ class RestService;
 class QUrl;
 class QNetworkReply;
 
-class RestDispatcher : public QObject
+class GeneralRestDispatcher : public QObject
 {
     Q_OBJECT
 public:
@@ -28,7 +28,7 @@ public:
         OperationJustFailed
     };
 
-    static RestDispatcher& instance();
+    static GeneralRestDispatcher& instance();
 
     void request(const RestResource::RequestRef& request);
     void cancelAll();
@@ -37,19 +37,24 @@ public:
     QUrl buildUrl(const QString& serviceName, const QString &path) const;
     QUrl buildUrl(const RestResource* restResource);
 
+    void setAuthToken(const QString& token);
+
 signals:
     void dispatcherAboutToBeAuthorized();
     void dispatcherAuthorized();
     void dispatcherUnauthorized();
-    void dispatcherReconnectFailed(RestDispatcher::ReconnectErrorReason);
+    void dispatcherReconnectFailed(GeneralRestDispatcher::ReconnectErrorReason);
     void proxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*);
 
-private slots:
-    void loadServices();
+protected slots:
+    virtual void loadServices();
+
+private slots:    
     void replyFinished(QNetworkReply* networkReply);
+	void onSslErrors(QNetworkReply *reply, const QList<QSslError> & errors);
 
 private:
-    explicit RestDispatcher(QObject *parent = 0);
+    explicit GeneralRestDispatcher(QObject *parent = 0);
     
     void next();
     void setMode(Mode newMode);

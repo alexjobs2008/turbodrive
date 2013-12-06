@@ -3,26 +3,33 @@
 
 #include <QtWidgets/QLabel>
 
-namespace AuxWidgets
+namespace CommonUI
 {
 
 class LinkLabel : public QLabel
 {
     Q_OBJECT
-    Q_PROPERTY(bool hovered READ getHovered())
+    Q_PROPERTY(QString state READ getStateString())
 
 public:
+    
+    enum State
+    {
+        Normal,
+        Hover
+    };
+    
     LinkLabel(QString text, QString link, QWidget *parent);
 
-    bool getHovered() { return m_hovered; };
+    QString getStateString();
 
 protected:
     bool event(QEvent *e);
     void mousePressEvent(QMouseEvent *event);
 
 private:
-    bool m_hovered;
-    QString m_link;
+    State state;
+    QString link;
 };
 
 
@@ -30,16 +37,17 @@ class ButtonLabel : public QLabel
 {
     Q_OBJECT
     Q_PROPERTY(QString state READ getStateString())
-
+    
+public:
+    
     enum State
     {
-        sNormal,
-        sHovered,
-        sPressed,
-        sDisabled
-    };
-
-public:
+        Normal,
+        Hover,
+        Pressed,
+        Disabled
+    };    
+    
     ButtonLabel(QWidget *parent = 0);
     QString getStateString();
 
@@ -51,7 +59,7 @@ protected:
     void leaveEvent(QEvent *event);
     void changeEvent(QEvent *event);
 
-    State m_state;
+    State state;
 
 signals:
     void doubleClicked();

@@ -4,6 +4,9 @@
 #include <QtCore\QMetaType>
 #include <QtCore\QDataStream>
 
+namespace Drive
+{
+
 enum ProxyUsage
 {
     NoProxy = 0,
@@ -27,13 +30,15 @@ struct ProxySettings
     QString password;
 };
 
-Q_DECLARE_METATYPE(ProxyUsage)
-Q_DECLARE_METATYPE(ProxySettings)
+}
 
-QDataStream &operator<<(QDataStream& out, const ProxyUsage& proxyUsage);
-QDataStream &operator>>(QDataStream& in, ProxyUsage& proxyUsage);
+Q_DECLARE_METATYPE(Drive::ProxyUsage)
+Q_DECLARE_METATYPE(Drive::ProxySettings)
 
-QDataStream &operator<<(QDataStream& out, const ProxySettings& proxySettings);
-QDataStream &operator>>(QDataStream& in, ProxySettings& proxySettings);
+QDataStream &operator<<(QDataStream& out, const Drive::ProxyUsage& proxyUsage);
+QDataStream &operator>>(QDataStream& in, Drive::ProxyUsage& proxyUsage);
+
+QDataStream &operator<<(QDataStream& out, const Drive::ProxySettings& proxySettings);
+QDataStream &operator>>(QDataStream& in, Drive::ProxySettings& proxySettings);
 
 #endif // PROXY_SETTINGS

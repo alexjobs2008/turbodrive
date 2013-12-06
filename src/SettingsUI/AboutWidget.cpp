@@ -5,6 +5,9 @@
 #include <QtWidgets/QLabel>
 #include <QtCore/QCoreApplication>
 
+namespace Drive
+{
+
 AboutWidget::AboutWidget(QWidget *parent)
     : QFrame(parent)
 {
@@ -56,4 +59,6 @@ AboutWidget::AboutWidget(QWidget *parent)
     
     mainLayout->addWidget(pic);
     mainLayout->addWidget(info, 1);
+}
+
 }

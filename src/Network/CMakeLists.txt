@@ -15,7 +15,7 @@ set(HEADERS
     RestNetworkAccessManager.h
     RestDispatcher.h    
     ConnectionController.h
-    AuthService.h
+    SimpleDownloader.h
 )
 
 set(SOURCES
@@ -24,7 +24,7 @@ set(SOURCES
     RestNetworkAccessManager.cpp
     RestDispatcher.cpp
     ConnectionController.cpp
-    AuthService.h
+    SimpleDownloader.cpp
 )
 
 source_group(_h FILES ${HEADERS})

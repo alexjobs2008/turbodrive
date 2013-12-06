@@ -9,8 +9,12 @@
 #include <QtCore/QStandardPaths>
 #include <QtCore/QLocale>
 
+namespace Drive
+{
+
 const QString Settings::email("email");
 const QString Settings::password("password");
+const QString Settings::autoLogin("autoLogin");
 const QString Settings::folderPath("folderPath");
 const QString Settings::desktopNotifications("desktopNotifications");
 const QString Settings::autostart("autostart");
@@ -21,6 +25,7 @@ const QString Settings::downloadSpeed("downloadSpeed");
 const QString Settings::uploadSpeed("uploadSpeed");
 const QString Settings::proxyUsage("proxyUsage");
 const QString Settings::proxyCustomSettings("proxySettings");
+const QString Settings::env("env");
 
 #define DEFAULT_DOWNLOAD_SPEED 50
 #define DEFAULT_UPLOAD_SPEED 50
@@ -152,6 +157,12 @@ void Settings::apply()
 
     candidateSettings.clear();
     emit dirtyStateChanged(false);
+
+    QString folderPath =
+        Settings::instance().get(Settings::folderPath).toString();
+
+    QDir dir;
+    dir.mkpath(folderPath);
 }
 
 void Settings::cancel()
@@ -181,6 +192,9 @@ QVariant Settings::defaultSettingValue(const QString& settingName) const
 
     if (settingName == password)
         return QString();
+
+    if (settingName == autoLogin)
+        return true;    
 
     if (settingName == language)
         return QLocale::English;
@@ -212,6 +226,9 @@ QVariant Settings::defaultSettingValue(const QString& settingName) const
         proxySettings.password = QString();
         return QVariant::fromValue(proxySettings);
     }
+
+    if (settingName == env)
+        return Env::NewAssistentDotBy;
 
     QLOG_DEBUG() << "Setting" << settingName << "has no default value.";
     return QVariant();
@@ -254,6 +271,8 @@ void WindowsAutoexec::set(bool autoexec)
     }
     settings.endGroup();
     settings.endGroup();    
+}
+
 }
 
 #endif // Q_OS_WIN

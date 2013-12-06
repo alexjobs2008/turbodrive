@@ -3,6 +3,9 @@
 
 #include <QtCore/QSettings>
 
+namespace Drive
+{
+
 class Settings : public QObject
 {
     Q_OBJECT
@@ -15,6 +18,7 @@ public:
 
     static const QString email;
     static const QString password;
+    static const QString autoLogin;
     static const QString folderPath;
     static const QString desktopNotifications;    
     static const QString autostart;
@@ -25,11 +29,20 @@ public:
     static const QString uploadSpeed;
     static const QString proxyUsage;
     static const QString proxyCustomSettings;
+    static const QString env;
 
     enum Kind
     {
         RealSetting = 0,
         CandidateSetting
+    };
+
+    enum Env
+    {
+        AssistentDotTh = 0,
+        AssistentDotBy,
+        NewAssistentDotBy,
+		TurbocloudDotRu
     };
 
     static Settings& instance();
@@ -77,6 +90,8 @@ public:
     static bool get();
     static void set(bool autoexec);
 };
+
+}
 
 #endif // Q_OS_WIN
 

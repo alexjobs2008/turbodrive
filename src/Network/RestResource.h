@@ -8,7 +8,7 @@
 
 #include "RestTypedefs.h"
 
-class RestDispatcher;
+class GeneralRestDispatcher;
 
 class RestResource;
 typedef QSharedPointer<RestResource> RestResourceRef;
@@ -35,7 +35,7 @@ public:
             , const QByteArray& data
             , const QList<QPair<QByteArray, QByteArray> >& headers);
         
-        ~Request();
+        //~Request();
 
         RestResourceRef resource;
         Operation operation;
@@ -57,7 +57,7 @@ public:
             , Operation restOperation
             , QNetworkReply* reply);
 
-        ~Reply();
+        //~Reply();
 
         RestResourceRef resource;
         Operation operation;
@@ -73,7 +73,6 @@ public:
     void cancelAll() const;
 
 public:
-    //static const HeaderList& protoHeaders();
     static const QByteArray contentTypeHeader;
     static const QByteArray contentLengthHeader;
     static const QByteArray locationHeader;
@@ -85,13 +84,14 @@ public:
     static const QByteArray eTagHeader;
     static const QByteArray ifNoneMatchHeader;
     static const QByteArray userAgentHeader;
+	static const QByteArray authTokenHeader;
+	static const QByteArray workspaceHeader;
+	static const QByteArray referer;
 
 signals:
     void restOperationFailed(const RestResourceRef& restResource, const QString& errorMessage);
     void restOperationUnknownStatus(const RestResourceRef& restResource, int status);
     void restOperationCancelled(const RestResourceRef& restResource);
-
-public slots:
 
 protected:
     explicit RestResource(QObject *parent = 0);
@@ -106,13 +106,16 @@ protected:
 
     RestResourceRef self() const;
     RequestRef doOperation(int operation // RestResource::Operation
-                                     , const QByteArray& data
-                                     , const HeaderList& headers) const; 
+                           , const QByteArray& data
+                           , const HeaderList& headers) const; 
+
+    static QString getDataFromJson(const QByteArray& data);
+
 protected:
     QString base;
 
 private:
-    friend class RestDispatcher;
+    friend class GeneralRestDispatcher;
     void requestFinished(const ReplyRef& requestReply, bool& authenticationRequired);
     void requestCancelled();
 

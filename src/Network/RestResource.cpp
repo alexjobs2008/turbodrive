@@ -1,11 +1,11 @@
 #include "RestResource.h"
 #include "RestDispatcher.h"
+
 #include "QsLog/QsLog.h"
 
-// #include "util/trace.h"
-// #include "util/util.h"
-
 #include <QtNetwork/QNetworkReply>
+#include <QtCore/QJsonDocument>
+#include <QtCore/QJsonObject>
 
 const QByteArray RestResource::contentTypeHeader   ("Content-Type");
 const QByteArray RestResource::contentLengthHeader ("Content-Length");
@@ -18,16 +18,51 @@ const QByteArray RestResource::authorizationHeader ("Authorization");
 const QByteArray RestResource::eTagHeader          ("ETag");
 const QByteArray RestResource::ifNoneMatchHeader   ("If-None-Match");
 const QByteArray RestResource::userAgentHeader     ("User-Agent");
+const QByteArray RestResource::authTokenHeader     ("X-Sso-Token");
+const QByteArray RestResource::workspaceHeader     ("X-Current-Workspace-Id");
+const QByteArray RestResource::referer             ("Referer");
 
-RestResource::RestResource(QObject *parent) :
-    QObject(parent)
+RestResource::Request::Request(const RestResourceRef& restResource
+                               , Operation operation
+                               , const QString& service
+                               , const QString& path
+                               , const QByteArray& data
+                               , const QList<QPair<QByteArray, QByteArray> >& headers)
+        : resource(restResource)
+        , operation(operation)
+        , service(service)
+        , path(path)
+        , data(data)
+        , headers(headers)
+        , isCanceled(false)
 {
-    //WOOW_TRACE() << "RestResource created.";
+}
+
+RestResource::Reply::Reply(const RequestRef& restResourceRequest
+                           , QNetworkReply* reply)
+     : resource(restResourceRequest->resource)
+     , operation(restResourceRequest->operation)
+     , reply(reply)
+{
+}
+
+RestResource::Reply::Reply(const RestResourceRef& restResource
+                           , Operation restOperation
+                           , QNetworkReply* reply)
+    : resource(restResource)
+    , operation(restOperation)
+    , reply(reply)
+{
+}
+
+
+RestResource::RestResource(QObject *parent)
+	: QObject(parent)
+{
 }
 
 RestResource::~RestResource()
 {
-    //WOOW_TRACE() << "RestResource destroyed.";
 }
 
 RestResourceRef RestResource::self() const
@@ -45,13 +80,19 @@ void RestResource::requestFinished(const ReplyRef& requestReply, bool& authentic
     }
 
     int status = requestReply->reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+
+	if (status == 0 || status >= 300) // log everything related to client/server errors and redirections
+	{
+		QLOG_TRACE() << requestReply->reply->request().url().toString()
+			<< status << requestReply->reply->errorString();
+	}
     
-    if (status == 403 || status == 401)
-    {
-        QLOG_TRACE() << "Code" << status << ": authorization required";
-        authenticationRequired = true;
-        return;
-    }
+// 	if (status == 403 || status == 401)
+//     {
+//         QLOG_TRACE() << "Code" << status << ": authorization required";
+//         authenticationRequired = true;
+//         return;
+//     }
 
     bool processed = false;
 
@@ -93,13 +134,6 @@ void RestResource::requestFinished(const ReplyRef& requestReply, bool& authentic
             emit restOperationUnknownStatus(self(), status);
         }
     }
-    else
-    {
-        if(status >= 400) //log everything related to client/server errors
-        {
-            //BACKEND_ERROR()<<requestReply->_reply->request().url().toString()<<  status<<  requestReply->_reply->errorString();
-        }
-    }
 }
 
 void RestResource::requestCancelled()
@@ -116,8 +150,19 @@ QString RestResource::path() const
 RestResource::RequestRef RestResource::doOperation(int operation, const QByteArray& data, const HeaderList& headers) const
 {
     RequestRef restRequest(new Request(self(), static_cast<Operation>(operation), service(), path(), data, headers));
-    RestDispatcher::instance().request(restRequest);
+    GeneralRestDispatcher::instance().request(restRequest);
     return restRequest;
+}
+
+QString RestResource::getDataFromJson(const QByteArray& data)
+{
+    QJsonObject jo = QJsonDocument::fromJson(data).object();
+    QString result;
+
+    if (jo.contains("data"))
+        result = jo.value("data").toString();
+
+    return result;
 }
 
 bool RestResource::processGetResponse(int status, const QByteArray& data, const HeaderList& headers)
@@ -162,5 +207,5 @@ bool RestResource::processHeadResponse(int status, const QByteArray& data, const
 
 void RestResource::cancelAll() const
 {
-    RestDispatcher::instance().cancelAll(self());
+    GeneralRestDispatcher::instance().cancelAll(self());
 }

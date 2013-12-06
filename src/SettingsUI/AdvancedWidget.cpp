@@ -12,7 +12,10 @@
 #include <QtWidgets/QCheckBox>
 
 #define MIN_ADVANCED_TAB_LABEL_WIDTH 96
-#define ADVANCED_TAB_CONTROL_FIXED_WIDTH 204
+#define ADVANCED_TAB_CONTROL_FIXED_WIDTH 236
+
+namespace Drive
+{
 
 AdvancedWidget::AdvancedWidget(QWidget *parent)
     : QFrame(parent)
@@ -159,4 +162,6 @@ void AdvancedWidget::on_language_currentIndexChanged(int index)
 {
     Settings::instance().
         set(Settings::language, cbLanguage->itemData(index).toInt());
+}
+
 }

@@ -10,11 +10,18 @@ set(CMAKE_AUTOMOC ON)
 find_package(Qt5Widgets)
 
 set(HEADERS
-    extralabels.h
+    StylesheetReader.h
+    ExtraLabels.h
+    AuxWidgets.h
+    PixmapAnimation.h
+    SpinnerWidget.h
 )
 
 set(SOURCES
-    extralabels.cpp
+    ExtraLabels.cpp
+    AuxWidgets.cpp
+    PixmapAnimation.cpp
+    SpinnerWidget.cpp
 )
 
 source_group(_h FILES ${HEADERS})

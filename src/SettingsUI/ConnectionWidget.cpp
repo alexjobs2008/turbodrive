@@ -15,6 +15,9 @@
 
 #define MIN_CONNECTION_TAB_LABEL_WIDTH 96
 
+namespace Drive
+{
+
 ConnectionWidget::ConnectionWidget(QWidget *parent)
     : QFrame(parent)
 {
@@ -388,3 +391,4 @@ void ProxySettingsDialog::on_cProxyAuthRequired_toggled(bool checked)
     passwordWidget->setEnabled(checked);
 }
 
+}

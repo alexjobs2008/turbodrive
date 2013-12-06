@@ -11,8 +11,11 @@ class QBoxLayout;
 class QComboBox;
 class QCheckBox;
 class QPushButton;
-struct ProxySettings;
 
+namespace Drive
+{
+
+struct ProxySettings;
 
 class ConnectionWidget : public QFrame
 {
@@ -80,6 +83,8 @@ private:
     QLineEdit *leProxyUsername;
     QLineEdit *leProxyPassword;
 };
+
+}
 
 #endif CONNECTION_WIDGET_H
 

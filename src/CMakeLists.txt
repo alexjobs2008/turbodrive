@@ -28,10 +28,15 @@ add_subdirectory("SingleApp")
 
 add_subdirectory("Util")
 add_subdirectory("UtilUI")
+
+add_subdirectory("rtCSS")
+
 add_subdirectory("Settings")
 add_subdirectory("SettingsUI")
 add_subdirectory("LoginUI")
 add_subdirectory("Network")
+add_subdirectory("APIClient")
+add_subdirectory("Events")
 
 # The desktop app
-add_subdirectory("aDrive")
+add_subdirectory("Application")

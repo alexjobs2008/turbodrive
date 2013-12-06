@@ -4,20 +4,23 @@
 #include "Settings/settings.h"
 #include "QsLog/QsLog.h"
 
+#include <QtCore/qglobal.h>
 #include <QtCore/QUrl>
+#include <QtCore/QCoreApplication>
 #include <QtNetwork/QNetworkRequest>
 #include <QtNetwork/QNetworkReply>
-#include <QtCore/qglobal.h>
-#include <QtCore/QCoreApplication>
+#include <QtNetwork/QSslError>
 
 
-RestDispatcher& RestDispatcher::instance()
+using namespace Drive;
+
+GeneralRestDispatcher& GeneralRestDispatcher::instance()
 {
-    static RestDispatcher restDispatcher;
+    static GeneralRestDispatcher restDispatcher;
     return restDispatcher;
 }
 
-RestDispatcher::RestDispatcher(QObject *parent)
+GeneralRestDispatcher::GeneralRestDispatcher(QObject *parent)
     : QObject(parent)
     , mode(Mode::Unauthorized)
     , networkAccessManager(new RestNetworkAccessManager(this))
@@ -25,8 +28,11 @@ RestDispatcher::RestDispatcher(QObject *parent)
     //_authenticationHelper(new RestAuthenticationHelper(this)),
     //_mode(Unknown)
 {
-    connect(networkAccessManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
-    connect(networkAccessManager, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), SLOT(onSslErrors(QNetworkReply*,const QList<QSslError>&)));
+    connect(networkAccessManager, SIGNAL(finished(QNetworkReply*)),
+		this, SLOT(replyFinished(QNetworkReply*)));
+    connect(networkAccessManager, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)),
+		this, SLOT(onSslErrors(QNetworkReply*,const QList<QSslError>&)));
+
     //connect(networkAccessManager, SIGNAL(proxyAuthenticationRequired(const QNetworkProxy&,QAuthenticator*)), this, SIGNAL(proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)));
 
     //connect(_authenticationHelper, SIGNAL(reconnectSucceded()), this, SLOT(onDispatcherAuthorized()));
@@ -35,7 +41,7 @@ RestDispatcher::RestDispatcher(QObject *parent)
     loadServices();
 }
 
-void RestDispatcher::loadServices()
+void GeneralRestDispatcher::loadServices()
 {
     cancelAll();
 
@@ -46,28 +52,52 @@ void RestDispatcher::loadServices()
 
     QLOG_TRACE() << "Environment:" << currentEnv;
     
-    switch(currentEnv)
-    {
-    case Settings::Env::Dev: 
-        services.insert("AuthService", new RestService("AuthService", "https://files.assistent.th", this));
+	switch(currentEnv)
+	{
+	case Settings::Env::AssistentDotTh:
+		services.insert("AuthService", new RestService("AuthService", "https://auth.assistent.th", this));
+        services.insert("DashboardService", new RestService("DashboardService", "http://dashboard.assistent.th", this));
+		services.insert("ProfileService", new RestService("ProfileService", "http://api.assistent.th", this));
+		services.insert("FilesService", new RestService("FilesService", "http://files.assistent.th", this));
+		services.insert("ContentService", new RestService("ContentService", "http://files.assistent.th", this));
+		services.insert("SharingService", new RestService("SharingService", "http://files.assistent.th", this));
+		break;
+	case Settings::Env::AssistentDotBy: 
+		services.insert("AuthService", new RestService("AuthService", "https://auth.assistent.by", this));
+        services.insert("DashboardService", new RestService("DashboardService", "https://dashboard.assistent.by", this));
+		services.insert("ProfileService", new RestService("ProfileService", "https://api.assistent.by", this));
+		services.insert("FilesService", new RestService("FilesService", "https://files.assistent.by", this));
+		services.insert("ContentService", new RestService("ContentService", "https://files.assistent.by", this));
+		services.insert("SharingService", new RestService("SharingService", "https://files.assistent.by", this));
+		break;
+    case Settings::Env::NewAssistentDotBy:
+        services.insert("AuthService", new RestService("AuthService", "http://auth.new.assistent.by", this));
+        services.insert("DashboardService", new RestService("DashboardService", "http://new.assistent.by", this));
+        services.insert("ProfileService", new RestService("ProfileService", "http://api.new.assistent.by", this));
+        services.insert("FilesService", new RestService("FilesService", "http://disk.new.assistent.by", this));
+        services.insert("ContentService", new RestService("ContentService", "http://disk.new.assistent.by", this));
+        services.insert("SharingService", new RestService("SharingService", "http://disk.new.assistent.by", this));
+		services.insert("NotificationService", new RestService("NotificationService", "http://rpl.disk.new.assistent.by", this));
         break;
-    case Settings::Env::Master:
-        services.insert("AuthService", new RestService("AuthService", "https://master.files.assistent.th", this));
-        break;
-    case Settings::Env::Release11:
-        services.insert("AuthService", new RestService("AuthService", "https://release-1-1.files.assistent.th", this));
-        break;
-    default:
-        Q_ASSERT(false);
-        break;
-    }
+	case Settings::Env::TurbocloudDotRu: 
+		services.insert("AuthService", new RestService("AuthService", "https://auth.turbocloud.ru", this));
+        services.insert("DashboardService", new RestService("DashboardService", "https://dashboard.turbocloud.ru", this));
+		services.insert("ProfileService", new RestService("ProfileService", "https://api.turbocloud.ru", this));
+		services.insert("FilesService", new RestService("FilesService", "https://files.turbocloud.ru", this));
+		services.insert("ContentService", new RestService("ContentService", "https://files.turbocloud.ru", this));
+		services.insert("SharingService", new RestService("SharingService", "https://files.turbocloud.ru", this));
+		break;
+	default:
+		Q_ASSERT(false);
+		break;
+	}
 
     // _services.insert("", new RestService(this, "", ""));
 
     authTimestamp = QDateTime();
 }
 
-void RestDispatcher::cancelAll()
+void GeneralRestDispatcher::cancelAll()
 {
     QList<RestService*> servicesList = services.values();
     foreach(RestService* service, servicesList)
@@ -80,7 +110,7 @@ void RestDispatcher::cancelAll()
     networkAccessManager->abortAllRequests();
 }
 
-void RestDispatcher::cancelAll(const RestResourceRef& restResource)
+void GeneralRestDispatcher::cancelAll(const RestResourceRef& restResource)
 {
     QList<RestService*> servicesList = services.values();
     foreach(RestService* service, servicesList)
@@ -91,7 +121,7 @@ void RestDispatcher::cancelAll(const RestResourceRef& restResource)
     }
 }
 
-void RestDispatcher::cancelCurrent(RestService *service,
+void GeneralRestDispatcher::cancelCurrent(RestService *service,
                                    const RestResourceRef *restResource)
 {
     if (!service->currentRequest.isNull())
@@ -108,7 +138,7 @@ void RestDispatcher::cancelCurrent(RestService *service,
         }
 }
 
-void RestDispatcher::cancelAll(QQueue<RestResource::RequestRef>& queue,
+void GeneralRestDispatcher::cancelAll(QQueue<RestResource::RequestRef>& queue,
                                const RestResourceRef* restResource)
 {
     if (!restResource)
@@ -136,7 +166,7 @@ void RestDispatcher::cancelAll(QQueue<RestResource::RequestRef>& queue,
 }
 
 
-void RestDispatcher::request(const RestResource::RequestRef &restResourceRequest)
+void GeneralRestDispatcher::request(const RestResource::RequestRef &restResourceRequest)
 {
     QLOG_TRACE() << restResourceRequest->path;
 
@@ -162,7 +192,7 @@ void RestDispatcher::request(const RestResource::RequestRef &restResourceRequest
     next();
 }
 
-void RestDispatcher::next()
+void GeneralRestDispatcher::next()
 {
     QList<RestService*> serviceList = services.values();
     foreach(RestService* service, serviceList)
@@ -203,7 +233,7 @@ void RestDispatcher::next()
     }
 }
 
-void RestDispatcher::setMode(Mode newMode)
+void GeneralRestDispatcher::setMode(Mode newMode)
 {
     if (mode == newMode)
         return;
@@ -230,7 +260,7 @@ void RestDispatcher::setMode(Mode newMode)
 }
 
 
-QUrl RestDispatcher::buildUrl(const QString& serviceName, const QString &path) const
+QUrl GeneralRestDispatcher::buildUrl(const QString& serviceName, const QString &path) const
 {
     if(serviceName.isEmpty())
     {
@@ -253,16 +283,27 @@ QUrl RestDispatcher::buildUrl(const QString& serviceName, const QString &path) c
     pos = 0;
     while(pos < path.length() && path.at(pos) == '/') ++pos;
 
-    url.setPath(basePath + "/" + QString(path).remove(0, pos));
+    QLOG_TRACE() << "Built URL path: " << QString(path).remove(0, pos);
+	
+	url.setPath(basePath + "/" + QString(path).remove(0, pos));
+
+	QLOG_TRACE() << "Built URL: " << url.toString();
+
     return url;
 }
 
-QUrl RestDispatcher::buildUrl(const RestResource* restResource)
+QUrl GeneralRestDispatcher::buildUrl(const RestResource* restResource)
 {
     return buildUrl(restResource->service(), restResource->path());
 }
 
-QNetworkRequest RestDispatcher::createRequest(RestService* service) const
+void GeneralRestDispatcher::setAuthToken(const QString& token)
+{
+    authToken = token;
+    setMode(Authorized);
+}
+
+QNetworkRequest GeneralRestDispatcher::createRequest(RestService* service) const
 {
     QNetworkRequest request(buildUrl(service->currentRequest->service,
         service->currentRequest->path));
@@ -271,13 +312,12 @@ QNetworkRequest RestDispatcher::createRequest(RestService* service) const
     {
         request.setRawHeader(header.first, header.second);
     }
+
     if (!authToken.isEmpty())
     {
-        request.setRawHeader(RestResource::cookieHeader,
-            QString("PHPSESSID={%1}; path=/; domain=files.assistent.dev")
-            .arg(authToken).toUtf8());
-        
+        request.setRawHeader(RestResource::authTokenHeader, authToken.toUtf8());        
     }
+
     request.setRawHeader(RestResource::userAgentHeader,
         QString("Desktop client %1").arg(QCoreApplication::applicationVersion()).toUtf8());
 
@@ -285,10 +325,9 @@ QNetworkRequest RestDispatcher::createRequest(RestService* service) const
 
     QLOG_TRACE() << "Created request " << request.url();
     return request;
-
 }
 
-void RestDispatcher::doOperation(RestResource::Operation operation,
+void GeneralRestDispatcher::doOperation(RestResource::Operation operation,
                                  RestService* service)
 {
     switch(operation)
@@ -319,7 +358,7 @@ void RestDispatcher::doOperation(RestResource::Operation operation,
 
 }
 
-void RestDispatcher::replyFinished(QNetworkReply* networkReply)
+void GeneralRestDispatcher::replyFinished(QNetworkReply* networkReply)
 {
     QLOG_TRACE() << "replyFinished. URL: " << networkReply->url().toString();
     if (networkReply->error() != QNetworkReply::NoError)
@@ -385,4 +424,15 @@ void RestDispatcher::replyFinished(QNetworkReply* networkReply)
     
     service->currentRequest.clear();
     next();
+}
+
+void GeneralRestDispatcher::onSslErrors(QNetworkReply *reply, const QList<QSslError> & errors)
+{
+	for (int i = 0; i < errors.size(); i++)
+	{
+		QSslError error = errors.at(i);
+		QLOG_INFO() << "SSL Error: " << error.errorString();
+	}
+
+	reply->ignoreSslErrors();
 }

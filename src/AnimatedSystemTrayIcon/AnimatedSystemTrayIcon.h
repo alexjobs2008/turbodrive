@@ -36,15 +36,15 @@ public:
     static AnimatedSystemTrayIcon& instance();
 	~AnimatedSystemTrayIcon();
 
-	void appendState(State *state);
+	void appendState(State *state); // takes ownership of state
 	bool setState(const QString &stateName);
 
 protected:
-	virtual void timerEvent(QTimerEvent * event);
+	explicit AnimatedSystemTrayIcon(QObject *parent = 0);
+    virtual void timerEvent(QTimerEvent * event);
 
 private:
-    Q_DISABLE_COPY(AnimatedSystemTrayIcon)
-    explicit AnimatedSystemTrayIcon(QObject *parent = 0);    
+    Q_DISABLE_COPY(AnimatedSystemTrayIcon)    
 
     QMap<QString, State*> states;
 	State *currentState;

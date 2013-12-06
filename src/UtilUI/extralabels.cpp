@@ -1,15 +1,15 @@
-#include "extralabels.h"
+#include "ExtraLabels.h"
 #include <QtWidgets/QBoxLayout>
 #include <QtCore/QEvent>
 #include <QtGui/QMouseEvent>
 
-namespace AuxWidgets
+namespace CommonUI
 {
 
 LinkLabel::LinkLabel(QString text, QString link, QWidget *parent)
     : QLabel(parent)
-    , m_hovered(false)
-    , m_link(link)
+    , state(Normal)
+    , link(link)
 {
     setAttribute(Qt::WA_Hover);
     setText(text);
@@ -21,15 +21,15 @@ bool LinkLabel::event(QEvent *e)
     {
         if (e->type() == QEvent::HoverEnter)
         {
-            if (text().contains("<a>"))
-                setCursor(Qt::PointingHandCursor);
-            m_hovered = true;
+//            if (text().contains("<a "))
+            setCursor(Qt::PointingHandCursor);
+            state = Hover;
             setStyleSheet(styleSheet());
         }
         if (e->type() == QEvent::HoverLeave)
         {
             setCursor(Qt::ArrowCursor);
-            m_hovered = false;
+            state = Normal;
             setStyleSheet(styleSheet());
         }
     }
@@ -37,24 +37,34 @@ bool LinkLabel::event(QEvent *e)
     return QLabel::event(e);
 }
 
+QString LinkLabel::getStateString()
+{
+    switch (state)
+    {
+    case Hover: return "hover";
+    case Normal:
+    default: return "normal";
+    }
+}
+
 void LinkLabel::mousePressEvent(QMouseEvent *event)
 {
     if ((event->button() == Qt::LeftButton))
     {
-        emit linkActivated(m_link);
+        emit linkActivated(link);
     }
 }
 
 
 ButtonLabel::ButtonLabel(QWidget *parent)
     : QLabel(parent)
-    , m_state(sNormal)
+    , state(State::Normal)
 {
 }
 
 void ButtonLabel::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    if ((m_state != sDisabled)
+    if ((state != Disabled)
         && (event->button() == Qt::LeftButton))
     {
         emit doubleClicked();
@@ -64,10 +74,10 @@ void ButtonLabel::mouseDoubleClickEvent(QMouseEvent *event)
 
 void ButtonLabel::mousePressEvent(QMouseEvent *event)
 {
-    if ((m_state != sDisabled)
+    if ((state != Disabled)
         && (event->button() == Qt::LeftButton))
     {
-        m_state = sPressed;
+        state = Pressed;
         setStyleSheet(styleSheet());
     }
     QLabel::mousePressEvent(event);
@@ -75,17 +85,17 @@ void ButtonLabel::mousePressEvent(QMouseEvent *event)
 
 void ButtonLabel::mouseReleaseEvent(QMouseEvent *event)
 {
-    if ((m_state == sPressed)
+    if ((state == Pressed)
         && (event->button() == Qt::LeftButton)
         && rect().contains(event->pos()))
     {
-        m_state = sHovered;
+        state = Hover;
         setStyleSheet(styleSheet());
         emit clicked();
     }
-    else if (m_state != sDisabled)
+    else if (state != Disabled)
     {
-        m_state = sNormal;
+        state = Normal;
         setStyleSheet(styleSheet());
     }
     QLabel::mouseReleaseEvent(event);
@@ -93,9 +103,9 @@ void ButtonLabel::mouseReleaseEvent(QMouseEvent *event)
 
 void ButtonLabel::enterEvent(QEvent *event)
 {
-    if (m_state != sDisabled)
+    if (state != Disabled)
     {
-        m_state = sHovered;
+        state = Hover;
         setStyleSheet(styleSheet());
     }
     QLabel::enterEvent(event);
@@ -103,9 +113,9 @@ void ButtonLabel::enterEvent(QEvent *event)
 
 void ButtonLabel::leaveEvent(QEvent *event)
 {
-    if (m_state == sHovered)
+    if (state == Hover)
     {
-        m_state = sNormal;
+        state = Normal;
         setStyleSheet(styleSheet());
     }
     QLabel::leaveEvent(event);
@@ -115,7 +125,7 @@ void ButtonLabel::changeEvent(QEvent *event)
 {
     if (event->type() == QEvent::EnabledChange)
     {
-        m_state = isEnabled() ? sNormal : sDisabled;
+        state = isEnabled() ? Normal : Disabled;
         setStyleSheet(styleSheet());
     }
     QLabel::changeEvent(event);
@@ -123,11 +133,11 @@ void ButtonLabel::changeEvent(QEvent *event)
 
 QString ButtonLabel::getStateString()
 {
-    switch (m_state)
+    switch (state)
     {
-        case sHovered: return "hovered";
-        case sPressed: return "pressed";
-        case sDisabled: return "disabled";
+        case Hover: return "hover";
+        case Pressed: return "pressed";
+        case Disabled: return "disabled";
         default: return "normal";
     }
 }

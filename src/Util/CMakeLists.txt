@@ -10,9 +10,14 @@ set(CMAKE_AUTOMOC ON)
 find_package(Qt5Core)
 
 set(HEADERS
-    StylesheetReader.h
     AppStrings.h
+    FileUtils.h
 )
+
+set(SOURCES
+    FileUtils.cpp
+)
+
 
 source_group(_h FILES ${HEADERS})
 source_group(_cpp FILES ${SOURCES})

@@ -6,8 +6,18 @@
         <file>connection.png</file>
         <file>general.png</file>
 
+        <file>help.png</file>
+
         <file>clouds.png</file>
         <file>folder.png</file>
         <file>hline.png</file>
+
+        <file>user.png</file>
+        <file>user2x.png</file>
+        <file>folder-mac-256.png</file>
+        <file>folder-mac-128.png</file>
+        <file>folder-win-128.png</file>
+
+	<file>SettingsWidget/style-win.css</file>
     </qresource>
 </RCC>

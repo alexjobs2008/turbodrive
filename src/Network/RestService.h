@@ -6,7 +6,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QQueue>
 
-class RestDispatcher;
+class GeneralRestDispatcher;
 
 class RestService : public QObject
 {
@@ -33,7 +33,7 @@ private:
     QQueue<RestResource::RequestRef> authenticatedRequests;
     QQueue<RestResource::RequestRef> unauthenticatedRequests;
 
-    friend class RestDispatcher;
+    friend class GeneralRestDispatcher;
 };
 
 #endif // REST_SERVICE_H

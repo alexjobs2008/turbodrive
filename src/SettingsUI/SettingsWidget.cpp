@@ -1,6 +1,10 @@
 #include "SettingsWidget.h"
+
+#include "APIClient/ApiTypes.h"
 #include "QsLog/QsLog.h"
 #include "Settings/settings.h"
+#include "UtilUI/ExtraLabels.h"
+#include "UtilUI/StyleSheetReader.h"
 
 #include "AccountWidget.h"
 #include "ConnectionWidget.h"
@@ -8,13 +12,16 @@
 #include "AboutWidget.h"
 
 #include <QtCore/qglobal.h>
+#include <QtCore/QCoreApplication>
+#include <QtCore/QStringListModel>
+#include <QtCore/QLocale>
+#include <QtGui/QPainter>
+#include <QtGui/QDesktopServices>
 #include <QtWidgets/QDialogButtonBox>
 #include <QtWidgets/QBoxLayout>
 #include <QtWidgets/QListWidget>
 #include <QtWidgets/QStackedWidget>
 #include <QtWidgets/QPushButton>
-#include <QtCore/QStringListModel>
-#include <QtGui/QPainter>
 #include <QtWidgets/QLabel>
 
 #define SETTINGS_PAGE_GENERAL 0
@@ -23,9 +30,28 @@
 #define SETTINGS_PAGE_ADVANCED 3
 #define SETTINGS_PAGE_ABOUT 4
 
+namespace Drive
+{
+
+const QString SettingsWidget::linkHelp =
+    "http:////assistent.by?client=%1&lang=%2&page=%3";
+
+SettingsWidget& SettingsWidget::instance()
+{
+    static SettingsWidget myself;
+    return myself;
+}
+
+void SettingsWidget::onProfileDataUpdated(const ProfileData& profileData)
+{
+    accountWidget->setProfileData(profileData);
+}
+
 SettingsWidget::SettingsWidget(QWidget *parent)
     : QFrame(parent)
 {
+    QLOG_TRACE() << "creating Settings window";
+    
     Q_INIT_RESOURCE(settingsUI);
 
     // avoid app close on window close
@@ -44,14 +70,6 @@ SettingsWidget::SettingsWidget(QWidget *parent)
     setMinimumWidth(404);
 #endif
 
-//     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
-//         | QDialogButtonBox::Cancel | QDialogButtonBox::Apply);
-// 
-//     buttonBox->setContentsMargins(8, 8, 8, 8);
-// 
-//     connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-//     connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-
     setupListView();
     
     QVBoxLayout *layoutMain = new QVBoxLayout(this);
@@ -65,9 +83,9 @@ SettingsWidget::SettingsWidget(QWidget *parent)
 
     stackedWidget = new QStackedWidget(this);
 
-    AccountWidget *accountWidget = new AccountWidget(this);
+    accountWidget = new AccountWidget(this);
     connect(accountWidget, SIGNAL(openFolder()), this, SIGNAL(openFolder()));
-    
+
     ConnectionWidget *connectionWidget = new ConnectionWidget(this);
     AdvancedWidget *advancedWidget = new AdvancedWidget(this);
     AboutWidget *aboutWidget = new AboutWidget(stackedWidget);
@@ -78,33 +96,31 @@ SettingsWidget::SettingsWidget(QWidget *parent)
     stackedWidget->addWidget(aboutWidget);
 
     QFrame *separator = new QFrame(this);
+    separator->setObjectName("separator");    
 
-    separator->setStyleSheet("QFrame {"
-        "border-image: url(\":/hline.png\") 1 0 1 0;"
-        "border-top: 1px transparent;"
-        "border-bottom: 1px transparent;"
-        "border-left: 0px transparent;"
-        "border-right: 0px transparent;"
-        "margin: 0 6px 0 6px;"
-        "min-height: 1px;"
-        "max-height: 1px;"
-        "};");
-
-    QHBoxLayout *blButtonBox = new QHBoxLayout(this);
+    QFrame *fButtonBox = new QFrame(this);
+    fButtonBox->setObjectName("buttonBox");
+    QHBoxLayout *blButtonBox = new QHBoxLayout(fButtonBox);
     blButtonBox->setContentsMargins(8, 8, 8, 8);
     blButtonBox->setSpacing(8);
 
-    QPushButton *pbHelp = new QPushButton(tr("Help"), this);
-    pbHelp->setObjectName("help");
+    CommonUI::LinkLabel *llHelp =
+        new CommonUI::LinkLabel(tr("Help"), linkHelp, this);
+    llHelp->setObjectName("help");
+    
+    //QPushButton *pbHelp = new QPushButton(textHelp, this);
+    //pbHelp->setObjectName("help");
+
+
     QPushButton *pbOK = new QPushButton(tr("OK"), this);
     pbOK->setObjectName("OK");
     QPushButton *pbCancel = new QPushButton(tr("Cancel"), this);
     pbCancel->setObjectName("cancel");
     pbApply = new QPushButton(tr("Apply"), this);
     pbApply->setObjectName("apply");
-    pbApply->setEnabled(false);
+    pbApply->setEnabled(false);    
 
-    blButtonBox->addWidget(pbHelp);
+    blButtonBox->addWidget(llHelp);
     blButtonBox->addStretch(1);
     blButtonBox->addWidget(pbOK);
     blButtonBox->addWidget(pbCancel);
@@ -116,7 +132,7 @@ SettingsWidget::SettingsWidget(QWidget *parent)
     layoutMain->addWidget(stackedWidget);
     layoutMain->addSpacing(2);
     layoutMain->addWidget(separator);
-    layoutMain->addLayout(blButtonBox);
+    layoutMain->addWidget(fButtonBox);
 
     connect(accountWidget, SIGNAL(logout()), this, SIGNAL(logout()));
 
@@ -124,6 +140,12 @@ SettingsWidget::SettingsWidget(QWidget *parent)
         this, SLOT(onSettingsDirtyChanged(bool)));
 
     QMetaObject::connectSlotsByName(this);
+
+    //CommonUI::StyleSheetReader::setStyleSheetFor(this);
+
+    //QFont f("Segoe UI", 10);
+    QFont f("MS Shell Dlg", 10);
+    setFont(f);
 }
 
 SettingsWidget::~SettingsWidget()
@@ -171,10 +193,14 @@ void SettingsWidget::onSettingsDirtyChanged(bool isDirty)
     pbApply->setEnabled(isDirty);
 }
 
-void SettingsWidget::on_help_clicked(bool checked)
+void SettingsWidget::on_help_linkActivated(const QString& link)
 {
-    Q_UNUSED(checked)
-    close();
+    Q_UNUSED(link)
+    QDesktopServices::openUrl(QString(link)
+        .arg(QCoreApplication::applicationVersion())
+        .arg(QLocale::languageToString((QLocale::Language)
+            Settings::instance().get(Settings::language).toInt()))
+        .arg(stackedWidget->currentIndex()));
 }
 
 void SettingsWidget::on_OK_clicked(bool checked)
@@ -332,5 +358,7 @@ void Delegate::printStyleOptionStates(const QStyleOptionViewItem & option, int i
 
     QLOG_INFO() << "--------------------------------------------------------";
 
+
+}
 
 }

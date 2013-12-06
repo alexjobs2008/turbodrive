@@ -1,0 +1,187 @@
+Drive--LoginWidget {
+    background: url(":/back.png") no-repeat top center;
+    min-width: 450px;
+    max-width: 450px;
+    min-height: 466px;
+    max-height: 466px;
+}
+
+CommonUI--SpinnerWidget {
+    margin: 232px 0 0 0;
+    min-height: 24px;
+    max-height: 24px;
+}
+
+/*QFrame#spinner {
+    border: 3px solid green;
+    margin: 230px 0 0 0;
+
+}*/
+
+QLabel#wait {
+    color: #ddeeff;
+    margin: 0 0 0 8px;
+    font: 9pt "Segoe UI Semibold";
+}
+
+QLabel#substText {
+    color: #dd5555;
+    margin: 0 0 0 8px;
+    font: 10pt "Segoe UI Semibold";
+/*    font-weight: bold;*/
+}
+
+CommonUI--LabeledEdit#username {
+    margin: 16px 0 0 0;
+}
+
+CommonUI--LabeledEdit#password {
+    margin: 12px 0 0 0;
+}
+
+QLabel#usernameLabel, QLabel#passwordLabel {
+    color: #ddeeff;
+    min-width: 110px;
+    font: 10pt "Segoe UI Semibold";
+}
+
+QLabel#usernameLabel:disabled, QLabel#passwordLabel:disabled {
+    color: #aabbcc;
+}
+
+QLineEdit#usernameEdit, QLineEdit#passwordEdit {
+    border-image: url(":/input.png") 5;
+    border-width: 5px;
+    background: transparent;
+
+    color: #444444;
+    min-width: 232px;
+    max-width: 232px;
+    min-height: 24px;
+    font: 10pt "Segoe UI Semibold";
+    margin: 0 0 0 8px;
+}
+
+QLineEdit#usernameEdit:disabled, QLineEdit#passwordEdit:disabled {
+    border-image: url(":/input-disabled.png") 5;
+    border-width: 5px;
+    background: transparent;
+    color: #888888;
+}
+
+CommonUI--LinkLabel#forgot {
+    color: #ddeeff;
+    font: 9pt "Segoe UI Semibold";
+    text-decoration: none;
+    margin: 2px 0 0 6px;
+}
+
+CommonUI--LinkLabel#forgot:disabled {
+    color: #aabbcc;
+}
+
+CommonUI--LinkLabel#forgot[state="hover"] {
+    color: #ddeeff;
+    font: 9pt "Segoe UI Semibold";
+    text-decoration: underline;
+    margin: 2px 0 0 6px;
+}
+
+/* check box */
+
+QCheckBox#rememberPassword {
+    margin: 6px 0 0 117px;
+    font: 9pt "Segoe UI Semibold";
+    color: #ddeeff;
+}
+
+QCheckBox#rememberPassword::indicator:unchecked {
+    image: url(":/chekbox-unchecked.png");
+    margin-top: 0px;
+}
+
+QCheckBox#rememberPassword::indicator:unchecked:disabled {
+    image: url(":/chekbox-unchecked-disabled.png");
+}
+
+QCheckBox#rememberPassword::indicator:checked {
+    image: url(":/chekbox-checked.png");
+    margin-top: 0px;
+}
+
+QCheckBox#rememberPassword::indicator:checked:disabled {
+    image: url(":/chekbox-checked-disabled.png");
+}
+
+QCheckBox#rememberPassword:disabled {
+    color: #aabbcc;
+}
+
+/* sign in button */
+
+QLabel#bottomAligner {
+    min-width: 117px;
+    max-width: 117px;
+}
+
+QPushButton#signIn {
+    border-image: url(":/button-normal.png") 5;
+    border-width: 5px;
+    background: transparent;
+    margin: 8px 0 0 0;
+    font: 10pt "Segoe UI";
+    font-weight: bold;
+    text-decoration: none;
+    color: #002266;
+    padding: 0 16px 3px 16px;
+}
+
+QPushButton#signIn:hover {
+    border-image: url(":/button-hover.png") 5;
+    border-width: 5px;
+    color: #4466aa;
+    padding: 0 16px 3px 16px;
+}
+
+QPushButton#signIn:pressed {
+    border-image: url(":/button-pressed.png") 5;
+    border-width: 5px;
+    padding: 1px 16px 2px 16px;
+}
+
+QPushButton#signIn:disabled {
+    border-image: url(":/button-disabled.png") 5;
+    border-width: 5px;
+    padding: 1px 16px 2px 16px;
+}
+
+QLabel#or {
+    color: #ddeeff;
+    font: 10pt "Segoe UI";
+    text-decoration: none;
+    margin: 5px 0 0 8px;
+}
+
+QLabel#or:disabled {
+    color: #aabbcc;
+}
+
+CommonUI--LinkLabel#signUp {
+    color: #ddeeff;
+    min-width: 64px;
+    font: 10pt "Segoe UI Semibold";
+    text-decoration: none;
+    margin: 5px 0 0 2px;
+}
+
+CommonUI--LinkLabel#signUp[state="hover"] {
+    color: #ddeeff;
+    min-width: 64px;
+    font: 10pt "Segoe UI Semibold";
+    text-decoration: underline;
+    margin: 5px 0 0 2px;
+}
+
+CommonUI--LinkLabel#signUp:disabled {
+    color: #aabbcc;
+}
