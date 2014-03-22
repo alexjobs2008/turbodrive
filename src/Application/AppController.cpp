@@ -35,292 +35,290 @@ namespace Drive
 
 AppController& AppController::instance()
 {
-    static AppController myself;
-    return myself;
+	static AppController myself;
+	return myself;
 }
 
 AppController::AppController(QWidget *parent)
-    : QMainWindow(parent)
-    , currentState(NotAuthorized)
-    , currentAuthToken(QString())
-    , syncer(0)
+	: QMainWindow(parent)
+	, currentState(NotAuthorized)
+	, currentAuthToken(QString())
+	, syncer(0)
 {
-    createActions();
-    createTrayIcon();
-    createSettingsWidget();
+	createActions();
+	createTrayIcon();
+	createSettingsWidget();
 
-    QMetaObject::connectSlotsByName(this);
+	QMetaObject::connectSlotsByName(this);
 
-    TrayIcon::instance().setState(currentState);
+	TrayIcon::instance().setState(currentState);
 
-    LoginController& loginController = LoginController::instance();
-    connect(&loginController, SIGNAL(loginFinished()),
-        this, SLOT(onLoginFinished()));
+	LoginController& loginController = LoginController::instance();
+	connect(&loginController, SIGNAL(loginFinished()),
+		this, SLOT(onLoginFinished()));
 
-    SettingsWidget::instance().hide();
-    LoginController::instance().showLoginFormOrLogin();    
+	SettingsWidget::instance().hide();
+	LoginController::instance().showLoginFormOrLogin();
 }
 
 AppController::~AppController()
 {
-//     if (syncer) delete syncer;
-//     if (localCache) delete localCache;
+//	if (syncer) delete syncer;
+//	if (localCache) delete localCache;
 }
 
 State AppController::state() const
 {
-    return currentState;
+	return currentState;
 }
 
 QString AppController::authToken() const
 {
-    return currentAuthToken;
+	return currentAuthToken;
 }
 
 void AppController::setAuthToken(const QString &token)
 {
-    currentAuthToken = token;
-    GeneralRestDispatcher::instance().setAuthToken(token);
+	currentAuthToken = token;
+	GeneralRestDispatcher::instance().setAuthToken(token);
 }
 
 ProfileData AppController::profileData() const
 {
-    return currentProfileData;
+	return currentProfileData;
 }
 
 void AppController::setProfileData(const ProfileData& data)
 {
-    currentProfileData = data;
-    GeneralRestDispatcher::instance().setWorkspaceId(data.defaultWorkspace().id);
-    emit profileDataUpdated(currentProfileData);
+	currentProfileData = data;
+	GeneralRestDispatcher::instance().setWorkspaceId(data.defaultWorkspace().id);
+	emit profileDataUpdated(currentProfileData);
 }
 
 const QString& AppController::serviceChannel() const
 {
-    return profileData().defaultWorkspace().serviceNotificationChannel();
+	return profileData().defaultWorkspace().serviceNotificationChannel();
 }
 
 
 void AppController::createActions()
 {
-    actionOpenFolder = new QAction(tr("Open Folder"), this);
-    actionOpenFolder->setObjectName("actionOpenFolder");
-    actionOpenFolder->setIcon(QIcon(":/icons/open.png"));
+	actionOpenFolder = new QAction(tr("Open Folder"), this);
+	actionOpenFolder->setObjectName("actionOpenFolder");
+	actionOpenFolder->setIcon(QIcon(":/icons/open.png"));
 
-    actionPause = new QAction(tr("Pause Sync"), this);
-    actionPause->setObjectName("actionPause");
-    actionPause->setIcon(QIcon(":/icons/pause.png"));
+	actionPause = new QAction(tr("Pause Sync"), this);
+	actionPause->setObjectName("actionPause");
+	actionPause->setIcon(QIcon(":/icons/pause.png"));
 
-    actionResume = new QAction(tr("Resume Sync"), this);
-    actionResume->setObjectName("actionResume");
-    actionResume->setIcon(QIcon(":/icons/resume.png"));
+	actionResume = new QAction(tr("Resume Sync"), this);
+	actionResume->setObjectName("actionResume");
+	actionResume->setIcon(QIcon(":/icons/resume.png"));
 
-    actionPreferences = new QAction(tr("Preferences..."), this);
-    actionPreferences->setObjectName("actionPreferences");
-    actionPreferences->setIcon(QIcon(":/icons/preferences.png"));
+	actionPreferences = new QAction(tr("Preferences..."), this);
+	actionPreferences->setObjectName("actionPreferences");
+	actionPreferences->setIcon(QIcon(":/icons/preferences.png"));
 
-    actionExit = new QAction(tr("Exit"), this);
-    actionExit->setObjectName("actionExit");
+	actionExit = new QAction(tr("Exit"), this);
+	actionExit->setObjectName("actionExit");
 }
 
 void AppController::createTrayIcon()
 {
-    TrayIcon &trayIcon = TrayIcon::instance();
-    trayIcon.setObjectName("trayIcon");
-    
-    trayMenu = new QMenu(this);
-    
-    trayMenu->addAction(actionOpenFolder);
-    trayMenu->addAction(actionPreferences);
-    trayMenu->addSeparator();
-    trayMenu->addAction(actionPause);
-    trayMenu->addSeparator();
-    trayMenu->addAction(actionExit);
+	TrayIcon &trayIcon = TrayIcon::instance();
+	trayIcon.setObjectName("trayIcon");
 
-    trayMenu->setDefaultAction(actionOpenFolder);
+	trayMenu = new QMenu(this);
 
-    trayIcon.setContextMenu(trayMenu);    
+	trayMenu->addAction(actionOpenFolder);
+	trayMenu->addAction(actionPreferences);
+	trayMenu->addSeparator();
+	trayMenu->addAction(actionPause);
+	trayMenu->addSeparator();
+	trayMenu->addAction(actionExit);
 
-    connect(this, SIGNAL(stateChanged(Drive::State)),
-        &trayIcon, SLOT(setState(Drive::State)));
+	trayMenu->setDefaultAction(actionOpenFolder);
 
-    connect(this, SIGNAL(processingProgress(int, int)),
-        &trayIcon, SLOT(onProcessingProgress(int, int)));
+	trayIcon.setContextMenu(trayMenu);
 
-    connect(&trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
-        this, SLOT(on_trayIcon_activated(QSystemTrayIcon::ActivationReason)));
-    
-    trayIcon.show();
+	connect(this, SIGNAL(stateChanged(Drive::State)),
+		&trayIcon, SLOT(setState(Drive::State)));
+
+	connect(this, SIGNAL(processingProgress(int, int)),
+		&trayIcon, SLOT(onProcessingProgress(int, int)));
+
+	connect(&trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
+		this, SLOT(on_trayIcon_activated(QSystemTrayIcon::ActivationReason)));
+
+	trayIcon.show();
 }
 
 void AppController::createSettingsWidget()
 {
-    //settingsWidget = QSharedPointer<SettingsWidget>(new SettingsWidget());
+	//settingsWidget = QSharedPointer<SettingsWidget>(new SettingsWidget());
 
-    SettingsWidget& settingsWidget = SettingsWidget::instance();
+	SettingsWidget& settingsWidget = SettingsWidget::instance();
 
-    settingsWidget.setObjectName("settingsWidget");
-    
-    settingsWidget.setWindowTitle(
-        QString("%1 %2")
-        .arg(Strings::getAppString(Strings::AppFullName))
-        .arg(tr("Preferences")));
-    
-    settingsWidget.setWindowIcon(QIcon(":/icons/preferences.png"));
+	settingsWidget.setObjectName("settingsWidget");
 
-    connect(&settingsWidget, SIGNAL(openFolder()),
-        actionOpenFolder, SLOT(trigger()));
+	settingsWidget.setWindowTitle(
+		QString("%1 %2")
+		.arg(Strings::getAppString(Strings::AppFullName))
+		.arg(tr("Preferences")));
 
-    connect(&settingsWidget, SIGNAL(logout()),
-        this, SLOT(on_settingsWidget_logout()));
+	settingsWidget.setWindowIcon(QIcon(":/icons/preferences.png"));
 
-    connect(this, SIGNAL(profileDataUpdated(ProfileData)), 
-        &settingsWidget, SLOT(onProfileDataUpdated(ProfileData)));
+	connect(&settingsWidget, SIGNAL(openFolder()),
+		actionOpenFolder, SLOT(trigger()));
+
+	connect(&settingsWidget, SIGNAL(logout()),
+		this, SLOT(on_settingsWidget_logout()));
+
+	connect(this, SIGNAL(profileDataUpdated(ProfileData)),
+		&settingsWidget, SLOT(onProfileDataUpdated(ProfileData)));
 }
 
 void AppController::setState(State newState)
 {
-    if (currentState != newState)
-    {
-        currentState = newState;
-        emit stateChanged(currentState);
-    }    
+	if (currentState != newState)
+	{
+		currentState = newState;
+		emit stateChanged(currentState);
+	}
 }
 
 void AppController::on_actionOpenFolder_triggered()
 {
-    QDesktopServices::openUrl(
-        QUrl(QString("file:///%1").arg(
-            Settings::instance().get(Settings::folderPath).toString())
-        , QUrl::TolerantMode));
+	QDesktopServices::openUrl(
+		QUrl(QString("file:///%1").arg(
+			Settings::instance().get(Settings::folderPath).toString())
+		, QUrl::TolerantMode));
 }
 
 void AppController::on_actionPause_triggered()
 {
-    trayMenu->removeAction(actionPause);
-    trayMenu->insertAction(actionExit, actionResume);
-    trayMenu->insertSeparator(actionExit);
+	trayMenu->removeAction(actionPause);
+	trayMenu->insertAction(actionExit, actionResume);
+	trayMenu->insertSeparator(actionExit);
 
-    FileEventDispatcher::instance().pause();
-    LocalFileEventNotifier::instance().stop();
-
-
+	FileEventDispatcher::instance().pause();
+	LocalFileEventNotifier::instance().stop();
 }
 
 void AppController::on_actionResume_triggered()
 {
-    trayMenu->removeAction(actionResume);
-    trayMenu->insertAction(actionExit, actionPause);
-    trayMenu->insertSeparator(actionExit);
+	trayMenu->removeAction(actionResume);
+	trayMenu->insertAction(actionExit, actionPause);
+	trayMenu->insertSeparator(actionExit);
 }
 
 void AppController::on_actionPreferences_triggered()
 {
-    SettingsWidget &settingsWidget = SettingsWidget::instance();
-    
-    settingsWidget.show();
-    
-    settingsWidget.setWindowState(
-        (settingsWidget.windowState() & ~Qt::WindowMinimized)
-        | Qt::WindowActive);
-    
-    settingsWidget.raise();  // for MacOS
-    settingsWidget.activateWindow(); // for Windows
+	SettingsWidget &settingsWidget = SettingsWidget::instance();
+
+	settingsWidget.show();
+
+	settingsWidget.setWindowState(
+		(settingsWidget.windowState() & ~Qt::WindowMinimized)
+		| Qt::WindowActive);
+
+	settingsWidget.raise();  // for MacOS
+	settingsWidget.activateWindow(); // for Windows
 }
 
 void AppController::on_actionExit_triggered()
 {
-    QLOG_TRACE() << "Exiting";
-    LoginController::instance().closeAll();
-    close();
+	QLOG_TRACE() << "Exiting";
+	LoginController::instance().closeAll();
+	close();
 }
 
 void AppController::on_trayIcon_activated(QSystemTrayIcon::ActivationReason reason)
 {
-    QLOG_TRACE() << "ActivationReason:" << reason;
-    
-    if (reason == QSystemTrayIcon::DoubleClick)
-        actionOpenFolder->trigger();
+	QLOG_TRACE() << "ActivationReason:" << reason;
 
-//     if (reason == QSystemTrayIcon::Trigger)
-//         QMessageBox::information(0, "", "test");
+	if (reason == QSystemTrayIcon::DoubleClick)
+		actionOpenFolder->trigger();
+
+//	if (reason == QSystemTrayIcon::Trigger)
+//		QMessageBox::information(0, "", "test");
 }
 
 void AppController::on_settingsWidget_logout()
 {
-    SettingsWidget::instance().hide();
-    LoginController::instance().showLoginForm();    
-    
-    FileEventDispatcher::instance().cancelAll();
-    LocalFileEventNotifier::instance().stop();
-    LocalCache::instance().clear();
+	SettingsWidget::instance().hide();
+	LoginController::instance().showLoginForm();
+
+	FileEventDispatcher::instance().cancelAll();
+	LocalFileEventNotifier::instance().stop();
+	LocalCache::instance().clear();
 }
 
 void AppController::onLoginFinished()
 {
-    setState(State::Synced);
+	setState(State::Synced);
 
 	createFolder();
 
-    FileSystemHelper::setWindowsFolderIcon(
-        Settings::instance().get(Settings::folderPath).toString(), 1);
+	FileSystemHelper::setWindowsFolderIcon(
+		Settings::instance().get(Settings::folderPath).toString(), 1);
 
-    FileEventDispatcher& eventDispatcher = FileEventDispatcher::instance();
+	FileEventDispatcher& eventDispatcher = FileEventDispatcher::instance();
 
-    connect(&eventDispatcher, SIGNAL(processing()),
-        this, SLOT(onQueueProcessing()));
+	connect(&eventDispatcher, SIGNAL(processing()),
+		this, SLOT(onQueueProcessing()));
 
-    connect(&eventDispatcher, SIGNAL(finished()),
-        this, SLOT(onQueueFinished()));
+	connect(&eventDispatcher, SIGNAL(finished()),
+		this, SLOT(onQueueFinished()));
 
-    connect(&eventDispatcher, SIGNAL(progress(int, int)),
-        this, SLOT(onProcessingProgress(int, int)));
+	connect(&eventDispatcher, SIGNAL(progress(int, int)),
+		this, SLOT(onProcessingProgress(int, int)));
 
 	LocalFileEventNotifier& localNotifier = LocalFileEventNotifier::instance();
 
-    connect(&localNotifier, SIGNAL(newLocalFileEvent(LocalFileEvent)),
-        &eventDispatcher, SLOT(addLocalFileEvent(LocalFileEvent)));
+	connect(&localNotifier, SIGNAL(newLocalFileEvent(LocalFileEvent)),
+		&eventDispatcher, SLOT(addLocalFileEvent(LocalFileEvent)));
 
-    NotificationResourceRef remoteNotifier = NotificationResource::create();
-    
-    connect(remoteNotifier.data(), SIGNAL(newRemoteFileEvent(RemoteFileEvent)),
-        &eventDispatcher, SLOT(addRemoteFileEvent(RemoteFileEvent)));
+	NotificationResourceRef remoteNotifier = NotificationResource::create();
 
-    if (!syncer)
-    {
-        syncer = new Syncer(this);
-    }
+	connect(remoteNotifier.data(), SIGNAL(newRemoteFileEvent(RemoteFileEvent)),
+		&eventDispatcher, SLOT(addRemoteFileEvent(RemoteFileEvent)));
 
-    LocalCache &localCache = LocalCache::instance();
+	if (!syncer)
+	{
+		syncer = new Syncer(this);
+	}
 
-    connect(syncer, SIGNAL(newFileDesc(Drive::RemoteFileDesc))
-        , &localCache, SLOT(onNewFileDesc(Drive::RemoteFileDesc)));
-    
-    connect(syncer, SIGNAL(newRemoteEvent(RemoteFileEvent)),
-        &eventDispatcher, SLOT(addRemoteFileEvent(RemoteFileEvent)));
+	LocalCache &localCache = LocalCache::instance();
 
-    connect(syncer, SIGNAL(newLocalEvent(LocalFileEvent)),
-        &eventDispatcher, SLOT(addLocalFileEvent(LocalFileEvent)));    
+	connect(syncer, SIGNAL(newFileDesc(Drive::RemoteFileDesc))
+		, &localCache, SLOT(onNewFileDesc(Drive::RemoteFileDesc)));
 
-    syncer->fullSync();
+	connect(syncer, SIGNAL(newRemoteEvent(RemoteFileEvent)),
+		&eventDispatcher, SLOT(addRemoteFileEvent(RemoteFileEvent)));
 
-    localNotifier.setFolder(); // and start listen for local file events
+	connect(syncer, SIGNAL(newLocalEvent(LocalFileEvent)),
+		&eventDispatcher, SLOT(addLocalFileEvent(LocalFileEvent)));
+
+	syncer->fullSync();
+
+	localNotifier.setFolder(); // and start listen for local file events
 	remoteNotifier->listenRemoteFileEvents();
 }
 
 void AppController::onQueueProcessing()
 {
-    setState(Drive::Syncing);
+	setState(Drive::Syncing);
 }
 
 void AppController::onQueueFinished()
 {
-    setState(Drive::Synced);
+	setState(Drive::Synced);
 }
 
 void AppController::onProcessingProgress(int currentPos, int totalEvents)
 {
-    emit processingProgress(currentPos, totalEvents);
+	emit processingProgress(currentPos, totalEvents);
 }
 
 void AppController::createFolder()
@@ -328,8 +326,8 @@ void AppController::createFolder()
 	QString folderPath =
 		Settings::instance().get(Settings::folderPath).toString();
 
-    QDir dir;
-    dir.mkpath(folderPath);
+	QDir dir;
+	dir.mkpath(folderPath);
 }
 
 }
