@@ -30,6 +30,8 @@
 #define SETTINGS_PAGE_ADVANCED 3
 #define SETTINGS_PAGE_ABOUT 4
 
+inline void initResources() { Q_INIT_RESOURCE(settingsUI); }
+
 namespace Drive
 {
 
@@ -52,7 +54,7 @@ SettingsWidget::SettingsWidget(QWidget *parent)
 {
     QLOG_TRACE() << "creating Settings window";
     
-    Q_INIT_RESOURCE(settingsUI);
+    initResources();
 
     // avoid app close on window close
     setAttribute(Qt::WA_DeleteOnClose, false);

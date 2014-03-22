@@ -40,6 +40,8 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QCheckBox>
 
+inline void initResources() { Q_INIT_RESOURCE(loginUI); }
+
 namespace Drive
 {
 
@@ -47,7 +49,7 @@ LoginWidget::LoginWidget(QWidget *parent)
     : QFrame(parent)
     , registerLink(QString())
 {
-    Q_INIT_RESOURCE(loginUI);
+    initResources();
     
     setAttribute(Qt::WA_DeleteOnClose, false);
     setAttribute(Qt::WA_QuitOnClose, false);
