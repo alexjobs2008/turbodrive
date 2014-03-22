@@ -110,6 +110,8 @@ void AppController::createActions()
 	actionPause = new QAction(tr("Pause Sync"), this);
 	actionPause->setObjectName("actionPause");
 	actionPause->setIcon(QIcon(":/icons/pause.png"));
+	actionPause->setVisible(false);
+	actionPause->setEnabled(false);
 
 	actionResume = new QAction(tr("Resume Sync"), this);
 	actionResume->setObjectName("actionResume");
