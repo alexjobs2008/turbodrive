@@ -7,6 +7,7 @@
 #include <QtCore/QDateTime>
 #include <QtNetwork/QNetworkCookie>
 #include <QtNetwork/QNetworkCookieJar>
+#include <QMutex>
 
 #define COOKIE_URL "api.new.assistent.by"
 //PHPSESSID=76bb1c45cab8d68c22967fea93ea40eb; expires=Sat, 14 Dec 2013 00:50:26 GMT; path=/; domain=disk.new.assistent.by
