@@ -30,7 +30,7 @@ public:
 		connect(thread, &QThread::started, this, &EventHandlerBase::run);
 		connect(thread, &QThread::finished, this, &EventHandlerBase::finished);
 
-		connect(this, &EventHandlerBase::quitThread, thread, &QThread::quit, Qt::BlockingQueuedConnection);
+		connect(this, &EventHandlerBase::quitThread, thread, &QThread::quit);
 
 		moveToThread(thread);
 
