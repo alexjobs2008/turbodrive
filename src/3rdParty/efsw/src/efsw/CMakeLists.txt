@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 2.6)
 #set(BUILD_SHARED_LIBS 0)
 #add_definitions(-static)
 
-add_definitions(-D'EFSW_EXPORTS')
+add_definitions(-DEFSW_EXPORTS)
 
 include_directories("../../include" "../")
 
