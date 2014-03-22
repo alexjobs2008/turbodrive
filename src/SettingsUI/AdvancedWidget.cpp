@@ -34,24 +34,27 @@ AdvancedWidget::AdvancedWidget(QWidget *parent)
 	blNotifications->addWidget(cNotifications);
 	blNotifications->addStretch(1);
 
-	// Selective Sync
-	QLabel *lSync = new QLabel(tr("Selective Sync:"), this);
-	lSync->setMinimumWidth(MIN_ADVANCED_TAB_LABEL_WIDTH);
-	lSync->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-
-	QPushButton *pbSync = new QPushButton(
-		tr("Select which folders and files to sync..."), this);
-	pbSync->setObjectName("selectiveSync");
-
-
-	pbSync->setMinimumWidth(ADVANCED_TAB_CONTROL_FIXED_WIDTH);
-	pbSync->setMaximumWidth(ADVANCED_TAB_CONTROL_FIXED_WIDTH);
-
 	QHBoxLayout *blSync = new QHBoxLayout();
-
-	blSync->addWidget(lSync);
-	blSync->addWidget(pbSync, 0, Qt::AlignLeft | Qt::AlignVCenter);
 	blSync->addStretch(1);
+	{
+		// Selective Sync
+		QLabel *lSync = new QLabel(tr("Selective Sync:"), this);
+		lSync->setMinimumWidth(MIN_ADVANCED_TAB_LABEL_WIDTH);
+		lSync->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+
+		QPushButton *pbSync = new QPushButton(
+			tr("Select which folders and files to sync..."), this);
+		pbSync->setObjectName("selectiveSync");
+		pbSync->setMinimumWidth(ADVANCED_TAB_CONTROL_FIXED_WIDTH);
+		pbSync->setMaximumWidth(ADVANCED_TAB_CONTROL_FIXED_WIDTH);
+
+		lSync->setVisible(false);
+		pbSync->setVisible(false);
+		pbSync->setEnabled(false);
+
+		blSync->addWidget(lSync);
+		blSync->addWidget(pbSync, 0, Qt::AlignLeft | Qt::AlignVCenter);
+	}
 
 	// Drive folder
 	QLabel *lFolderPath = new QLabel(this);
