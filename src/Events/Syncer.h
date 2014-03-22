@@ -12,31 +12,31 @@ namespace Drive
 
 class Syncer: public QObject
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    Syncer(QObject *parent = 0);
+	Syncer(QObject *parent = 0);
 
-    void fullSync();
+	void fullSync();
 
 signals:
-    void newRemoteEvent(RemoteFileEvent event);
-    void newLocalEvent(LocalFileEvent event);
+	void newRemoteEvent(RemoteFileEvent event);
+	void newLocalEvent(LocalFileEvent event);
 
-    void newFileDesc(Drive::RemoteFileDesc fileDesc);
+	void newFileDesc(Drive::RemoteFileDesc fileDesc);
 
 private slots:
-    void onGetChildrenSucceeded(QList<Drive::RemoteFileDesc>);
-    void onGetChildrenFailed();
+	void onGetChildrenSucceeded(QList<Drive::RemoteFileDesc>);
+	void onGetChildrenFailed();
 
 private:
-    void syncLocalFolder(const QString& localFolderPath);
-    void fireEvents();
+	void syncLocalFolder(const QString& localFolderPath);
+	void fireEvents();
 
-    QString currentLocalPathPrefix;
-    int folderCounter;
+	QString currentLocalPathPrefix;
+	int folderCounter;
 
-    QList<LocalFileEvent> localEvents;
-    QList<RemoteFileEvent> remoteEvents;
+	QList<LocalFileEvent> localEvents;
+	QList<RemoteFileEvent> remoteEvents;
 };
 
 }

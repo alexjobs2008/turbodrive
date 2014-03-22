@@ -10,21 +10,21 @@ set(CMAKE_AUTOMOC ON)
 find_package(Qt5Widgets)
 
 set(HEADERS
-    SettingsWidget.h
-    AccountWidget.h
-    ConnectionWidget.h
-    AdvancedWidget.h
-    AboutWidget.h
-    SelectiveSyncDialog.h
+	SettingsWidget.h
+	AccountWidget.h
+	ConnectionWidget.h
+	AdvancedWidget.h
+	AboutWidget.h
+	SelectiveSyncDialog.h
 )
 
 set(SOURCES
-    SettingsWidget.cpp
-    AccountWidget.cpp
-    ConnectionWidget.cpp
-    AdvancedWidget.cpp
-    AboutWidget.cpp
-    SelectiveSyncDialog.cpp
+	SettingsWidget.cpp
+	AccountWidget.cpp
+	ConnectionWidget.cpp
+	AdvancedWidget.cpp
+	AboutWidget.cpp
+	SelectiveSyncDialog.cpp
 )
 
 set(QRC_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/res/settingsUI.qrc)
@@ -38,12 +38,12 @@ source_group(_res FILES ${QRC_RESOURCES})
 add_library(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${MOCED_RESOURCES})
 
 target_link_libraries(${PROJECT_NAME}
-    Settings
-    UtilUI
+	Settings
+	UtilUI
 )
 
 qt5_use_modules(${PROJECT_NAME}
-    Widgets
+	Widgets
 )
 
 IF(UNIX)

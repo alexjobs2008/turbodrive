@@ -8,29 +8,29 @@
 
 class LocalServer : public QThread
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    LocalServer();
-    ~LocalServer();
-    void shut();
+	LocalServer();
+	~LocalServer();
+	void shut();
 
 protected:
-    void run();
-    void exec();
+	void run();
+	void exec();
 
 signals:
-    void dataReceived(QString data);
-    void privateDataReceived(QString data);
-    void showUp();
+	void dataReceived(QString data);
+	void privateDataReceived(QString data);
+	void showUp();
 
 private slots:
-    void slotNewConnection();
-    void slotOnData(QString data);
+	void slotNewConnection();
+	void slotOnData(QString data);
 
 private:
-    QLocalServer* server;
-    QVector<QLocalSocket*> clients;
-    void onCMD(QString data);
+	QLocalServer* server;
+	QVector<QLocalSocket*> clients;
+	void onCMD(QString data);
 };
 
 #endif // LOCALSERVER_H

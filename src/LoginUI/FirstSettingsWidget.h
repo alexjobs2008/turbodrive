@@ -8,20 +8,20 @@ class QPushButton;
 
 class FirstSettingsWidget : public QFrame
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    FirstSettingsWidget(QWidget *parent = 0);
+	FirstSettingsWidget(QWidget *parent = 0);
 
 private slots:
-    void on_typicalSettings_toggled(bool checked);
-    void on_advancedSettings_toggled(bool checked);
+	void on_typicalSettings_toggled(bool checked);
+	void on_advancedSettings_toggled(bool checked);
 
 
 private:
 
-    QRadioButton *rbTypicalSettings;
-    QRadioButton *rbAdvancedSettings;
-    QPushButton *pbNextFinish;
+	QRadioButton *rbTypicalSettings;
+	QRadioButton *rbAdvancedSettings;
+	QPushButton *pbNextFinish;
 
 };
 

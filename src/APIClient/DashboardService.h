@@ -13,23 +13,23 @@ typedef QSharedPointer<RegisterLinkResource> RegisterLinkResourceRef;
 
 class RegisterLinkResource : public RestResource
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
 
-    static RegisterLinkResourceRef create();
+	static RegisterLinkResourceRef create();
 
-    void requestRegisterLink();
-    
-    virtual QString path() const;
-    virtual QString service() const;
-    virtual bool restricted() const;
+	void requestRegisterLink();
+
+	virtual QString path() const;
+	virtual QString service() const;
+	virtual bool restricted() const;
 
 signals:
-    void linkReceived(const QString& link);
+	void linkReceived(const QString& link);
 
 private:
-    virtual bool processGetResponse(int status, const QByteArray& data,
-        const HeaderList& headers);
+	virtual bool processGetResponse(int status, const QByteArray& data,
+		const HeaderList& headers);
 };
 
 class PasswordResetResource;
@@ -37,26 +37,26 @@ typedef QSharedPointer<PasswordResetResource> PasswordResetResourceRef;
 
 class PasswordResetResource : public RestResource
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
 
-    static PasswordResetResourceRef create();
+	static PasswordResetResourceRef create();
 
-    void resetPassword(const QString& email);
+	void resetPassword(const QString& email);
 
-    virtual QString path() const;
-    virtual QString service() const;
-    virtual bool restricted() const;
+	virtual QString path() const;
+	virtual QString service() const;
+	virtual bool restricted() const;
 
 signals:
-    void resetSuccessfully();
-    void resetFailed(const QString& error);
+	void resetSuccessfully();
+	void resetFailed(const QString& error);
 
 private:
-    virtual bool processPostResponse(int status, const QByteArray& data,
-        const HeaderList& headers);
+	virtual bool processPostResponse(int status, const QByteArray& data,
+		const HeaderList& headers);
 
-    QByteArray toByteArray(const QString& email);
+	QByteArray toByteArray(const QString& email);
 };
 
 }

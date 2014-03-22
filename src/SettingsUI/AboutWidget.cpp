@@ -9,57 +9,57 @@ namespace Drive
 {
 
 AboutWidget::AboutWidget(QWidget *parent)
-    : QFrame(parent)
+	: QFrame(parent)
 {
-    QHBoxLayout *mainLayout = new QHBoxLayout(this);
-    
-    QLabel *pic = new QLabel(this);
-    pic->setPixmap(QPixmap(":/clouds.png"));
+	QHBoxLayout *mainLayout = new QHBoxLayout(this);
 
-    QWidget *info = new QWidget(this);
-    QVBoxLayout *infoLayout = new QVBoxLayout(info);
+	QLabel *pic = new QLabel(this);
+	pic->setPixmap(QPixmap(":/clouds.png"));
 
-    QLabel *labelCompanyName = new QLabel(info);
-    labelCompanyName->setObjectName("labelCompanyName");
-    labelCompanyName->setText(Strings::getAppString(Strings::CompanyName));
+	QWidget *info = new QWidget(this);
+	QVBoxLayout *infoLayout = new QVBoxLayout(info);
 
-    QLabel *labelAppName = new QLabel(info);
-    labelAppName->setObjectName("labelAppName");
-    labelAppName->setText(Strings::getAppString(Strings::AppName));
+	QLabel *labelCompanyName = new QLabel(info);
+	labelCompanyName->setObjectName("labelCompanyName");
+	labelCompanyName->setText(Strings::getAppString(Strings::CompanyName));
 
-    labelAppName->setStyleSheet("QLabel {font-size: 12pt;};");
+	QLabel *labelAppName = new QLabel(info);
+	labelAppName->setObjectName("labelAppName");
+	labelAppName->setText(Strings::getAppString(Strings::AppName));
 
-    QLabel *labelAppVersion = new QLabel(info);
-    labelAppVersion->setObjectName("labelAppVersion");
-    labelAppVersion->setText(QString("v%1").arg(Strings::appVersion));
+	labelAppName->setStyleSheet("QLabel {font-size: 12pt;};");
 
-    QLabel *labelHomepage = new QLabel(tr("Homepage:"), this);
-    labelHomepage->setObjectName("labelHomepage");
-    
-    QLabel *labelHomepageLink = new QLabel(
-        QString("<a href=\"%1\">%2</a>")
-        .arg(Strings::websiteLink)
-        .arg(Strings::getAppString(Strings::WebSiteText))
-        , info);
-    labelHomepageLink->setObjectName("labelHomepageLink");
-    labelHomepageLink->setOpenExternalLinks(true);
+	QLabel *labelAppVersion = new QLabel(info);
+	labelAppVersion->setObjectName("labelAppVersion");
+	labelAppVersion->setText(QString("v%1").arg(Strings::appVersion));
 
-    QLabel *labelCopyright =
-        new QLabel(Strings::getAppString(Strings::Copyright));
-    labelCopyright->setObjectName("labelCopyright");
-    labelCopyright->setAlignment(Qt::AlignRight);
+	QLabel *labelHomepage = new QLabel(tr("Homepage:"), this);
+	labelHomepage->setObjectName("labelHomepage");
 
-    infoLayout->setSpacing(0);
-    infoLayout->addWidget(labelCompanyName, 0, Qt::AlignRight);
-    infoLayout->addWidget(labelAppName, 0, Qt::AlignRight);
-    infoLayout->addWidget(labelAppVersion, 0, Qt::AlignRight);    
-    infoLayout->addWidget(labelHomepage, 0, Qt::AlignRight);    
-    infoLayout->addWidget(labelHomepageLink, 0, Qt::AlignRight);
-    infoLayout->addStretch(1);
-    infoLayout->addWidget(labelCopyright, 0, Qt::AlignRight);
-    
-    mainLayout->addWidget(pic);
-    mainLayout->addWidget(info, 1);
+	QLabel *labelHomepageLink = new QLabel(
+		QString("<a href=\"%1\">%2</a>")
+		.arg(Strings::websiteLink)
+		.arg(Strings::getAppString(Strings::WebSiteText))
+		, info);
+	labelHomepageLink->setObjectName("labelHomepageLink");
+	labelHomepageLink->setOpenExternalLinks(true);
+
+	QLabel *labelCopyright =
+		new QLabel(Strings::getAppString(Strings::Copyright));
+	labelCopyright->setObjectName("labelCopyright");
+	labelCopyright->setAlignment(Qt::AlignRight);
+
+	infoLayout->setSpacing(0);
+	infoLayout->addWidget(labelCompanyName, 0, Qt::AlignRight);
+	infoLayout->addWidget(labelAppName, 0, Qt::AlignRight);
+	infoLayout->addWidget(labelAppVersion, 0, Qt::AlignRight);
+	infoLayout->addWidget(labelHomepage, 0, Qt::AlignRight);
+	infoLayout->addWidget(labelHomepageLink, 0, Qt::AlignRight);
+	infoLayout->addStretch(1);
+	infoLayout->addWidget(labelCopyright, 0, Qt::AlignRight);
+
+	mainLayout->addWidget(pic);
+	mainLayout->addWidget(info, 1);
 }
 
 }

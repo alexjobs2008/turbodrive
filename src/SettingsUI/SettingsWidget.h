@@ -20,66 +20,66 @@ class AccountWidget;
 
 class SettingsWidget : public QFrame
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    
-    static SettingsWidget& instance();
+
+	static SettingsWidget& instance();
 
 public slots:
-    void onProfileDataUpdated(const ProfileData& profileData);
-    
+	void onProfileDataUpdated(const ProfileData& profileData);
+
 signals:
-    void openFolder();
-    void logout();
+	void openFolder();
+	void logout();
 
 protected:
-    virtual void resizeEvent(QResizeEvent *event);
+	virtual void resizeEvent(QResizeEvent *event);
 
 private slots:
-    void on_tabs_currentItemChanged(QListWidgetItem*, QListWidgetItem*);
+	void on_tabs_currentItemChanged(QListWidgetItem*, QListWidgetItem*);
 
-    void on_help_linkActivated(const QString& link);
-    void on_OK_clicked(bool checked);
-    void on_cancel_clicked(bool checked);
-    void on_apply_clicked(bool checked);
+	void on_help_linkActivated(const QString& link);
+	void on_OK_clicked(bool checked);
+	void on_cancel_clicked(bool checked);
+	void on_apply_clicked(bool checked);
 
-    void onSettingsDirtyChanged(bool isDirty);
+	void onSettingsDirtyChanged(bool isDirty);
 
 private:
-    Q_DISABLE_COPY(SettingsWidget)
-    SettingsWidget(QWidget *parent = 0);
-    ~SettingsWidget();
+	Q_DISABLE_COPY(SettingsWidget)
+	SettingsWidget(QWidget *parent = 0);
+	~SettingsWidget();
 
-    void setupListView();
+	void setupListView();
 
-    static const QString linkHelp;
+	static const QString linkHelp;
 
-    QListWidget* tabs;
-    QStackedWidget *stackedWidget;
+	QListWidget* tabs;
+	QStackedWidget *stackedWidget;
 
-    QPushButton *pbApply;
+	QPushButton *pbApply;
 
-    AccountWidget *accountWidget;
+	AccountWidget *accountWidget;
 
 };
 
 class Delegate : public QStyledItemDelegate
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    Delegate(QObject *parent = 0);
-    virtual ~Delegate();
+	Delegate(QObject *parent = 0);
+	virtual ~Delegate();
 
-    virtual QSize sizeHint(const QStyleOptionViewItem & option,
-                           const QModelIndex & index) const;
-    
-    virtual void paint(QPainter * painter, const QStyleOptionViewItem & option,
-                       const QModelIndex & index) const;
+	virtual QSize sizeHint(const QStyleOptionViewItem & option,
+						const QModelIndex & index) const;
+
+	virtual void paint(QPainter * painter, const QStyleOptionViewItem & option,
+					const QModelIndex & index) const;
 private:
-    static void printStyleOptionStates(const QStyleOptionViewItem & option, int i);
+	static void printStyleOptionStates(const QStyleOptionViewItem & option, int i);
 
-    QModelIndex helperIndex;
-    QLabel *label;
+	QModelIndex helperIndex;
+	QLabel *label;
 };
 
 }

@@ -10,18 +10,18 @@ set(CMAKE_AUTOMOC ON)
 find_package(Qt5Widgets)
 
 set(HEADERS
-    StylesheetReader.h
-    ExtraLabels.h
-    AuxWidgets.h
-    PixmapAnimation.h
-    SpinnerWidget.h
+	StylesheetReader.h
+	ExtraLabels.h
+	AuxWidgets.h
+	PixmapAnimation.h
+	SpinnerWidget.h
 )
 
 set(SOURCES
-    ExtraLabels.cpp
-    AuxWidgets.cpp
-    PixmapAnimation.cpp
-    SpinnerWidget.cpp
+	ExtraLabels.cpp
+	AuxWidgets.cpp
+	PixmapAnimation.cpp
+	SpinnerWidget.cpp
 )
 
 source_group(_h FILES ${HEADERS})
@@ -30,11 +30,11 @@ source_group(_cpp FILES ${SOURCES})
 add_library(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
 qt5_use_modules(${PROJECT_NAME}
-    Widgets
+	Widgets
 )
 
 if(UNIX)
-    set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS -fPIC)
+	set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS -fPIC)
 endif(UNIX)
 
 #set_property(TARGET ${PROJECT_NAME} PROPERTY FOLDER "libs")

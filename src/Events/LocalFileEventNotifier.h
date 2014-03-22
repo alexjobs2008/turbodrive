@@ -18,38 +18,38 @@ class LocalListener;
 
 class LocalFileEventNotifier: public QObject
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    static LocalFileEventNotifier& instance();
-    ~LocalFileEventNotifier();
+	static LocalFileEventNotifier& instance();
+	~LocalFileEventNotifier();
 
 public slots:
-    void setFolder();
-    void stop();
+	void setFolder();
+	void stop();
 
 //  Exclusions logic moved to EventDispatcher
-//     void addExclusion(const QString& localPath);
-//     void removeExclusion(const QString& localPath);
+//	void addExclusion(const QString& localPath);
+//	void removeExclusion(const QString& localPath);
 
 signals:
-    void newLocalFileEvent(const LocalFileEvent& event);
+	void newLocalFileEvent(const LocalFileEvent& event);
 
 private slots:
-    void onNewLocalFileEvent(const LocalFileEvent& event);
+	void onNewLocalFileEvent(const LocalFileEvent& event);
 
 private:
-    LocalFileEventNotifier(QObject *parent = 0);
-    Q_DISABLE_COPY(LocalFileEventNotifier)
+	LocalFileEventNotifier(QObject *parent = 0);
+	Q_DISABLE_COPY(LocalFileEventNotifier)
 
-    efsw::FileWatcher fileWatcher;
-    LocalListener *listener;
-    efsw::WatchID watchID;
-    QSet<QString> exclusions;
+	efsw::FileWatcher fileWatcher;
+	LocalListener *listener;
+	efsw::WatchID watchID;
+	QSet<QString> exclusions;
 };
 
 class LocalListener : public QObject, public efsw::FileWatchListener
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
 	LocalListener(QObject *parent = 0);
 
@@ -57,7 +57,7 @@ public:
 		const std::string& filename, efsw::Action action, std::string oldFilename = "" );
 
 signals:
-    void newLocalFileEvent(const LocalFileEvent& localFileEvent);
+	void newLocalFileEvent(const LocalFileEvent& localFileEvent);
 
 };
 

@@ -10,23 +10,23 @@ set(CMAKE_AUTOMOC ON)
 find_package(Qt5Widgets)
 
 set(HEADERS
-    types.h
-    AppController.h
-    LoginController.h
-    TrayIcon.h
+	types.h
+	AppController.h
+	LoginController.h
+	TrayIcon.h
 )
 
 set(SOURCES
-    main.cpp
-    AppController.cpp
-    LoginController.cpp
-    TrayIcon.cpp
+	main.cpp
+	AppController.cpp
+	LoginController.cpp
+	TrayIcon.cpp
 )
 
 set(QRC_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/res/res.qrc)
 
 if(WIN32)
-    set(RC_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/res/res.rc)
+	set(RC_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/res/res.rc)
 endif()
 
 qt5_add_resources(MOCED_RESOURCES ${QRC_RESOURCES})
@@ -36,75 +36,75 @@ source_group(_cpp FILES ${SOURCES})
 source_group(_res FILES ${QRC_RESOURCES} ${RC_RESOURCES})
 
 if(WIN32)
-    set(GUI_TYPE WIN32)
+	set(GUI_TYPE WIN32)
 endif(WIN32)
-	
+
 if(APPLE)
-    set(GUI_TYPE MACOSX_BUNDLE)
+	set(GUI_TYPE MACOSX_BUNDLE)
 endif(APPLE)
 
 add_executable(${PROJECT_NAME}
-    ${GUI_TYPE}
-    ${HEADERS}
-    ${SOURCES}
-    ${MOCED_RESOURCES}
-    ${RC_RESOURCES}
+	${GUI_TYPE}
+	${HEADERS}
+	${SOURCES}
+	${MOCED_RESOURCES}
+	${RC_RESOURCES}
 )
 
 qt5_use_modules(${PROJECT_NAME}
-    Core
-    Widgets
+	Core
+	Widgets
 )
 
 target_link_libraries(${PROJECT_NAME}
-    SingleApp
-    AnimatedSystemTrayIcon
-    Settings
-    SettingsUI
-    Network
-    APIClient
-    LoginUI
-    QsLog
-    rtCSS
-    Util
-    efsw
-    Events
+	SingleApp
+	AnimatedSystemTrayIcon
+	Settings
+	SettingsUI
+	Network
+	APIClient
+	LoginUI
+	QsLog
+	rtCSS
+	Util
+	efsw
+	Events
 )
 
 
 if(WIN32)
-    install(TARGETS ${PROJECT_NAME}
-        DESTINATION bin
-    )
+	install(TARGETS ${PROJECT_NAME}
+		DESTINATION bin
+	)
 
 message("Qt binary dir: ${QT_BINARY_DIR}")
 
-#    install(FILES
-#        "${QT_BINARY_DIR}/QtCore${QT_VERSION_MAJOR}.dll"
-#        "${QT_BINARY_DIR}/QtGui${QT_VERSION_MAJOR}.dll"
+#	install(FILES
+#		"${QT_BINARY_DIR}/QtCore${QT_VERSION_MAJOR}.dll"
+#		"${QT_BINARY_DIR}/QtGui${QT_VERSION_MAJOR}.dll"
 #		"${QT_BINARY_DIR}/QtNetwork${QT_VERSION_MAJOR}.dll"
 #		DESTINATION bin
-#    )
+#	)
 endif(WIN32)
 
 install(FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/inst/icudt51.dll
-    ${CMAKE_CURRENT_SOURCE_DIR}/inst/icuin51.dll
-    ${CMAKE_CURRENT_SOURCE_DIR}/inst/icuuc51.dll
-    ${CMAKE_CURRENT_SOURCE_DIR}/inst/libEGL.dll
-    ${CMAKE_CURRENT_SOURCE_DIR}/inst/libGLESv2.dll
-    ${CMAKE_CURRENT_SOURCE_DIR}/inst/Qt5Core.dll
-    ${CMAKE_CURRENT_SOURCE_DIR}/inst/Qt5Gui.dll
-    ${CMAKE_CURRENT_SOURCE_DIR}/inst/Qt5Network.dll
-    ${CMAKE_CURRENT_SOURCE_DIR}/inst/Qt5Widgets.dll
-    ${CMAKE_CURRENT_SOURCE_DIR}/inst/libeay32.dll
-    ${CMAKE_CURRENT_SOURCE_DIR}/inst/ssleay32.dll
-    DESTINATION bin
+	${CMAKE_CURRENT_SOURCE_DIR}/inst/icudt51.dll
+	${CMAKE_CURRENT_SOURCE_DIR}/inst/icuin51.dll
+	${CMAKE_CURRENT_SOURCE_DIR}/inst/icuuc51.dll
+	${CMAKE_CURRENT_SOURCE_DIR}/inst/libEGL.dll
+	${CMAKE_CURRENT_SOURCE_DIR}/inst/libGLESv2.dll
+	${CMAKE_CURRENT_SOURCE_DIR}/inst/Qt5Core.dll
+	${CMAKE_CURRENT_SOURCE_DIR}/inst/Qt5Gui.dll
+	${CMAKE_CURRENT_SOURCE_DIR}/inst/Qt5Network.dll
+	${CMAKE_CURRENT_SOURCE_DIR}/inst/Qt5Widgets.dll
+	${CMAKE_CURRENT_SOURCE_DIR}/inst/libeay32.dll
+	${CMAKE_CURRENT_SOURCE_DIR}/inst/ssleay32.dll
+	DESTINATION bin
 )
 
 install(FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/inst/platforms/qwindows.dll
-    DESTINATION bin/platforms
+	${CMAKE_CURRENT_SOURCE_DIR}/inst/platforms/qwindows.dll
+	DESTINATION bin/platforms
 )
 
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/res/license.txt DESTINATION .)

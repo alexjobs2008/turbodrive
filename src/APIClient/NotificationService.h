@@ -33,7 +33,7 @@ private:
 	virtual bool processGetResponse(int status, const QByteArray& data,
 		const HeaderList& headers);
 
-    QString lastEventTimestamp;
+	QString lastEventTimestamp;
 };
 
 }

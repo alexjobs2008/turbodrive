@@ -8,9 +8,9 @@ namespace Drive
 
 class AboutWidget : public QFrame
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    AboutWidget(QWidget *parent = 0);
+	AboutWidget(QWidget *parent = 0);
 
 };
 

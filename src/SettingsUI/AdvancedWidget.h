@@ -12,25 +12,25 @@ namespace Drive
 
 class AdvancedWidget : public QFrame
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    AdvancedWidget(QWidget *parent = 0);
+	AdvancedWidget(QWidget *parent = 0);
 
 private slots:
-    void on_desktopNotifications_toggled(bool checked);
-    void on_moveFolder_clicked(bool checked);
-    void on_selectiveSync_clicked(bool checked);
-    void on_folderPath_textChanged(const QString &text);
-    void on_autostart_toggled(bool checked);
-    void on_language_currentIndexChanged(int index);
+	void on_desktopNotifications_toggled(bool checked);
+	void on_moveFolder_clicked(bool checked);
+	void on_selectiveSync_clicked(bool checked);
+	void on_folderPath_textChanged(const QString &text);
+	void on_autostart_toggled(bool checked);
+	void on_language_currentIndexChanged(int index);
 
 private:
-    void setFromSettings();
+	void setFromSettings();
 
-    QLineEdit *leFolderPath;
-    QCheckBox *cNotifications;
-    QCheckBox *cAutostart;
-    QComboBox *cbLanguage;
+	QLineEdit *leFolderPath;
+	QCheckBox *cNotifications;
+	QCheckBox *cAutostart;
+	QComboBox *cbLanguage;
 
 };
 

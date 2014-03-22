@@ -19,32 +19,32 @@ namespace Drive
 
 class FileUploader : public QObject
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
 
-    FileUploader(QObject *parent = 0);
-    ~FileUploader();
+	FileUploader(QObject *parent = 0);
+	~FileUploader();
 
-    void uploadFile(int parentFolderId, const QString &filePath);
+	void uploadFile(int parentFolderId, const QString &filePath);
 
 signals:
-    void succeeded(Drive::RemoteFileDesc fileDesc);
-    void failed(const QString& error);
+	void succeeded(Drive::RemoteFileDesc fileDesc);
+	void failed(const QString& error);
 
 private slots:
-    void onFinished();
-    void onError(QNetworkReply::NetworkError code);
-    void uploadProgress(qint64 bytesSent, qint64 bytesTotal);
+	void onFinished();
+	void onError(QNetworkReply::NetworkError code);
+	void uploadProgress(qint64 bytesSent, qint64 bytesTotal);
 
 
 private:
-    // created body for POST request with 
-    QByteArray createPostBody(int workspaceId, int parentFolderId, const QFileInfo &fileInfo);
+	// created body for POST request with
+	QByteArray createPostBody(int workspaceId, int parentFolderId, const QFileInfo &fileInfo);
 
-    QFile *file;
-    QString authToken;
-    QNetworkAccessManager *man;
-    QNetworkReply *reply;
+	QFile *file;
+	QString authToken;
+	QNetworkAccessManager *man;
+	QNetworkReply *reply;
 
 };
 

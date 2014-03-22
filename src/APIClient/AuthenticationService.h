@@ -11,42 +11,42 @@ typedef QSharedPointer<AuthRestResource> AuthRestResourceRef;
 
 class AuthRestResource : public RestResource
 {
-    Q_OBJECT
-public:    
+	Q_OBJECT
+public:
 
-    struct Input
-    {
-        QString username;
-        QString password;
-    };
+	struct Input
+	{
+		QString username;
+		QString password;
+	};
 
-    struct Output
-    {
-        QString token;
-    };
-    
-    void login(const Input& data);
+	struct Output
+	{
+		QString token;
+	};
 
-    static AuthRestResourceRef create();
+	void login(const Input& data);
 
-    virtual QString path() const;
-    virtual QString service() const;
-    virtual bool restricted() const;
+	static AuthRestResourceRef create();
+
+	virtual QString path() const;
+	virtual QString service() const;
+	virtual bool restricted() const;
 
 signals:
 	void loginSucceeded(const QString& token);
 	void loginFailed(const QString& error);
 
 private:
-    virtual bool processPostResponse(int status, const QByteArray& data,
-        const HeaderList& headers);
+	virtual bool processPostResponse(int status, const QByteArray& data,
+		const HeaderList& headers);
 
-	
 
-    QByteArray toByteArray(const Input& data);
 
-    static const QString username;
-    static const QString password;
+	QByteArray toByteArray(const Input& data);
+
+	static const QString username;
+	static const QString password;
 };
 
 }

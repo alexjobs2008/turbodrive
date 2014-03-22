@@ -19,69 +19,69 @@ struct ProxySettings;
 
 class ConnectionWidget : public QFrame
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    ConnectionWidget(QWidget *parent = 0);
+	ConnectionWidget(QWidget *parent = 0);
 
 private slots:
-    void on_downloadNoLimit_toggled(bool checked);
-    void on_uploadNoLimit_toggled(bool checked);
-    
-    void on_noProxy_toggled(bool checked);
-    void on_autoProxy_toggled(bool checked);
-    void on_manualProxy_toggled(bool checked);
-    
-    void on_proxyConfigure_clicked(bool checked);
+	void on_downloadNoLimit_toggled(bool checked);
+	void on_uploadNoLimit_toggled(bool checked);
+
+	void on_noProxy_toggled(bool checked);
+	void on_autoProxy_toggled(bool checked);
+	void on_manualProxy_toggled(bool checked);
+
+	void on_proxyConfigure_clicked(bool checked);
 
 private:
-    QBoxLayout* createBandwidthControls();
-    QWidget* createProxyControls();
-    void setFromSettings();
+	QBoxLayout* createBandwidthControls();
+	QWidget* createProxyControls();
+	void setFromSettings();
 
-    QRadioButton *rbDownloadNoLimit;
-    QRadioButton *rbDownloadLimit;
-    QLineEdit *leDownloadLimit;
-    QLabel *lDownloadLimit;
+	QRadioButton *rbDownloadNoLimit;
+	QRadioButton *rbDownloadLimit;
+	QLineEdit *leDownloadLimit;
+	QLabel *lDownloadLimit;
 
-    QRadioButton *rbUploadNoLimit;
-    QRadioButton *rbUploadLimit;
-    QLineEdit *leUploadLimit;
-    QLabel *lUploadLimit;
+	QRadioButton *rbUploadNoLimit;
+	QRadioButton *rbUploadLimit;
+	QLineEdit *leUploadLimit;
+	QLabel *lUploadLimit;
 
-    QRadioButton *rbNoProxy;
-    QRadioButton *rbAutoProxy;
-    QRadioButton *rbManualProxy;    
+	QRadioButton *rbNoProxy;
+	QRadioButton *rbAutoProxy;
+	QRadioButton *rbManualProxy;
 
-    QWidget *manualProxySettingsWidget;
-    QPushButton *pbProxyConfigure;
+	QWidget *manualProxySettingsWidget;
+	QPushButton *pbProxyConfigure;
 };
 
 class ProxySettingsDialog : public QDialog
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    ProxySettingsDialog(QWidget *parent = 0, Qt::WindowFlags f = 0);
-    ProxySettings proxySettings() const;
+	ProxySettingsDialog(QWidget *parent = 0, Qt::WindowFlags f = 0);
+	ProxySettings proxySettings() const;
 
 public slots:
-    int exec();
+	int exec();
 
-private slots:        
-    void on_cProxyAuthRequired_toggled(bool checked);    
+private slots:
+	void on_cProxyAuthRequired_toggled(bool checked);
 
-private:    
-    QWidget *userNameWidget;
-    QWidget *passwordWidget;
-    QComboBox *cbProxyType;
+private:
+	QWidget *userNameWidget;
+	QWidget *passwordWidget;
+	QComboBox *cbProxyType;
 
-    QRadioButton *rbProxyHttp;
-    QRadioButton *rbProxySocks;
+	QRadioButton *rbProxyHttp;
+	QRadioButton *rbProxySocks;
 
-    QLineEdit *leProxyServer;
-    QLineEdit *leProxyPort;
-    QCheckBox *cProxyAuthRequired;
-    QLineEdit *leProxyUsername;
-    QLineEdit *leProxyPassword;
+	QLineEdit *leProxyServer;
+	QLineEdit *leProxyPort;
+	QCheckBox *cProxyAuthRequired;
+	QLineEdit *leProxyUsername;
+	QLineEdit *leProxyPassword;
 };
 
 }

@@ -12,12 +12,12 @@ set(CMAKE_AUTOMOC ON)
 find_package(Qt5Widgets)
 
 set(HEADERS
-    mainwindow.h
+	mainwindow.h
 )
 
 set(SOURCES
-    main.cpp
-    mainwindow.cpp
+	main.cpp
+	mainwindow.cpp
 )
 
 set(QRC_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/res.qrc)
@@ -29,24 +29,24 @@ source_group(_cpp FILES ${SOURCES})
 source_group(_res FILES ${QRC_RESOURCES})
 
 if(WIN32)
-    set(GUI_TYPE WIN32)
+	set(GUI_TYPE WIN32)
 endif(WIN32)
 
 if(APPLE)
-    set(GUI_TYPE MACOSX_BUNDLE)
+	set(GUI_TYPE MACOSX_BUNDLE)
 endif(APPLE)
 
 add_executable(${PROJECT_NAME}
-    ${GUI_TYPE}
-    ${HEADERS}
-    ${SOURCES}
-    ${MOCED_RESOURCES}
+	${GUI_TYPE}
+	${HEADERS}
+	${SOURCES}
+	${MOCED_RESOURCES}
 )
 
 qt5_use_modules(${PROJECT_NAME}
-    Widgets
+	Widgets
 )
 
 target_link_libraries(${PROJECT_NAME}
-    AnimatedSystemTrayIcon
+	AnimatedSystemTrayIcon
 )

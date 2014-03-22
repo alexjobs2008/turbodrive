@@ -9,62 +9,62 @@ namespace Drive
 
 class RemoteEventHandlerBase : public EventHandlerBase
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    RemoteEventHandlerBase(RemoteFileEvent remoteEvent, QObject* parent);
+	RemoteEventHandlerBase(RemoteFileEvent remoteEvent, QObject* parent);
 
-    virtual ~RemoteEventHandlerBase();
+	virtual ~RemoteEventHandlerBase();
 
 protected:
-    RemoteFileEvent remoteEvent;
+	RemoteFileEvent remoteEvent;
 };
 
 class RemoteFolderCreatedEventHandler : public RemoteEventHandlerBase
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    RemoteFolderCreatedEventHandler(RemoteFileEvent remoteEvent,
-        QObject *parent = 0);
+	RemoteFolderCreatedEventHandler(RemoteFileEvent remoteEvent,
+		QObject *parent = 0);
 
 protected:
-    void run();
+	void run();
 
 private slots:
-    void onGetAncestorsSucceeded(const QString& fullPath);
-    void onGetAncestorsFailed();
+	void onGetAncestorsSucceeded(const QString& fullPath);
+	void onGetAncestorsFailed();
 };
 
 class RemoteFileRenamedEventHandler : public RemoteEventHandlerBase
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    RemoteFileRenamedEventHandler(RemoteFileEvent remoteEvent,
-        QObject *parent = 0);
+	RemoteFileRenamedEventHandler(RemoteFileEvent remoteEvent,
+		QObject *parent = 0);
 
 protected:
-    void run();
+	void run();
 
 private slots:
-    void onGetAncestorsSucceeded(const QString& fullPath);
-    void onGetAncestorsFailed();
+	void onGetAncestorsSucceeded(const QString& fullPath);
+	void onGetAncestorsFailed();
 };
 
 class RemoteFileTrashedEventHandler : public RemoteEventHandlerBase
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    RemoteFileTrashedEventHandler(RemoteFileEvent remoteEvent,
-        QObject *parent = 0);
+	RemoteFileTrashedEventHandler(RemoteFileEvent remoteEvent,
+		QObject *parent = 0);
 
 protected:
-    void run();
+	void run();
 
 private slots:
-    void onGetAncestorsSucceeded(const QString& fullPath);
-    void onGetAncestorsFailed();
+	void onGetAncestorsSucceeded(const QString& fullPath);
+	void onGetAncestorsFailed();
 
 private:
-    QString localPath;
+	QString localPath;
 };
 
 
@@ -72,61 +72,61 @@ class FileDownloader;
 
 class RemoteFileUploadedEventHandler : public RemoteEventHandlerBase
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    RemoteFileUploadedEventHandler(RemoteFileEvent remoteEvent,
-        QObject *parent = 0);
+	RemoteFileUploadedEventHandler(RemoteFileEvent remoteEvent,
+		QObject *parent = 0);
 
 protected:
-    void run();
+	void run();
 
 private slots:
-    void onGetAncestorsSucceeded(const QString& fullPath);
-    void onGetAncestorsFailed();
-    void onDownloadSucceeded();
-    void onDownloadFailed(const QString& error);
+	void onGetAncestorsSucceeded(const QString& fullPath);
+	void onGetAncestorsFailed();
+	void onDownloadSucceeded();
+	void onDownloadFailed(const QString& error);
 
 private:
-    FileDownloader *downloader;
-    QString localFilePath;
+	FileDownloader *downloader;
+	QString localFilePath;
 };
 
 class RemoteFileOrFolderRestoredEventHandler : public RemoteEventHandlerBase
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    RemoteFileOrFolderRestoredEventHandler(RemoteFileEvent remoteEvent,
-        QObject *parent = 0);
+	RemoteFileOrFolderRestoredEventHandler(RemoteFileEvent remoteEvent,
+		QObject *parent = 0);
 
 protected:
-    void run();
+	void run();
 
 private slots:
-    void onGetChildrenSucceeded(QList<Drive::RemoteFileDesc>);
-    void onGetChildrenFailed();
+	void onGetChildrenSucceeded(QList<Drive::RemoteFileDesc>);
+	void onGetChildrenFailed();
 
 private:
-    FileDownloader *downloader;
-    QString localFilePath;
+	FileDownloader *downloader;
+	QString localFilePath;
 };
 
 class RemoteFileCopiedEventHandler : public RemoteEventHandlerBase
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    RemoteFileCopiedEventHandler(RemoteFileEvent remoteEvent,
-        QObject *parent = 0);
+	RemoteFileCopiedEventHandler(RemoteFileEvent remoteEvent,
+		QObject *parent = 0);
 
 protected:
-    void run();
+	void run();
 
 private slots:
-    void onGetAncestorsSucceeded(QString);
-    void onGetAncestorsFailed(QString);
+	void onGetAncestorsSucceeded(QString);
+	void onGetAncestorsFailed(QString);
 
 private:
-    QString localSourcePath;
-    QString localTargetPath;
+	QString localSourcePath;
+	QString localTargetPath;
 
 };
 

@@ -10,25 +10,25 @@ set(CMAKE_AUTOMOC ON)
 find_package(Qt5Core)
 
 set(HEADERS
-    ApiTypes.h
-    AuthenticationService.h
-    DashboardService.h
-    ProfileService.h
-    FileUploader.h
-    FileDownloader.h
-    FilesService.h
-    NotificationService.h
+	ApiTypes.h
+	AuthenticationService.h
+	DashboardService.h
+	ProfileService.h
+	FileUploader.h
+	FileDownloader.h
+	FilesService.h
+	NotificationService.h
 )
 
 set(SOURCES
-    ApiTypes.cpp
-    AuthenticationService.cpp
-    DashboardService.cpp
-    ProfileService.cpp
-    FileUploader.cpp
-    FileDownloader.cpp
-    FilesService.cpp
-    NotificationService.cpp
+	ApiTypes.cpp
+	AuthenticationService.cpp
+	DashboardService.cpp
+	ProfileService.cpp
+	FileUploader.cpp
+	FileDownloader.cpp
+	FilesService.cpp
+	NotificationService.cpp
 )
 
 source_group(_h FILES ${HEADERS})
@@ -38,16 +38,16 @@ source_group(_res FILES ${QRC_RESOURCES})
 add_library(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${MOCED_RESOURCES})
 
 qt5_use_modules(${PROJECT_NAME}
-    Core
+	Core
 )
 
 target_link_libraries(${PROJECT_NAME}
-    Settings
-    Network
-    QsLog
-    Util
+	Settings
+	Network
+	QsLog
+	Util
 )
 
 if(UNIX)
-    set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS -fPIC)
+	set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS -fPIC)
 endif(UNIX)

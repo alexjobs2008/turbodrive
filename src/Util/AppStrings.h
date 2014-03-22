@@ -13,21 +13,21 @@ namespace Strings
 
 enum AppStringType
 {
-    CompanyName = 0,
-    AppName,
-    AppFullName,
-    WebSiteText,
-    Copyright
+	CompanyName = 0,
+	AppName,
+	AppFullName,
+	WebSiteText,
+	Copyright
 };
 
 static const char* appStrings[] =
 {
-    QT_TRANSLATE_NOOP(STRINGS_CONTEXT, "Assistent"),
-    QT_TRANSLATE_NOOP(STRINGS_CONTEXT, "Disk"),
-    QT_TRANSLATE_NOOP(STRINGS_CONTEXT, "Assistent.Disk"),
-    QT_TRANSLATE_NOOP(STRINGS_CONTEXT, "www.assistent.by"),
-    QT_TRANSLATE_NOOP(STRINGS_CONTEXT, "Copyright (c) 2013 Assistent, Inc.\n"
-                                       "All rights reserved.")
+	QT_TRANSLATE_NOOP(STRINGS_CONTEXT, "Assistent"),
+	QT_TRANSLATE_NOOP(STRINGS_CONTEXT, "Disk"),
+	QT_TRANSLATE_NOOP(STRINGS_CONTEXT, "Assistent.Disk"),
+	QT_TRANSLATE_NOOP(STRINGS_CONTEXT, "www.assistent.by"),
+	QT_TRANSLATE_NOOP(STRINGS_CONTEXT, "Copyright (c) 2013 Assistent, Inc.\n"
+									"All rights reserved.")
 };
 
 const QString getAppString(AppStringType type);

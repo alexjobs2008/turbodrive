@@ -15,24 +15,24 @@ typedef QSharedPointer<ProfileRestResource> ProfileRestResourceRef;
 
 class ProfileRestResource : public RestResource
 {
-    Q_OBJECT
-public:    
+	Q_OBJECT
+public:
 
-    static ProfileRestResourceRef create();
+	static ProfileRestResourceRef create();
 
-    void requestProfileData();
+	void requestProfileData();
 
-    virtual QString path() const;
-    virtual QString service() const;
-    virtual bool restricted() const;
+	virtual QString path() const;
+	virtual QString service() const;
+	virtual bool restricted() const;
 
 signals:
-    void profileDataReceived(const QJsonObject& data);
-    void profileDataError();
+	void profileDataReceived(const QJsonObject& data);
+	void profileDataError();
 
 private:
-    virtual bool processGetResponse(int status, const QByteArray& data,
-        const HeaderList& headers);
+	virtual bool processGetResponse(int status, const QByteArray& data,
+		const HeaderList& headers);
 
 
 };

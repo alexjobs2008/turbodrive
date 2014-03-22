@@ -10,11 +10,11 @@ set(CMAKE_AUTOMOC ON)
 find_package(Qt5Widgets)
 
 set(HEADERS
-    AnimatedSystemTrayIcon.h
+	AnimatedSystemTrayIcon.h
 )
 
 set(SOURCES
-    AnimatedSystemTrayIcon.cpp
+	AnimatedSystemTrayIcon.cpp
 )
 
 source_group(_h FILES ${HEADERS})
@@ -23,7 +23,7 @@ source_group(_cpp FILES ${SOURCES})
 add_library(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
 qt5_use_modules(${PROJECT_NAME}
-    Widgets
+	Widgets
 )
 
 IF(UNIX)

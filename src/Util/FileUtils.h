@@ -4,8 +4,8 @@
 #include <QtCore/QObject>
 
 #ifdef Q_OS_WIN
-    #define NOMINMAX
-    #include "Windows.h"
+	#define NOMINMAX
+	#include "Windows.h"
 #endif
 
 #define DISK_ROOT_PATH "#root/#disk"
@@ -15,43 +15,43 @@ namespace Drive
 
 class FileSystemHelper : public QObject
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    static FileSystemHelper& instance();
+	static FileSystemHelper& instance();
 
-    static void setWindowsFolderIcon(const QString& folderPath,
-                                     int iconNumber);
-    
-    static bool setFileModificationTimestamp(const QString& localPath,
-                                             uint modifiedAt);
+	static void setWindowsFolderIcon(const QString& folderPath,
+									int iconNumber);
 
-    static bool removeDirWithSubdirs(const QString &dirName,
-                                     bool notifyLocalWatcher = true);
+	static bool setFileModificationTimestamp(const QString& localPath,
+											uint modifiedAt);
+
+	static bool removeDirWithSubdirs(const QString &dirName,
+									bool notifyLocalWatcher = true);
 
 #ifdef Q_OS_WIN
-    static FILETIME toWinFileTime(const QDateTime &dateTime);
+	static FILETIME toWinFileTime(const QDateTime &dateTime);
 #endif
 
 private:
-    Q_DISABLE_COPY(FileSystemHelper)
-    explicit FileSystemHelper(QObject *parent = 0);
-    
+	Q_DISABLE_COPY(FileSystemHelper)
+	explicit FileSystemHelper(QObject *parent = 0);
+
 };
 
 class Utils : public QObject
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    static Utils& instance();
+	static Utils& instance();
 
-    static QString remotePathToLocalPath(const QString& remotePath,
-        bool addSeparapor = false);
+	static QString remotePathToLocalPath(const QString& remotePath,
+		bool addSeparapor = false);
 
-    static QString localPathToRemotePath(const QString& localPath);
+	static QString localPathToRemotePath(const QString& localPath);
 
 private:
-    explicit Utils(QObject *parent = 0);
-    Q_DISABLE_COPY(Utils)
+	explicit Utils(QObject *parent = 0);
+	Q_DISABLE_COPY(Utils)
 };
 
 

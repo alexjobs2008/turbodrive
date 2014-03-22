@@ -8,7 +8,7 @@ namespace Strings
 
 const QString getAppString(AppStringType type)
 {
-    return QObject::tr(appStrings[type]);
+	return QObject::tr(appStrings[type]);
 }
 
 }

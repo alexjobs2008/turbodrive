@@ -20,78 +20,78 @@ class QNetworkReply;
 
 class GeneralRestDispatcher : public QObject
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
 
-    enum Mode
-    {
-        Unauthorized,
-        Authorized
-    };
+	enum Mode
+	{
+		Unauthorized,
+		Authorized
+	};
 
-    enum ReconnectErrorReason
-    {
-        InvalidCredentials = 0,
-        OperationJustFailed
-    };
+	enum ReconnectErrorReason
+	{
+		InvalidCredentials = 0,
+		OperationJustFailed
+	};
 
-    static GeneralRestDispatcher& instance();
+	static GeneralRestDispatcher& instance();
 
-    void request(const RestResource::RequestRef& request);
-    void cancelAll();
-    void cancelAll(const RestResourceRef& resource);    
+	void request(const RestResource::RequestRef& request);
+	void cancelAll();
+	void cancelAll(const RestResourceRef& resource);
 
-    QUrl buildUrl(const QString& serviceName, const QString &path, const RestResource::ParamList &params = RestResource::ParamList()) const;
-    QUrl buildUrl(const RestResource* restResource);
+	QUrl buildUrl(const QString& serviceName, const QString &path, const RestResource::ParamList &params = RestResource::ParamList()) const;
+	QUrl buildUrl(const RestResource* restResource);
 
-    void setAuthToken(const QString& token);
-    void setWorkspaceId(int workspaceId);
+	void setAuthToken(const QString& token);
+	void setWorkspaceId(int workspaceId);
 
-    QList<QNetworkCookie> getCookies();
+	QList<QNetworkCookie> getCookies();
 
 signals:
-    void dispatcherAboutToBeAuthorized();
-    void dispatcherAuthorized();
-    void dispatcherUnauthorized();
-    void dispatcherReconnectFailed(GeneralRestDispatcher::ReconnectErrorReason);
-    void proxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*);
-    void cookiesReceived(const QList<QNetworkCookie> &cookies);
+	void dispatcherAboutToBeAuthorized();
+	void dispatcherAuthorized();
+	void dispatcherUnauthorized();
+	void dispatcherReconnectFailed(GeneralRestDispatcher::ReconnectErrorReason);
+	void proxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*);
+	void cookiesReceived(const QList<QNetworkCookie> &cookies);
 
 protected slots:
-    virtual void loadServices();
+	virtual void loadServices();
 
-private slots:    
-    void replyFinished(QNetworkReply* networkReply);
+private slots:
+	void replyFinished(QNetworkReply* networkReply);
 	void onSslErrors(QNetworkReply *reply, const QList<QSslError> & errors);
 
 private:
-    explicit GeneralRestDispatcher(QObject *parent = 0);
-    Q_DISABLE_COPY(GeneralRestDispatcher)
-    
-    void next();
-    void setMode(Mode newMode);
+	explicit GeneralRestDispatcher(QObject *parent = 0);
+	Q_DISABLE_COPY(GeneralRestDispatcher)
 
-    void cancelAll(QQueue<RestResource::RequestRef>& queue,
-        const RestResourceRef* restResource = 0);
-    
-    void cancelCurrent(RestService* service,
-        const RestResourceRef* restResource = 0);
+	void next();
+	void setMode(Mode newMode);
 
-    QNetworkRequest createRequest(RestService* service) const;
-    QUrlQuery createParams(RestResource::ParamList &params);
+	void cancelAll(QQueue<RestResource::RequestRef>& queue,
+		const RestResourceRef* restResource = 0);
 
-    void doOperation(RestResource::Operation operation, RestService* service);
+	void cancelCurrent(RestService* service,
+		const RestResourceRef* restResource = 0);
 
-    Mode mode;
-    RestNetworkAccessManager *networkAccessManager;
-    QHash<QString, RestService*> services;
-    QString authToken;
-    int workspaceId;
-    QDateTime authTimestamp;
+	QNetworkRequest createRequest(RestService* service) const;
+	QUrlQuery createParams(RestResource::ParamList &params);
 
-    QMutex requestMutex;
-    QMutex nextMutex;
-    QMutex cancelMutex;
+	void doOperation(RestResource::Operation operation, RestService* service);
+
+	Mode mode;
+	RestNetworkAccessManager *networkAccessManager;
+	QHash<QString, RestService*> services;
+	QString authToken;
+	int workspaceId;
+	QDateTime authTimestamp;
+
+	QMutex requestMutex;
+	QMutex nextMutex;
+	QMutex cancelMutex;
 };
 
 #endif // REST_DISPATCHER_H

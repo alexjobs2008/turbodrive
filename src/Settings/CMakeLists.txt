@@ -10,13 +10,13 @@ set(CMAKE_AUTOMOC ON)
 find_package(Qt5Core)
 
 set(HEADERS
-    settings.h
-    proxySettings.h
+	settings.h
+	proxySettings.h
 )
 
 set(SOURCES
-    settings.cpp
-    proxySettings.cpp
+	settings.cpp
+	proxySettings.cpp
 )
 
 source_group(_h FILES ${HEADERS})
@@ -25,7 +25,7 @@ source_group(_cpp FILES ${SOURCES})
 add_library(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
 qt5_use_modules(${PROJECT_NAME}
-    Core
+	Core
 )
 
 IF(UNIX)

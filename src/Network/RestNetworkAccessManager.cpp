@@ -5,44 +5,44 @@
 
 struct RestNetworkAccessManager::Data
 {
-    QList<QPointer<QNetworkReply> > replies;
+	QList<QPointer<QNetworkReply> > replies;
 };
 
 RestNetworkAccessManager::RestNetworkAccessManager(QObject *parent)
-    : QNetworkAccessManager(parent)
-    , data(new Data())
+	: QNetworkAccessManager(parent)
+	, data(new Data())
 {
-    connect(this, SIGNAL(finished(QNetworkReply*)),
-        this, SLOT(onFinished(QNetworkReply*)));
+	connect(this, SIGNAL(finished(QNetworkReply*)),
+		this, SLOT(onFinished(QNetworkReply*)));
 }
 
 RestNetworkAccessManager::~RestNetworkAccessManager()
 {
-    delete data;
+	delete data;
 }
 
 QNetworkReply* RestNetworkAccessManager::createRequest(Operation op,
-    const QNetworkRequest &request, QIODevice *outgoingData)
+	const QNetworkRequest &request, QIODevice *outgoingData)
 {
-    QNetworkReply* reply =
-        QNetworkAccessManager::createRequest(op, request, outgoingData);
-    
-    data->replies.append(reply);
+	QNetworkReply* reply =
+		QNetworkAccessManager::createRequest(op, request, outgoingData);
 
-    return reply;
+	data->replies.append(reply);
+
+	return reply;
 }
 
 void RestNetworkAccessManager::onFinished(QNetworkReply* reply)
 {
-    data->replies.removeOne(reply);
+	data->replies.removeOne(reply);
 }
 
 void RestNetworkAccessManager::abortAllRequests()
 {
-    while(data->replies.size())
-    {
-        QPointer<QNetworkReply> reply = data->replies.takeFirst();
-        if(!(reply.isNull() || reply->isFinished()))
-            reply->abort();
-    }
+	while(data->replies.size())
+	{
+		QPointer<QNetworkReply> reply = data->replies.takeFirst();
+		if(!(reply.isNull() || reply->isFinished()))
+			reply->abort();
+	}
 }

@@ -16,109 +16,109 @@ LocalCache& LocalCache::instance()
 }
 
 LocalCache::LocalCache(QObject *parent)
-    : QObject(parent)
-    , diskId(0)
+	: QObject(parent)
+	, diskId(0)
 {
 }
 
 void LocalCache::clear()
 {
-    QMutexLocker locker(&mutex);
-    idMap.clear();
-    pathMap.clear();
+	QMutexLocker locker(&mutex);
+	idMap.clear();
+	pathMap.clear();
 }
 
 void LocalCache::log(const QString& fileName)
 {
-    QString fname = fileName;
-    if (fname.isEmpty())
-    {
-        QDir(QCoreApplication::applicationDirPath()).filePath("cacheLog.txt");
-    }
+	QString fname = fileName;
+	if (fname.isEmpty())
+	{
+		QDir(QCoreApplication::applicationDirPath()).filePath("cacheLog.txt");
+	}
 
-    QFile logFile;
-    logFile.setFileName(
-        QDir(QCoreApplication::applicationDirPath()).filePath("eventLog.txt"));
+	QFile logFile;
+	logFile.setFileName(
+		QDir(QCoreApplication::applicationDirPath()).filePath("eventLog.txt"));
 
-    logFile.remove();
-    logFile.open(QIODevice::WriteOnly | QIODevice::Text);
+	logFile.remove();
+	logFile.open(QIODevice::WriteOnly | QIODevice::Text);
 
-    QMapIterator<QString, RemoteFileDesc> i(pathMap);
-    while (i.hasNext())
-    {
-        i.next();
-        QString line = i.key();
-        line.append(": ").append(i.value().id).append("\n");
-        logFile.write(line.toUtf8());
-    }
+	QMapIterator<QString, RemoteFileDesc> i(pathMap);
+	while (i.hasNext())
+	{
+		i.next();
+		QString line = i.key();
+		line.append(": ").append(i.value().id).append("\n");
+		logFile.write(line.toUtf8());
+	}
 
-    logFile.flush();
-    logFile.close();
+	logFile.flush();
+	logFile.close();
 }
 
 int LocalCache::id(const QString& remotePath, bool forParent)
 {
-    QMutexLocker locker(&mutex);
-    
-    QString path = remotePath;
+	QMutexLocker locker(&mutex);
 
-    if (forParent)
-    {
-        QStringList list = path.split("/", QString::SkipEmptyParts);
-        list.removeLast();
-        path = list.join("/");
-        path.append("/");
+	QString path = remotePath;
 
-        QLOG_TRACE() << "Local cache: checking id for " << path;
-    }
-    
-    if (pathMap.contains(path))
-    {
-        QLOG_TRACE() << "Local cache: found: " << pathMap.value(path).id;
-        return pathMap.value(path).id;
-    }
-    else
-    {
-        QLOG_ERROR() << "LocalCache: RemoteFileDesc not found for path "
-            << remotePath;
+	if (forParent)
+	{
+		QStringList list = path.split("/", QString::SkipEmptyParts);
+		list.removeLast();
+		path = list.join("/");
+		path.append("/");
 
-        return 0;
-    }
+		QLOG_TRACE() << "Local cache: checking id for " << path;
+	}
+
+	if (pathMap.contains(path))
+	{
+		QLOG_TRACE() << "Local cache: found: " << pathMap.value(path).id;
+		return pathMap.value(path).id;
+	}
+	else
+	{
+		QLOG_ERROR() << "LocalCache: RemoteFileDesc not found for path "
+			<< remotePath;
+
+		return 0;
+	}
 }
 
 RemoteFileDesc LocalCache::fileDesc(const QString& remotePath, bool forParent)
 {
-    QMutexLocker locker(&mutex);
-    
-    QString path = remotePath;
+	QMutexLocker locker(&mutex);
 
-    if (forParent)
-    {
-        QStringList list = path.split("/", QString::SkipEmptyParts);
-        list.removeLast();
-        path = list.join("/");
-    }
+	QString path = remotePath;
 
-//     if (!path.startsWith("/"))
-//     {
-//         path.prepend("/");
-//     }
+	if (forParent)
+	{
+		QStringList list = path.split("/", QString::SkipEmptyParts);
+		list.removeLast();
+		path = list.join("/");
+	}
 
-    if (pathMap.contains(path))
-    {
-        return pathMap.value(path);
-    }
-    else
-    {
-        QLOG_ERROR() << "LocalCache: RemoteFileDesc not found for path "
-            << remotePath;
-        
-        RemoteFileDesc invalidDesc;
-        invalidDesc.id = 0;
-        invalidDesc.parentId = 0;
-        invalidDesc.name = QString();
-        return invalidDesc;
-    }
+//	if (!path.startsWith("/"))
+//	{
+//		path.prepend("/");
+//	}
+
+	if (pathMap.contains(path))
+	{
+		return pathMap.value(path);
+	}
+	else
+	{
+		QLOG_ERROR() << "LocalCache: RemoteFileDesc not found for path "
+			<< remotePath;
+
+		RemoteFileDesc invalidDesc;
+		invalidDesc.id = 0;
+		invalidDesc.parentId = 0;
+		invalidDesc.name = QString();
+		return invalidDesc;
+	}
 }
 
 void LocalCache::addDiskItem()
@@ -128,69 +128,69 @@ void LocalCache::addDiskItem()
 
 void LocalCache::onNewFileDesc(Drive::RemoteFileDesc fileDesc)
 {
-    QMutexLocker locker(&mutex);
-    
-    if (!diskId)
-    {
-        diskId = fileDesc.parentId;
-        RemoteFileDesc diskDesc;
-        diskDesc.id = diskId;
-        diskDesc.type = RemoteFileDesc::Folder;
-        diskDesc.parentId = -1;
-        diskDesc.name = "#root/#disk";
+	QMutexLocker locker(&mutex);
 
-        idMap.insert(diskDesc.id, diskDesc);
-        pathMap.insert(diskDesc.name, diskDesc);
+	if (!diskId)
+	{
+		diskId = fileDesc.parentId;
+		RemoteFileDesc diskDesc;
+		diskDesc.id = diskId;
+		diskDesc.type = RemoteFileDesc::Folder;
+		diskDesc.parentId = -1;
+		diskDesc.name = "#root/#disk";
 
-        QLOG_TRACE() << "LocalCache: disk id: " << diskId;
-    }
+		idMap.insert(diskDesc.id, diskDesc);
+		pathMap.insert(diskDesc.name, diskDesc);
 
-    QLOG_TRACE() << "LocaCache: new RemoteFileDesc:";
-    fileDesc.log();
-    
-    idMap.insert(fileDesc.id, fileDesc);
+		QLOG_TRACE() << "LocalCache: disk id: " << diskId;
+	}
 
-    int currentParent = 0;
-    QString path = fileDesc.name;
-    RemoteFileDesc currentDesc = fileDesc;
+	QLOG_TRACE() << "LocaCache: new RemoteFileDesc:";
+	fileDesc.log();
 
-    while (currentParent != -1)
-    {   
-        if (idMap.contains(currentDesc.parentId))
-        {
-            currentDesc = idMap.value(currentDesc.parentId);
+	idMap.insert(fileDesc.id, fileDesc);
 
-            path.prepend("/");
-            path.prepend(currentDesc.name);
+	int currentParent = 0;
+	QString path = fileDesc.name;
+	RemoteFileDesc currentDesc = fileDesc;
 
-            currentParent = currentDesc.id;
+	while (currentParent != -1)
+	{
+		if (idMap.contains(currentDesc.parentId))
+		{
+			currentDesc = idMap.value(currentDesc.parentId);
 
-            if (currentParent == diskId)
-                break;
-        }
-        else
-        {
-            currentParent = -1;
-        }    
-    }
+			path.prepend("/");
+			path.prepend(currentDesc.name);
 
-    if (currentParent == -1)
-    {
-        QLOG_ERROR() << "LocalCache: cannot find parent path for RemoteFileDesc:";
-        fileDesc.log();
-    }
-    else
-    {
-        if (fileDesc.type == RemoteFileDesc::Folder)
-        {
-            path.append("/");
-        }
-        
-        QLOG_TRACE() << "LocalCache: parent path found: " << path;
-        pathMap.insert(path, fileDesc);
-    }
-    
-    
+			currentParent = currentDesc.id;
+
+			if (currentParent == diskId)
+				break;
+		}
+		else
+		{
+			currentParent = -1;
+		}
+	}
+
+	if (currentParent == -1)
+	{
+		QLOG_ERROR() << "LocalCache: cannot find parent path for RemoteFileDesc:";
+		fileDesc.log();
+	}
+	else
+	{
+		if (fileDesc.type == RemoteFileDesc::Folder)
+		{
+			path.append("/");
+		}
+
+		QLOG_TRACE() << "LocalCache: parent path found: " << path;
+		pathMap.insert(path, fileDesc);
+	}
+
+
 }
 
 }

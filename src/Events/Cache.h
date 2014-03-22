@@ -16,32 +16,32 @@ class LocalFileEventExclusion;
 
 class LocalCache : public QObject
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
 
-    static LocalCache& instance();
+	static LocalCache& instance();
 
-    LocalCache(QObject *parent = 0);
+	LocalCache(QObject *parent = 0);
 
-    int id(const QString& remotePath, bool forParent = false);
-    RemoteFileDesc fileDesc(const QString& remotePath, bool forParent = false);
+	int id(const QString& remotePath, bool forParent = false);
+	RemoteFileDesc fileDesc(const QString& remotePath, bool forParent = false);
 
-    void clear();
-    void addDiskItem();
+	void clear();
+	void addDiskItem();
 
-    void log(const QString& fileName = QString());
+	void log(const QString& fileName = QString());
 
 public slots:
-    void onNewFileDesc(Drive::RemoteFileDesc fileDesc);
-    //void onRemoveFileDesc()
+	void onNewFileDesc(Drive::RemoteFileDesc fileDesc);
+	//void onRemoveFileDesc()
 
 private:
-    QMap<QString, RemoteFileDesc> pathMap;
-    QMap<int, RemoteFileDesc> idMap;
+	QMap<QString, RemoteFileDesc> pathMap;
+	QMap<int, RemoteFileDesc> idMap;
 
-    int diskId;
-    
-    QMutex mutex;
+	int diskId;
+
+	QMutex mutex;
 };
 
 }

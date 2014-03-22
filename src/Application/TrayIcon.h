@@ -12,24 +12,24 @@ namespace Drive
 
 class TrayIcon : public AnimatedSystemTrayIcon
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    static TrayIcon& instance();
+	static TrayIcon& instance();
 
 public slots:
-    void setState(Drive::State state);
-    void onProcessingProgress(int, int);
+	void setState(Drive::State state);
+	void onProcessingProgress(int, int);
 
-    Drive::State getState() const;
+	Drive::State getState() const;
 
 private:
-    Q_DISABLE_COPY(TrayIcon)
-    explicit TrayIcon(QObject *parent = 0);
-    void loadStates();
+	Q_DISABLE_COPY(TrayIcon)
+	explicit TrayIcon(QObject *parent = 0);
+	void loadStates();
 
-    QMap<Drive::State, AnimatedSystemTrayIcon::State*> statesMap;
-    Drive::State _state;
-    QString baseToolTip;
+	QMap<Drive::State, AnimatedSystemTrayIcon::State*> statesMap;
+	Drive::State _state;
+	QString baseToolTip;
 };
 
 }

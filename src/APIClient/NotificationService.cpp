@@ -15,10 +15,10 @@ namespace Drive
 
 NotificationResourceRef NotificationResource::create()
 {
-    NotificationResourceRef resource =
-        RestResource::create<NotificationResource>();
+	NotificationResourceRef resource =
+		RestResource::create<NotificationResource>();
 
-    return resource;
+	return resource;
 }
 
 void NotificationResource::listenRemoteFileEvents()
@@ -26,58 +26,58 @@ void NotificationResource::listenRemoteFileEvents()
 	QLOG_INFO() << "Listening for remote file events...";
 
  	HeaderList headers;
-    ParamList params;
-    QByteArray idValue = AppController::instance().serviceChannel().toLatin1();
+	ParamList params;
+	QByteArray idValue = AppController::instance().serviceChannel().toLatin1();
 
-    if (!lastEventTimestamp.isEmpty())
-    {
-        idValue.prepend(':').prepend(lastEventTimestamp.toLatin1());
-    }
+	if (!lastEventTimestamp.isEmpty())
+	{
+		idValue.prepend(':').prepend(lastEventTimestamp.toLatin1());
+	}
 
-    params.append(ParamPair("identifier", idValue));
+	params.append(ParamPair("identifier", idValue));
 	doOperation(QNetworkAccessManager::GetOperation, params, headers);
 }
 
 QString NotificationResource::path() const
 {
-    return "/";
+	return "/";
 }
 
 QString NotificationResource::service() const
 {
-    return NOTIFICATION_SERVICE_NAME;
+	return NOTIFICATION_SERVICE_NAME;
 }
 
 bool NotificationResource::restricted() const
 {
-    return false;
+	return false;
 }
 
 bool NotificationResource::processGetResponse(int status,
-                                              const QByteArray& data,
-                                              const HeaderList& headers)
+											const QByteArray& data,
+											const HeaderList& headers)
 {
-    if (status != 200)
-    {
-        QLOG_ERROR() << "NotificationResource error: " << status;
-        return true;
-    }
-    
-    QLOG_TRACE() << "RPL: " << data;
+	if (status != 200)
+	{
+		QLOG_ERROR() << "NotificationResource error: " << status;
+		return true;
+	}
+
+	QLOG_TRACE() << "RPL: " << data;
 
 	if (data.trimmed().isEmpty())
-    {
-        listenRemoteFileEvents();
+	{
+		listenRemoteFileEvents();
 		return true;
-    }
+	}
 
 	QJsonDocument doc = QJsonDocument::fromJson(data);
 	if (!doc.isArray())
-    {
-        listenRemoteFileEvents();
+	{
+		listenRemoteFileEvents();
 		return true;
-    }
-	
+	}
+
 	QJsonArray array = doc.array();
 
 	QLOG_TRACE() << "RPL items: " << array.size();
@@ -94,21 +94,21 @@ bool NotificationResource::processGetResponse(int status,
 
 			if (remoteEvent.isValid())
 			{
-                LocalCache::instance().onNewFileDesc(remoteEvent.fileDesc);
+				LocalCache::instance().onNewFileDesc(remoteEvent.fileDesc);
 
 				emit newRemoteFileEvent(remoteEvent);
-                lastEventTimestamp = remoteEvent.timestamp;
+				lastEventTimestamp = remoteEvent.timestamp;
 			}
-            else
-            {
-                QLOG_ERROR() << "NotificationResource: remote event is not valid";
-            }
+			else
+			{
+				QLOG_ERROR() << "NotificationResource: remote event is not valid";
+			}
 		}
 	}
 
-    listenRemoteFileEvents();
-	
-    return true;
+	listenRemoteFileEvents();
+
+	return true;
 }
 
 }

@@ -7,76 +7,76 @@
 #include <QtWidgets/QWidget>
 
 RealtimeStyleSheetLoader::RealtimeStyleSheetLoader(QObject *parent,
-                                                   const QString& path)
-    : QObject(parent)
-    , watcher(new QFileSystemWatcher(this))
-    , path(path)
+												const QString& path)
+	: QObject(parent)
+	, watcher(new QFileSystemWatcher(this))
+	, path(path)
 {
-    if (path.isEmpty())
-        this->path = QCoreApplication::applicationDirPath();
+	if (path.isEmpty())
+		this->path = QCoreApplication::applicationDirPath();
 
-    QLOG_INFO() << "path:" << path;
+	QLOG_INFO() << "path:" << path;
 
-    watcher->setObjectName("watcher");
-    
-    QMetaObject::connectSlotsByName(this);
+	watcher->setObjectName("watcher");
+
+	QMetaObject::connectSlotsByName(this);
 }
 
 bool RealtimeStyleSheetLoader::addWidget(QWidget *widget)
 {
-    QString watchPath = QString("%1/%2")
-        .arg(path)
-        .arg(constructFileName(widget));
-    
-    bool watching = watcher->addPath(watchPath);
+	QString watchPath = QString("%1/%2")
+		.arg(path)
+		.arg(constructFileName(widget));
 
-    if (watching)
-    {
-        widgets.insert(watchPath, widget);
-        QLOG_INFO() << "Watching:" << watchPath;
-    }
-    else
-    {
-        QLOG_INFO() << "Failed to watch:" << watchPath;
-    }
+	bool watching = watcher->addPath(watchPath);
 
-    return watching;
+	if (watching)
+	{
+		widgets.insert(watchPath, widget);
+		QLOG_INFO() << "Watching:" << watchPath;
+	}
+	else
+	{
+		QLOG_INFO() << "Failed to watch:" << watchPath;
+	}
+
+	return watching;
 }
 
 void RealtimeStyleSheetLoader::on_watcher_fileChanged(const QString &path)
-{    
-    if (widgets.contains(path))
-    {
-        QFile file(path);
-        if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-            return;
+{
+	if (widgets.contains(path))
+	{
+		QFile file(path);
+		if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+			return;
 
-        widgets.value(path)->setStyleSheet(file.readAll());
-        file.close();
-    }
+		widgets.value(path)->setStyleSheet(file.readAll());
+		file.close();
+	}
 }
 
 QString RealtimeStyleSheetLoader::constructFileName(QWidget *widget)
 {
-    QString suffix;
+	QString suffix;
 
 #ifdef Q_OS_WIN
-    suffix = "win";
+	suffix = "win";
 #endif
 
 #ifdef Q_OS_MACX
-    suffix = "mac";
+	suffix = "mac";
 #endif
 
 #ifdef Q_OS_LINUX
-    suffix = "linux";
+	suffix = "linux";
 #endif
 
-    QString classNameNormalized = widget->metaObject()->className();
-    classNameNormalized.replace(":", "-");
+	QString classNameNormalized = widget->metaObject()->className();
+	classNameNormalized.replace(":", "-");
 
-    return QString("%1-%2.css")
-        .arg(classNameNormalized)
-        .arg(suffix);
+	return QString("%1-%2.css")
+		.arg(classNameNormalized)
+		.arg(suffix);
 
 }

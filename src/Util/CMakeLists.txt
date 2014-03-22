@@ -12,13 +12,13 @@ add_definitions(-DUNICODE)
 find_package(Qt5Core)
 
 set(HEADERS
-    AppStrings.h
-    FileUtils.h
+	AppStrings.h
+	FileUtils.h
 )
 
 set(SOURCES
-    AppStrings.cpp
-    FileUtils.cpp
+	AppStrings.cpp
+	FileUtils.cpp
 )
 
 
@@ -29,15 +29,15 @@ source_group(_res FILES ${QRC_RESOURCES})
 add_library(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${MOCED_RESOURCES})
 
 qt5_use_modules(${PROJECT_NAME}
-    Core
+	Core
 )
 
 target_link_libraries(${PROJECT_NAME}
-    Events
+	Events
 )
 
 if(UNIX)
-    set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS -fPIC)
+	set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS -fPIC)
 endif(UNIX)
 
 #set_property(TARGET ${PROJECT_NAME} PROPERTY FOLDER "libs")

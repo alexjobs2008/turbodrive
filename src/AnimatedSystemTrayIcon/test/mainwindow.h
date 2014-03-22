@@ -7,18 +7,18 @@ class AnimatedSystemTrayIcon;
 
 class MainWindow : public QMainWindow
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+	MainWindow(QWidget *parent = 0);
+	~MainWindow();
 
 protected:
-    void timerEvent(QTimerEvent * event);
+	void timerEvent(QTimerEvent * event);
 
 private:
-    AnimatedSystemTrayIcon *trayIcon;
-    int counter;
+	AnimatedSystemTrayIcon *trayIcon;
+	int counter;
 };
 
 #endif // MAINWINDOW_H

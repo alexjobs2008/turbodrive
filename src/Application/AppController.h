@@ -20,71 +20,71 @@ class LocalCache;
 
 class AppController : public QMainWindow
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    static AppController& instance();
-    
-    State state() const;
-    
-    QString authToken() const;
-    void setAuthToken(const QString &token);
+	static AppController& instance();
 
-    ProfileData profileData() const;
-    void setProfileData(const ProfileData& data);
+	State state() const;
 
-    const QString& serviceChannel() const;
-    
+	QString authToken() const;
+	void setAuthToken(const QString &token);
+
+	ProfileData profileData() const;
+	void setProfileData(const ProfileData& data);
+
+	const QString& serviceChannel() const;
+
 public slots:
-    void setState(State newState);
+	void setState(State newState);
 
 signals:
-    void stateChanged(Drive::State state);
-    void processingProgress(int, int);
-    void profileDataUpdated(const ProfileData& data);
+	void stateChanged(Drive::State state);
+	void processingProgress(int, int);
+	void profileDataUpdated(const ProfileData& data);
 
 private slots:
-    void on_actionOpenFolder_triggered();
-    void on_actionPause_triggered();
-    void on_actionResume_triggered();
-    void on_actionPreferences_triggered();
-    void on_actionExit_triggered();
+	void on_actionOpenFolder_triggered();
+	void on_actionPause_triggered();
+	void on_actionResume_triggered();
+	void on_actionPreferences_triggered();
+	void on_actionExit_triggered();
 
-    void on_trayIcon_activated(QSystemTrayIcon::ActivationReason reason);
-    void on_settingsWidget_logout();
+	void on_trayIcon_activated(QSystemTrayIcon::ActivationReason reason);
+	void on_settingsWidget_logout();
 
-    void onLoginFinished();
-    void onQueueProcessing();
-    void onQueueFinished();
+	void onLoginFinished();
+	void onQueueProcessing();
+	void onQueueFinished();
 
-    void onProcessingProgress(int, int);
+	void onProcessingProgress(int, int);
 
 private:
-    Q_DISABLE_COPY(AppController)
-    explicit AppController(QWidget *parent = 0);
-    ~AppController();
+	Q_DISABLE_COPY(AppController)
+	explicit AppController(QWidget *parent = 0);
+	~AppController();
 
-    void createActions();
-    void createTrayIcon();
-    void createSettingsWidget();
+	void createActions();
+	void createTrayIcon();
+	void createSettingsWidget();
 
 	void createFolder();
 
-    QSharedPointer<SettingsWidget> settingsWidget;    
+	QSharedPointer<SettingsWidget> settingsWidget;
 
-    QMenu *trayMenu;
-    
-    QAction *actionOpenFolder;
-    QAction *actionPause;
-    QAction *actionResume;
-    QAction *actionPreferences;
-    QAction *actionExit;
+	QMenu *trayMenu;
 
-    State currentState;
+	QAction *actionOpenFolder;
+	QAction *actionPause;
+	QAction *actionResume;
+	QAction *actionPreferences;
+	QAction *actionExit;
 
-    ProfileData currentProfileData;
-    QString currentAuthToken;
-    Syncer *syncer;
+	State currentState;
+
+	ProfileData currentProfileData;
+	QString currentAuthToken;
+	Syncer *syncer;
 };
 
 }

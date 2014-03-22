@@ -16,14 +16,14 @@ namespace Drive
 
 LocalFileEventNotifier& LocalFileEventNotifier::instance()
 {
-    static LocalFileEventNotifier myself;
-    return myself;
+	static LocalFileEventNotifier myself;
+	return myself;
 }
 
 LocalFileEventNotifier::LocalFileEventNotifier(QObject *parent)
 	: QObject(parent)
-    , listener(0)
-{	
+	, listener(0)
+{
 }
 
 LocalFileEventNotifier::~LocalFileEventNotifier()
@@ -32,58 +32,58 @@ LocalFileEventNotifier::~LocalFileEventNotifier()
 
 void LocalFileEventNotifier::setFolder()
 {
-    if (listener)
-        delete listener;
+	if (listener)
+		delete listener;
 
-    exclusions.clear();
-    
-    listener = new LocalListener(this);
+	exclusions.clear();
 
-    connect(listener, SIGNAL(newLocalFileEvent(LocalFileEvent)),
-        this, SLOT(onNewLocalFileEvent(LocalFileEvent)));
+	listener = new LocalListener(this);
 
-    watchID = fileWatcher.addWatch(Settings::instance()
-        .get(Settings::folderPath).toString().toStdString(), listener, true);	
+	connect(listener, SIGNAL(newLocalFileEvent(LocalFileEvent)),
+		this, SLOT(onNewLocalFileEvent(LocalFileEvent)));
+
+	watchID = fileWatcher.addWatch(Settings::instance()
+		.get(Settings::folderPath).toString().toStdString(), listener, true);
 }
 
 void LocalFileEventNotifier::stop()
 {
-    fileWatcher.removeWatch(watchID);
+	fileWatcher.removeWatch(watchID);
 }
 
 // void LocalFileEventNotifier::addExclusion(const QString& localPath)
 // {
-//     QLOG_TRACE() << "Adding local file events exclusion:" << localPath;
-//     exclusions.insert(localPath);
+//	QLOG_TRACE() << "Adding local file events exclusion:" << localPath;
+//	exclusions.insert(localPath);
 // }
-// 
+//
 // void LocalFileEventNotifier::removeExclusion(const QString& localPath)
 // {
-//     QLOG_TRACE() << "Removing local file events exclusion:" << localPath;
-//     exclusions.remove(localPath);
+//	QLOG_TRACE() << "Removing local file events exclusion:" << localPath;
+//	exclusions.remove(localPath);
 // }
 
 void LocalFileEventNotifier::onNewLocalFileEvent(const LocalFileEvent& event)
 {
-    QString localPath = QDir::toNativeSeparators(event.dir)
-        .append(QDir::toNativeSeparators(event.filePath));
+	QString localPath = QDir::toNativeSeparators(event.dir)
+		.append(QDir::toNativeSeparators(event.filePath));
 
-    QLOG_TRACE() << "LocalFileEventNotifier: New local file event:";
-    event.log();
+	QLOG_TRACE() << "LocalFileEventNotifier: New local file event:";
+	event.log();
 
-    // "Folder is modified" local file event should be ignored:
-    if (event.type == LocalFileEvent::Modified)
-    {
-        QFileInfo fileInfo(localPath);
-        if (fileInfo.exists())
-            if (fileInfo.isDir())
-            {
-                QLOG_TRACE() << "LocalFileEventNotifier: ignoring the event";
-                return;
-            }
-    }
+	// "Folder is modified" local file event should be ignored:
+	if (event.type == LocalFileEvent::Modified)
+	{
+		QFileInfo fileInfo(localPath);
+		if (fileInfo.exists())
+			if (fileInfo.isDir())
+			{
+				QLOG_TRACE() << "LocalFileEventNotifier: ignoring the event";
+				return;
+			}
+	}
 
-    emit newLocalFileEvent(event);
+	emit newLocalFileEvent(event);
 }
 
 
@@ -96,16 +96,16 @@ LocalListener::LocalListener(QObject *parent)
 }
 
 void LocalListener::handleFileAction(efsw::WatchID watchid,
-                                     const std::string& dir,
-                                     const std::string& filename,
-                                     efsw::Action action,
-                                     std::string oldFilename)
+									const std::string& dir,
+									const std::string& filename,
+									efsw::Action action,
+									std::string oldFilename)
 {
-    LocalFileEvent localEvent;
-    localEvent.dir = QString::fromStdString(dir);
-    localEvent.filePath = QString::fromStdString(filename);
-    localEvent.oldFileName = QString::fromStdString(oldFilename);
-	
+	LocalFileEvent localEvent;
+	localEvent.dir = QString::fromStdString(dir);
+	localEvent.filePath = QString::fromStdString(filename);
+	localEvent.oldFileName = QString::fromStdString(oldFilename);
+
 	switch( action )
 	{
 	case efsw::Actions::Add:
@@ -122,11 +122,11 @@ void LocalListener::handleFileAction(efsw::WatchID watchid,
 		break;
 	default:
 		QLOG_ERROR() << "Unknown local file event type.";
-        Q_ASSERT(false);
-        return;
+		Q_ASSERT(false);
+		return;
 	}
-    
-    emit newLocalFileEvent(localEvent);
+
+	emit newLocalFileEvent(localEvent);
 }
 
 }

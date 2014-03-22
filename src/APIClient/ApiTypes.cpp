@@ -16,12 +16,12 @@ namespace
 {
 
 QVariant objectValue(const QJsonObject& dataObject,
-                     const QString& paramName,
-                     const QVariant defaultValue = QVariant())
+					const QString& paramName,
+					const QVariant defaultValue = QVariant())
 {
 	if (dataObject.contains(paramName))
 	{
-		QJsonValue value = dataObject.value(paramName);        
+		QJsonValue value = dataObject.value(paramName);
 		switch (value.type())
 		{
 		case QJsonValue::Null:
@@ -76,226 +76,226 @@ const QString ProfileData::paramWorkspaces("workspaces");
 
 UserGroup UserGroup::fromJson(const QJsonObject& jsonObject)
 {
-    UserGroup userGroup;
+	UserGroup userGroup;
 
-    userGroup.id = objectValue(jsonObject, paramId, QString()).toString();
-    userGroup.name = objectValue(jsonObject, paramName, QString()).toString();
+	userGroup.id = objectValue(jsonObject, paramId, QString()).toString();
+	userGroup.name = objectValue(jsonObject, paramName, QString()).toString();
 
-    return userGroup;
+	return userGroup;
 }
 
 bool UserGroup::isValid() const
 {
-    return !id.isEmpty() && !name.isEmpty();
+	return !id.isEmpty() && !name.isEmpty();
 }
 
 Workspace Workspace::fromJson(const QJsonObject& jsonObject)
 {
-    Workspace workspace;
+	Workspace workspace;
 
-    workspace.id = objectValue(jsonObject, paramId, 0).toInt();
-    workspace.name = objectValue(jsonObject, paramName, QString()).toString();
-    workspace.pubId =
-        objectValue(jsonObject, paramPubId, QString()).toString();
+	workspace.id = objectValue(jsonObject, paramId, 0).toInt();
+	workspace.name = objectValue(jsonObject, paramName, QString()).toString();
+	workspace.pubId =
+		objectValue(jsonObject, paramPubId, QString()).toString();
 
-    workspace.userChannel = QString("%1%2")
-        .arg(RPL_CHANNEL_PREFIX)
-        .arg(objectValue(jsonObject, paramUserChannel, QString()).toString())
-        .arg(RPL_CHANNEL_POSTFIX);
-    
-    workspace.serviceChannel = QString("%1%2%3")
-        .arg(RPL_CHANNEL_PREFIX)
-        .arg(objectValue(jsonObject, paramServiceChannel,
-            QString()).toString())
-        .arg(RPL_CHANNEL_POSTFIX);
-    
+	workspace.userChannel = QString("%1%2")
+		.arg(RPL_CHANNEL_PREFIX)
+		.arg(objectValue(jsonObject, paramUserChannel, QString()).toString())
+		.arg(RPL_CHANNEL_POSTFIX);
 
-    if (jsonObject.contains(paramGroups))
-    {
-        if (jsonObject.value(paramGroups).type() == QJsonValue::Object)
-        {
-            QJsonObject groupsObject =
-                jsonObject.value(paramGroups).toObject();
+	workspace.serviceChannel = QString("%1%2%3")
+		.arg(RPL_CHANNEL_PREFIX)
+		.arg(objectValue(jsonObject, paramServiceChannel,
+			QString()).toString())
+		.arg(RPL_CHANNEL_POSTFIX);
 
-            QStringList list =
-                jsonObject.value(paramGroups).toObject().keys();
 
-            for (int i = 0; i < list.size(); i++)
-            {
-                QJsonValue arrayValue = groupsObject.value(list.at(i));
+	if (jsonObject.contains(paramGroups))
+	{
+		if (jsonObject.value(paramGroups).type() == QJsonValue::Object)
+		{
+			QJsonObject groupsObject =
+				jsonObject.value(paramGroups).toObject();
 
-                if (arrayValue.type() == QJsonValue::Object)
-                {
-                    UserGroup userGroup =
-                        UserGroup::fromJson(arrayValue.toObject());
+			QStringList list =
+				jsonObject.value(paramGroups).toObject().keys();
 
-                    if (userGroup.isValid())
-                    {
-                        workspace.groups << userGroup;
-                    }
-                }
-            }
-        }
-    }
+			for (int i = 0; i < list.size(); i++)
+			{
+				QJsonValue arrayValue = groupsObject.value(list.at(i));
 
-    return workspace;
+				if (arrayValue.type() == QJsonValue::Object)
+				{
+					UserGroup userGroup =
+						UserGroup::fromJson(arrayValue.toObject());
+
+					if (userGroup.isValid())
+					{
+						workspace.groups << userGroup;
+					}
+				}
+			}
+		}
+	}
+
+	return workspace;
 }
 
 bool Workspace::isValid() const
 {
-    return id
-        && !name.isEmpty()
-        && !serviceChannel.isEmpty()
-        && groups.size();
+	return id
+		&& !name.isEmpty()
+		&& !serviceChannel.isEmpty()
+		&& groups.size();
 }
 
 // ============================================================================
 
 ProfileData ProfileData::fromJson(const QJsonObject& jsonObject)
 {
-    ProfileData profileData;
+	ProfileData profileData;
 
-    profileData.id =
-        objectValue(jsonObject, paramId, QString()).toString();
-    profileData.email =
-        objectValue(jsonObject, paramEmail, QString()).toString();
-    profileData.firstName =
-        objectValue(jsonObject, paramFirstName, QString()).toString();
-    profileData.lastName =
-        objectValue(jsonObject, paramLastName, QString()).toString();
-    profileData.middleName =
-        objectValue(jsonObject, paramMiddleName, QString()).toString();
-    profileData.phone =
-        objectValue(jsonObject, paramPhone, QString()).toString();
-    profileData.avatarUrl =
-        objectValue(jsonObject, paramAvatar, QString()).toString();
-    profileData.avatar = QPixmap();
-    profileData.source =
-        objectValue(jsonObject, paramSource, QString()).toString();
+	profileData.id =
+		objectValue(jsonObject, paramId, QString()).toString();
+	profileData.email =
+		objectValue(jsonObject, paramEmail, QString()).toString();
+	profileData.firstName =
+		objectValue(jsonObject, paramFirstName, QString()).toString();
+	profileData.lastName =
+		objectValue(jsonObject, paramLastName, QString()).toString();
+	profileData.middleName =
+		objectValue(jsonObject, paramMiddleName, QString()).toString();
+	profileData.phone =
+		objectValue(jsonObject, paramPhone, QString()).toString();
+	profileData.avatarUrl =
+		objectValue(jsonObject, paramAvatar, QString()).toString();
+	profileData.avatar = QPixmap();
+	profileData.source =
+		objectValue(jsonObject, paramSource, QString()).toString();
 
-    profileData.createdAt = QDateTime::fromTime_t(
-        objectValue(jsonObject, paramCreatedAt, 0).toUInt());
-    profileData.modifiedAt = QDateTime::fromTime_t(
-        objectValue(jsonObject, paramModifiedAt, 0).toUInt());
-    profileData.isActive =
-        objectValue(jsonObject, paramIsActive, false).toBool();
-    profileData.isDeleted =
-        objectValue(jsonObject, paramIsDeleted, true).toBool();
+	profileData.createdAt = QDateTime::fromTime_t(
+		objectValue(jsonObject, paramCreatedAt, 0).toUInt());
+	profileData.modifiedAt = QDateTime::fromTime_t(
+		objectValue(jsonObject, paramModifiedAt, 0).toUInt());
+	profileData.isActive =
+		objectValue(jsonObject, paramIsActive, false).toBool();
+	profileData.isDeleted =
+		objectValue(jsonObject, paramIsDeleted, true).toBool();
 
-    if (jsonObject.contains(paramWorkspaces))
-    {
-        if (jsonObject.value(paramWorkspaces).type() == QJsonValue::Object)
-        {
-            QJsonObject workspacesObject =
-                jsonObject.value(paramWorkspaces).toObject();
-            
-            QStringList list =
-                jsonObject.value(paramWorkspaces).toObject().keys();
-            
-            for (int i = 0; i < list.size(); i++)
-            {
-                QJsonValue arrayValue = workspacesObject.value(list.at(i));
+	if (jsonObject.contains(paramWorkspaces))
+	{
+		if (jsonObject.value(paramWorkspaces).type() == QJsonValue::Object)
+		{
+			QJsonObject workspacesObject =
+				jsonObject.value(paramWorkspaces).toObject();
 
-                if (arrayValue.type() == QJsonValue::Object)
-                {
-                    Workspace workspace =
-                        Workspace::fromJson(arrayValue.toObject());
+			QStringList list =
+				jsonObject.value(paramWorkspaces).toObject().keys();
 
-                    if (workspace.isValid())
-                    {
-                        profileData.workspaces << workspace;
-                    }
-                }
-            }
-        }
-    }
-   
-    return profileData;
+			for (int i = 0; i < list.size(); i++)
+			{
+				QJsonValue arrayValue = workspacesObject.value(list.at(i));
+
+				if (arrayValue.type() == QJsonValue::Object)
+				{
+					Workspace workspace =
+						Workspace::fromJson(arrayValue.toObject());
+
+					if (workspace.isValid())
+					{
+						profileData.workspaces << workspace;
+					}
+				}
+			}
+		}
+	}
+
+	return profileData;
 }
 
 bool ProfileData::isValid()
 {
-    return !id.isEmpty() && !email.isEmpty() /*&& !firstName.isEmpty()
-        && !lastName.isEmpty() */ && workspaces.size();
+	return !id.isEmpty() && !email.isEmpty() /*&& !firstName.isEmpty()
+		&& !lastName.isEmpty() */ && workspaces.size();
 }
 
 const Workspace ProfileData::defaultWorkspace() const
 {
-    if (workspaces.size())
-    {
-        return workspaces.at(0);
-    }
-    else
-    {
-        return Workspace();
-    }    
+	if (workspaces.size())
+	{
+		return workspaces.at(0);
+	}
+	else
+	{
+		return Workspace();
+	}
 }
 
 void ProfileData::log()
 {
-    QLOG_TRACE () << "Profile data:" << "\n"
-        << paramId << ": " << id << "\n"
-        << paramEmail << ": " << email << "\n"
-        << paramFirstName << ": " << firstName << "\n"
-        << paramLastName << ": " << lastName << "\n"
-        << paramMiddleName << ": " << middleName << "\n"
-        << paramPhone << ": " << phone << "\n"
-        << paramAvatar << ": " << avatarUrl << "\n"
-        << paramCreatedAt << ": " << createdAt << "\n"
-        << paramModifiedAt << ": " << modifiedAt << "\n"
-        << paramIsActive << ": " << isActive << "\n"
-        << paramIsDeleted << ": " << isDeleted << "\n"
-        << "workspaces #" << ": " << workspaces.size() << "\n";
+	QLOG_TRACE () << "Profile data:" << "\n"
+		<< paramId << ": " << id << "\n"
+		<< paramEmail << ": " << email << "\n"
+		<< paramFirstName << ": " << firstName << "\n"
+		<< paramLastName << ": " << lastName << "\n"
+		<< paramMiddleName << ": " << middleName << "\n"
+		<< paramPhone << ": " << phone << "\n"
+		<< paramAvatar << ": " << avatarUrl << "\n"
+		<< paramCreatedAt << ": " << createdAt << "\n"
+		<< paramModifiedAt << ": " << modifiedAt << "\n"
+		<< paramIsActive << ": " << isActive << "\n"
+		<< paramIsDeleted << ": " << isDeleted << "\n"
+		<< "workspaces #" << ": " << workspaces.size() << "\n";
 
-    for (int i = 0; i < workspaces.size(); i++)
-    {
-        Workspace w = workspaces.at(i);
-        
-        QLOG_TRACE ()
-            << "workspace" << Workspace::paramId << ": " << w.id << "\n"
-            << "workspace" << Workspace::paramName << ": " << w.name << "\n"
-            << "workspace" << Workspace::paramPubId << ": " << w.pubId << "\n"
-            << "workspace"
-            <<  Workspace::paramUserChannel << ": " << w.userChannel << "\n"
-            << "workspace"
-            <<  Workspace::paramServiceChannel
-            << ": " << w.serviceChannel << "\n";
+	for (int i = 0; i < workspaces.size(); i++)
+	{
+		Workspace w = workspaces.at(i);
 
-        for (int j = 0; j < w.groups.size(); j++)
-        {
-            UserGroup u = w.groups.at(j);
-            
-            QLOG_TRACE ()
-                << "group" << UserGroup::paramId << ": " << u.id << "\n"
-                << "workspace"
-                << UserGroup::paramName << ": " << u.name << "\n";
-        }
-    }
+		QLOG_TRACE ()
+			<< "workspace" << Workspace::paramId << ": " << w.id << "\n"
+			<< "workspace" << Workspace::paramName << ": " << w.name << "\n"
+			<< "workspace" << Workspace::paramPubId << ": " << w.pubId << "\n"
+			<< "workspace"
+			<<  Workspace::paramUserChannel << ": " << w.userChannel << "\n"
+			<< "workspace"
+			<<  Workspace::paramServiceChannel
+			<< ": " << w.serviceChannel << "\n";
+
+		for (int j = 0; j < w.groups.size(); j++)
+		{
+			UserGroup u = w.groups.at(j);
+
+			QLOG_TRACE ()
+				<< "group" << UserGroup::paramId << ": " << u.id << "\n"
+				<< "workspace"
+				<< UserGroup::paramName << ": " << u.name << "\n";
+		}
+	}
 }
 
 // ============================================================================
 
 // Example:
-// 	"object\": 
-// 	   {\"id\":428,
-// 	   \"type\":1,
-// 	   \"name\":\"11111111111111111111\",
-// 	   \"size\":0,
-// 	   \"created\":1386159600,
-// 	   \"modified\":1386159600,
-// 	   \"deleted\":0,
-// 	   \"checksum\":null,
-// 	   \"is_favorite\":0,
-// 	   \"has_children\":false,
-// 	   \"has_subfolders\":false,
-// 	   \"is_uploaded\":false,
-// 	   \"link_id\":null,
-// 	   \"parent_id\":421
+// 	"object\":
+// 	{\"id\":428,
+// 	\"type\":1,
+// 	\"name\":\"11111111111111111111\",
+// 	\"size\":0,
+// 	\"created\":1386159600,
+// 	\"modified\":1386159600,
+// 	\"deleted\":0,
+// 	\"checksum\":null,
+// 	\"is_favorite\":0,
+// 	\"has_children\":false,
+// 	\"has_subfolders\":false,
+// 	\"is_uploaded\":false,
+// 	\"link_id\":null,
+// 	\"parent_id\":421
 // 	}
 RemoteFileDesc RemoteFileDesc::fromJson(const QJsonObject& jsonObject)
 {
 	RemoteFileDesc desc;
-	
+
 	desc.id = objectValue(jsonObject, "id", 0).toInt();
 	desc.parentId = objectValue(jsonObject, "parent_id", 0).toInt();
 	desc.type = (FileType) objectValue(jsonObject, "type", 0).toInt();
@@ -308,11 +308,11 @@ RemoteFileDesc RemoteFileDesc::fromJson(const QJsonObject& jsonObject)
 	desc.isFavourite = objectValue(jsonObject, "is_favorite", false).toBool();
 	desc.hasChildren = objectValue(jsonObject, "has_children", false).toBool();
 	desc.hasSubfolders =
-        objectValue(jsonObject, "has_subfolders", false).toBool();
+		objectValue(jsonObject, "has_subfolders", false).toBool();
 	desc.isUploaded = objectValue(jsonObject, "is_uploaded", false).toBool();
 	desc.linkId = objectValue(jsonObject, "link_id", QString()).toString();
 	desc.originalPath =
-        objectValue(jsonObject, "original_path", QString()).toString();	
+		objectValue(jsonObject, "original_path", QString()).toString();
 
 	return desc;
 }
@@ -325,7 +325,7 @@ bool RemoteFileDesc::isValid() const
 void RemoteFileDesc::log() const
 {
 	QString sType = type == FileType::File ? "File" : "Folder";
-	
+
 	QLOG_TRACE () << "Remote file object descriptor:" << "\n"
 		<< "id:" << id << "\n"
 		<< "parentId:" << parentId << "\n"
@@ -333,11 +333,11 @@ void RemoteFileDesc::log() const
 		<< "name:" << name << "\n"
 		<< "size:" << size << "\n"
 		<< "createdAt:" << createdAt
-            << QDateTime::fromTime_t(createdAt).toString() << "\n"
+			<< QDateTime::fromTime_t(createdAt).toString() << "\n"
 		<< "modifiedAt:" << modifiedAt
-            << QDateTime::fromTime_t(modifiedAt).toString() << "\n"
+			<< QDateTime::fromTime_t(modifiedAt).toString() << "\n"
 		<< "deletedAt:" << deletedAt
-            << QDateTime::fromTime_t(deletedAt).toString() << "\n"
+			<< QDateTime::fromTime_t(deletedAt).toString() << "\n"
 		<< "checksum:" << checkSum << "\n"
 		<< "isFavourite:" << isFavourite << "\n"
 		<< "hasChildren:" << hasChildren << "\n"
@@ -348,15 +348,15 @@ void RemoteFileDesc::log() const
 
 QString RemoteFileDesc::typeName() const
 {
-    switch (type)
-    {
-    case Drive::RemoteFileDesc::File:
-        return "file";
-    case Drive::RemoteFileDesc::Folder:
-        return "folder";
-    default:
-        return "WRONG TYPE";
-    }
+	switch (type)
+	{
+	case Drive::RemoteFileDesc::File:
+		return "file";
+	case Drive::RemoteFileDesc::Folder:
+		return "folder";
+	default:
+		return "WRONG TYPE";
+	}
 }
 
 // ============================================================================
@@ -371,19 +371,19 @@ RemoteFileEvent RemoteFileEvent::fromJson(const QJsonObject& jsonObject)
 		if (ids.type() == QJsonValue::Object)
 		{
 			QJsonObject idsObject = ids.toObject();
-			
+
 			QString currentServiceChannel =
 				AppController::instance().serviceChannel();
 
-            QString ts = objectValue(idsObject,
-                currentServiceChannel, QString()).toString();
+			QString ts = objectValue(idsObject,
+				currentServiceChannel, QString()).toString();
 
-            remoteEvent.timestamp = ts;
+			remoteEvent.timestamp = ts;
 
-            remoteEvent.unixtime = ts.split(".").at(0).toUInt();
+			remoteEvent.unixtime = ts.split(".").at(0).toUInt();
 
-//             remoteEvent.timestamp = ts.split(".").at(0).toUInt();
-//             remoteEvent.timestampLow = ts.split(".").at(1).toLongLong();
+//			remoteEvent.timestamp = ts.split(".").at(0).toUInt();
+//			remoteEvent.timestampLow = ts.split(".").at(1).toLongLong();
 		}
 	}
 
@@ -400,25 +400,25 @@ RemoteFileEvent RemoteFileEvent::fromJson(const QJsonObject& jsonObject)
 			{
 				QJsonObject dataObject = doc.object();
 
-				remoteEvent.workspaceId = 
+				remoteEvent.workspaceId =
 					objectValue(dataObject, "workspaceId", 0).toInt();
 
-				remoteEvent.projectId = 
+				remoteEvent.projectId =
 					objectValue(dataObject, "projectId", QString()).toString();
 
 				remoteEvent.type = eventNameToType(
 					objectValue(dataObject, "eventName", QString())
-                    .toString());
+					.toString());
 
-				remoteEvent.targetId = 
+				remoteEvent.targetId =
 					objectValue(dataObject, "targetId", 0).toInt();
 
-                remoteEvent.sourceId = 
-                    objectValue(dataObject, "sourceId", 0).toInt();
+				remoteEvent.sourceId =
+					objectValue(dataObject, "sourceId", 0).toInt();
 
-                remoteEvent.originName = 
-                    objectValue(dataObject, "originName", QString())
-                    .toString();
+				remoteEvent.originName =
+					objectValue(dataObject, "originName", QString())
+					.toString();
 
 				if (dataObject.contains("object"))
 				{
@@ -430,10 +430,10 @@ RemoteFileEvent RemoteFileEvent::fromJson(const QJsonObject& jsonObject)
 					if (obj.type() == QJsonValue::Object)
 					{
 						remoteEvent.fileDesc =
-                            RemoteFileDesc::fromJson(obj.toObject());
+							RemoteFileDesc::fromJson(obj.toObject());
 					}
 				}
-			}			
+			}
 		}
 	}
 
@@ -448,16 +448,16 @@ bool RemoteFileEvent::isValid() const
 }
 
 RemoteFileEvent::EventType RemoteFileEvent::eventNameToType(
-    const QString& eventName)
+	const QString& eventName)
 {
 	if (eventName == "create")
 	{
 		return EventType::Created;
 	}
-    else if (eventName == "upload")
-    {
-        return EventType::Uploaded;
-    }
+	else if (eventName == "upload")
+	{
+		return EventType::Uploaded;
+	}
 	else if (eventName == "update")
 	{
 		return EventType::Modified;
@@ -486,7 +486,7 @@ RemoteFileEvent::EventType RemoteFileEvent::eventNameToType(
 	{
 		return EventType::Deleted;
 	}
-	else 
+	else
 	{
 		return EventType::Undefined;
 	}
@@ -498,10 +498,10 @@ QString RemoteFileEvent::typeName(EventType eventType)
 	{
 		return "created";
 	}
-    else if (eventType == EventType::Uploaded)
-    {
-        return "uploaded";
-    }
+	else if (eventType == EventType::Uploaded)
+	{
+		return "uploaded";
+	}
 	else if (eventType == EventType::Modified)
 	{
 		return "modified";
@@ -530,7 +530,7 @@ QString RemoteFileEvent::typeName(EventType eventType)
 	{
 		return "deleted";
 	}
-	else 
+	else
 	{
 		return "undefined";
 	}
@@ -541,102 +541,102 @@ void RemoteFileEvent::log() const
 	QLOG_TRACE () << "Remote file event: " << "\n"
 		<< "Valid:" << isValid() << "\n"
 		<< "timestamp:" << timestamp << "\n"
-//        << "timestamp low:" << timestampLow << "\n"
+//		<< "timestamp low:" << timestampLow << "\n"
 		<< "event type:" << typeName(type) << "\n"
 		<< "workspaceId:" << workspaceId << "\n"
 		<< "projectId:" << projectId << "\n"
 		<< "targetId:" << targetId << "\n";
-	
-	fileDesc.log();		
+
+	fileDesc.log();
 }
 
 void RemoteFileEvent::logCompact() const
 {
-    QString sFileType =
-        fileDesc.type == RemoteFileDesc::File ? "File" : "Folder";
+	QString sFileType =
+		fileDesc.type == RemoteFileDesc::File ? "File" : "Folder";
 
-    QString lastModified =
-        QString("(last modified: %1)")
-        .arg(QDateTime::fromTime_t(fileDesc.modifiedAt).toString());
-    
-    QLOG_TRACE () << "Remote file event:"
-        << sFileType
-        << fileDesc.name
-        << "has been"
-        << typeName(type)
-        << lastModified;
+	QString lastModified =
+		QString("(last modified: %1)")
+		.arg(QDateTime::fromTime_t(fileDesc.modifiedAt).toString());
+
+	QLOG_TRACE () << "Remote file event:"
+		<< sFileType
+		<< fileDesc.name
+		<< "has been"
+		<< typeName(type)
+		<< lastModified;
 }
 
 QString RemoteFileEvent::typeName() const
 {
-    return typeName(type);
+	return typeName(type);
 }
 
 // ============================================================================
 
 RemoteFileEventExclusion::RemoteFileEventExclusion(
-    RemoteFileEvent::EventType eventType, int id, IdMatchType matchType)
-    : m_matchType(matchType)
-    , m_eventType(eventType)
-    , m_id(id)
+	RemoteFileEvent::EventType eventType, int id, IdMatchType matchType)
+	: m_matchType(matchType)
+	, m_eventType(eventType)
+	, m_id(id)
 {
 }
 
 bool RemoteFileEventExclusion::operator==(const RemoteFileEventExclusion& rhs)
 {
-    return m_id == rhs.id()
-        && m_eventType == rhs.eventType()
-        && m_matchType == rhs.matchType();
+	return m_id == rhs.id()
+		&& m_eventType == rhs.eventType()
+		&& m_matchType == rhs.matchType();
 }
 
 int RemoteFileEventExclusion::id() const
 {
-    return m_id;
+	return m_id;
 }
 
 RemoteFileEvent::EventType RemoteFileEventExclusion::eventType() const
 {
-    return m_eventType;
+	return m_eventType;
 }
 
 RemoteFileEventExclusion::IdMatchType
-    RemoteFileEventExclusion::matchType() const
+	RemoteFileEventExclusion::matchType() const
 {
-    return m_matchType;
+	return m_matchType;
 }
 
 bool RemoteFileEventExclusion::matches(const RemoteFileEvent &event) const
 {
-    if (m_eventType != event.type)
-        return false;
+	if (m_eventType != event.type)
+		return false;
 
-    if (!event.fileDesc.isValid())
-    {
-        QLOG_ERROR() <<
-            "Skipping event exclusion check, as file descriptor is not valid:";
-        
-        event.fileDesc.log();        
-        return false;
-    }
+	if (!event.fileDesc.isValid())
+	{
+		QLOG_ERROR() <<
+			"Skipping event exclusion check, as file descriptor is not valid:";
 
-    switch (m_matchType)
-    {
-    case Drive::RemoteFileEventExclusion::SelfId:
-        return m_id == event.fileDesc.id;
-    case Drive::RemoteFileEventExclusion::ParentId:
-        return m_id == event.fileDesc.parentId;
-    default:
-        Q_ASSERT(false);
-    }
+		event.fileDesc.log();
+		return false;
+	}
 
-    return false;
+	switch (m_matchType)
+	{
+	case Drive::RemoteFileEventExclusion::SelfId:
+		return m_id == event.fileDesc.id;
+	case Drive::RemoteFileEventExclusion::ParentId:
+		return m_id == event.fileDesc.parentId;
+	default:
+		Q_ASSERT(false);
+	}
+
+	return false;
 }
 
 void RemoteFileEventExclusion::log() const
 {
-    QLOG_TRACE() << "Remote file event exclusion:"
-        << RemoteFileEvent::typeName(m_eventType)
-        << "," << m_id;
+	QLOG_TRACE() << "Remote file event exclusion:"
+		<< RemoteFileEvent::typeName(m_eventType)
+		<< "," << m_id;
 }
 
 }

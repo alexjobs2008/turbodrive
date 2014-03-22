@@ -12,33 +12,33 @@ struct ProfileData;
 
 class AccountWidget : public QFrame
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    AccountWidget(QWidget *parent = 0);
+	AccountWidget(QWidget *parent = 0);
 
 public slots:
-    void setProfileData(const ProfileData& profileData);
+	void setProfileData(const ProfileData& profileData);
 
 signals:
-    void openFolder();
-    void logout();
+	void openFolder();
+	void logout();
 
 private slots:
-    void on_folderLabel_linkActivated(const QString &);
-    void on_pbLogout_clicked(bool checked);
+	void on_folderLabel_linkActivated(const QString &);
+	void on_pbLogout_clicked(bool checked);
 
 private:
-    QLabel *nameLabel;
-    QLabel *loginLabel;
-    QLabel *avatarLabel;
+	QLabel *nameLabel;
+	QLabel *loginLabel;
+	QLabel *avatarLabel;
 
 };
 
 class UserDataWidget : public QFrame
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    UserDataWidget(QWidget *parent = 0);
+	UserDataWidget(QWidget *parent = 0);
 
 
 

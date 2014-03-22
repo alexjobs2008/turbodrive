@@ -10,108 +10,108 @@ namespace Drive
 
 class LocalEventHandlerBase : public EventHandlerBase
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    LocalEventHandlerBase(LocalFileEvent localEvent,
-        QObject *parent = 0);
+	LocalEventHandlerBase(LocalFileEvent localEvent,
+		QObject *parent = 0);
 
-    virtual ~LocalEventHandlerBase();
+	virtual ~LocalEventHandlerBase();
 
 protected:
-    bool localFileExists();
+	bool localFileExists();
 
-    LocalFileEvent localEvent;
+	LocalFileEvent localEvent;
 };
 
 class LocalFileOrFolderAddedEventHandler : public LocalEventHandlerBase
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    LocalFileOrFolderAddedEventHandler(LocalFileEvent localEvent,
-        QObject *parent = 0);
+	LocalFileOrFolderAddedEventHandler(LocalFileEvent localEvent,
+		QObject *parent = 0);
 
 signals:
-    void failed(const QString& error);
+	void failed(const QString& error);
 
 protected:
-    void run();
+	void run();
 
 private slots:
-    void onGetFileObjectIdSucceeded(int id);
-    void onGetFileObjectIdFailed();
+	void onGetFileObjectIdSucceeded(int id);
+	void onGetFileObjectIdFailed();
 
-    void onGetFileObjectSucceeded(RemoteFileDesc fileDesc);
-    void onGetFileObjectFailed(const QString& error);
+	void onGetFileObjectSucceeded(RemoteFileDesc fileDesc);
+	void onGetFileObjectFailed(const QString& error);
 
-    void onGetFileObjectParentIdSucceeded(int id);
-    void onGetFileObjectParentIdFailed();
+	void onGetFileObjectParentIdSucceeded(int id);
+	void onGetFileObjectParentIdFailed();
 
-    void onCreateFolderSucceeded(Drive::RemoteFileDesc fileDesc);
-    void onCreateFolderFailed(const QString& error);
+	void onCreateFolderSucceeded(Drive::RemoteFileDesc fileDesc);
+	void onCreateFolderFailed(const QString& error);
 
-    void onUploadSucceeded(Drive::RemoteFileDesc);
-    void onUploadFailed(const QString& error);
+	void onUploadSucceeded(Drive::RemoteFileDesc);
+	void onUploadFailed(const QString& error);
 
-    void onTrashSucceeded();
-    void onTrashFailed(const QString& error);
+	void onTrashSucceeded();
+	void onTrashFailed(const QString& error);
 
-    void onRemoveSucceeded();
-    void onRemoveFailed(const QString& error);
+	void onRemoveSucceeded();
+	void onRemoveFailed(const QString& error);
 
 private:
-    QString remotePath;
-    RemoteFileDesc remotefileDesc;
-    GetChildrenResourceRef getChildrenResource;
+	QString remotePath;
+	RemoteFileDesc remotefileDesc;
+	GetChildrenResourceRef getChildrenResource;
 
-    int objParentId; // cached version only
+	int objParentId; // cached version only
 };
 
 class LocalFileOrFolderDeletedEventHandler: public LocalEventHandlerBase
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    LocalFileOrFolderDeletedEventHandler(LocalFileEvent localEvent,
-        QObject *parent = 0);
+	LocalFileOrFolderDeletedEventHandler(LocalFileEvent localEvent,
+		QObject *parent = 0);
 
 signals:
-    void failed(const QString& error);
+	void failed(const QString& error);
 
 protected:
-    void run();
+	void run();
 
 private slots:
-    void onGetFileObjectIdSucceeded(int id);
-    void onGetFileObjectIdFailed();
-    void onTrashSucceeded();
-    void onTrashFailed(const QString& error);
+	void onGetFileObjectIdSucceeded(int id);
+	void onGetFileObjectIdFailed();
+	void onTrashSucceeded();
+	void onTrashFailed(const QString& error);
 
 private:
-    int remoteFileObjectId;
+	int remoteFileObjectId;
 };
 
 class LocalFileOrFolderRenamedEventHandler: public LocalEventHandlerBase
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    LocalFileOrFolderRenamedEventHandler(LocalFileEvent localEvent,
-        QObject *parent = 0);
+	LocalFileOrFolderRenamedEventHandler(LocalFileEvent localEvent,
+		QObject *parent = 0);
 
 signals:
-    void failed(const QString& error);    
+	void failed(const QString& error);
 
 protected:
-    void run();
+	void run();
 
 private slots:
-    void onGetFileObjectIdSucceeded(int id);
-    void onGetFileObjectIdFailed();
-    void onRenameSucceeded();
-    void onRenameFailed(const QString& error);
+	void onGetFileObjectIdSucceeded(int id);
+	void onGetFileObjectIdFailed();
+	void onRenameSucceeded();
+	void onRenameFailed(const QString& error);
 
 private:
-    int remoteFileObjectId;
-    QString newName;
-    GetChildrenResourceRef getChildrenResource;
+	int remoteFileObjectId;
+	QString newName;
+	GetChildrenResourceRef getChildrenResource;
 };
 
 

@@ -5,23 +5,23 @@
 
 class ConnectionController : public QObject
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
 
-    enum State {
-        Disconnected = 0,
-        Connecting,
-        Connected
-    };
+	enum State {
+		Disconnected = 0,
+		Connecting,
+		Connected
+	};
 
-    ConnectionController(QObject *parent = 0);
+	ConnectionController(QObject *parent = 0);
 
 signals:
 
 public slots:
 
 private:
-    State state;
+	State state;
 
 };
 

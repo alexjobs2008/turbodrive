@@ -10,112 +10,112 @@ namespace Drive
 
 TrayIcon& TrayIcon::instance()
 {
-    static TrayIcon myself;
-    return myself;
+	static TrayIcon myself;
+	return myself;
 }
 
 void TrayIcon::setState(Drive::State state)
 {
-    if (statesMap.contains(state))
-    {
-        _state = state;
-        AnimatedSystemTrayIcon::setState(statesMap.value(state)->name);
-        
-        baseToolTip = QString("%1 - %2")
-            .arg(Strings::getAppString(Strings::AppFullName))
-            .arg(stateToString(state));
+	if (statesMap.contains(state))
+	{
+		_state = state;
+		AnimatedSystemTrayIcon::setState(statesMap.value(state)->name);
 
-        setToolTip(baseToolTip);
-    }
+		baseToolTip = QString("%1 - %2")
+			.arg(Strings::getAppString(Strings::AppFullName))
+			.arg(stateToString(state));
+
+		setToolTip(baseToolTip);
+	}
 }
 
 void TrayIcon::onProcessingProgress(int currentPos, int totalEventCount)
 {
-    if (_state == Drive::Syncing)
-    {
-        setToolTip(QString(tr("%1 (%2 of %3)"))
-            .arg(baseToolTip)
-            .arg(currentPos)
-            .arg(totalEventCount));
-    }
+	if (_state == Drive::Syncing)
+	{
+		setToolTip(QString(tr("%1 (%2 of %3)"))
+			.arg(baseToolTip)
+			.arg(currentPos)
+			.arg(totalEventCount));
+	}
 }
 
 Drive::State TrayIcon::getState() const
 {
-    return _state;
+	return _state;
 }
 
 TrayIcon::TrayIcon(QObject *parent)
-    : AnimatedSystemTrayIcon(parent)
+	: AnimatedSystemTrayIcon(parent)
 {
-    loadStates();
+	loadStates();
 }
 
 void TrayIcon::loadStates()
 {
-    AnimatedSystemTrayIcon::State *state;
+	AnimatedSystemTrayIcon::State *state;
 
-    // NotAuthorized    
-    
-    state = new AnimatedSystemTrayIcon::State(stateToString(NotAuthorized),
-        QPixmap(":/tray_icons/no_auth.png"));    
+	// NotAuthorized
 
-    statesMap.insert(NotAuthorized, state);
+	state = new AnimatedSystemTrayIcon::State(stateToString(NotAuthorized),
+		QPixmap(":/tray_icons/no_auth.png"));
 
-    // Authorizing
-    
-    state = new AnimatedSystemTrayIcon::State(stateToString(Authorizing),
-        QPixmap(":/tray_icons/auth_0001.png"));
+	statesMap.insert(NotAuthorized, state);
 
-    state->frames
-        << QPixmap(":/tray_icons/auth_0002.png")
-        << QPixmap(":/tray_icons/auth_0003.png")
-        << QPixmap(":/tray_icons/auth_0002.png");
+	// Authorizing
 
-    state->delay = 333;
+	state = new AnimatedSystemTrayIcon::State(stateToString(Authorizing),
+		QPixmap(":/tray_icons/auth_0001.png"));
 
-    statesMap.insert(Authorizing, state);
+	state->frames
+		<< QPixmap(":/tray_icons/auth_0002.png")
+		<< QPixmap(":/tray_icons/auth_0003.png")
+		<< QPixmap(":/tray_icons/auth_0002.png");
 
-    // Syncing
+	state->delay = 333;
 
-    state = new AnimatedSystemTrayIcon::State(stateToString(Syncing),
-        QPixmap(":/tray_icons/syncing_0001.png"));
+	statesMap.insert(Authorizing, state);
 
-    state->frames
-        << QPixmap(":/tray_icons/syncing_0002.png")
-        << QPixmap(":/tray_icons/syncing_0003.png")
-        << QPixmap(":/tray_icons/syncing_0002.png");
+	// Syncing
 
-    state->delay = 333;
+	state = new AnimatedSystemTrayIcon::State(stateToString(Syncing),
+		QPixmap(":/tray_icons/syncing_0001.png"));
 
-    statesMap.insert(Syncing, state);
-    
-    // Synced
+	state->frames
+		<< QPixmap(":/tray_icons/syncing_0002.png")
+		<< QPixmap(":/tray_icons/syncing_0003.png")
+		<< QPixmap(":/tray_icons/syncing_0002.png");
 
-    state = new AnimatedSystemTrayIcon::State(stateToString(Synced),
-        QPixmap(":/tray_icons/synced.png"));
+	state->delay = 333;
 
-    statesMap.insert(Synced, state);
+	statesMap.insert(Syncing, state);
 
-    // Paused
+	// Synced
 
-    state = new AnimatedSystemTrayIcon::State(stateToString(Paused),
-        QPixmap(":/tray_icons/paused.png"));
+	state = new AnimatedSystemTrayIcon::State(stateToString(Synced),
+		QPixmap(":/tray_icons/synced.png"));
 
-    statesMap.insert(Paused, state);
+	statesMap.insert(Synced, state);
 
-    // Error
+	// Paused
 
-    state = new AnimatedSystemTrayIcon::State(stateToString(Error),
-        QPixmap(":/tray_icons/error.png"));
+	state = new AnimatedSystemTrayIcon::State(stateToString(Paused),
+		QPixmap(":/tray_icons/paused.png"));
 
-    statesMap.insert(Error, state);
+	statesMap.insert(Paused, state);
 
-    QMapIterator<Drive::State, AnimatedSystemTrayIcon::State*> i(statesMap);
-    while (i.hasNext()) {
-        i.next();
-        appendState(i.value());
-    }
+	// Error
+
+	state = new AnimatedSystemTrayIcon::State(stateToString(Error),
+		QPixmap(":/tray_icons/error.png"));
+
+	statesMap.insert(Error, state);
+
+	QMapIterator<Drive::State, AnimatedSystemTrayIcon::State*> i(statesMap);
+	while (i.hasNext()) {
+		i.next();
+		appendState(i.value());
+	}
 }
 
 }

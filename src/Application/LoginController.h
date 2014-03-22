@@ -11,40 +11,40 @@ class LoginWidget;
 
 class LoginController : public QObject
 {
-    Q_OBJECT
-public:    
-    static LoginController& instance();
+	Q_OBJECT
+public:
+	static LoginController& instance();
 
-    ~LoginController();
+	~LoginController();
 
-public slots:    
-    void showLoginFormOrLogin();
-    void showLoginForm();
-    void login();
-    void passwordReset(const QString& email);
-    void closeAll();
-    void requestUserData();
+public slots:
+	void showLoginFormOrLogin();
+	void showLoginForm();
+	void login();
+	void passwordReset(const QString& email);
+	void closeAll();
+	void requestUserData();
 
 signals:
-    void loginFinished();
+	void loginFinished();
 
 private slots:
-    void onLoginSucceeded(const QString& token);
+	void onLoginSucceeded(const QString& token);
 	void onLoginFailed(const QString& error);
-    void onPasswordResetSucceeded();
-    void onPasswordResetFailed(const QString& error);
-    void onProfileDataReceived(const QJsonObject& data);
-    void onProfileDataError();
-    void onAvatarDownloaded(const QPixmap& pixmap);
-    void onLoginFinished();
+	void onPasswordResetSucceeded();
+	void onPasswordResetFailed(const QString& error);
+	void onProfileDataReceived(const QJsonObject& data);
+	void onProfileDataError();
+	void onAvatarDownloaded(const QPixmap& pixmap);
+	void onLoginFinished();
 
 private:
-    Q_DISABLE_COPY(LoginController)
-    explicit LoginController(QObject *parent = 0);
+	Q_DISABLE_COPY(LoginController)
+	explicit LoginController(QObject *parent = 0);
 
-    static LoginWidget *loginWidget;
+	static LoginWidget *loginWidget;
 };
 
 }
 
-#endif 
+#endif

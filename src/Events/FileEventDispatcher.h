@@ -32,95 +32,95 @@ public:
 	{
 		Finished = 0,
 		Stopped,
-        Paused,
+		Paused,
 		Processing
 	};
 
 	static FileEventDispatcher& instance();
 
-    virtual ~FileEventDispatcher();
+	virtual ~FileEventDispatcher();
 
 	void start();
 	void pause();
-	void cancelAll();    
+	void cancelAll();
 
 public slots:
-    void addRemoteFileEvent(Drive::RemoteFileEvent remoteEvent);
-    void addLocalFileEvent(Drive::LocalFileEvent localEvent);
+	void addRemoteFileEvent(Drive::RemoteFileEvent remoteEvent);
+	void addLocalFileEvent(Drive::LocalFileEvent localEvent);
 
-    void addPriorityRemoteFileEvent(Drive::RemoteFileEvent remoteEvent);
-    void addPriorityLocalFileEvent(Drive::LocalFileEvent localEvent);
+	void addPriorityRemoteFileEvent(Drive::RemoteFileEvent remoteEvent);
+	void addPriorityLocalFileEvent(Drive::LocalFileEvent localEvent);
 
 signals:
-    void finished();
-    void processing();
-    void paused();
-    void progress(int position, int totalEvents) const;
+	void finished();
+	void processing();
+	void paused();
+	void progress(int position, int totalEvents) const;
 
 private slots:
 	void onEventHandlerSucceeded();
-    void onEventHandlerFailed(const QString& error);    
-    
-    void onFinishProcessingEvent();
+	void onEventHandlerFailed(const QString& error);
 
-    void onNewLocalFileEventExclusion(const LocalFileEventExclusion &localExclusion);
-    void onNewRemoteFileEventExclusion(const RemoteFileEventExclusion &remoteExclusion);
+	void onFinishProcessingEvent();
 
-//     void onNewRemoteEvent(const RemoteFileEvent& event);
-//     void onNewLocalEvent(const LocalFileEvent& event);
-    
+	void onNewLocalFileEventExclusion(const LocalFileEventExclusion &localExclusion);
+	void onNewRemoteFileEventExclusion(const RemoteFileEventExclusion &remoteExclusion);
+
+//	void onNewRemoteEvent(const RemoteFileEvent& event);
+//	void onNewLocalEvent(const LocalFileEvent& event);
+
 private:
 	explicit FileEventDispatcher(QObject *parent = 0);
 	Q_DISABLE_COPY(FileEventDispatcher)
 
-    void proceed();
-    void finish();
-    void next();
-    void handleEvent(const RemoteFileEvent& remoteEvent);
-    void handleEvent(const LocalFileEvent& remoteEvent);
-    void startHandlerThreadOrProcessNext(EventHandlerBase* handlerThread);
+	void proceed();
+	void finish();
+	void next();
+	void handleEvent(const RemoteFileEvent& remoteEvent);
+	void handleEvent(const LocalFileEvent& remoteEvent);
+	void startHandlerThreadOrProcessNext(EventHandlerBase* handlerThread);
 
-    bool localFileEventShouldBeIgnored(const LocalFileEvent &event);
-    bool remoteFileEventShouldBeIgnored(const RemoteFileEvent &event);
+	bool localFileEventShouldBeIgnored(const LocalFileEvent &event);
+	bool remoteFileEventShouldBeIgnored(const RemoteFileEvent &event);
 
-    bool shouldBeGrouped(const LocalFileEvent &event);
+	bool shouldBeGrouped(const LocalFileEvent &event);
 
-    void log();
-    QString stateToString();
-    void processProgress() const;
-    int queuesSize() const;
-    void logEvent(const RemoteFileEvent &event, const QString &prefix = QString());
-    void logEvent(const LocalFileEvent &event, const QString &prefix = QString());
-    
-    void logIgnored() const;
-    void logGrouped() const;
+	void log();
+	QString stateToString();
+	void processProgress() const;
+	int queuesSize() const;
+	void logEvent(const RemoteFileEvent &event, const QString &prefix = QString());
+	void logEvent(const LocalFileEvent &event, const QString &prefix = QString());
+
+	void logIgnored() const;
+	void logGrouped() const;
 
 	State state;
-	
-    QQueue<RemoteFileEvent> remoteEvents;
+
+	QQueue<RemoteFileEvent> remoteEvents;
 	QQueue<LocalFileEvent> localEvents;
 
-    QQueue<RemoteFileEvent> priorityRemoteEvents;
-    QQueue<LocalFileEvent> priorityLocalEvents;
+	QQueue<RemoteFileEvent> priorityRemoteEvents;
+	QQueue<LocalFileEvent> priorityLocalEvents;
 
-    QList<EventHandlerBase*> eventHandlers;
-    
-    QMap<EventHandlerBase*, LocalFileEventExclusionList> localFileEventExclusions;
-    QList<RemoteFileEventExclusion> remoteFileEventExclusions;
+	QList<EventHandlerBase*> eventHandlers;
 
-    QMutex remoteExclusionsMutex;
-    QMutex localExclusionsMutex;
+	QMap<EventHandlerBase*, LocalFileEventExclusionList> localFileEventExclusions;
+	QList<RemoteFileEventExclusion> remoteFileEventExclusions;
 
-    int currentPosition;
-    int totalCount;
+	QMutex remoteExclusionsMutex;
+	QMutex localExclusionsMutex;
 
-    int globalCounter;
-    
-    bool dontIncrementTotalCount; // if currently processing event is restore
-    bool dontIncrementCurrentPosition; // if last processed event was restore
-    bool lastSuccessfullyHandled;
+	int currentPosition;
+	int totalCount;
 
-    QFile *eventLogFile;
+	int globalCounter;
+
+	bool dontIncrementTotalCount; // if currently processing event is restore
+	bool dontIncrementCurrentPosition; // if last processed event was restore
+	bool lastSuccessfullyHandled;
+
+	QFile *eventLogFile;
 };
 
 }

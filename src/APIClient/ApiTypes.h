@@ -14,79 +14,79 @@ namespace Drive
 
 struct UserGroup
 {
-    static const QString paramId;
-    static const QString paramName;
+	static const QString paramId;
+	static const QString paramName;
 
-    static UserGroup fromJson(const QJsonObject& jsonObject);
-    bool isValid() const;
-    
-    QString id;
-    QString name;
+	static UserGroup fromJson(const QJsonObject& jsonObject);
+	bool isValid() const;
+
+	QString id;
+	QString name;
 };
 
 struct Workspace
-{    
-    static const QString paramId;
-    static const QString paramName;    
-    static const QString paramPubId;
-    static const QString paramUserChannel;
-    static const QString paramServiceChannel;
-    static const QString paramAvatar;
-    static const QString paramGroups;
+{
+	static const QString paramId;
+	static const QString paramName;
+	static const QString paramPubId;
+	static const QString paramUserChannel;
+	static const QString paramServiceChannel;
+	static const QString paramAvatar;
+	static const QString paramGroups;
 
-    static Workspace fromJson(const QJsonObject& jsonObject);
-    const QString& serviceNotificationChannel() const { return serviceChannel; };
-    bool isValid() const;
-    
-    int id;
-    QString name;
-    QString pubId;
-    QString userChannel;
-    QString serviceChannel;
-    QString avatarUrl;
-    QList<UserGroup> groups;
+	static Workspace fromJson(const QJsonObject& jsonObject);
+	const QString& serviceNotificationChannel() const { return serviceChannel; };
+	bool isValid() const;
+
+	int id;
+	QString name;
+	QString pubId;
+	QString userChannel;
+	QString serviceChannel;
+	QString avatarUrl;
+	QList<UserGroup> groups;
 };
 
 struct ProfileData
 {
-    static const QString paramId;
-    static const QString paramEmail;
-    static const QString paramFirstName;
-    static const QString paramLastName;
-    static const QString paramMiddleName;
-    static const QString paramPhone;
-    static const QString paramAvatar;
-    static const QString paramSource;    
-    static const QString paramCreatedAt;
-    static const QString paramModifiedAt;
-    static const QString paramIsActive;
-    static const QString paramIsDeleted;
-    static const QString paramWorkspaces;
-    
-    static ProfileData fromJson(const QJsonObject& jsonObject);
-    bool isValid();
-    const Workspace defaultWorkspace() const;
+	static const QString paramId;
+	static const QString paramEmail;
+	static const QString paramFirstName;
+	static const QString paramLastName;
+	static const QString paramMiddleName;
+	static const QString paramPhone;
+	static const QString paramAvatar;
+	static const QString paramSource;
+	static const QString paramCreatedAt;
+	static const QString paramModifiedAt;
+	static const QString paramIsActive;
+	static const QString paramIsDeleted;
+	static const QString paramWorkspaces;
 
-    void log();
-    
-    QString id;
-    QString email;
-    QString firstName;
-    QString lastName;
-    QString middleName;
-    QString phone;
-    QString avatarUrl;
-    QPixmap avatar;
-    QString source;    
+	static ProfileData fromJson(const QJsonObject& jsonObject);
+	bool isValid();
+	const Workspace defaultWorkspace() const;
 
-    QDateTime createdAt;
-    QDateTime modifiedAt;
+	void log();
 
-    bool isActive;
-    bool isDeleted;
+	QString id;
+	QString email;
+	QString firstName;
+	QString lastName;
+	QString middleName;
+	QString phone;
+	QString avatarUrl;
+	QPixmap avatar;
+	QString source;
 
-    QList<Workspace> workspaces;
-    //Workspace defaultWorkspace;
+	QDateTime createdAt;
+	QDateTime modifiedAt;
+
+	bool isActive;
+	bool isDeleted;
+
+	QList<Workspace> workspaces;
+	//Workspace defaultWorkspace;
 };
 
 struct RemoteFileDesc
@@ -95,17 +95,17 @@ struct RemoteFileDesc
 	{
 		File = 0,
 		Folder = 1
-	};	
+	};
 
-	static RemoteFileDesc fromJson(const QJsonObject& jsonObject);	
-    bool isValid() const;
+	static RemoteFileDesc fromJson(const QJsonObject& jsonObject);
+	bool isValid() const;
 	void log() const;
-    QString typeName() const;
+	QString typeName() const;
 
 	int id;
 	int parentId;
 	FileType type;
-	QString name;    
+	QString name;
 	quint64 size;
 	uint createdAt;
 	uint modifiedAt;
@@ -122,10 +122,10 @@ struct RemoteFileDesc
 struct RemoteFileEvent
 {
 	enum EventType
-	{		
+	{
 		Undefined = 0,
 		Created,
-        Uploaded,
+		Uploaded,
 		Modified,
 		Trashed,
 		Copied,
@@ -138,52 +138,52 @@ struct RemoteFileEvent
 	static RemoteFileEvent fromJson(const QJsonObject& jsonObject);
 	bool isValid() const;
 	void log() const;
-    void logCompact() const;
-    QString typeName() const;
+	void logCompact() const;
+	QString typeName() const;
 
 	static EventType eventNameToType(const QString& eventName);
 	static QString typeName(EventType eventType);
 
 	EventType type;
-    QString originName;
+	QString originName;
 	int targetId;
-    int sourceId;
+	int sourceId;
 	int workspaceId;
 	QString projectId;
 	//uint timestamp;
-    //qint64 timestampLow;
-    QString timestamp;
-    uint unixtime;
+	//qint64 timestampLow;
+	QString timestamp;
+	uint unixtime;
 	RemoteFileDesc fileDesc;
 };
 
 class RemoteFileEventExclusion
-{   
+{
 public:
-    enum IdMatchType
-    {
-        SelfId = 0,
-        ParentId
-    };
+	enum IdMatchType
+	{
+		SelfId = 0,
+		ParentId
+	};
 
-    RemoteFileEventExclusion() {};
+	RemoteFileEventExclusion() {};
 
-    explicit RemoteFileEventExclusion(RemoteFileEvent::EventType eventType,
-        int id, IdMatchType matchType = SelfId);
+	explicit RemoteFileEventExclusion(RemoteFileEvent::EventType eventType,
+		int id, IdMatchType matchType = SelfId);
 
-    inline bool operator==(const RemoteFileEventExclusion& rhs);
+	inline bool operator==(const RemoteFileEventExclusion& rhs);
 
-    int id() const;
-    RemoteFileEvent::EventType eventType() const;
-    IdMatchType matchType() const;
+	int id() const;
+	RemoteFileEvent::EventType eventType() const;
+	IdMatchType matchType() const;
 
-    bool matches(const RemoteFileEvent &event) const;
-    void log() const;
+	bool matches(const RemoteFileEvent &event) const;
+	void log() const;
 
 private:
-    IdMatchType m_matchType;
-    RemoteFileEvent::EventType m_eventType;
-    int m_id;
+	IdMatchType m_matchType;
+	RemoteFileEvent::EventType m_eventType;
+	int m_id;
 };
 
 }

@@ -12,9 +12,9 @@ INCLUDE_DIRECTORIES("./3rdParty")
 # 1. Windows: QTDIR = C:\dev\qt511\5.1.1\msvc2012
 # 2. MacOS X: QTDIR = ~/Qt5.1.1/5.1.1/clang_64
 if (DEFINED ENV{QTDIR})
-    set(CMAKE_PREFIX_PATH $ENV{QTDIR} ${CMAKE_PREFIX_PATH})
+	set(CMAKE_PREFIX_PATH $ENV{QTDIR} ${CMAKE_PREFIX_PATH})
 else ()
-    message (FATAL_ERROR "ERROR: Environment variable QTDIR is not set.")
+	message (FATAL_ERROR "ERROR: Environment variable QTDIR is not set.")
 endif ()
 
 # 3rd-party libs

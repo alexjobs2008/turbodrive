@@ -14,36 +14,36 @@ const QString AuthRestResource::password("password");
 
 AuthRestResourceRef AuthRestResource::create()
 {
-    AuthRestResourceRef resource = RestResource::create<AuthRestResource>();
-    return resource;
+	AuthRestResourceRef resource = RestResource::create<AuthRestResource>();
+	return resource;
 }
 
 void AuthRestResource::login(const AuthRestResource::Input& data)
 {
-    QLOG_INFO() << "signing in...";
+	QLOG_INFO() << "signing in...";
 
-    HeaderList headers;
-    doOperation(QNetworkAccessManager::PostOperation, toByteArray(data), headers);
+	HeaderList headers;
+	doOperation(QNetworkAccessManager::PostOperation, toByteArray(data), headers);
 }
 
 QString AuthRestResource::path() const
 {
-    return "/api/v1/login";
+	return "/api/v1/login";
 }
 
 QString AuthRestResource::service() const
 {
-    return "AuthService";
+	return "AuthService";
 }
 
 bool AuthRestResource::restricted() const
 {
-    return false;
+	return false;
 }
 
 bool AuthRestResource::processPostResponse(int status,
-                                           const QByteArray& data,
-                                           const HeaderList& headers)
+										const QByteArray& data,
+										const HeaderList& headers)
 {
 	Q_UNUSED(headers);
 
@@ -52,12 +52,12 @@ bool AuthRestResource::processPostResponse(int status,
 		emit loginFailed(tr("Please check your Internet connection"));
 		return true;
 	}
-	
+
 	if(status == 200)
 	{
 		QString token = getDataFromJson(data);
 
-        if (!token.isEmpty())
+		if (!token.isEmpty())
 		{
 			QLOG_INFO() << "Token received: " << token;
 			emit loginSucceeded(token);
@@ -71,7 +71,7 @@ bool AuthRestResource::processPostResponse(int status,
 	else
 	{
 		QString errorString = getDataFromJson(data);
-        QLOG_INFO() << "Login failed: " << errorString << ". HTTP status: " << status << ". Data: " << data;
+		QLOG_INFO() << "Login failed: " << errorString << ". HTTP status: " << status << ". Data: " << data;
 		emit loginFailed(errorString);
 	}
 
@@ -80,18 +80,18 @@ bool AuthRestResource::processPostResponse(int status,
 
 QByteArray AuthRestResource::toByteArray(const Input& data)
 {
-    QVariantMap map;
-    map.insert(username, Settings::instance().get(Settings::email).toString());
-    map.insert(password, Settings::instance().get(Settings::password).toString());
+	QVariantMap map;
+	map.insert(username, Settings::instance().get(Settings::email).toString());
+	map.insert(password, Settings::instance().get(Settings::password).toString());
 
-    QJsonObject jobject = QJsonObject::fromVariantMap(map);
+	QJsonObject jobject = QJsonObject::fromVariantMap(map);
 
-    QJsonDocument doc(jobject);
+	QJsonDocument doc(jobject);
 
-    QString s = "data=";
-    s += doc.toJson();
+	QString s = "data=";
+	s += doc.toJson();
 
-    return s.toLatin1();
+	return s.toLatin1();
 }
 
 }

@@ -1,7 +1,7 @@
 #include "ConnectionController.h"
 
 ConnectionController::ConnectionController(QObject *parent)
-    : QObject(parent)
-    , state(Disconnected)
+	: QObject(parent)
+	, state(Disconnected)
 {
 }

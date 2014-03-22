@@ -9,25 +9,25 @@ namespace Drive
 
 enum ProxyUsage
 {
-    NoProxy = 0,
-    AutodetectProxy,
-    CustomProxy
+	NoProxy = 0,
+	AutodetectProxy,
+	CustomProxy
 };
 
 struct ProxySettings
 {
-    enum Kind
-    {
-        HttpServer = 0,
-        SocksServer
-    };
+	enum Kind
+	{
+		HttpServer = 0,
+		SocksServer
+	};
 
-    Kind kind;
-    QString server;
-    QString port;
-    bool loginRequired;
-    QString username;
-    QString password;
+	Kind kind;
+	QString server;
+	QString port;
+	bool loginRequired;
+	QString username;
+	QString password;
 };
 
 }

@@ -10,21 +10,21 @@ set(CMAKE_AUTOMOC ON)
 find_package(Qt5Network)
 
 set(HEADERS
-    RestResource.h
-    RestService.h
-    RestNetworkAccessManager.h
-    RestDispatcher.h    
-    ConnectionController.h
-    SimpleDownloader.h
+	RestResource.h
+	RestService.h
+	RestNetworkAccessManager.h
+	RestDispatcher.h
+	ConnectionController.h
+	SimpleDownloader.h
 )
 
 set(SOURCES
-    RestResource.cpp
-    RestService.cpp
-    RestNetworkAccessManager.cpp
-    RestDispatcher.cpp
-    ConnectionController.cpp
-    SimpleDownloader.cpp
+	RestResource.cpp
+	RestService.cpp
+	RestNetworkAccessManager.cpp
+	RestDispatcher.cpp
+	ConnectionController.cpp
+	SimpleDownloader.cpp
 )
 
 source_group(_h FILES ${HEADERS})
@@ -33,7 +33,7 @@ source_group(_cpp FILES ${SOURCES})
 add_library(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
 qt5_use_modules(${PROJECT_NAME}
-    Network
+	Network
 )
 
 IF(UNIX)

@@ -17,24 +17,24 @@ typedef QSharedPointer<OnlineRestResource> OnlineRestResourceRef;
 
 class OnlineRestResource : public RestResource
 {
-    Q_OBJECT
-public:    
+	Q_OBJECT
+public:
 
-    static OnlineRestResourceRef create();
+	static OnlineRestResourceRef create();
 
-    void ping();
+	void ping();
 
-    virtual QString path() const;
-    virtual QString service() const;
-    virtual bool restricted() const;
+	virtual QString path() const;
+	virtual QString service() const;
+	virtual bool restricted() const;
 
 signals:
-    void pingOk();
-    void pingError();
+	void pingOk();
+	void pingError();
 
 private:
-    virtual bool processGetResponse(int status, const QByteArray& data,
-        const HeaderList& headers);
+	virtual bool processGetResponse(int status, const QByteArray& data,
+		const HeaderList& headers);
 };
 
 class GetAncestorsRestResource;
@@ -42,25 +42,25 @@ typedef QSharedPointer<GetAncestorsRestResource> GetAncestorsRestResourceRef;
 
 class GetAncestorsRestResource : public RestResource
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    static GetAncestorsRestResourceRef create();
+	static GetAncestorsRestResourceRef create();
 
-    void getAncestors(int fileObjectId);
-    
-    virtual QString path() const;
-    virtual QString service() const;
-    virtual bool restricted() const;
+	void getAncestors(int fileObjectId);
+
+	virtual QString path() const;
+	virtual QString service() const;
+	virtual bool restricted() const;
 
 signals:
-    void succeeded(const QString& fullPath);
-    void failed();
+	void succeeded(const QString& fullPath);
+	void failed();
 
 private:
-    virtual bool processGetResponse(int status, const QByteArray& data,
-        const HeaderList& headers);
+	virtual bool processGetResponse(int status, const QByteArray& data,
+		const HeaderList& headers);
 
-    int fileId;
+	int fileId;
 };
 
 class ContentRestResource;
@@ -68,25 +68,25 @@ typedef QSharedPointer<ContentRestResource> ContentRestResourceRef;
 
 class ContentRestResource : public RestResource
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    static ContentRestResourceRef create();
+	static ContentRestResourceRef create();
 
-    void download(int fileId);
+	void download(int fileId);
 
-    virtual QString path() const;
-    virtual QString service() const;
-    virtual bool restricted() const;
+	virtual QString path() const;
+	virtual QString service() const;
+	virtual bool restricted() const;
 
 signals:
-    void succeeded(const QString& fullPath);
-    void failed();
+	void succeeded(const QString& fullPath);
+	void failed();
 
 private:
-    virtual bool processGetResponse(int status, const QByteArray& data,
-        const HeaderList& headers);
+	virtual bool processGetResponse(int status, const QByteArray& data,
+		const HeaderList& headers);
 
-    int fileId;
+	int fileId;
 };
 
 class CreateRestResource;
@@ -94,25 +94,25 @@ typedef QSharedPointer<CreateRestResource> CreateRestResourceRef;
 
 class CreateRestResource : public RestResource
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    static CreateRestResourceRef create();
+	static CreateRestResourceRef create();
 
-    void createFolder(int parentId, const QString& folderName);
+	void createFolder(int parentId, const QString& folderName);
 
-    virtual QString path() const;
-    virtual QString service() const;
-    virtual bool restricted() const;
+	virtual QString path() const;
+	virtual QString service() const;
+	virtual bool restricted() const;
 
 signals:
-    void succeeded(Drive::RemoteFileDesc fileDesc);
-    void failed(const QString& error);
+	void succeeded(Drive::RemoteFileDesc fileDesc);
+	void failed(const QString& error);
 
 private:
-    virtual bool processPostResponse(int status, const QByteArray& data,
-        const HeaderList& headers);
+	virtual bool processPostResponse(int status, const QByteArray& data,
+		const HeaderList& headers);
 
-    int parentId;
+	int parentId;
 };
 
 class GetChildrenResource;
@@ -123,67 +123,67 @@ typedef QSharedPointer<GetChildIdResource> GetChildIdResourceRef;
 
 class GetChildrenResource : public RestResource
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    static GetChildrenResourceRef create();
+	static GetChildrenResourceRef create();
 
-    void getChildren(const QString& parentId);
-    void getChildren(int parentId);
+	void getChildren(const QString& parentId);
+	void getChildren(int parentId);
 
-    void getFileObjectId(const QString& remotePath);
-    void getFileObjectParentId(const QString& remotePath);
+	void getFileObjectId(const QString& remotePath);
+	void getFileObjectParentId(const QString& remotePath);
 
-    virtual QString path() const;
-    virtual QString service() const;
-    virtual bool restricted() const;
+	virtual QString path() const;
+	virtual QString service() const;
+	virtual bool restricted() const;
 
 signals:
-    void succeeded(QList<Drive::RemoteFileDesc> list);
-    void failed();
-    void getFileObjectIdSucceeded(int id);
-    void getFileObjectIdFailed();
+	void succeeded(QList<Drive::RemoteFileDesc> list);
+	void failed();
+	void getFileObjectIdSucceeded(int id);
+	void getFileObjectIdFailed();
 
 private slots:
-    void onGetChildIdSucceeded(int id);
-    void onGetChildIdFailed();
+	void onGetChildIdSucceeded(int id);
+	void onGetChildIdFailed();
 
 private:
-    void getFirstChildId();
-    void getNextChildId(int parentId);
-    virtual bool processGetResponse(int status, const QByteArray& data,
-        const HeaderList& headers);
+	void getFirstChildId();
+	void getNextChildId(int parentId);
+	virtual bool processGetResponse(int status, const QByteArray& data,
+		const HeaderList& headers);
 
 
-    QString remotePath;
-    QString parentId;
-    QStringList list;
-    int currentItem;
-    GetChildIdResourceRef res;
+	QString remotePath;
+	QString parentId;
+	QStringList list;
+	int currentItem;
+	GetChildIdResourceRef res;
 };
 
 class GetChildIdResource : public RestResource
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    static GetChildIdResourceRef create();
+	static GetChildIdResourceRef create();
 
-    void getChildId(const QString& parentId, const QString& fileObjectName);
-    void getChildId(int parentId, const QString& fileObjectName);
+	void getChildId(const QString& parentId, const QString& fileObjectName);
+	void getChildId(int parentId, const QString& fileObjectName);
 
-    virtual QString path() const;
-    virtual QString service() const;
-    virtual bool restricted() const;
+	virtual QString path() const;
+	virtual QString service() const;
+	virtual bool restricted() const;
 
 signals:
-    void succeeded(int id);
-    void failed();
+	void succeeded(int id);
+	void failed();
 
 private:
-    virtual bool processGetResponse(int status, const QByteArray& data,
-        const HeaderList& headers);
+	virtual bool processGetResponse(int status, const QByteArray& data,
+		const HeaderList& headers);
 
-    QString parentId;
-    QString fileObjectName;
+	QString parentId;
+	QString fileObjectName;
 };
 
 class MoveRestResource;
@@ -191,26 +191,26 @@ typedef QSharedPointer<MoveRestResource> MoveRestResourceRef;
 
 class MoveRestResource : public RestResource
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    static MoveRestResourceRef create();
+	static MoveRestResourceRef create();
 
-    void move(int fileObjectId, const QString& newName, int newParentId);
+	void move(int fileObjectId, const QString& newName, int newParentId);
 
-    virtual QString path() const;
-    virtual QString service() const;
-    virtual bool restricted() const;
+	virtual QString path() const;
+	virtual QString service() const;
+	virtual bool restricted() const;
 
 signals:
-    void succeeded();
-    void failed(const QString& error);
+	void succeeded();
+	void failed(const QString& error);
 
 private:
-    virtual bool processPostResponse(int status, const QByteArray& data,
-        const HeaderList& headers);
+	virtual bool processPostResponse(int status, const QByteArray& data,
+		const HeaderList& headers);
 
-    int fileObjectId;
-    int newParentId;
+	int fileObjectId;
+	int newParentId;
 };
 
 class FilesRestResource;
@@ -218,33 +218,33 @@ typedef QSharedPointer<FilesRestResource> FilesRestResourceRef;
 
 class FilesRestResource : public RestResource
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    static FilesRestResourceRef create();
+	static FilesRestResourceRef create();
 
-    void rename(int id, const QString& newName);
-    void remove(int id);
-    void getFileObject(int id);
+	void rename(int id, const QString& newName);
+	void remove(int id);
+	void getFileObject(int id);
 
-    virtual QString path() const;
-    virtual QString service() const;
-    virtual bool restricted() const;
+	virtual QString path() const;
+	virtual QString service() const;
+	virtual bool restricted() const;
 
 signals:
-    void succeeded();
-    void getFileObjectSucceeded(Drive::RemoteFileDesc fileDesc);
-    void failed(const QString& error);
+	void succeeded();
+	void getFileObjectSucceeded(Drive::RemoteFileDesc fileDesc);
+	void failed(const QString& error);
 
 private:
-    virtual bool processPutResponse(int status, const QByteArray& data,
-        const HeaderList& headers);
-    virtual bool processGetResponse(int status, const QByteArray& data,
-        const HeaderList& headers);
-    virtual bool processDelResponse(int status, const QByteArray& data,
-        const HeaderList& headers);
+	virtual bool processPutResponse(int status, const QByteArray& data,
+		const HeaderList& headers);
+	virtual bool processGetResponse(int status, const QByteArray& data,
+		const HeaderList& headers);
+	virtual bool processDelResponse(int status, const QByteArray& data,
+		const HeaderList& headers);
 
-    int id;
-    bool isDeleteRequest;
+	int id;
+	bool isDeleteRequest;
 };
 
 class TrashRestResource;
@@ -252,23 +252,23 @@ typedef QSharedPointer<TrashRestResource> TrashRestResourceRef;
 
 class TrashRestResource: public RestResource
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    static TrashRestResourceRef create();
+	static TrashRestResourceRef create();
 
-    void trash(int fileObjectId);
+	void trash(int fileObjectId);
 
-    virtual QString path() const;
-    virtual QString service() const;
-    virtual bool restricted() const;
+	virtual QString path() const;
+	virtual QString service() const;
+	virtual bool restricted() const;
 
 signals:
-    void succeeded();
-    void failed(const QString& error);
+	void succeeded();
+	void failed(const QString& error);
 
 private:
-    virtual bool processPostResponse(int status, const QByteArray& data,
-        const HeaderList& headers);
+	virtual bool processPostResponse(int status, const QByteArray& data,
+		const HeaderList& headers);
 };
 
 }

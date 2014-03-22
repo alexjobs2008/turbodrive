@@ -8,22 +8,22 @@
 
 class SingleApplication : public QApplication
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    explicit SingleApplication(int, char *[]);
-    ~SingleApplication();
-    bool shouldContinue();
+	explicit SingleApplication(int, char *[]);
+	~SingleApplication();
+	bool shouldContinue();
 
 signals:
-    void showUp();
+	void showUp();
 
 private slots:
-    void slotShowUp();
-  
+	void slotShowUp();
+
 private:
-    QLocalSocket* socket;
-    LocalServer* server;
-    bool _shouldContinue;
+	QLocalSocket* socket;
+	LocalServer* server;
+	bool _shouldContinue;
 };
 
 #endif // SINGLE_APP_H

@@ -11,24 +11,24 @@ namespace CommonUI
 
 class PixmapAnimation : public QObject
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    explicit PixmapAnimation(const QString &pathPrefix, QObject *parent = 0);
-    ~PixmapAnimation();
+	explicit PixmapAnimation(const QString &pathPrefix, QObject *parent = 0);
+	~PixmapAnimation();
 
-    bool start(int delay = 40);
-    void stop();
+	bool start(int delay = 40);
+	void stop();
 
 signals:
-    void nextPixmap(const QPixmap& pixmap);
+	void nextPixmap(const QPixmap& pixmap);
 
 protected:
-    virtual void timerEvent(QTimerEvent * event);
+	virtual void timerEvent(QTimerEvent * event);
 
 private:
-    QVector<QPixmap> frames;    
-    int currentFrame;
-    int timerId;
+	QVector<QPixmap> frames;
+	int currentFrame;
+	int timerId;
 };
 
 }

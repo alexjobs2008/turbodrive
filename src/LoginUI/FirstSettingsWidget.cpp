@@ -5,23 +5,23 @@
 #include <QtWidgets/QPushButton>
 
 FirstSettingsWidget::FirstSettingsWidget(QWidget *parent)
-    : QFrame(parent)
+	: QFrame(parent)
 {
-    rbTypicalSettings = new QRadioButton(tr(
-           "Typical settings (recommended)\n"
-           "Set up Drive with normal settings.")
-           , this);
+	rbTypicalSettings = new QRadioButton(tr(
+		"Typical settings (recommended)\n"
+		"Set up Drive with normal settings.")
+		, this);
 
-    rbTypicalSettings->setObjectName("typicalSettings");
+	rbTypicalSettings->setObjectName("typicalSettings");
 
-    rbAdvancedSettings = new QRadioButton(tr(
-        "Advanced settings\n"
-        "Choose Drive folder location and which folders and files to sync.")
-        , this);
+	rbAdvancedSettings = new QRadioButton(tr(
+		"Advanced settings\n"
+		"Choose Drive folder location and which folders and files to sync.")
+		, this);
 
-    rbAdvancedSettings->setObjectName("advancedSettings");
+	rbAdvancedSettings->setObjectName("advancedSettings");
 
-    QMetaObject::connectSlotsByName(this);
+	QMetaObject::connectSlotsByName(this);
 }
 
 void FirstSettingsWidget::on_typicalSettings_toggled(bool checked)

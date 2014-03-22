@@ -9,25 +9,25 @@ set(CMAKE_AUTOMOC ON)
 
 find_package(Qt5Network)
 
-set(HEADERS    
-    LocalFileEvent.h
-    LocalFileEventNotifier.h
-    EventHandlerBase.h
-    RemoteEventHandlers.h
-    LocalEventHandlers.h
-    FileEventDispatcher.h
-    Syncer.h
-    Cache.h
+set(HEADERS
+	LocalFileEvent.h
+	LocalFileEventNotifier.h
+	EventHandlerBase.h
+	RemoteEventHandlers.h
+	LocalEventHandlers.h
+	FileEventDispatcher.h
+	Syncer.h
+	Cache.h
 )
 
 set(SOURCES
-    LocalFileEvent.cpp
-    LocalFileEventNotifier.cpp
-    RemoteEventHandlers.cpp
-    LocalEventHandlers.cpp
-    FileEventDispatcher.cpp
-    Syncer.cpp
-    Cache.cpp
+	LocalFileEvent.cpp
+	LocalFileEventNotifier.cpp
+	RemoteEventHandlers.cpp
+	LocalEventHandlers.cpp
+	FileEventDispatcher.cpp
+	Syncer.cpp
+	Cache.cpp
 )
 
 qt5_add_resources(MOCED_RESOURCES ${QRC_RESOURCES})
@@ -39,12 +39,12 @@ source_group(_res FILES ${QRC_RESOURCES})
 add_library(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${MOCED_RESOURCES})
 
 target_link_libraries(${PROJECT_NAME}
-    Settings
-    efsw
+	Settings
+	efsw
 )
 
 qt5_use_modules(${PROJECT_NAME}
-    Network
+	Network
 )
 
 IF(UNIX)

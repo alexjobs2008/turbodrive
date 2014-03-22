@@ -11,13 +11,13 @@ find_package(Qt5Widgets)
 find_package(Qt5Network)
 
 set(HEADERS
-    localserver.h
-    singleapp.h
+	localserver.h
+	singleapp.h
 )
 
 set(SOURCES
-    localserver.cpp
-    singleapp.cpp
+	localserver.cpp
+	singleapp.cpp
 )
 
 source_group(_h FILES ${HEADERS})
@@ -26,8 +26,8 @@ source_group(_cpp FILES ${SOURCES})
 add_library(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
 qt5_use_modules(${PROJECT_NAME}
-    Widgets
-    Network
+	Widgets
+	Network
 )
 
 IF(UNIX)
