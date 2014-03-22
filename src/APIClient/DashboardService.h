@@ -56,7 +56,7 @@ private:
     virtual bool processPostResponse(int status, const QByteArray& data,
         const HeaderList& headers);
 
-    QByteArray PasswordResetResource::toByteArray(const QString& email);
+    QByteArray toByteArray(const QString& email);
 };
 
 }

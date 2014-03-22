@@ -129,7 +129,7 @@ protected:
     // takes params name:value pairs,
     // encodes as JSON and puts as paramContainerName value
     RestResource::RequestRef
-        RestResource::doOperation(int operation, const ParamList& params,
+        doOperation(int operation, const ParamList& params,
         const QString& paramContainerName, const HeaderList& headers) const;
 
     static QString getDataFromJson(const QByteArray& data);
