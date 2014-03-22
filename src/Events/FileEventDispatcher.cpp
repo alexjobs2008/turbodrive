@@ -454,6 +454,7 @@ void FileEventDispatcher::onFinishProcessingEvent()
 	QLOG_TRACE() << "Removing local file event exclusions for " << thread;
 
 	localFileEventExclusions.remove(thread);
+	eventHandlers.removeOne(thread);
 
 	thread->deleteLater();
 	next();
