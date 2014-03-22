@@ -1,4 +1,5 @@
 #include "AppController.h"
+#include "LoginController.h"
 
 #include "Util/AppStrings.h"
 #include "SingleApp/SingleApp.h"
@@ -68,6 +69,7 @@ int main(int argc, char *argv[])
 		QLOG_TRACE() << "Started";
 
 		Drive::AppController::instance();
+		Drive::LoginController::instance().showLoginFormOrLogin();
 		return app.exec();
 	}
 

@@ -58,7 +58,6 @@ AppController::AppController(QWidget *parent)
 		this, SLOT(onLoginFinished()));
 
 	SettingsWidget::instance().hide();
-	LoginController::instance().showLoginFormOrLogin();
 }
 
 AppController::~AppController()
