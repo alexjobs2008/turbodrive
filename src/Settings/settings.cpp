@@ -275,6 +275,6 @@ void WindowsAutoexec::set(bool autoexec)
     settings.endGroup();    
 }
 
-#endif // Q_OS_WIN
-
 }
+
+#endif // Q_OS_WIN

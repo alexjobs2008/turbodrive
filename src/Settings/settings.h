@@ -92,8 +92,8 @@ public:
     static void set(bool autoexec);
 };
 
-#endif // Q_OS_WIN
-
 }
+
+#endif // Q_OS_WIN
 
 #endif // SETTINGS_H
