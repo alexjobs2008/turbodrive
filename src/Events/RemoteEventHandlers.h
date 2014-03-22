@@ -11,8 +11,7 @@ class RemoteEventHandlerBase : public EventHandlerBase
 {
     Q_OBJECT
 public:
-    RemoteEventHandlerBase(RemoteFileEvent remoteEvent,
-        QObject *parent = 0);
+    RemoteEventHandlerBase(RemoteFileEvent remoteEvent, QObject* parent);
 
     virtual ~RemoteEventHandlerBase();
 

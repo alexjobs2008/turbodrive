@@ -361,8 +361,6 @@ void FileEventDispatcher::startHandlerThreadOrProcessNext(
 {
     if (handlerThread)
     {
-        handlerThread->moveToThread(handlerThread);
-
         connect(handlerThread, SIGNAL(finished()),
             this, SLOT(onFinishProcessingEvent()));
 
