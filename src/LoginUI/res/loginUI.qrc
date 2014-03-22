@@ -1,0 +1,33 @@
+<RCC>
+    <qresource prefix="/">
+        <file>bg.png</file>
+        <file>name_ru.png</file>
+        <file>logo.png</file>
+
+        <file>back.png</file>
+
+        <file>spinner/24-0001.png</file>
+        <file>spinner/24-0002.png</file>
+        <file>spinner/24-0003.png</file>
+        <file>spinner/24-0004.png</file>
+        <file>spinner/24-0005.png</file>
+        <file>spinner/24-0006.png</file>
+        <file>spinner/24-0007.png</file>
+        <file>spinner/24-0008.png</file>
+
+        <file>button-normal.png</file>
+        <file>button-hover.png</file>
+        <file>button-pressed.png</file>
+        <file>button-disabled.png</file>
+
+        <file>input.png</file>
+        <file>input-disabled.png</file>
+
+        <file>chekbox-unchecked.png</file>
+        <file>chekbox-checked.png</file>
+        <file>chekbox-unchecked-disabled.png</file>
+        <file>chekbox-checked-disabled.png</file>
+
+        <file>LoginWidget/style-win.css</file>
+    </qresource>
+</RCC>

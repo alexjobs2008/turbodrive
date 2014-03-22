@@ -1,0 +1,31 @@
+<RCC>
+    <qresource prefix="/">
+        <file>appicon.ico</file>
+
+        <file>appicon/16.png</file>
+        <file>appicon/24.png</file>
+        <file>appicon/32.png</file>
+        <file>appicon/48.png</file>
+        <file>appicon/256.png</file>
+
+        <file>tray_icons/no_auth.png</file>
+        <file>tray_icons/synced.png</file>
+        <file>tray_icons/paused.png</file>
+        <file>tray_icons/error.png</file>
+        <file>tray_icons/auth_0001.png</file>
+        <file>tray_icons/auth_0002.png</file>
+        <file>tray_icons/auth_0003.png</file>
+        <file>tray_icons/syncing_0001.png</file>
+        <file>tray_icons/syncing_0002.png</file>
+        <file>tray_icons/syncing_0003.png</file>
+
+        <file>icons/tray_base.png</file>
+        <file>icons/open.png</file>
+        <file>icons/preferences.png</file>
+        <file>icons/pause.png</file>
+        <file>icons/resume.png</file>
+
+        <file>drive_ru.qm</file>
+
+    </qresource>
+</RCC>

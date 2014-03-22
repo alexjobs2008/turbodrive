@@ -1,0 +1,1 @@
+lupdate . -ts ../translations/trans.ts
