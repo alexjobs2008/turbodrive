@@ -142,8 +142,8 @@ LoginWidget::LoginWidget(QWidget *parent)
     pbSignIn->setAutoDefault(true);
     pbSignIn->setMouseTracking(true);
 
-    QLabel *or = new QLabel(tr("or"), this);
-    or->setObjectName("or");
+    QLabel *orLabel = new QLabel(tr("or"), this);
+    orLabel->setObjectName("or");
 
     signUp = new CommonUI::LinkLabel(tr("Create account"), "signUp", this);
     signUp->setObjectName("signUp");
@@ -159,7 +159,7 @@ LoginWidget::LoginWidget(QWidget *parent)
 
     blActions->addWidget(lAligner, 0);
     blActions->addWidget(pbSignIn, 0, Qt::AlignLeft | Qt::AlignVCenter);
-    blActions->addWidget(or, 0, Qt::AlignLeft | Qt::AlignVCenter);
+    blActions->addWidget(orLabel, 0, Qt::AlignLeft | Qt::AlignVCenter);
     blActions->addWidget(signUp, 0, Qt::AlignLeft | Qt::AlignVCenter);
     blActions->addStretch(1);
 
