@@ -45,6 +45,7 @@ AppController::AppController(QWidget *parent)
 	, currentAuthToken(QString())
 	, syncer(0)
 {
+	createFolder();
 	createActions();
 	createTrayIcon();
 	createSettingsWidget();
@@ -259,7 +260,6 @@ void AppController::onLoginFinished()
 {
 	setState(State::Synced);
 
-	createFolder();
 
 	FileSystemHelper::setWindowsFolderIcon(
 		Settings::instance().get(Settings::folderPath).toString(), 1);
