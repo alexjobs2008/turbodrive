@@ -453,7 +453,11 @@ QUrlQuery GeneralRestDispatcher::createParams(RestResource::ParamList &params)
 void GeneralRestDispatcher::doOperation(RestResource::Operation operation,
 								RestService* service)
 {
-	QLOG_TRACE() << "RestDispatcher:doOperation" << service->currentRequest->path;
+	QLOG_DEBUG() << "[" << this << ", GeneralRestDispatcher::doOperation] "
+				 << "Start request building: "
+				 << "operation='" << operation << "'"
+				 << ", path='" << service->currentRequest->path << "'"
+				 << ".";
 
 	if (operation == QNetworkAccessManager::PostOperation
 		|| operation == QNetworkAccessManager::PutOperation
@@ -470,30 +474,32 @@ void GeneralRestDispatcher::doOperation(RestResource::Operation operation,
 			{
 				bodyData =
 					urlQuery.toString(QUrl::FullyEncoded).toUtf8();
-
-				QLOG_TRACE() << "bodyData: " << bodyData;
 			}
 			else
 			{
-				QLOG_ERROR() << "Failed to convert request params.";
+				QLOG_ERROR() << "[" << this << ", GeneralRestDispatcher::doOperation] "
+							 << "Request parameters conversion FAILED: URL query is empty.";
 				service->currentRequest.clear();
 				return;
-		}
+			}
 		}
 		else
 		{
 			bodyData = service->currentRequest->data;
 		}
 
+		QLOG_DEBUG() << "[" << this << ", GeneralRestDispatcher::doOperation] "
+					 << "Body data building finished: "
+					 << "body_data='" << bodyData << "'"
+					 << ".";
+
 		if (operation == QNetworkAccessManager::PostOperation)
 		{
 			networkAccessManager->post(createRequest(service), bodyData);
-			QLOG_TRACE() << "RestDispatcher:doOperation: POST request sent";
 		}
 		else if (operation == QNetworkAccessManager::PutOperation)
 		{
 			networkAccessManager->put(createRequest(service), bodyData);
-			QLOG_TRACE() << "RestDispatcher:doOperation: PUT request sent";
 		}
 		else if (operation == QNetworkAccessManager::DeleteOperation)
 		{
@@ -502,75 +508,72 @@ void GeneralRestDispatcher::doOperation(RestResource::Operation operation,
 
 			buffer->setData(bodyData);
 
-			//QLOG_TRACE() << "HTTP DELETE" << bodyData;
-
 			QNetworkRequest request = createRequest(service);
 
 			networkAccessManager->sendCustomRequest(request
 				, QString("DELETE").toLatin1()
 				, buffer);
-
-			QLOG_TRACE() << "RestDispatcher:doOperation: DELETE request sent";
 		}
 
 	}
 	else if (operation == QNetworkAccessManager::GetOperation)
 	{
 		networkAccessManager->get(createRequest(service));
-		QLOG_TRACE() << "RestDispatcher:doOperation: GET request sent";
 	}
 	else if (operation == QNetworkAccessManager::DeleteOperation)
 	{
 		networkAccessManager->deleteResource(createRequest(service));
-		QLOG_TRACE() << "RestDispatcher:doOperation: DELETE request sent";
 	}
 	else if (operation == QNetworkAccessManager::HeadOperation)
 	{
 		networkAccessManager->head(createRequest(service));
-		QLOG_TRACE() << "RestDispatcher:doOperation: HEAD request sent";
 	}
 	else if (operation == QNetworkAccessManager::CustomOperation)
 	{
-		QLOG_TRACE() << "RestDispatcher: custom operation, nothing to do.";
 		service->currentRequest.clear();
 	}
 }
 
 void GeneralRestDispatcher::replyFinished(QNetworkReply* networkReply)
 {
-	QLOG_TRACE() << "replyFinished: " << networkReply
-		<< networkReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt()
-		<< networkReply->url().toString();
+	QLOG_DEBUG() << "[" << this << ", GeneralRestDispatcher::replyFinished] "
+				 << "Reply finished: "
+				 << "reply='" << networkReply << "'"
+				 << ", http_status='" << networkReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() << "'"
+				 << ", reply_url='" << networkReply->url().toString() << "'"
+				 << ".";
 
 	if (networkReply->error() != QNetworkReply::NoError)
 	{
-		QLOG_TRACE() << "Error: " << networkReply->error();
+		QLOG_ERROR() << "[" << this << ", GeneralRestDispatcher::replyFinished] "
+					 << "Error replied: "
+					 << "error='" << networkReply->error() << "'"
+					 << ".";
 	}
 
 	QObject* originatingObject = networkReply->request().originatingObject();
 
 	if(!originatingObject)
 	{
-		// this should never happen
-		QLOG_TRACE() << "Reply discarded because no originating object found.";
+		// TODO: replace with assert (should never happen)
+		QLOG_ERROR() << "[" << this << ", GeneralRestDispatcher::replyFinished] "
+					 << "Reply DISCARDED: no originating object found.";
 		return;
 	}
 
 	RestService* service = qobject_cast<RestService*>(originatingObject);
 	if(!service)
 	{
-		// this should never happen also
-		QLOG_TRACE() <<
-			"Reply discarded because originating object isn't a service.";
+		// TODO: replace with assert (should never happen)
+		QLOG_ERROR() << "[" << this << ", GeneralRestDispatcher::replyFinished] "
+					 << "Reply DISCARDED: unknown type of originating object (not a service).";
 		return;
 	}
 
-
 	if (service->currentRequest.isNull())
 	{
-		QLOG_TRACE() <<
-			"Reply discarded because current service request is null.";
-
+		QLOG_ERROR() << "[" << this << ", GeneralRestDispatcher::replyFinished] "
+					 << "Reply DISCARDED: current service request is NULL.";
 		next();
 		return;
 	}
@@ -586,8 +589,6 @@ void GeneralRestDispatcher::replyFinished(QNetworkReply* networkReply)
 
 		if (authenticationRequired)
 		{
-			QLOG_TRACE () << "Redirecting...";
-
 			service->authenticatedRequests.insert(
 				service->authenticatedRequests.begin()
 				, service->currentRequest);
@@ -600,12 +601,11 @@ void GeneralRestDispatcher::replyFinished(QNetworkReply* networkReply)
 	}
 	else
 	{
-		QLOG_INFO() << "Resource request is already canceled.";
+		QLOG_DEBUG() << "[" << this << ", GeneralRestDispatcher::replyFinished] "
+					 << "Reply discarded: resource request is already canceled.";
 	}
 
 	service->currentRequest.clear();
-
-	QLOG_TRACE() << "RestDispatcher::replyFinished() " << networkReply << ", calling next()";
 	next();
 }
 
