@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 
 		// init the logging mechanism
 		Logger& logger = Logger::instance();
-		logger.setLoggingLevel(QsLogging::DebugLevel);
+		logger.setLoggingLevel(QsLogging::TraceLevel);
 
 		QString logDirPath = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
 		QDir dir;

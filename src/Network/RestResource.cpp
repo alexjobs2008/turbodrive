@@ -91,23 +91,14 @@ RestResourceRef RestResource::self() const
 
 void RestResource::requestFinished(const ReplyRef& requestReply, bool& authenticationRequired)
 {
-	QLOG_DEBUG() << "[" << this << ", RestResource::requestFinished] "
-				 << "Request finished: "
-				 << "operation='" << requestReply->operation << "'"
-				 << ", resource='" << requestReply->resource.data() << "'"
-				 << ", reply='" << requestReply->reply << "'"
-				 << ".";
-
 	Q_ASSERT(requestReply->reply);
 
 	if (!requestReply->reply)
 	{
-		QLOG_FATAL() << "[" << this << ", RestResource::replyFinished] "
-					 << "FATAL: Request reply is NULL.";
 		return;
 	}
 
-	const int status = requestReply->reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+	int status = requestReply->reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
 
 	if (status == 0 || status >= 300) // log everything related to client/server errors and redirections
 	{
