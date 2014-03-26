@@ -1,7 +1,12 @@
 #include "singleapp.h"
 
+#include <QPointer>
+
+#include "Application/TrayIcon.h"
+
 SingleApplication::SingleApplication(int argc, char *argv[])
 	: QApplication(argc, argv)
+	, m_trayIcon(nullptr)
 {
 	_shouldContinue = false;
 
@@ -34,6 +39,15 @@ bool SingleApplication::shouldContinue()
 	return _shouldContinue;
 }
 
+QPointer<Drive::TrayIcon> SingleApplication::trayIcon()
+{
+	if (m_trayIcon == nullptr)
+	{
+		m_trayIcon = new Drive::TrayIcon(this);
+		m_trayIcon->setObjectName("trayIcon");
+	}
+	return m_trayIcon;
+}
 
 void SingleApplication::slotShowUp()
 {

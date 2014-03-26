@@ -14,7 +14,7 @@ class TrayIcon : public AnimatedSystemTrayIcon
 {
 	Q_OBJECT
 public:
-	static TrayIcon& instance();
+	explicit TrayIcon(QObject *parent);
 
 public slots:
 	void setState(Drive::State state);
@@ -24,7 +24,6 @@ public slots:
 
 private:
 	Q_DISABLE_COPY(TrayIcon)
-	explicit TrayIcon(QObject *parent = 0);
 	void loadStates();
 
 	QMap<Drive::State, AnimatedSystemTrayIcon::State*> statesMap;

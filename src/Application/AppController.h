@@ -7,6 +7,9 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QSystemTrayIcon>
 #include <QtCore/QSharedPointer>
+#include <QPointer>
+
+#include "TrayIcon.h"
 
 class QMenu;
 class QAction;
@@ -34,6 +37,8 @@ public:
 	void setProfileData(const ProfileData& data);
 
 	const QString& serviceChannel() const;
+
+	void setTrayIcon(const QPointer<TrayIcon>& trayIcon);
 
 public slots:
 	void setState(State newState);
@@ -71,6 +76,8 @@ private:
 	void createFolder();
 
 	QSharedPointer<SettingsWidget> settingsWidget;
+
+	QPointer<TrayIcon> m_trayIcon;
 
 	QMenu *trayMenu;
 

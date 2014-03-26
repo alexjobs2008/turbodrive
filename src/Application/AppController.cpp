@@ -1,6 +1,5 @@
 #include "AppController.h"
 #include "LoginController.h"
-#include "TrayIcon.h"
 
 #include "Util/AppStrings.h"
 #include "Util/FileUtils.h"
@@ -47,12 +46,9 @@ AppController::AppController(QWidget *parent)
 {
 	createFolder();
 	createActions();
-	createTrayIcon();
 	createSettingsWidget();
 
 	QMetaObject::connectSlotsByName(this);
-
-	TrayIcon::instance().setState(currentState);
 
 	LoginController& loginController = LoginController::instance();
 	connect(&loginController, SIGNAL(loginFinished()),
@@ -100,6 +96,15 @@ const QString& AppController::serviceChannel() const
 	return profileData().defaultWorkspace().serviceNotificationChannel();
 }
 
+void AppController::setTrayIcon(const QPointer<TrayIcon>& trayIcon)
+{
+	m_trayIcon = trayIcon;
+	if (!m_trayIcon.isNull())
+	{
+		createTrayIcon();
+		m_trayIcon->setState(currentState);
+	}
+}
 
 void AppController::createActions()
 {
@@ -127,9 +132,6 @@ void AppController::createActions()
 
 void AppController::createTrayIcon()
 {
-	TrayIcon &trayIcon = TrayIcon::instance();
-	trayIcon.setObjectName("trayIcon");
-
 	trayMenu = new QMenu(this);
 
 	trayMenu->addAction(actionOpenFolder);
@@ -141,18 +143,18 @@ void AppController::createTrayIcon()
 
 	trayMenu->setDefaultAction(actionOpenFolder);
 
-	trayIcon.setContextMenu(trayMenu);
+	m_trayIcon->setContextMenu(trayMenu);
 
 	connect(this, SIGNAL(stateChanged(Drive::State)),
-		&trayIcon, SLOT(setState(Drive::State)));
+		m_trayIcon.data(), SLOT(setState(Drive::State)));
 
 	connect(this, SIGNAL(processingProgress(int, int)),
-		&trayIcon, SLOT(onProcessingProgress(int, int)));
+		m_trayIcon.data(), SLOT(onProcessingProgress(int, int)));
 
-	connect(&trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
+	connect(m_trayIcon.data(), SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
 		this, SLOT(on_trayIcon_activated(QSystemTrayIcon::ActivationReason)));
 
-	trayIcon.show();
+	m_trayIcon->show();
 }
 
 void AppController::createSettingsWidget()

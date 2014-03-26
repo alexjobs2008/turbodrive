@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
 
 		QLOG_TRACE() << "Started";
 
-		Drive::AppController::instance();
+		Drive::AppController::instance().setTrayIcon(app.trayIcon());
 		Drive::LoginController::instance().showLoginFormOrLogin();
 		return app.exec();
 	}

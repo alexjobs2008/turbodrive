@@ -8,12 +8,6 @@
 namespace Drive
 {
 
-TrayIcon& TrayIcon::instance()
-{
-	static TrayIcon myself;
-	return myself;
-}
-
 void TrayIcon::setState(Drive::State state)
 {
 	if (statesMap.contains(state))
