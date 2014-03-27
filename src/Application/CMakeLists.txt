@@ -76,29 +76,33 @@ if(WIN32)
 	install(TARGETS ${PROJECT_NAME}
 		DESTINATION bin
 	)
-
-message("Qt binary dir: ${QT_BINARY_DIR}")
-
-#	install(FILES
-#		"${QT_BINARY_DIR}/QtCore${QT_VERSION_MAJOR}.dll"
-#		"${QT_BINARY_DIR}/QtGui${QT_VERSION_MAJOR}.dll"
-#		"${QT_BINARY_DIR}/QtNetwork${QT_VERSION_MAJOR}.dll"
-#		DESTINATION bin
-#	)
 endif(WIN32)
 
 install(FILES
-	${CMAKE_CURRENT_SOURCE_DIR}/inst/icudt51.dll
-	${CMAKE_CURRENT_SOURCE_DIR}/inst/icuin51.dll
-	${CMAKE_CURRENT_SOURCE_DIR}/inst/icuuc51.dll
-	${CMAKE_CURRENT_SOURCE_DIR}/inst/libEGL.dll
-	${CMAKE_CURRENT_SOURCE_DIR}/inst/libGLESv2.dll
+	# MinGW libs
+	${CMAKE_CURRENT_SOURCE_DIR}/inst/libgcc_s_dw2-1.dll
+	${CMAKE_CURRENT_SOURCE_DIR}/inst/libstdc++-6.dll
+	${CMAKE_CURRENT_SOURCE_DIR}/inst/libwinpthread-1.dll
+
+	# OpenSSL libs
+	# http://slproweb.com/download/Win32OpenSSL_Light-1_0_1f.exe
+	${CMAKE_CURRENT_SOURCE_DIR}/inst/libeay32.dll
+	${CMAKE_CURRENT_SOURCE_DIR}/inst/ssleay32.dll
+
+	# Qt libs
 	${CMAKE_CURRENT_SOURCE_DIR}/inst/Qt5Core.dll
 	${CMAKE_CURRENT_SOURCE_DIR}/inst/Qt5Gui.dll
 	${CMAKE_CURRENT_SOURCE_DIR}/inst/Qt5Network.dll
 	${CMAKE_CURRENT_SOURCE_DIR}/inst/Qt5Widgets.dll
-	${CMAKE_CURRENT_SOURCE_DIR}/inst/libeay32.dll
-	${CMAKE_CURRENT_SOURCE_DIR}/inst/ssleay32.dll
+
+	${CMAKE_CURRENT_SOURCE_DIR}/inst/icudt51.dll
+	${CMAKE_CURRENT_SOURCE_DIR}/inst/icuin51.dll
+	${CMAKE_CURRENT_SOURCE_DIR}/inst/icuuc51.dll
+
+	# TODO: try to remove this libs after minimal version release
+	${CMAKE_CURRENT_SOURCE_DIR}/inst/libEGL.dll
+	${CMAKE_CURRENT_SOURCE_DIR}/inst/libGLESv2.dll
+
 	DESTINATION bin
 )
 
