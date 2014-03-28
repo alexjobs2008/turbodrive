@@ -99,10 +99,6 @@ install(FILES
 	${CMAKE_CURRENT_SOURCE_DIR}/inst/icuin51.dll
 	${CMAKE_CURRENT_SOURCE_DIR}/inst/icuuc51.dll
 
-	# TODO: try to remove this libs after minimal version release
-	${CMAKE_CURRENT_SOURCE_DIR}/inst/libEGL.dll
-	${CMAKE_CURRENT_SOURCE_DIR}/inst/libGLESv2.dll
-
 	DESTINATION bin
 )
 
