@@ -42,7 +42,10 @@ LoginController::~LoginController()
 
 void LoginController::showLoginFormOrLogin()
 {
-	if (Settings::instance().get(Settings::autoLogin).toBool())
+	const auto email = Settings::instance().get(Settings::email).toString();
+	const auto password = Settings::instance().get(Settings::password).toString();
+	const auto autoLogin = Settings::instance().get(Settings::autoLogin).toBool();
+	if (autoLogin && !email.isEmpty() && !password.isEmpty())
 	{
 		login();
 	}
