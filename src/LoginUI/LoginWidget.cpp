@@ -97,11 +97,11 @@ LoginWidget::LoginWidget(QWidget *parent)
 	// controls
 
 	username = new CommonUI::LabeledEdit(
-		tr("&Email:")
+		tr("&Phone:")
 		, CommonUI::LabeledEdit::Text
 		, QString()
 		, 0
-		, "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}\\b"
+		, "\\+375\\d+"
 		, 100
 		, this);
 
@@ -241,7 +241,7 @@ void LoginWidget::on_signIn_clicked(bool checked)
 	if (username->lineEdit()->validator()->validate(usernameCandidate, pos)
 		!= QValidator::Acceptable)
 	{
-		setError(tr("Please provide a valid email"));
+		setError(tr("Please provide a valid phone number"));
 		focusOnEmail();
 		return;
 	}
