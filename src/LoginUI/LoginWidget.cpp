@@ -1,5 +1,6 @@
 #include "LoginWidget.h"
 #include "Settings/settings.h"
+#include "Settings/runtimesettings.h"
 #include "QsLog/QsLog.h"
 #include "Util/AppStrings.h"
 #include "UtilUI/StylesheetReader.h"
@@ -240,15 +241,12 @@ void LoginWidget::on_signIn_clicked(bool checked)
 		return;
 	}
 
-	Settings& settings = Settings::instance();
+	RuntimeSettings::instance().set(
+				RuntimeSettings::login, username->text().trimmed());
+	RuntimeSettings::instance().set(
+				RuntimeSettings::password, password->text().trimmed());
 
-	settings.set(Settings::email,
-		username->text().trimmed(), Settings::RealSetting);
-
-	settings.set(Settings::password,
-		password->text().trimmed(), Settings::RealSetting);
-
-	settings.set(Settings::autoLogin,
+	Settings::instance().set(Settings::autoLogin,
 		cRememberPassword->isChecked(), Settings::RealSetting);
 
 	QLOG_TRACE() << "Login from UI requested";

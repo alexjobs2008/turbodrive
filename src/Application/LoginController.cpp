@@ -5,6 +5,7 @@
 #include "SettingsUI/SettingsWidget.h"
 #include "QsLog/QsLog.h"
 #include "Settings/settings.h"
+#include "Settings/runtimesettings.h"
 
 #include "APIClient/ApiTypes.h"
 #include "APIClient/AuthenticationService.h"
@@ -15,7 +16,43 @@
 #include <QtCore/QCoreApplication>
 #include <QtWidgets/QMessageBox>
 
+#include <QDir>
 
+namespace
+{
+
+bool needSyncDirClear()
+{
+	const auto dirPath = Drive::Settings::instance().get(Drive::Settings::folderPath).toString();
+	const auto syncDir = QDir(dirPath);
+	const auto entries = syncDir.entryList();
+	const auto result = entries.isEmpty();
+
+	QLOG_DEBUG() << "needSyncDirClear [" << dirPath << "]: " << result;
+	return result;
+}
+
+bool syncDirClearingConfirmed()
+{
+	const auto dirPath = Drive::Settings::instance().get(Drive::Settings::folderPath).toString();
+	const auto result = true;
+
+	QLOG_DEBUG() << "syncDirClearingConfirmed [" << dirPath << "]: " << result;
+	return result;
+}
+
+bool clearSyncDir()
+{
+	const auto dirPath = Drive::Settings::instance().get(Drive::Settings::folderPath).toString();
+	const auto syncDir = QDir(dirPath);
+	const bool result = syncDir.removeRecursively();
+	Drive::AppController::instance().createFolder();
+
+	QLOG_DEBUG() << "clearSyncDir [" << dirPath << "]: " << result;
+	return result;
+}
+
+}
 
 namespace Drive
 {
@@ -98,8 +135,8 @@ void LoginController::login()
 		this,  SLOT(onLoginFailed(QString)));
 
 	AuthRestResource::Input inputData;
-	inputData.username = Settings::instance().get(Settings::email).toString();
-	inputData.password = Settings::instance().get(Settings::password).toString();
+	inputData.username = RuntimeSettings::instance().get(RuntimeSettings::login).toString();
+	inputData.password = RuntimeSettings::instance().get(RuntimeSettings::password).toString();
 
 	authResource->login(inputData);
 }
@@ -153,16 +190,33 @@ void LoginController::requestUserData()
 
 void LoginController::onLoginSucceeded(const QString& token)
 {
+	if (needSyncDirClear() && syncDirClearingConfirmed() && clearSyncDir())
+	{
+		Settings::instance().set(Settings::email,
+			RuntimeSettings::instance().get(RuntimeSettings::login), Settings::RealSetting);
+
+		Settings::instance().set(Settings::password,
+			RuntimeSettings::instance().get(RuntimeSettings::login), Settings::RealSetting);
+
+		RuntimeSettings::instance().remove(RuntimeSettings::login);
+		RuntimeSettings::instance().remove(RuntimeSettings::password);
+	}
+
 	AppController::instance().setAuthToken(token);
 	requestUserData();
 }
 
 void LoginController::onLoginFailed(const QString& error)
 {
+	RuntimeSettings::instance().remove(RuntimeSettings::login);
+	RuntimeSettings::instance().remove(RuntimeSettings::password);
+
 	showLoginForm();
+
 	loginWidget->enableControls();
 	loginWidget->focusOnEmail();
 	loginWidget->setError(error);
+
 	AppController::instance().setState(NotAuthorized);
 }
 
