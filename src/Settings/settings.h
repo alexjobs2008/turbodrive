@@ -15,7 +15,7 @@ private:
 	Q_DISABLE_COPY(Settings);
 
 public:
-
+	static const QString version;
 	static const QString email;
 	static const QString password;
 	static const QString autoLogin;

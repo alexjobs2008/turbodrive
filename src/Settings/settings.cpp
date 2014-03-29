@@ -9,9 +9,14 @@
 #include <QtCore/QStandardPaths>
 #include <QtCore/QLocale>
 
+// DO NOT FORGET TO WRITE THE MIGRATION
+// WHEN YOU ARE ABOUT TO INCREASE SETTINGS VERSION!
+namespace { const int s_lastVersion = 0; }
+
 namespace Drive
 {
 
+const QString Settings::version("version");
 const QString Settings::email("login");
 const QString Settings::password("password");
 const QString Settings::autoLogin("login_on_start");
@@ -39,6 +44,13 @@ Settings::Settings(QObject *parent)
 	qRegisterMetaTypeStreamOperators<ProxySettings>("ProxySettings");
 
 	settings = new QSettings(this);
+
+	// TODO: migrations should be applied here
+	if (!settings->contains(version))
+	{
+		// just setting value - only for version 0!!!
+		settings->setValue(version, defaultSettingValue(version));
+	}
 
 #ifdef Q_OS_MAC
 	applyImmediately = true
@@ -186,6 +198,9 @@ QVariant Settings::defaultSettingValue(const QString& settingName) const
 
 	if (settingName == desktopNotifications)
 		return true;
+
+	if (settingName == version)
+		return s_lastVersion;
 
 	if (settingName == email)
 		return QString();
