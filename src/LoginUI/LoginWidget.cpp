@@ -1,17 +1,3 @@
-//	---------------------------------------------------------------------------
-//
-//	Copyright (c) 2013. All rights reserved.
-//
-//	---------------------------------------------------------------------------
-//
-//	File:   LoginWidget.cpp
-//
-//	Author: Mikalai Arapau <infoctopus@gmail.com>
-//
-//	Desc:   Login widget implementation
-//
-//	---------------------------------------------------------------------------
-
 #include "LoginWidget.h"
 #include "Settings/settings.h"
 #include "QsLog/QsLog.h"
