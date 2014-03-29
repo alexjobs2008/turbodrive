@@ -12,20 +12,20 @@
 namespace Drive
 {
 
-const QString Settings::email("email");
+const QString Settings::email("login");
 const QString Settings::password("password");
-const QString Settings::autoLogin("autoLogin");
-const QString Settings::folderPath("folderPath");
-const QString Settings::desktopNotifications("desktopNotifications");
+const QString Settings::autoLogin("login_on_start");
+const QString Settings::folderPath("sync_dir");
+const QString Settings::desktopNotifications("desktop_notifications");
 const QString Settings::autostart("autostart");
 const QString Settings::language("language");
-const QString Settings::limitDownload("limitDownload");
-const QString Settings::limitUpload("limitUpload");
-const QString Settings::downloadSpeed("downloadSpeed");
-const QString Settings::uploadSpeed("uploadSpeed");
-const QString Settings::proxyUsage("proxyUsage");
-const QString Settings::proxyCustomSettings("proxySettings");
-const QString Settings::env("env");
+const QString Settings::limitDownload("download_limit");
+const QString Settings::limitUpload("upload_limit");
+const QString Settings::downloadSpeed("download_speed");
+const QString Settings::uploadSpeed("upload_speed");
+const QString Settings::proxyUsage("proxy_usage");
+const QString Settings::proxyCustomSettings("proxy_custom_settings");
+const QString Settings::env("environment");
 
 #define DEFAULT_DOWNLOAD_SPEED 50
 #define DEFAULT_UPLOAD_SPEED 50
