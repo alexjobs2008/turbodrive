@@ -1,6 +1,9 @@
 #ifndef RUNTIMESETTINGS_H
 #define RUNTIMESETTINGS_H
 
+#include <QMap>
+#include <QVariant>
+
 namespace Drive
 {
 
@@ -9,7 +12,8 @@ class RuntimeSettings
 public:
 	enum Key
 	{
-		lastLogin,
+		login,
+		password,
 	};
 
 	static RuntimeSettings& instance();
@@ -17,15 +21,18 @@ public:
 	QVariant get(RuntimeSettings::Key key) const;
 	void set(RuntimeSettings::Key key, QVariant value);
 
-	void remove(RuntimeSettings::Key key) const;
+	void remove(RuntimeSettings::Key key);
 
 	void clear();
 
 private:
+	RuntimeSettings();
 	RuntimeSettings(const RuntimeSettings& other);
-	operator=(const RuntimeSettings& other);
+	RuntimeSettings& operator=(const RuntimeSettings& other);
 
-	std::map<Key, QVariant> m_storage;
+	QMap<Key, QVariant> m_storage;
 };
+
+}
 
 #endif // RUNTIMESETTINGS_H
