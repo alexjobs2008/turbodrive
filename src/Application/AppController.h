@@ -75,8 +75,6 @@ private:
 	void createTrayIcon();
 	void createSettingsWidget();
 
-	QSharedPointer<SettingsWidget> settingsWidget;
-
 	QPointer<TrayIcon> m_trayIcon;
 
 	QMenu *trayMenu;

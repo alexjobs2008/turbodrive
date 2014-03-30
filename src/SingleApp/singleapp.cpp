@@ -1,6 +1,9 @@
 #include "singleapp.h"
 
+#include "settings/settings.h"
+
 #include <QPointer>
+#include <QProcess>
 
 #include "Application/TrayIcon.h"
 
@@ -31,7 +34,15 @@ SingleApplication::SingleApplication(int argc, char *argv[])
 SingleApplication::~SingleApplication()
 {
 	if(_shouldContinue)
+	{
 		server->terminate();
+
+		if (Drive::Settings::instance().get(Drive::Settings::forceRelogin).toBool())
+		{
+			QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
+		}
+	}
+
 }
 
 bool SingleApplication::shouldContinue()

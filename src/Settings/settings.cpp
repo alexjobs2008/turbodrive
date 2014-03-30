@@ -20,6 +20,7 @@ const QString Settings::version("version");
 const QString Settings::email("login");
 const QString Settings::password("password");
 const QString Settings::autoLogin("login_on_start");
+const QString Settings::forceRelogin("force_relogin");
 const QString Settings::folderPath("sync_dir");
 const QString Settings::desktopNotifications("desktop_notifications");
 const QString Settings::autostart("autostart");
@@ -201,6 +202,9 @@ QVariant Settings::defaultSettingValue(const QString& settingName) const
 
 	if (settingName == version)
 		return s_lastVersion;
+
+	if (settingName == forceRelogin)
+		return false;
 
 	if (settingName == email)
 		return QString();

@@ -61,8 +61,14 @@ bool clearSyncDir()
 	const auto result = syncDir.removeRecursively();
 	Drive::AppController::instance().createFolder();
 
-	QLOG_DEBUG() << "clearSyncDir [" << dirPath << "]: " << result;
-	//return result;
+	if (result)
+	{
+		QLOG_DEBUG() << "clearSyncDir [" << dirPath << "]: " << result;
+	}
+	else
+	{
+		QLOG_ERROR() << "clearSyncDir [" << dirPath << "] FAILED";
+	}
 	return true;
 }
 
@@ -96,7 +102,8 @@ void LoginController::showLoginFormOrLogin()
 	const auto email = Settings::instance().get(Settings::email).toString();
 	const auto password = Settings::instance().get(Settings::password).toString();
 	const auto autoLogin = Settings::instance().get(Settings::autoLogin).toBool();
-	if (autoLogin && !email.isEmpty() && !password.isEmpty())
+	const auto forceRelogin = Settings::instance().get(Settings::forceRelogin).toBool();
+	if (!forceRelogin && autoLogin && !email.isEmpty() && !password.isEmpty())
 	{
 		RuntimeSettings::instance().set(RuntimeSettings::login, email);
 		RuntimeSettings::instance().set(RuntimeSettings::password, password);
@@ -104,6 +111,7 @@ void LoginController::showLoginFormOrLogin()
 	}
 	else
 	{
+		Settings::instance().set(Settings::forceRelogin, false, Settings::RealSetting);
 		showLoginForm();
 	}
 }

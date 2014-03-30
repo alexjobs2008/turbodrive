@@ -19,6 +19,7 @@ public:
 	static const QString email;
 	static const QString password;
 	static const QString autoLogin;
+	static const QString forceRelogin;
 	static const QString folderPath;
 	static const QString desktopNotifications;
 	static const QString autostart;
