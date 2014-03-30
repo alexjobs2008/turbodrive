@@ -13,7 +13,7 @@ namespace
 {
 
 
-QByteArray toByteArray(const Input& data)
+QByteArray toByteArray(const AuthRestResource::Input& data)
 {
 	static const QString username("username");
 	static const QString password("password");

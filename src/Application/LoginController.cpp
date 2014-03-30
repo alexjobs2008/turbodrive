@@ -29,14 +29,14 @@ bool needSyncDirClear(const QString& username)
 										| QDir::NoDotAndDotDot);
 
 	const auto previousUsername =
-			Drive::Settings::instance().get(Drive::Settings::email);
+			Drive::Settings::instance().get(Drive::Settings::email).toString();
 
 	const auto result = username != previousUsername && !dirContent.isEmpty();
 
 	QLOG_DEBUG()
 			<< "needSyncDirClear [" << dirPath
-			<< ", " << previousUsername.toString()
-			<< ", " << username.toString()
+			<< ", " << previousUsername
+			<< ", " << username
 			<< "]: " << result;
 	return result;
 }
@@ -136,7 +136,7 @@ void LoginController::showLoginForm()
 
 void LoginController::login(const QString& username, const QString& password)
 {
-	QLOG_INFO() << "LoginController::login(" << login << ")";
+	QLOG_INFO() << "LoginController::login(" << username << ")";
 
 	AppController::instance().setState(Authorizing);
 
