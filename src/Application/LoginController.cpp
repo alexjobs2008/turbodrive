@@ -5,7 +5,6 @@
 #include "SettingsUI/SettingsWidget.h"
 #include "QsLog/QsLog.h"
 #include "Settings/settings.h"
-#include "Settings/runtimesettings.h"
 
 #include "APIClient/ApiTypes.h"
 #include "APIClient/AuthenticationService.h"

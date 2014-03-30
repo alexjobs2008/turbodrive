@@ -11,13 +11,11 @@ find_package(Qt5Core)
 
 set(HEADERS
 	settings.h
-	runtimesettings.h
 	proxySettings.h
 )
 
 set(SOURCES
 	settings.cpp
-	runtimesettings.cpp
 	proxySettings.cpp
 )
 

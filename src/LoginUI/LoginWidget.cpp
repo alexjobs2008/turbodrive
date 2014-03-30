@@ -1,6 +1,5 @@
 #include "LoginWidget.h"
 #include "Settings/settings.h"
-#include "Settings/runtimesettings.h"
 #include "QsLog/QsLog.h"
 #include "Util/AppStrings.h"
 #include "UtilUI/StylesheetReader.h"
