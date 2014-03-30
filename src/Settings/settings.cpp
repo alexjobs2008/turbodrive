@@ -17,7 +17,7 @@ namespace Drive
 {
 
 const QString Settings::version("version");
-const QString Settings::email("login");
+const QString Settings::email("username");
 const QString Settings::password("password");
 const QString Settings::autoLogin("login_on_start");
 const QString Settings::forceRelogin("force_relogin");
