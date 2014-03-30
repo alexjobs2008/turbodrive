@@ -98,6 +98,8 @@ void LoginController::showLoginFormOrLogin()
 	const auto autoLogin = Settings::instance().get(Settings::autoLogin).toBool();
 	if (autoLogin && !email.isEmpty() && !password.isEmpty())
 	{
+		RuntimeSettings::instance().set(RuntimeSettings::login, email);
+		RuntimeSettings::instance().set(RuntimeSettings::password, password);
 		login();
 	}
 	else
