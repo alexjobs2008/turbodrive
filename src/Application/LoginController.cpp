@@ -25,10 +25,22 @@ bool needSyncDirClear()
 {
 	const auto dirPath = Drive::Settings::instance().get(Drive::Settings::folderPath).toString();
 	const auto syncDir = QDir(dirPath);
-	const auto entries = syncDir.entryList();
-	const auto result = entries.isEmpty();
+	const auto entries = syncDir.entryList(QDir::AllEntries
+										| QDir::System
+										| QDir::NoDotAndDotDot);
 
-	QLOG_DEBUG() << "needSyncDirClear [" << dirPath << "]: " << result;
+	const auto currentLogin =
+			Drive::RuntimeSettings::instance().get(Drive::RuntimeSettings::login);
+	const auto lastLogin =
+			Drive::Settings::instance().get(Drive::Settings::email);
+
+	const auto result = currentLogin != lastLogin && !entries.isEmpty();
+
+	QLOG_DEBUG()
+			<< "needSyncDirClear [" << dirPath
+			<< ", " << lastLogin.toString()
+			<< ", " << currentLogin.toString()
+			<< "]: " << result;
 	return result;
 }
 
@@ -44,12 +56,14 @@ bool syncDirClearingConfirmed()
 bool clearSyncDir()
 {
 	const auto dirPath = Drive::Settings::instance().get(Drive::Settings::folderPath).toString();
-	const auto syncDir = QDir(dirPath);
-	const bool result = syncDir.removeRecursively();
+	auto syncDir = QDir(dirPath);
+
+	const auto result = syncDir.removeRecursively();
 	Drive::AppController::instance().createFolder();
 
 	QLOG_DEBUG() << "clearSyncDir [" << dirPath << "]: " << result;
-	return result;
+	//return result;
+	return true;
 }
 
 }
@@ -190,17 +204,28 @@ void LoginController::requestUserData()
 
 void LoginController::onLoginSucceeded(const QString& token)
 {
-	if (needSyncDirClear() && syncDirClearingConfirmed() && clearSyncDir())
+	if (needSyncDirClear())
 	{
-		Settings::instance().set(Settings::email,
-			RuntimeSettings::instance().get(RuntimeSettings::login), Settings::RealSetting);
-
-		Settings::instance().set(Settings::password,
-			RuntimeSettings::instance().get(RuntimeSettings::login), Settings::RealSetting);
-
-		RuntimeSettings::instance().remove(RuntimeSettings::login);
-		RuntimeSettings::instance().remove(RuntimeSettings::password);
+		if (!syncDirClearingConfirmed())
+		{
+			onLoginFailed(tr("Login cancelled by user."));
+			return;
+		}
+		else if (!clearSyncDir())
+		{
+			onLoginFailed(tr("Directory clearing failed."));
+			return;
+		}
 	}
+
+	Settings::instance().set(Settings::email,
+		RuntimeSettings::instance().get(RuntimeSettings::login), Settings::RealSetting);
+
+	Settings::instance().set(Settings::password,
+		RuntimeSettings::instance().get(RuntimeSettings::password), Settings::RealSetting);
+
+	RuntimeSettings::instance().remove(RuntimeSettings::login);
+	RuntimeSettings::instance().remove(RuntimeSettings::password);
 
 	AppController::instance().setAuthToken(token);
 	requestUserData();

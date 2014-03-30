@@ -40,6 +40,8 @@ public:
 
 	void setTrayIcon(const QPointer<TrayIcon>& trayIcon);
 
+	void createFolder();
+
 public slots:
 	void setState(State newState);
 
@@ -72,8 +74,6 @@ private:
 	void createActions();
 	void createTrayIcon();
 	void createSettingsWidget();
-
-	void createFolder();
 
 	QSharedPointer<SettingsWidget> settingsWidget;
 

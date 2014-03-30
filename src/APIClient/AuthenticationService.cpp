@@ -81,8 +81,8 @@ bool AuthRestResource::processPostResponse(int status,
 QByteArray AuthRestResource::toByteArray(const Input& data)
 {
 	QVariantMap map;
-	map.insert(username, Settings::instance().get(Settings::email).toString());
-	map.insert(password, Settings::instance().get(Settings::password).toString());
+	map.insert(username, data.username);
+	map.insert(password, data.password);
 
 	QJsonObject jobject = QJsonObject::fromVariantMap(map);
 
