@@ -241,11 +241,6 @@ void LoginWidget::on_signIn_clicked(bool checked)
 		return;
 	}
 
-	RuntimeSettings::instance().set(
-				RuntimeSettings::login, username->text().trimmed());
-	RuntimeSettings::instance().set(
-				RuntimeSettings::password, password->text().trimmed());
-
 	Settings::instance().set(Settings::autoLogin,
 		cRememberPassword->isChecked(), Settings::RealSetting);
 
@@ -253,7 +248,7 @@ void LoginWidget::on_signIn_clicked(bool checked)
 
 	enableControls(false);
 
-	emit loginRequest();
+	emit loginRequest(username->text().trimmed(), password->text().trimmed());
 }
 
 void LoginWidget::enableControls(bool enable)

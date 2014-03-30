@@ -75,7 +75,7 @@ signals:
 	/**
 	* @brief Emitted when Sign In button gets clicked or Enter pressed
 	*/
-	void loginRequest();
+	void loginRequest(const QString& login, const QString& password);
 
 	/**
 	* @brief Emitted when user requested password reset
