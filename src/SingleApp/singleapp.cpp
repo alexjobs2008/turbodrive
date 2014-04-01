@@ -1,43 +1,37 @@
 #include "singleapp.h"
 
 #include "settings/settings.h"
+#include "Application/TrayIcon.h"
 
+#include <QLocalSocket>
 #include <QPointer>
 #include <QProcess>
 
 #include <QsLog/QsLog.h>
 
-#include "Application/TrayIcon.h"
-
 SingleApplication::SingleApplication(int argc, char *argv[])
 	: QApplication(argc, argv)
+	, m_shouldContinue(false)
+	, m_localServer(nullptr)
 	, m_trayIcon(nullptr)
 {
-	_shouldContinue = false;
-
-	socket = new QLocalSocket();
-
-	// Attempts to connect to the LocalServer
-	socket->connectToServer(LOCAL_SERVER_NAME);
-	if(socket->waitForConnected(100)){
-		socket->write("CMD:showUp");
-		socket->flush();
-		QThread::msleep(100);
-		socket->close();
-	} else {
-	// Connection failed, so continuing the execution
-		_shouldContinue = true;
-		server = new LocalServer();
-	server->start();
-	QObject::connect(server, SIGNAL(showUp()), this, SLOT(slotShowUp()));
+	QLocalSocket socket;
+	socket.connectToServer(LOCAL_SERVER_NAME);
+	if (!socket.waitForConnected(500))
+	{
+		m_shouldContinue = true;
+		m_localServer = new QLocalServer(this);
+		connect(m_localServer, &QLocalServer::newConnection,
+				this, &SingleApplication::showUp);
+		m_localServer->listen(LOCAL_SERVER_NAME);
 	}
 }
 
 SingleApplication::~SingleApplication()
 {
-	if(_shouldContinue)
+	if(m_shouldContinue)
 	{
-		server->terminate();
+		m_localServer->close();
 
 		if (Drive::Settings::instance().get(Drive::Settings::forceRelogin).toBool())
 		{
@@ -62,7 +56,7 @@ SingleApplication::~SingleApplication()
 
 bool SingleApplication::shouldContinue()
 {
-	return _shouldContinue;
+	return m_shouldContinue;
 }
 
 QPointer<Drive::TrayIcon> SingleApplication::trayIcon()
@@ -73,9 +67,4 @@ QPointer<Drive::TrayIcon> SingleApplication::trayIcon()
 		m_trayIcon->setObjectName("trayIcon");
 	}
 	return m_trayIcon;
-}
-
-void SingleApplication::slotShowUp()
-{
-	emit showUp();
 }
