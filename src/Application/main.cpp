@@ -41,7 +41,7 @@ void initLogging()
 	logger.addDestination(debugDestination);
 	logger.addDestination(fileDestination);
 
-	QLOG_TRACE() << "Started";
+	QLOG_TRACE() << "Started (" << QCoreApplication::applicationPid() << ").";
 }
 
 int main(int argc, char *argv[])
