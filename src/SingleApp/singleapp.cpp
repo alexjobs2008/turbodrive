@@ -5,6 +5,8 @@
 #include <QPointer>
 #include <QProcess>
 
+#include <QsLog/QsLog.h>
+
 #include "Application/TrayIcon.h"
 
 SingleApplication::SingleApplication(int argc, char *argv[])
@@ -39,7 +41,20 @@ SingleApplication::~SingleApplication()
 
 		if (Drive::Settings::instance().get(Drive::Settings::forceRelogin).toBool())
 		{
-			QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
+			qint64 pid = 0;
+			QLOG_DEBUG() << "Restarting...";
+			if (!QProcess::startDetached(
+					QApplication::applicationFilePath(),
+					qApp->arguments(),
+					QApplication::applicationDirPath(),
+					&pid))
+			{
+				QLOG_ERROR() << "Starting of new instance FAILED.";
+			}
+			else
+			{
+				QLOG_DEBUG() << "New instance started (" << pid << ").";
+			}
 		}
 	}
 
