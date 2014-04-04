@@ -56,6 +56,8 @@ qt5_use_modules(${PROJECT_NAME}
 	Widgets
 )
 
+#add_dependencies(${PROJECT_NAME} google-breakpad)
+
 target_link_libraries(${PROJECT_NAME}
 	SingleApp
 	AnimatedSystemTrayIcon
@@ -71,36 +73,50 @@ target_link_libraries(${PROJECT_NAME}
 	Events
 )
 
-
 if(WIN32)
 	install(TARGETS ${PROJECT_NAME}
 		DESTINATION bin
 	)
 endif(WIN32)
 
+if (${BUILD_SYSTEM} STREQUAL "mingw")
+	install(FILES
+		# MinGW libs
+		${CMAKE_CURRENT_SOURCE_DIR}/inst/libgcc_s_dw2-1.dll
+		${CMAKE_CURRENT_SOURCE_DIR}/inst/libstdc++-6.dll
+		${CMAKE_CURRENT_SOURCE_DIR}/inst/libwinpthread-1.dll
+
+		DESTINATION bin
+	)
+else()
+	install(FILES
+		# MSVC libs
+		${CMAKE_CURRENT_SOURCE_DIR}/inst/libEGL.dll
+		${CMAKE_CURRENT_SOURCE_DIR}/inst/libGLESv2.dll
+
+		DESTINATION bin
+	)
+
+endif()
+
 install(FILES
-	# MinGW libs
-	${CMAKE_CURRENT_SOURCE_DIR}/inst/libgcc_s_dw2-1.dll
-	${CMAKE_CURRENT_SOURCE_DIR}/inst/libstdc++-6.dll
-	${CMAKE_CURRENT_SOURCE_DIR}/inst/libwinpthread-1.dll
+		# OpenSSL libs
+		# http://slproweb.com/download/Win32OpenSSL_Light-1_0_1f.exe
+		${CMAKE_CURRENT_SOURCE_DIR}/inst/libeay32.dll
+		${CMAKE_CURRENT_SOURCE_DIR}/inst/ssleay32.dll
 
-	# OpenSSL libs
-	# http://slproweb.com/download/Win32OpenSSL_Light-1_0_1f.exe
-	${CMAKE_CURRENT_SOURCE_DIR}/inst/libeay32.dll
-	${CMAKE_CURRENT_SOURCE_DIR}/inst/ssleay32.dll
+		# Qt libs
+		${CMAKE_CURRENT_SOURCE_DIR}/inst/Qt5Core.dll
+		${CMAKE_CURRENT_SOURCE_DIR}/inst/Qt5Gui.dll
+		${CMAKE_CURRENT_SOURCE_DIR}/inst/Qt5Network.dll
+		${CMAKE_CURRENT_SOURCE_DIR}/inst/Qt5Widgets.dll
 
-	# Qt libs
-	${CMAKE_CURRENT_SOURCE_DIR}/inst/Qt5Core.dll
-	${CMAKE_CURRENT_SOURCE_DIR}/inst/Qt5Gui.dll
-	${CMAKE_CURRENT_SOURCE_DIR}/inst/Qt5Network.dll
-	${CMAKE_CURRENT_SOURCE_DIR}/inst/Qt5Widgets.dll
+		${CMAKE_CURRENT_SOURCE_DIR}/inst/icudt51.dll
+		${CMAKE_CURRENT_SOURCE_DIR}/inst/icuin51.dll
+		${CMAKE_CURRENT_SOURCE_DIR}/inst/icuuc51.dll
 
-	${CMAKE_CURRENT_SOURCE_DIR}/inst/icudt51.dll
-	${CMAKE_CURRENT_SOURCE_DIR}/inst/icuin51.dll
-	${CMAKE_CURRENT_SOURCE_DIR}/inst/icuuc51.dll
-
-	DESTINATION bin
-)
+		DESTINATION bin
+	)
 
 install(FILES
 	${CMAKE_CURRENT_SOURCE_DIR}/inst/platforms/qwindows.dll
@@ -111,6 +127,22 @@ install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/res/license.txt DESTINATION .)
 
 #cpack installer ====================================================================
 
+macro(today RESULT)
+	if(WIN32)
+		execute_process(COMMAND "cmd" " /C date /T" OUTPUT_VARIABLE ${RESULT})
+		string(REGEX REPLACE "(..)\\.(..)\\.(....).*" "\\3\\2\\1" ${RESULT} ${${RESULT}})
+	elseif(UNIX)
+		execute_process(COMMAND "date" "+%d/%m/%Y" OUTPUT_VARIABLE ${RESULT})
+		string(REGEX REPLACE "(..)/(..)/..(..).*" "\\3\\2\\1" ${RESULT} ${${RESULT}})
+	else(WIN32)
+		message(SEND_ERROR "date not implemented")
+		set(${RESULT} 000000)
+	endif(WIN32)
+endmacro(today)
+today(CURRENT_DATE)
+
+set(TARGET_PLATFORM "x86")
+
 set(SPACED_NAME "Assistent Drive")
 
 set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION "bin")
@@ -119,7 +151,7 @@ include(InstallRequiredSystemLibraries)
 set(CPACK_GENERATOR NSIS)
 
 set(CPACK_PACKAGE_NAME "AssistentDrive")
-set(CPACK_PACKAGE_FILE_NAME "AssistentDrive_setup")
+set(CPACK_PACKAGE_FILE_NAME "drive_${TARGET_PLATFORM}_${BUILD_SYSTEM}_${CURRENT_DATE}")
 set(CPACK_PACKAGE_VENDOR "Assistent")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Assistent Drive, cloud storage client")
 set(CPACK_PACKAGE_VERSION "1.0.0")

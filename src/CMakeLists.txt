@@ -2,8 +2,6 @@ project(AssistentDrive)
 cmake_minimum_required(VERSION 2.8.11)
 message("Generating project ${PROJECT_NAME} in ${CMAKE_CURRENT_BINARY_DIR}")
 
-SET(CMAKE_CXX_FLAGS "-std=c++11")
-
 INCLUDE_DIRECTORIES(".")
 INCLUDE_DIRECTORIES("./3rdParty")
 
@@ -16,6 +14,10 @@ if (DEFINED ENV{QTDIR})
 else ()
 	message (FATAL_ERROR "ERROR: Environment variable QTDIR is not set.")
 endif ()
+
+if (${BUILD_SYSTEM} STREQUAL "mingw")
+	set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11")
+endif()
 
 # 3rd-party libs
 add_subdirectory("3rdParty")
