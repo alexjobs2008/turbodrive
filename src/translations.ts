@@ -403,7 +403,7 @@ IconIndex=%3</source>
     <message>
         <location filename="SettingsUI/SettingsWidget.cpp" line="176"/>
         <source>Account</source>
-        <translation>Учётная запись</translation>
+        <translation>Пользователь</translation>
     </message>
     <message>
         <location filename="SettingsUI/SettingsWidget.cpp" line="178"/>
