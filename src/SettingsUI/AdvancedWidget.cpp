@@ -99,6 +99,10 @@ AdvancedWidget::AdvancedWidget(QWidget *parent)
 	blLanguage->addWidget(cbLanguage, 0, Qt::AlignLeft | Qt::AlignVCenter);
 	blLanguage->addStretch(1);
 
+	lLanguage->setVisible(false);
+	lLanguage->setEnabled(false);
+	cbLanguage->setVisible(false);
+	cbLanguage->setEnabled(false);
 
 	mainLayout->addLayout(blNotifications);
 	mainLayout->addSpacing(8);

@@ -174,8 +174,8 @@ void SettingsWidget::setupListView()
 
 	tabs->setCurrentItem(new QListWidgetItem(QIcon(":/account.png"),
 		tr("Account"), tabs, SETTINGS_PAGE_ACCOUNT));
-	new QListWidgetItem(QIcon(":/connection.png"),
-		tr("Connection"), tabs, SETTINGS_PAGE_CONNECTION);
+//	new QListWidgetItem(QIcon(":/connection.png"),
+//		tr("Connection"), tabs, SETTINGS_PAGE_CONNECTION);
 	new QListWidgetItem(QIcon(":/advanced.png"),
 		tr("Advanced"), tabs, SETTINGS_PAGE_ADVANCED);
 	new QListWidgetItem(QIcon(":/about.png"),
