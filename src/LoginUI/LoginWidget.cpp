@@ -1,17 +1,3 @@
-//	---------------------------------------------------------------------------
-//
-//	Copyright (c) 2013. All rights reserved.
-//
-//	---------------------------------------------------------------------------
-//
-//	File:   LoginWidget.cpp
-//
-//	Author: Mikalai Arapau <infoctopus@gmail.com>
-//
-//	Desc:   Login widget implementation
-//
-//	---------------------------------------------------------------------------
-
 #include "LoginWidget.h"
 #include "Settings/settings.h"
 #include "QsLog/QsLog.h"
@@ -254,22 +240,14 @@ void LoginWidget::on_signIn_clicked(bool checked)
 		return;
 	}
 
-	Settings& settings = Settings::instance();
-
-	settings.set(Settings::email,
-		username->text().trimmed(), Settings::RealSetting);
-
-	settings.set(Settings::password,
-		password->text().trimmed(), Settings::RealSetting);
-
-	settings.set(Settings::autoLogin,
+	Settings::instance().set(Settings::autoLogin,
 		cRememberPassword->isChecked(), Settings::RealSetting);
 
 	QLOG_TRACE() << "Login from UI requested";
 
 	enableControls(false);
 
-	emit loginRequest();
+	emit loginRequest(username->text().trimmed(), password->text().trimmed());
 }
 
 void LoginWidget::enableControls(bool enable)

@@ -9,23 +9,29 @@
 #include <QtCore/QStandardPaths>
 #include <QtCore/QLocale>
 
+// DO NOT FORGET TO WRITE THE MIGRATION
+// WHEN YOU ARE ABOUT TO INCREASE SETTINGS VERSION!
+namespace { const int s_lastVersion = 0; }
+
 namespace Drive
 {
 
-const QString Settings::email("email");
+const QString Settings::version("version");
+const QString Settings::email("username");
 const QString Settings::password("password");
-const QString Settings::autoLogin("autoLogin");
-const QString Settings::folderPath("folderPath");
-const QString Settings::desktopNotifications("desktopNotifications");
+const QString Settings::autoLogin("login_on_start");
+const QString Settings::forceRelogin("force_relogin");
+const QString Settings::folderPath("sync_dir");
+const QString Settings::desktopNotifications("desktop_notifications");
 const QString Settings::autostart("autostart");
 const QString Settings::language("language");
-const QString Settings::limitDownload("limitDownload");
-const QString Settings::limitUpload("limitUpload");
-const QString Settings::downloadSpeed("downloadSpeed");
-const QString Settings::uploadSpeed("uploadSpeed");
-const QString Settings::proxyUsage("proxyUsage");
-const QString Settings::proxyCustomSettings("proxySettings");
-const QString Settings::env("env");
+const QString Settings::limitDownload("download_limit");
+const QString Settings::limitUpload("upload_limit");
+const QString Settings::downloadSpeed("download_speed");
+const QString Settings::uploadSpeed("upload_speed");
+const QString Settings::proxyUsage("proxy_usage");
+const QString Settings::proxyCustomSettings("proxy_custom_settings");
+const QString Settings::env("environment");
 
 #define DEFAULT_DOWNLOAD_SPEED 50
 #define DEFAULT_UPLOAD_SPEED 50
@@ -39,6 +45,13 @@ Settings::Settings(QObject *parent)
 	qRegisterMetaTypeStreamOperators<ProxySettings>("ProxySettings");
 
 	settings = new QSettings(this);
+
+	// TODO: migrations should be applied here
+	if (!settings->contains(version))
+	{
+		// just setting value - only for version 0!!!
+		settings->setValue(version, defaultSettingValue(version));
+	}
 
 #ifdef Q_OS_MAC
 	applyImmediately = true
@@ -186,6 +199,12 @@ QVariant Settings::defaultSettingValue(const QString& settingName) const
 
 	if (settingName == desktopNotifications)
 		return true;
+
+	if (settingName == version)
+		return s_lastVersion;
+
+	if (settingName == forceRelogin)
+		return false;
 
 	if (settingName == email)
 		return QString();

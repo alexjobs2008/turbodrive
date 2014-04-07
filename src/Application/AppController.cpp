@@ -251,11 +251,13 @@ void AppController::on_trayIcon_activated(QSystemTrayIcon::ActivationReason reas
 void AppController::on_settingsWidget_logout()
 {
 	SettingsWidget::instance().hide();
-	LoginController::instance().showLoginForm();
 
 	FileEventDispatcher::instance().cancelAll();
 	LocalFileEventNotifier::instance().stop();
 	LocalCache::instance().clear();
+
+	Settings::instance().set(Settings::forceRelogin, true, Settings::RealSetting);
+	on_actionExit_triggered();
 }
 
 void AppController::onLoginFinished()

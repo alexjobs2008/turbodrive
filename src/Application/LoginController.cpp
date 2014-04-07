@@ -15,7 +15,61 @@
 #include <QtCore/QCoreApplication>
 #include <QtWidgets/QMessageBox>
 
+#include <QDir>
 
+namespace
+{
+
+bool needSyncDirClear(const QString& username)
+{
+	const auto dirPath = Drive::Settings::instance().get(Drive::Settings::folderPath).toString();
+	const auto syncDir = QDir(dirPath);
+	const auto dirContent = syncDir.entryList(QDir::AllEntries
+										| QDir::System
+										| QDir::NoDotAndDotDot);
+
+	const auto previousUsername =
+			Drive::Settings::instance().get(Drive::Settings::email).toString();
+
+	const auto result = username != previousUsername && !dirContent.isEmpty();
+
+	QLOG_DEBUG()
+			<< "needSyncDirClear [" << dirPath
+			<< ", " << previousUsername
+			<< ", " << username
+			<< "]: " << result;
+	return result;
+}
+
+bool syncDirClearingConfirmed()
+{
+	const auto dirPath = Drive::Settings::instance().get(Drive::Settings::folderPath).toString();
+	const auto result = true;
+
+	QLOG_DEBUG() << "syncDirClearingConfirmed [" << dirPath << "]: " << result;
+	return result;
+}
+
+bool clearSyncDir()
+{
+	const auto dirPath = Drive::Settings::instance().get(Drive::Settings::folderPath).toString();
+	auto syncDir = QDir(dirPath);
+
+	const auto result = syncDir.removeRecursively();
+	Drive::AppController::instance().createFolder();
+
+	if (result)
+	{
+		QLOG_DEBUG() << "clearSyncDir [" << dirPath << "]: " << result;
+	}
+	else
+	{
+		QLOG_ERROR() << "clearSyncDir [" << dirPath << "] FAILED";
+	}
+	return true;
+}
+
+}
 
 namespace Drive
 {
@@ -42,15 +96,17 @@ LoginController::~LoginController()
 
 void LoginController::showLoginFormOrLogin()
 {
-	const auto email = Settings::instance().get(Settings::email).toString();
+	const auto username = Settings::instance().get(Settings::email).toString();
 	const auto password = Settings::instance().get(Settings::password).toString();
 	const auto autoLogin = Settings::instance().get(Settings::autoLogin).toBool();
-	if (autoLogin && !email.isEmpty() && !password.isEmpty())
+	const auto forceRelogin = Settings::instance().get(Settings::forceRelogin).toBool();
+	if (!forceRelogin && autoLogin && !username.isEmpty() && !password.isEmpty())
 	{
-		login();
+		login(username, password);
 	}
 	else
 	{
+		Settings::instance().set(Settings::forceRelogin, false, Settings::RealSetting);
 		showLoginForm();
 	}
 }
@@ -61,11 +117,11 @@ void LoginController::showLoginForm()
 	{
 		loginWidget = new LoginWidget();
 
-		connect(loginWidget, SIGNAL(loginRequest()),
-			this, SLOT(login()));
+		connect(loginWidget, &LoginWidget::loginRequest,
+			this, &LoginController::login);
 
-		connect(loginWidget, SIGNAL(passwordResetRequest(QString)),
-			this, SLOT(passwordReset(QString)));
+		connect(loginWidget, &LoginWidget::passwordResetRequest,
+			this, &LoginController::passwordReset);
 
 
 		RegisterLinkResourceRef regLink = RegisterLinkResource::create();
@@ -78,9 +134,9 @@ void LoginController::showLoginForm()
 	loginWidget->show();
 }
 
-void LoginController::login()
+void LoginController::login(const QString& username, const QString& password)
 {
-	QLOG_INFO() << "LoginController::login()";
+	QLOG_INFO() << "LoginController::login(" << username << ")";
 
 	AppController::instance().setState(Authorizing);
 
@@ -91,15 +147,14 @@ void LoginController::login()
 	}
 
 	AuthRestResourceRef authResource = AuthRestResource::create();
-	connect(authResource.data(), SIGNAL(loginSucceeded(QString)),
-		this,  SLOT(onLoginSucceeded(QString)));
-
-	connect(authResource.data(), SIGNAL(loginFailed(QString)),
-		this,  SLOT(onLoginFailed(QString)));
+	connect(authResource.data(), &AuthRestResource::loginSucceeded,
+		this,  &LoginController::onLoginSucceeded);
+	connect(authResource.data(), &AuthRestResource::loginFailed,
+		this,  &LoginController::onLoginFailed);
 
 	AuthRestResource::Input inputData;
-	inputData.username = Settings::instance().get(Settings::email).toString();
-	inputData.password = Settings::instance().get(Settings::password).toString();
+	inputData.username = username;
+	inputData.password = password;
 
 	authResource->login(inputData);
 }
@@ -151,8 +206,26 @@ void LoginController::requestUserData()
 	userResource->requestProfileData();
 }
 
-void LoginController::onLoginSucceeded(const QString& token)
+void LoginController::onLoginSucceeded(
+		const QString& username, const QString& password, const QString& token)
 {
+	if (needSyncDirClear(username))
+	{
+		if (!syncDirClearingConfirmed())
+		{
+			onLoginFailed(tr("Login cancelled by user."));
+			return;
+		}
+		else if (!clearSyncDir())
+		{
+			onLoginFailed(tr("Directory clearing failed."));
+			return;
+		}
+	}
+
+	Settings::instance().set(Settings::email, username, Settings::RealSetting);
+	Settings::instance().set(Settings::password, password, Settings::RealSetting);
+
 	AppController::instance().setAuthToken(token);
 	requestUserData();
 }
@@ -160,9 +233,11 @@ void LoginController::onLoginSucceeded(const QString& token)
 void LoginController::onLoginFailed(const QString& error)
 {
 	showLoginForm();
+
 	loginWidget->enableControls();
 	loginWidget->focusOnEmail();
 	loginWidget->setError(error);
+
 	AppController::instance().setState(NotAuthorized);
 }
 

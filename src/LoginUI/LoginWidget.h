@@ -1,18 +1,3 @@
-//	---------------------------------------------------------------------------
-//
-//	Copyright (c) 2013. All rights reserved.
-//
-//	---------------------------------------------------------------------------
-//
-//	File:   LoginWidget.h
-//
-//	Author: Mikalai Arapau <infoctopus@gmail.com>
-//
-//	Desc:   Login widget class. Let's user log in with email/password.
-//			And also to reset password or to sing up.
-//
-//	---------------------------------------------------------------------------
-
 #ifndef LOGIN_WIDGET_H
 #define LOGIN_WIDGET_H
 
@@ -90,7 +75,7 @@ signals:
 	/**
 	* @brief Emitted when Sign In button gets clicked or Enter pressed
 	*/
-	void loginRequest();
+	void loginRequest(const QString& login, const QString& password);
 
 	/**
 	* @brief Emitted when user requested password reset

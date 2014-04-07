@@ -32,6 +32,11 @@
         <comment>%1 - product name</comment>
         <translation>Открыть папку %1</translation>
     </message>
+    <message>
+        <location filename="SettingsUI/AccountWidget.cpp" line="51"/>
+        <source>Sync status: Up to date</source>
+        <translation>Статус: обновлено</translation>
+    </message>
 </context>
 <context>
     <name>Drive::AdvancedWidget</name>
@@ -71,7 +76,7 @@
         <translation>Язык:</translation>
     </message>
     <message>
-        <location filename="SettingsUI/AdvancedWidget.cpp" line="152"/>
+        <location filename="SettingsUI/AdvancedWidget.cpp" line="156"/>
         <source>Choose Folder to Move %1 Into</source>
         <translation>Выберите целевую папку для %1</translation>
     </message>
@@ -112,12 +117,12 @@
 <context>
     <name>Drive::AuthRestResource</name>
     <message>
-        <location filename="APIClient/AuthenticationService.cpp" line="52"/>
+        <location filename="APIClient/AuthenticationService.cpp" line="76"/>
         <source>Please check your Internet connection</source>
         <translation>Пожалуйста, проверьте ваше соединение</translation>
     </message>
     <message>
-        <location filename="APIClient/AuthenticationService.cpp" line="68"/>
+        <location filename="APIClient/AuthenticationService.cpp" line="92"/>
         <source>No authentication token found</source>
         <translation>Не найден токен аутентификации</translation>
     </message>
@@ -209,22 +214,32 @@ IconIndex=%3</source>
 <context>
     <name>Drive::LoginController</name>
     <message>
-        <location filename="Application/LoginController.cpp" line="178"/>
+        <location filename="Application/LoginController.cpp" line="216"/>
+        <source>Login cancelled by user.</source>
+        <translation>Вход отменён пользователем.</translation>
+    </message>
+    <message>
+        <location filename="Application/LoginController.cpp" line="221"/>
+        <source>Directory clearing failed.</source>
+        <translation>Не удалось очистить целевую директорию.</translation>
+    </message>
+    <message>
+        <location filename="Application/LoginController.cpp" line="253"/>
         <source>Please check your email</source>
         <translation>Проверьте входящую почту</translation>
     </message>
     <message>
-        <location filename="Application/LoginController.cpp" line="179"/>
+        <location filename="Application/LoginController.cpp" line="254"/>
         <source>We&apos;ve sent you an email with further instructions about password reset.</source>
         <translation>Мы отправили вам письмо с дальнейшими инструкциями по сбросу пароля.</translation>
     </message>
     <message>
-        <location filename="Application/LoginController.cpp" line="190"/>
+        <location filename="Application/LoginController.cpp" line="265"/>
         <source>Password reset failed</source>
         <translation>Ошибка сброса пароля</translation>
     </message>
     <message>
-        <location filename="Application/LoginController.cpp" line="245"/>
+        <location filename="Application/LoginController.cpp" line="320"/>
         <source>Login failed: can&apos;t obtain user details</source>
         <translation>Ошибка извлечения информации о пользователе</translation>
     </message>
@@ -232,57 +247,62 @@ IconIndex=%3</source>
 <context>
     <name>Drive::LoginWidget</name>
     <message>
-        <location filename="LoginUI/LoginWidget.cpp" line="63"/>
+        <location filename="LoginUI/LoginWidget.cpp" line="49"/>
         <source>%1 Sign In</source>
         <translation>Авторизация %1</translation>
     </message>
     <message>
-        <location filename="LoginUI/LoginWidget.cpp" line="93"/>
+        <location filename="LoginUI/LoginWidget.cpp" line="79"/>
         <source>Please wait...</source>
         <translation>Пожалуйста, подождите...</translation>
     </message>
     <message>
-        <location filename="LoginUI/LoginWidget.cpp" line="100"/>
+        <location filename="LoginUI/LoginWidget.cpp" line="86"/>
         <source>&amp;Phone:</source>
         <translation>&amp;Телефон:</translation>
     </message>
     <message>
-        <location filename="LoginUI/LoginWidget.cpp" line="111"/>
+        <source>&amp;Email:</source>
+        <translation type="vanished">&amp;Email:</translation>
+    </message>
+    <message>
+        <location filename="LoginUI/LoginWidget.cpp" line="97"/>
         <source>&amp;Password:</source>
         <translation>&amp;Пароль:</translation>
     </message>
     <message>
-        <location filename="LoginUI/LoginWidget.cpp" line="122"/>
+        <location filename="LoginUI/LoginWidget.cpp" line="108"/>
         <source>Forgot?</source>
         <translation>Забыли?</translation>
     </message>
     <message>
-        <location filename="LoginUI/LoginWidget.cpp" line="129"/>
+        <location filename="LoginUI/LoginWidget.cpp" line="115"/>
         <source>&amp;Sign me in when %1 starts</source>
         <translation>&amp;Входить автоматически при старте %1</translation>
     </message>
     <message>
-        <location filename="LoginUI/LoginWidget.cpp" line="139"/>
+        <location filename="LoginUI/LoginWidget.cpp" line="125"/>
         <source>Sign in</source>
         <translation>Войти</translation>
     </message>
     <message>
-        <location filename="LoginUI/LoginWidget.cpp" line="145"/>
+        <location filename="LoginUI/LoginWidget.cpp" line="131"/>
         <source>or</source>
         <translation>или</translation>
     </message>
     <message>
-        <location filename="LoginUI/LoginWidget.cpp" line="148"/>
+        <location filename="LoginUI/LoginWidget.cpp" line="134"/>
         <source>Create account</source>
         <translation>Зарегистрироваться</translation>
     </message>
     <message>
-        <location filename="LoginUI/LoginWidget.cpp" line="244"/>
+        <location filename="LoginUI/LoginWidget.cpp" line="230"/>
         <source>Please provide a valid phone number</source>
+        <oldsource>Please provide a valid email</oldsource>
         <translation>Пожалуйста, введите корректный номер телефона</translation>
     </message>
     <message>
-        <location filename="LoginUI/LoginWidget.cpp" line="251"/>
+        <location filename="LoginUI/LoginWidget.cpp" line="237"/>
         <source>Please provide a non-empty password</source>
         <translation>Пожалуйста, введите пароль</translation>
     </message>
@@ -380,12 +400,11 @@ IconIndex=%3</source>
     <message>
         <location filename="SettingsUI/SettingsWidget.cpp" line="176"/>
         <source>Account</source>
-        <translation>Учётная запись</translation>
+        <translation>Пользователь</translation>
     </message>
     <message>
-        <location filename="SettingsUI/SettingsWidget.cpp" line="178"/>
         <source>Connection</source>
-        <translation>Соединение</translation>
+        <translation type="vanished">Соединение</translation>
     </message>
     <message>
         <location filename="SettingsUI/SettingsWidget.cpp" line="180"/>

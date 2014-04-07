@@ -34,19 +34,14 @@ public:
 	virtual bool restricted() const;
 
 signals:
-	void loginSucceeded(const QString& token);
+	void loginSucceeded(const QString& username, const QString& password, const QString& token);
 	void loginFailed(const QString& error);
 
 private:
 	virtual bool processPostResponse(int status, const QByteArray& data,
 		const HeaderList& headers);
 
-
-
-	QByteArray toByteArray(const Input& data);
-
-	static const QString username;
-	static const QString password;
+	Input m_data;
 };
 
 }

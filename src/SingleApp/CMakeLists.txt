@@ -11,12 +11,10 @@ find_package(Qt5Widgets)
 find_package(Qt5Network)
 
 set(HEADERS
-	localserver.h
 	singleapp.h
 )
 
 set(SOURCES
-	localserver.cpp
 	singleapp.cpp
 )
 

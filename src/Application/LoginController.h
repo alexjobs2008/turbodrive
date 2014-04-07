@@ -20,7 +20,7 @@ public:
 public slots:
 	void showLoginFormOrLogin();
 	void showLoginForm();
-	void login();
+	void login(const QString& username, const QString& password);
 	void passwordReset(const QString& email);
 	void closeAll();
 	void requestUserData();
@@ -29,8 +29,11 @@ signals:
 	void loginFinished();
 
 private slots:
-	void onLoginSucceeded(const QString& token);
+	void onLoginSucceeded(
+			const QString& username, const QString& password, const QString& token);
+
 	void onLoginFailed(const QString& error);
+
 	void onPasswordResetSucceeded();
 	void onPasswordResetFailed(const QString& error);
 	void onProfileDataReceived(const QJsonObject& data);

@@ -1,40 +1,31 @@
 #ifndef SINGLE_APP_H
 #define SINGLE_APP_H
 
-#include "localserver.h"
-
 #include <QtWidgets/QApplication>
-#include <QtNetwork/QLocalSocket>
+#include <QtNetwork/QLocalServer>
 
 namespace Drive
 {
-
 class TrayIcon;
-
 }
 
-class SingleApplication : public QApplication
+class SingleApplication: public QApplication
 {
 	Q_OBJECT
+
 public:
-	explicit SingleApplication(int, char *[]);
+	SingleApplication(int, char *[]);
 	~SingleApplication();
+
 	bool shouldContinue();
+	Q_SIGNAL void showUp();
+
 	QPointer<Drive::TrayIcon> trayIcon();
 
-signals:
-	void showUp();
-
-private slots:
-	void slotShowUp();
-
 private:
-	QLocalSocket* socket;
-	LocalServer* server;
-
+	bool m_shouldContinue;
+	QLocalServer* m_localServer;
 	Drive::TrayIcon* m_trayIcon;
-
-	bool _shouldContinue;
 };
 
 #endif // SINGLE_APP_H

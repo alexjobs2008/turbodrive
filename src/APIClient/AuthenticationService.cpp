@@ -9,8 +9,30 @@
 namespace Drive
 {
 
-const QString AuthRestResource::username("username");
-const QString AuthRestResource::password("password");
+namespace
+{
+
+
+QByteArray toByteArray(const AuthRestResource::Input& data)
+{
+	static const QString username("username");
+	static const QString password("password");
+
+	QVariantMap map;
+	map.insert(username, data.username);
+	map.insert(password, data.password);
+
+	const QJsonObject jobject = QJsonObject::fromVariantMap(map);
+
+	const QJsonDocument doc(jobject);
+
+	const QString s(QLatin1String("data=") + doc.toJson());
+
+	return s.toLatin1();
+}
+
+
+}
 
 AuthRestResourceRef AuthRestResource::create()
 {
@@ -21,6 +43,8 @@ AuthRestResourceRef AuthRestResource::create()
 void AuthRestResource::login(const AuthRestResource::Input& data)
 {
 	QLOG_INFO() << "signing in...";
+
+	m_data = data;
 
 	HeaderList headers;
 	doOperation(QNetworkAccessManager::PostOperation, toByteArray(data), headers);
@@ -55,12 +79,12 @@ bool AuthRestResource::processPostResponse(int status,
 
 	if(status == 200)
 	{
-		QString token = getDataFromJson(data);
+		const QString& token = getDataFromJson(data);
 
 		if (!token.isEmpty())
 		{
 			QLOG_INFO() << "Token received: " << token;
-			emit loginSucceeded(token);
+			emit loginSucceeded(m_data.username, m_data.password, token);
 		}
 		else
 		{
@@ -76,22 +100,6 @@ bool AuthRestResource::processPostResponse(int status,
 	}
 
 	return true;
-}
-
-QByteArray AuthRestResource::toByteArray(const Input& data)
-{
-	QVariantMap map;
-	map.insert(username, Settings::instance().get(Settings::email).toString());
-	map.insert(password, Settings::instance().get(Settings::password).toString());
-
-	QJsonObject jobject = QJsonObject::fromVariantMap(map);
-
-	QJsonDocument doc(jobject);
-
-	QString s = "data=";
-	s += doc.toJson();
-
-	return s.toLatin1();
 }
 
 }
