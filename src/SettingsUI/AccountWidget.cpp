@@ -48,9 +48,7 @@ AccountWidget::AccountWidget(QWidget *parent)
 	folderLabel->setToolTip(QString(tr("Open %1 folder", "%1 - product name"))
 		.arg(Strings::getAppString(Strings::AppFullName)));
 
-	//QLabel *spaceLabel = new QLabel("17 KB (8 files) out of 100 GB", this);
-
-	QLabel *statusLabel = new QLabel("Sync status: Up to date", this);
+	QLabel *statusLabel = new QLabel(tr("Sync status: Up to date"), this);
 
 	QHBoxLayout *mainLayout = new QHBoxLayout(this);
 	QVBoxLayout *leftLayout = new QVBoxLayout();
