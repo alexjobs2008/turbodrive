@@ -247,9 +247,7 @@ QVariant Settings::defaultSettingValue(const QString& settingName) const
 	}
 
 	if (settingName == env)
-		//return AssistentDotThVersionX;
-		//return Env::AssistentDotTh;
-		return Env::NewAssistentDotBy;
+		return Env::MTSDotTurbocloudDotRu;
 
 	QLOG_DEBUG() << "Setting" << settingName << "has no default value.";
 	return QVariant();

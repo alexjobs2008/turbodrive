@@ -45,6 +45,7 @@ public:
 		NewAssistentDotBy,
 		TurbocloudDotRu,
 		AssistentDotThVersionX,
+		MTSDotTurbocloudDotRu,
 	};
 
 	static Settings& instance();
