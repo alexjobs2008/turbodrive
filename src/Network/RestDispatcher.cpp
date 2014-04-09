@@ -109,12 +109,12 @@ void GeneralRestDispatcher::loadServices()
 		services.insert("SharingService", new RestService("SharingService", "https://files.turbocloud.ru", this));
 		break;
 	case Settings::Env::MTSDotTurbocloudDotRu:
-		services.insert("AuthService", new RestService("AuthService", "http://mts.turbocloud.ru", this));
-		services.insert("DashboardService", new RestService("DashboardService", "http://mts.turbocloud.ru", this));
-		services.insert("ProfileService", new RestService("ProfileService", "http://mts.turbocloud.ru", this));
-		services.insert("FilesService", new RestService("FilesService", "http://mts.turbocloud.ru", this));
-		services.insert("ContentService", new RestService("ContentService", "http://mts.turbocloud.ru", this));
-		services.insert("SharingService", new RestService("SharingService", "http://mts.turbocloud.ru", this));
+		services.insert("AuthService", new RestService("AuthService", "http://mts.turbocloud.by", this));
+		services.insert("DashboardService", new RestService("DashboardService", "http://mts.turbocloud.by", this));
+		services.insert("ProfileService", new RestService("ProfileService", "http://mts.turbocloud.by", this));
+		services.insert("FilesService", new RestService("FilesService", "http://mts.turbocloud.by", this));
+		services.insert("ContentService", new RestService("ContentService", "http://mts.turbocloud.by", this));
+		services.insert("SharingService", new RestService("SharingService", "http://mts.turbocloud.by", this));
 		break;
 	default:
 		Q_ASSERT(false);
