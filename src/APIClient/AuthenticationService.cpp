@@ -46,8 +46,11 @@ void AuthRestResource::login(const AuthRestResource::Input& data)
 
 	m_data = data;
 
+	const QByteArray rawData = toByteArray(data);
+	QLOG_DEBUG() << "AuthRestResource: sent" << rawData;
+
 	HeaderList headers;
-	doOperation(QNetworkAccessManager::PostOperation, toByteArray(data), headers);
+	doOperation(QNetworkAccessManager::PostOperation, rawData, headers);
 }
 
 QString AuthRestResource::path() const
@@ -70,6 +73,8 @@ bool AuthRestResource::processPostResponse(int status,
 										const HeaderList& headers)
 {
 	Q_UNUSED(headers);
+
+	QLOG_DEBUG() << "AuthRestResource: received" << data;
 
 	if (status == 0)
 	{
