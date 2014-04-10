@@ -52,16 +52,8 @@ bool ProfileRestResource::processGetResponse(int status,
 	QJsonDocument doc = QJsonDocument::fromJson(data);
 	if (!doc.isEmpty() && doc.isObject())
 	{
-		QJsonObject mainObject = doc.object();
-		if (mainObject.contains("data"))
-		{
-			QJsonValue dataObject = mainObject.value("data");
-			if (dataObject.type() == QJsonValue::Object)
-			{
-				emit profileDataReceived(dataObject.toObject());
-				return true;
-			}
-		}
+		emit profileDataReceived(doc.object());
+		return true;
 	}
 
 	QLOG_ERROR() << "User data: no data";

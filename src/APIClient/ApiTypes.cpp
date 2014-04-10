@@ -60,10 +60,10 @@ const QString Workspace::paramUserChannel("user_channel");
 const QString Workspace::paramServiceChannel("service_channel");
 const QString Workspace::paramGroups("groups");
 
-const QString ProfileData::paramId("_id");
-const QString ProfileData::paramEmail("email");
-const QString ProfileData::paramFirstName("first_name");
-const QString ProfileData::paramLastName("last_name");
+const QString ProfileData::paramId("id");
+const QString ProfileData::paramUsername("username");
+const QString ProfileData::paramFirstName("firstname");
+const QString ProfileData::paramLastName("lastname");
 const QString ProfileData::paramMiddleName("middle_name");
 const QString ProfileData::paramPhone("phone");
 const QString ProfileData::paramAvatar("avatar");
@@ -143,10 +143,7 @@ Workspace Workspace::fromJson(const QJsonObject& jsonObject)
 
 bool Workspace::isValid() const
 {
-	return id
-		&& !name.isEmpty()
-		&& !serviceChannel.isEmpty()
-		&& groups.size();
+	return id;
 }
 
 // ============================================================================
@@ -157,8 +154,8 @@ ProfileData ProfileData::fromJson(const QJsonObject& jsonObject)
 
 	profileData.id =
 		objectValue(jsonObject, paramId, QString()).toString();
-	profileData.email =
-		objectValue(jsonObject, paramEmail, QString()).toString();
+	profileData.username =
+		objectValue(jsonObject, paramUsername, QString()).toString();
 	profileData.firstName =
 		objectValue(jsonObject, paramFirstName, QString()).toString();
 	profileData.lastName =
@@ -215,7 +212,7 @@ ProfileData ProfileData::fromJson(const QJsonObject& jsonObject)
 
 bool ProfileData::isValid()
 {
-	return !id.isEmpty() && !email.isEmpty() /*&& !firstName.isEmpty()
+	return !id.isEmpty() && !username.isEmpty() /*&& !firstName.isEmpty()
 		&& !lastName.isEmpty() */ && workspaces.size();
 }
 
@@ -235,7 +232,7 @@ void ProfileData::log()
 {
 	QLOG_TRACE () << "Profile data:" << "\n"
 		<< paramId << ": " << id << "\n"
-		<< paramEmail << ": " << email << "\n"
+		<< paramUsername << ": " << username << "\n"
 		<< paramFirstName << ": " << firstName << "\n"
 		<< paramLastName << ": " << lastName << "\n"
 		<< paramMiddleName << ": " << middleName << "\n"

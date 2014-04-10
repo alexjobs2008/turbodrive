@@ -50,7 +50,7 @@ struct Workspace
 struct ProfileData
 {
 	static const QString paramId;
-	static const QString paramEmail;
+	static const QString paramUsername;
 	static const QString paramFirstName;
 	static const QString paramLastName;
 	static const QString paramMiddleName;
@@ -70,7 +70,7 @@ struct ProfileData
 	void log();
 
 	QString id;
-	QString email;
+	QString username;
 	QString firstName;
 	QString lastName;
 	QString middleName;

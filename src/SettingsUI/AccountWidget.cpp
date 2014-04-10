@@ -81,7 +81,7 @@ void AccountWidget::setProfileData(const ProfileData& profileData)
 		.arg(profileData.firstName)
 		.arg(profileData.lastName));
 
-	loginLabel->setText(profileData.email);
+	loginLabel->setText(profileData.username);
 
 	if (!profileData.avatar.isNull())
 		avatarLabel->setPixmap(profileData.avatar);

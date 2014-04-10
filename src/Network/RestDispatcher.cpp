@@ -115,6 +115,7 @@ void GeneralRestDispatcher::loadServices()
 		services.insert("FilesService", new RestService("FilesService", "http://mts.turbocloud.by", this));
 		services.insert("ContentService", new RestService("ContentService", "http://mts.turbocloud.by", this));
 		services.insert("SharingService", new RestService("SharingService", "http://mts.turbocloud.by", this));
+		services.insert("NotificationService", new RestService("NotificationService", "http://mts.turbocloud.by", this));
 		break;
 	default:
 		Q_ASSERT(false);
