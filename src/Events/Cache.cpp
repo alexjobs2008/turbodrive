@@ -67,7 +67,6 @@ int LocalCache::id(const QString& remotePath, bool forParent)
 		QStringList list = path.split("/", QString::SkipEmptyParts);
 		list.removeLast();
 		path = list.join("/");
-		path.append("/");
 
 		QLOG_TRACE() << "Local cache: checking id for " << path;
 	}
