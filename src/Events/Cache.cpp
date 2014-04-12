@@ -121,28 +121,36 @@ RemoteFileDesc LocalCache::fileDesc(const QString& remotePath, bool forParent)
 	}
 }
 
-void LocalCache::addDiskItem()
+void LocalCache::onRootId(int id)
 {
+	QMutexLocker locker(&mutex);
 
+	if (diskId != 0)
+	{
+		QLOG_ERROR() << "LocalCache: disk duplicate id detected";
+		return;
+	}
+	diskId = id;
+	RemoteFileDesc diskDesc;
+	diskDesc.id = diskId;
+	diskDesc.type = RemoteFileDesc::Folder;
+	diskDesc.parentId = -1;
+	diskDesc.name = "#root/#disk";
+
+	idMap.insert(diskDesc.id, diskDesc);
+	pathMap.insert(diskDesc.name, diskDesc);
+
+	QLOG_TRACE() << "LocalCache: disk id: " << diskId;
 }
 
 void LocalCache::onNewFileDesc(Drive::RemoteFileDesc fileDesc)
 {
 	QMutexLocker locker(&mutex);
 
-	if (!diskId)
+	if (diskId == 0)
 	{
-		diskId = fileDesc.parentId;
-		RemoteFileDesc diskDesc;
-		diskDesc.id = diskId;
-		diskDesc.type = RemoteFileDesc::Folder;
-		diskDesc.parentId = -1;
-		diskDesc.name = "#root/#disk";
-
-		idMap.insert(diskDesc.id, diskDesc);
-		pathMap.insert(diskDesc.name, diskDesc);
-
-		QLOG_TRACE() << "LocalCache: disk id: " << diskId;
+		QLOG_ERROR() << "LocalCache: disk id not found";
+		return;
 	}
 
 	QLOG_TRACE() << "LocaCache: new RemoteFileDesc:";
@@ -189,8 +197,6 @@ void LocalCache::onNewFileDesc(Drive::RemoteFileDesc fileDesc)
 		QLOG_TRACE() << "LocalCache: parent path found: " << path;
 		pathMap.insert(path, fileDesc);
 	}
-
-
 }
 
 }

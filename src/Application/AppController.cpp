@@ -296,6 +296,9 @@ void AppController::onLoginFinished()
 
 	LocalCache &localCache = LocalCache::instance();
 
+	connect(syncer, &Syncer::rootId
+		, &localCache, &LocalCache::onRootId);
+
 	connect(syncer, SIGNAL(newFileDesc(Drive::RemoteFileDesc))
 		, &localCache, SLOT(onNewFileDesc(Drive::RemoteFileDesc)));
 

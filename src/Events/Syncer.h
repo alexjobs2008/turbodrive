@@ -19,19 +19,26 @@ public:
 	void fullSync();
 
 signals:
+	void rootId(int id);
+
 	void newRemoteEvent(RemoteFileEvent event);
 	void newLocalEvent(LocalFileEvent event);
 
 	void newFileDesc(Drive::RemoteFileDesc fileDesc);
 
-private slots:
-	void onGetChildrenSucceeded(QList<Drive::RemoteFileDesc>);
-	void onGetChildrenFailed();
-
 private:
+	void getRoot();
+	void onGetRootSucceeded(QList<RemoteFileDesc> list);
+
+	void getChildren();
+	void onGetChildrenSucceeded(QList<Drive::RemoteFileDesc>);
+
+	void onGetFailed() const;
+
 	void syncLocalFolder(const QString& localFolderPath);
 	void fireEvents();
 
+private:
 	QString currentLocalPathPrefix;
 	int folderCounter;
 
@@ -40,6 +47,5 @@ private:
 };
 
 }
-
 
 #endif // SYNCER_H
