@@ -7,8 +7,11 @@
 #include <QtCore/QSet>
 
 //#define DISK_DOWNLOAD_URL "http://files.assistent.th/api/v1/content/%1"
-#define DISK_DOWNLOAD_URL "http://disk.new.assistent.by/api/v1/content/%1"
+//#define DISK_DOWNLOAD_URL "http://disk.new.assistent.by/api/v1/content/%1"
 //#define DISK_DOWNLOAD_URL "http://c0-0-40.files.assistent.th/api/v1/content/%1"
+
+// FIXME: use FilesService to build url
+#define DISK_DOWNLOAD_URL "http://mts.turbocloud.by/api/v1/content/%1"
 
 class QNetworkAccessManager;
 class QFile;

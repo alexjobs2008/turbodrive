@@ -6,8 +6,12 @@
 #include <QtNetwork/QNetworkReply>
 
 //#define UPLOAD_URL "http://files.assistent.th/api/v1/content/create"
-#define UPLOAD_URL "http://disk.new.assistent.by/api/v1/content/create"
+//#define UPLOAD_URL "http://disk.new.assistent.by/api/v1/content/create"
 //#define UPLOAD_URL "http://c0-0-40.files.assistent.th/api/v1/content/create"
+
+// FIXME: use FilesService to build url
+#define UPLOAD_URL "http://mts.turbocloud.by/api/v1/content/create"
+
 
 class QNetworkAccessManager;
 class QByteArray;
