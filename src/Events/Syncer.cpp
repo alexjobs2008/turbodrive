@@ -23,29 +23,14 @@ void Syncer::fullSync()
 	localEvents.clear();
 	remoteEvents.clear();
 
-	GetChildrenResourceRef getChildrenRes =
-		GetChildrenResource::create();
-
-	connect(getChildrenRes.data(), SIGNAL(succeeded(QList<Drive::RemoteFileDesc>)),
-		this, SLOT(onGetChildrenSucceeded(QList<Drive::RemoteFileDesc>)));
-
-	connect(getChildrenRes.data(), SIGNAL(failed()),
-		this, SLOT(onGetChildrenFailed()));
-
-	++folderCounter;
-	getChildrenRes->getChildren(-2);
-
-//	LocalCache::instance().log();
-
-	syncLocalFolder(
-		Settings::instance().get(Settings::folderPath).toString());
+	getRoot();
 }
 
 void Syncer::onGetChildrenSucceeded(QList<RemoteFileDesc> list)
 {
 	--folderCounter;
 
-	foreach (RemoteFileDesc fileDesc, list)
+	Q_FOREACH(RemoteFileDesc fileDesc, list)
 	{
 		if (fileDesc.type == RemoteFileDesc::Folder)
 		{
@@ -68,7 +53,7 @@ void Syncer::onGetChildrenSucceeded(QList<RemoteFileDesc> list)
 		}
 	}
 
-	foreach (RemoteFileDesc fileDesc, list)
+	Q_FOREACH(RemoteFileDesc fileDesc, list)
 	{
 		if (fileDesc.type == RemoteFileDesc::File)
 		{
@@ -91,7 +76,7 @@ void Syncer::onGetChildrenSucceeded(QList<RemoteFileDesc> list)
 		}
 	}
 
-	foreach (RemoteFileDesc fileDesc, list)
+	Q_FOREACH(RemoteFileDesc fileDesc, list)
 	{
 		if (fileDesc.type == RemoteFileDesc::Folder)
 			if (fileDesc.hasChildren)
@@ -105,7 +90,7 @@ void Syncer::onGetChildrenSucceeded(QList<RemoteFileDesc> list)
 					SLOT(onGetChildrenSucceeded(QList<Drive::RemoteFileDesc>)));
 
 				connect(getChildrenRes.data(), SIGNAL(failed()),
-					this, SLOT(onGetChildrenFailed()));
+					this, SLOT(onGetFailed()));
 
 				++folderCounter;
 				getChildrenRes->getChildren(fileDesc.id);
@@ -118,8 +103,64 @@ void Syncer::onGetChildrenSucceeded(QList<RemoteFileDesc> list)
 	}
 }
 
-void Syncer::onGetChildrenFailed()
+void Syncer::getRoot()
 {
+	GetChildrenResourceRef getChildrenRes =
+		GetChildrenResource::create();
+
+	connect(getChildrenRes.data(), &GetChildrenResource::succeeded,
+		this, &Syncer::onGetRootSucceeded);
+
+	connect(getChildrenRes.data(), SIGNAL(failed()),
+		this, SLOT(onGetFailed()));
+
+	getChildrenRes->getChildren(0);
+}
+
+void Syncer::getChildren()
+{
+	GetChildrenResourceRef getChildrenRes =
+			GetChildrenResource::create();
+
+	connect(getChildrenRes.data(), &GetChildrenResource::succeeded,
+		this, &Syncer::onGetChildrenSucceeded);
+
+	connect(getChildrenRes.data(), &GetChildrenResource::failed,
+		this, &Syncer::onGetFailed);
+
+	++folderCounter;
+
+	const int diskId = -2;
+	getChildrenRes->getChildren(diskId);
+
+	syncLocalFolder(
+		Settings::instance().get(Settings::folderPath).toString());
+}
+
+void Syncer::onGetRootSucceeded(QList<RemoteFileDesc> list)
+{
+	Q_FOREACH(const RemoteFileDesc& fileDesc, list)
+	{
+		if (fileDesc.type != RemoteFileDesc::Folder)
+		{
+			continue;
+		}
+
+		if (fileDesc.name != QLatin1String("#disk"))
+		{
+			continue;
+		}
+
+		Q_EMIT rootId(fileDesc.id);
+		break;
+	}
+
+	getChildren();
+}
+
+void Syncer::onGetFailed() const
+{
+	Q_ASSERT(false);
 	QLOG_ERROR() << "Sync failed";
 }
 

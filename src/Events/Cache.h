@@ -27,11 +27,11 @@ public:
 	RemoteFileDesc fileDesc(const QString& remotePath, bool forParent = false);
 
 	void clear();
-	void addDiskItem();
 
 	void log(const QString& fileName = QString());
 
 public slots:
+	void onRootId(int id);
 	void onNewFileDesc(Drive::RemoteFileDesc fileDesc);
 	//void onRemoveFileDesc()
 
