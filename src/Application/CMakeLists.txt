@@ -56,8 +56,6 @@ qt5_use_modules(${PROJECT_NAME}
 	Widgets
 )
 
-#add_dependencies(${PROJECT_NAME} google-breakpad)
-
 target_link_libraries(${PROJECT_NAME}
 	SingleApp
 	AnimatedSystemTrayIcon
