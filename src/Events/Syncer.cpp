@@ -23,16 +23,16 @@ void Syncer::fullSync()
 	localEvents.clear();
 	remoteEvents.clear();
 
-	getRoot();
+	getRoots();
 }
 
-void Syncer::onGetChildrenSucceeded(QList<RemoteFileDesc> list)
+void Syncer::onGetChildrenSucceeded(const QList<RemoteFileDesc>& list)
 {
 	--folderCounter;
 
 	Q_FOREACH(RemoteFileDesc fileDesc, list)
 	{
-		if (fileDesc.type == RemoteFileDesc::Folder)
+		if (fileDesc.type == RemoteFileDesc::Dir)
 		{
 			RemoteFileEvent event;
 			event.type = RemoteFileEvent::Created;
@@ -49,7 +49,7 @@ void Syncer::onGetChildrenSucceeded(QList<RemoteFileDesc> list)
 			//emit newRemoteEvent(event);
 			remoteEvents << event;
 
-			emit newFileDesc(fileDesc);
+			emit newFile(fileDesc);
 		}
 	}
 
@@ -72,13 +72,13 @@ void Syncer::onGetChildrenSucceeded(QList<RemoteFileDesc> list)
 			//emit newRemoteEvent(event);
 			remoteEvents << event;
 
-			emit newFileDesc(fileDesc);
+			emit newFile(fileDesc);
 		}
 	}
 
 	Q_FOREACH(RemoteFileDesc fileDesc, list)
 	{
-		if (fileDesc.type == RemoteFileDesc::Folder)
+		if (fileDesc.type == RemoteFileDesc::Dir)
 			if (fileDesc.hasChildren)
 			{
 				GetChildrenResourceRef getChildrenRes =
@@ -103,13 +103,13 @@ void Syncer::onGetChildrenSucceeded(QList<RemoteFileDesc> list)
 	}
 }
 
-void Syncer::getRoot()
+void Syncer::getRoots()
 {
 	GetChildrenResourceRef getChildrenRes =
 		GetChildrenResource::create();
 
 	connect(getChildrenRes.data(), &GetChildrenResource::succeeded,
-		this, &Syncer::onGetRootSucceeded);
+		this, &Syncer::onGetRootsSucceeded);
 
 	connect(getChildrenRes.data(), SIGNAL(failed()),
 		this, SLOT(onGetFailed()));
@@ -137,22 +137,11 @@ void Syncer::getChildren()
 		Settings::instance().get(Settings::folderPath).toString());
 }
 
-void Syncer::onGetRootSucceeded(QList<RemoteFileDesc> list)
+void Syncer::onGetRootsSucceeded(const QList<RemoteFileDesc>& roots)
 {
-	Q_FOREACH(const RemoteFileDesc& fileDesc, list)
+	Q_FOREACH(const RemoteFileDesc& r, roots)
 	{
-		if (fileDesc.type != RemoteFileDesc::Folder)
-		{
-			continue;
-		}
-
-		if (fileDesc.name != QLatin1String("#disk"))
-		{
-			continue;
-		}
-
-		Q_EMIT rootId(fileDesc.id);
-		break;
+		Q_EMIT newRoot(r);
 	}
 
 	getChildren();

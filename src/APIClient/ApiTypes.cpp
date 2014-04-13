@@ -328,7 +328,7 @@ QString RemoteFileDesc::typeName() const
 	{
 	case Drive::RemoteFileDesc::File:
 		return "file";
-	case Drive::RemoteFileDesc::Folder:
+	case Drive::RemoteFileDesc::Dir:
 		return "folder";
 	default:
 		return "WRONG TYPE";

@@ -306,7 +306,7 @@ void RemoteFileUploadedEventHandler::run()
 	if (remoteEvent.type != RemoteFileEvent::Uploaded)
 		return;
 
-	if (remoteEvent.fileDesc.type == RemoteFileDesc::Folder)
+	if (remoteEvent.fileDesc.type == RemoteFileDesc::Dir)
 	{
 		QLOG_ERROR() <<
 			"Remote event 'uploaded' contains a folder, not a file";
@@ -446,7 +446,7 @@ void RemoteFileOrFolderRestoredEventHandler::run()
 	if (remoteEvent.type != RemoteFileEvent::Restored)
 		return;
 
-	if (remoteEvent.fileDesc.type == RemoteFileDesc::Folder)
+	if (remoteEvent.fileDesc.type == RemoteFileDesc::Dir)
 	{
 		// 1. fire folder created remote event
 		// 2. if has children, then getChildren and create remote events for them
@@ -494,7 +494,7 @@ void RemoteFileOrFolderRestoredEventHandler::onGetChildrenSucceeded(
 		newRemoteEvent.projectId = remoteEvent.projectId;
 		newRemoteEvent.workspaceId = remoteEvent.workspaceId;
 
-		if (fileDesc.type == RemoteFileDesc::Folder)
+		if (fileDesc.type == RemoteFileDesc::Dir)
 		{
 			newRemoteEvent.type = RemoteFileEvent::Restored;
 		}

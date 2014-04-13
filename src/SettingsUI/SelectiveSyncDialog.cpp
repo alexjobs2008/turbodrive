@@ -243,7 +243,7 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
 
 	if (role == Qt::DecorationRole)
 	{
-		if (fileObj.type == RemoteFileDesc::Folder)
+		if (fileObj.type == RemoteFileDesc::Dir)
 		{
 			return iconProvider.icon(QFileIconProvider::Folder);
 		}

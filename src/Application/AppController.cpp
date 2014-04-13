@@ -262,8 +262,7 @@ void AppController::on_settingsWidget_logout()
 
 void AppController::onLoginFinished()
 {
-	setState(State::Synced);
-
+	setState(Drive::Synced);
 
 	FileSystemHelper::setWindowsFolderIcon(
 		Settings::instance().get(Settings::folderPath).toString(), 1);
@@ -296,21 +295,17 @@ void AppController::onLoginFinished()
 
 	LocalCache &localCache = LocalCache::instance();
 
-	connect(syncer, &Syncer::rootId
-		, &localCache, &LocalCache::onRootId);
+	connect(syncer, &Syncer::newRoot, &localCache, &LocalCache::addRoot);
+	connect(syncer, &Syncer::newFile, &localCache, &LocalCache::addFile);
 
-	connect(syncer, SIGNAL(newFileDesc(Drive::RemoteFileDesc))
-		, &localCache, SLOT(onNewFileDesc(Drive::RemoteFileDesc)));
-
-	connect(syncer, SIGNAL(newRemoteEvent(RemoteFileEvent)),
-		&eventDispatcher, SLOT(addRemoteFileEvent(RemoteFileEvent)));
-
-	connect(syncer, SIGNAL(newLocalEvent(LocalFileEvent)),
-		&eventDispatcher, SLOT(addLocalFileEvent(LocalFileEvent)));
+	connect(syncer, &Syncer::newRemoteEvent,
+		&eventDispatcher, &FileEventDispatcher::addRemoteFileEvent);
+	connect(syncer, &Syncer::newLocalEvent,
+		&eventDispatcher, &FileEventDispatcher::addLocalFileEvent);
 
 	syncer->fullSync();
 
-	localNotifier.setFolder(); // and start listen for local file events
+	localNotifier.setFolder();
 	remoteNotifier->listenRemoteFileEvents();
 }
 

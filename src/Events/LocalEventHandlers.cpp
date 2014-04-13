@@ -101,7 +101,7 @@ void LocalFileOrFolderAddedEventHandler::run()
 
 		LocalCache& localCache = LocalCache::instance();
 
-		RemoteFileDesc fd = localCache.fileDesc(remotePath);
+		RemoteFileDesc fd = localCache.fileDescriptor(remotePath);
 		if (!fd.isValid())
 		{
 			QLOG_TRACE() << this
@@ -130,7 +130,7 @@ void LocalFileOrFolderAddedEventHandler::run()
 				<< "RemoteFileObject found is found in cache"
 				<< remotePath;
 
-			if (fd.type == RemoteFileDesc::Folder)
+			if (fd.type == RemoteFileDesc::Dir)
 			{
 				processEventsAndQuit();
 				return;
@@ -320,7 +320,7 @@ void LocalFileOrFolderAddedEventHandler
 {
 	QLOG_TRACE() << "Remote folder created" << fileDesc.id << fileDesc.name;
 
-	LocalCache::instance().onNewFileDesc(fileDesc);
+	LocalCache::instance().addFile(fileDesc);
 
 	RemoteFileEventExclusion
 		exclusion(RemoteFileEvent::Created, fileDesc.id);
@@ -344,7 +344,7 @@ void LocalFileOrFolderAddedEventHandler::
 
 	if (fileDesc.isValid())
 	{
-		LocalCache::instance().onNewFileDesc(fileDesc);
+		LocalCache::instance().addFile(fileDesc);
 
 		RemoteFileEventExclusion exclusion(RemoteFileEvent::Uploaded, fileDesc.id);
 		emit newRemoteFileEventExclusion(exclusion);

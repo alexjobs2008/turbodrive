@@ -9,42 +9,36 @@
 namespace Drive
 {
 
-struct RemoteFileEvent;
-class RemoteFileEventExclusion;
-struct LocalFileEvent;
-class LocalFileEventExclusion;
-
 class LocalCache : public QObject
 {
 	Q_OBJECT
-public:
 
+public:
 	static LocalCache& instance();
 
-	LocalCache(QObject *parent = 0);
-
-	int id(const QString& remotePath, bool forParent = false);
-	RemoteFileDesc fileDesc(const QString& remotePath, bool forParent = false);
+	int id(const QString& remotePath, bool forParent = false) const;
+	RemoteFileDesc fileDescriptor(const QString& remotePath, bool forParent = false) const;
 
 	void clear();
 
-	void log(const QString& fileName = QString());
-
-public slots:
-	void onRootId(int id);
-	void onNewFileDesc(const RemoteFileDesc& fileDesc);
-	//void onRemoveFileDesc()
+	void addRoot(const RemoteFileDesc&);
+	void addFile(const RemoteFileDesc&);
 
 private:
-	void insertIntoPathMap(const RemoteFileDesc& fileDesc);
+	QString toString() const;
+
+	void insertIntoPathMap(const RemoteFileDesc&);
+
+	bool isRootId(const int id) const;
 
 private:
-	QMap<QString, RemoteFileDesc> pathMap;
-	QMap<int, RemoteFileDesc> idMap;
+	mutable QMutex m_mutex;
 
-	int diskId;
+	std::vector<int> m_rootIds;
 
-	QMutex mutex;
+	QMap<QString, RemoteFileDesc> m_pathMap;
+	QMap<int, RemoteFileDesc> m_idMap;
+
 };
 
 }
