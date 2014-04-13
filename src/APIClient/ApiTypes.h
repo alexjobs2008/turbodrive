@@ -95,7 +95,7 @@ struct RemoteFileDesc
 	enum FileType
 	{
 		File = 0,
-		Folder = 1
+		Dir = 1
 	};
 
 	static RemoteFileDesc fromJson(const QJsonObject& jsonObject);

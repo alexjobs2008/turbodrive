@@ -19,19 +19,18 @@ public:
 	void fullSync();
 
 signals:
-	void rootId(int id);
+	void newRoot(const RemoteFileDesc&);
+	void newFile(const RemoteFileDesc&);
 
 	void newRemoteEvent(RemoteFileEvent event);
 	void newLocalEvent(LocalFileEvent event);
 
-	void newFileDesc(Drive::RemoteFileDesc fileDesc);
-
 private:
-	void getRoot();
-	void onGetRootSucceeded(QList<RemoteFileDesc> list);
+	void getRoots();
+	void onGetRootsSucceeded(const QList<RemoteFileDesc>&);
 
 	void getChildren();
-	void onGetChildrenSucceeded(QList<Drive::RemoteFileDesc>);
+	void onGetChildrenSucceeded(const QList<Drive::RemoteFileDesc>&);
 
 	void onGetFailed() const;
 

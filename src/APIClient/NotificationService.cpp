@@ -94,7 +94,7 @@ bool NotificationResource::processGetResponse(int status,
 
 			if (remoteEvent.isValid())
 			{
-				LocalCache::instance().onNewFileDesc(remoteEvent.fileDesc);
+				LocalCache::instance().addFile(remoteEvent.fileDesc);
 
 				emit newRemoteFileEvent(remoteEvent);
 				lastEventTimestamp = remoteEvent.timestamp;
