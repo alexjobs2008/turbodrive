@@ -1,6 +1,7 @@
 #ifndef API_TYPES_H
 #define API_TYPES_H
 
+#include <QtCore/QJsonDocument>
 #include <QtCore/QMetaType>
 #include <QtCore/QString>
 #include <QtCore/QDateTime>
@@ -99,8 +100,10 @@ struct RemoteFileDesc
 
 	static RemoteFileDesc fromJson(const QJsonObject& jsonObject);
 	bool isValid() const;
-	void log() const;
 	QString typeName() const;
+
+	QJsonDocument toJson() const;
+	QString toString() const;
 
 	int id;
 	int parentId;
