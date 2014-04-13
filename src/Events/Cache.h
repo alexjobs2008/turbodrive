@@ -32,8 +32,11 @@ public:
 
 public slots:
 	void onRootId(int id);
-	void onNewFileDesc(Drive::RemoteFileDesc fileDesc);
+	void onNewFileDesc(const RemoteFileDesc& fileDesc);
 	//void onRemoveFileDesc()
+
+private:
+	void insertIntoPathMap(const RemoteFileDesc& fileDesc);
 
 private:
 	QMap<QString, RemoteFileDesc> pathMap;

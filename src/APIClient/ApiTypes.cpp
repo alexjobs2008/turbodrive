@@ -319,30 +319,6 @@ bool RemoteFileDesc::isValid() const
 	return !name.isEmpty() && id && parentId;
 }
 
-void RemoteFileDesc::log() const
-{
-	QString sType = type == FileType::File ? "File" : "Folder";
-
-	QLOG_TRACE () << "Remote file object descriptor:" << "\n"
-		<< "id:" << id << "\n"
-		<< "parentId:" << parentId << "\n"
-		<< "type:" << sType << "\n"
-		<< "name:" << name << "\n"
-		<< "size:" << size << "\n"
-		<< "createdAt:" << createdAt
-			<< QDateTime::fromTime_t(createdAt).toString() << "\n"
-		<< "modifiedAt:" << modifiedAt
-			<< QDateTime::fromTime_t(modifiedAt).toString() << "\n"
-		<< "deletedAt:" << deletedAt
-			<< QDateTime::fromTime_t(deletedAt).toString() << "\n"
-		<< "checksum:" << checkSum << "\n"
-		<< "isFavourite:" << isFavourite << "\n"
-		<< "hasChildren:" << hasChildren << "\n"
-		<< "hasSubfolders:" << ": " << hasSubfolders << "\n"
-		<< "isUploaded:" << isUploaded << "\n"
-		<< "linkId:" << linkId << "\n";
-}
-
 QString RemoteFileDesc::typeName() const
 {
 	switch (type)
@@ -354,6 +330,36 @@ QString RemoteFileDesc::typeName() const
 	default:
 		return "WRONG TYPE";
 	}
+}
+
+QJsonDocument RemoteFileDesc::toJson() const
+{
+	QVariantMap map;
+
+#define MAKE_PAIR(value) QLatin1String(#value), QVariant(value)
+	map.insert(MAKE_PAIR(id));
+	map.insert(MAKE_PAIR(parentId));
+	map.insert(MAKE_PAIR(type));
+	map.insert(MAKE_PAIR(name));
+	map.insert(MAKE_PAIR(size));
+	map.insert(MAKE_PAIR(createdAt));
+	map.insert(MAKE_PAIR(modifiedAt));
+	map.insert(MAKE_PAIR(deletedAt));
+	map.insert(MAKE_PAIR(checkSum));
+	map.insert(MAKE_PAIR(isFavourite));
+	map.insert(MAKE_PAIR(hasChildren));
+	map.insert(MAKE_PAIR(hasSubfolders));
+	map.insert(MAKE_PAIR(isUploaded));
+	map.insert(MAKE_PAIR(linkId));
+	map.insert(MAKE_PAIR(originalPath));
+#undef MAKE_PAIR
+
+	return QJsonDocument(QJsonObject::fromVariantMap(map));
+}
+
+QString RemoteFileDesc::toString() const
+{
+	return toJson().toJson(QJsonDocument::Compact);
 }
 
 // ============================================================================
@@ -542,9 +548,8 @@ void RemoteFileEvent::log() const
 		<< "event type:" << typeName(type) << "\n"
 		<< "workspaceId:" << workspaceId << "\n"
 		<< "projectId:" << projectId << "\n"
-		<< "targetId:" << targetId << "\n";
-
-	fileDesc.log();
+		<< "targetId:" << targetId << "\n"
+		<< "fileDesc:" << fileDesc.toString();
 }
 
 void RemoteFileEvent::logCompact() const
@@ -609,10 +614,9 @@ bool RemoteFileEventExclusion::matches(const RemoteFileEvent &event) const
 
 	if (!event.fileDesc.isValid())
 	{
-		QLOG_ERROR() <<
-			"Skipping event exclusion check, as file descriptor is not valid:";
-
-		event.fileDesc.log();
+		QLOG_ERROR()
+				<< "Skipping event exclusion check, as file descriptor is not valid:"
+				<< event.fileDesc.toString();
 		return false;
 	}
 
