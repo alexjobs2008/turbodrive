@@ -4,11 +4,24 @@
 
 #include <QtCore/QMutexLocker>
 
-#define ERRLOG QLOG_ERROR() << this << ": "
+#define DLOG QLOG_DEBUG() << this->toString() << ": "
+#define ERRLOG QLOG_ERROR() << this->toString() << ": "
 #define LOCK_MUTEX QMutexLocker __mutexLocker(&m_mutex)
 
 namespace Drive
 {
+
+namespace
+{
+
+QString parentPath(const QString& path)
+{
+	QStringList list = path.split("/", QString::SkipEmptyParts);
+	list.removeLast();
+	return list.join("/");
+}
+
+}
 
 LocalCache& LocalCache::instance()
 {
@@ -18,145 +31,92 @@ LocalCache& LocalCache::instance()
 
 void LocalCache::clear()
 {
-	m_idMap.clear();
-	m_pathMap.clear();
+	m_files.clear();
 }
 
-int LocalCache::id(const QString& remotePath, const bool forParent) const
+RemoteFileDesc LocalCache::file(const QString& remotePath, const bool forParent) const
 {
 	LOCK_MUTEX;
 
-	QString path = remotePath;
-
-	if (forParent)
+	const QString path = forParent ? parentPath(remotePath) : remotePath;
+	auto it = m_files.find(path);
+	if (it != m_files.end())
 	{
-		QStringList list = path.split("/", QString::SkipEmptyParts);
-		list.removeLast();
-		path = list.join("/");
+		return it->second;
 	}
 
-	if (m_pathMap.contains(path))
-	{
-		return m_pathMap.value(path).id;
-	}
-	else
-	{
-		ERRLOG << "Remote file descriptor not found "
-			<< "(remote path: '" << remotePath << "').";
-		return 0;
-	}
-}
+	ERRLOG << "Remote file descriptor not found "
+		<< "(remote path: " << remotePath << ").";
 
-RemoteFileDesc LocalCache::fileDescriptor(const QString& remotePath, const bool forParent) const
-{
-	LOCK_MUTEX;
-
-	QString path = remotePath;
-
-	if (forParent)
-	{
-		QStringList list = path.split("/", QString::SkipEmptyParts);
-		list.removeLast();
-		path = list.join("/");
-	}
-
-	if (m_pathMap.contains(path))
-	{
-		return m_pathMap.value(path);
-	}
-	else
-	{
-		ERRLOG << "Remote file descriptor not found "
-			<< "(remote path: '" << remotePath << "').";
-
-		RemoteFileDesc invalidDesc;
-		invalidDesc.id = 0;
-		invalidDesc.parentId = 0;
-		invalidDesc.name = QString();
-		return invalidDesc;
-	}
+	RemoteFileDesc invalidDesc;
+	invalidDesc.id = 0;
+	invalidDesc.parentId = 0;
+	invalidDesc.name = QString::null;
+	return invalidDesc;
 }
 
 void LocalCache::addRoot(const RemoteFileDesc& d)
 {
-	LOCK_MUTEX;
-
 	if (d.type != RemoteFileDesc::Dir)
 	{
-		ERRLOG << "Root descriptor ignored (not a dir): " << d.toString() << ".";
+		ERRLOG << "Descriptor ignored (root and not a dir): " << d.toString() << ".";
 		return;
 	}
 
-	if (isRootId(d.id))
-	{
-		ERRLOG << "Root descriptor ignored (already registered): " << d.toString() << ".";
-		return;
-	}
-
-	m_rootIds.push_back(d.id);
-
-	RemoteFileDesc rootDescriptor;
-	rootDescriptor.id = d.id;
-	rootDescriptor.type = RemoteFileDesc::Dir;
+	RemoteFileDesc rootDescriptor(d);
 	rootDescriptor.parentId = -1;
-	rootDescriptor.name = "#root/" + d.name;
-
-	m_idMap.insert(rootDescriptor.id, rootDescriptor);
-	m_pathMap.insert(rootDescriptor.name, rootDescriptor);
+	addFile(rootDescriptor);
 }
 
-void LocalCache::addFile(const RemoteFileDesc& fileDescriptors)
+void LocalCache::addFile(const RemoteFileDesc& file)
 {
 	LOCK_MUTEX;
+	const QString path = fullPath(file);
+	DLOG << "New file: [" << path << ", " << file.toString() << ".";
+	m_files.insert(std::make_pair(path, file));
+}
 
-	if (m_rootIds.empty())
+QString LocalCache::fullPath(const RemoteFileDesc& file) const
+{
+	QString result;
+	RemoteFileDesc currentFile = file;
+	for (;;)
 	{
-		ERRLOG << "No root ids found.";
-		return;
+		result.prepend(currentFile.name);
+		result.prepend(QLatin1String("/"));
+		if(currentFile.parentId == -1)
+		{
+			result.prepend(QLatin1String("#root"));
+			break;
+		}
+		currentFile = fileById(currentFile.parentId);
+	}
+	return result;
+}
+
+RemoteFileDesc LocalCache::fileById(const int id) const
+{
+	for (auto it = m_files.begin(); it != m_files.end(); ++it)
+	{
+		if (it->second.id == id)
+		{
+			return it->second;
+		}
 	}
 
-	m_idMap.insert(fileDescriptors.id, fileDescriptors);
-	insertIntoPathMap(fileDescriptors);
+	RemoteFileDesc invalidDesc;
+	invalidDesc.id = 0;
+	invalidDesc.parentId = 0;
+	invalidDesc.name = QString::null;
+	return invalidDesc;
 }
 
 QString LocalCache::toString() const
 {
-	QByteArray result;
+	QString result;
 	QTextStream(&result)
 		<< QLatin1String("[LocalCache:") << this << QLatin1String("]");
 	return result;
-}
-
-void LocalCache::insertIntoPathMap(const RemoteFileDesc& fileDesc)
-{
-	QString path = fileDesc.name;
-	if (fileDesc.type == RemoteFileDesc::Dir)
-	{
-		path.append("/");
-	}
-
-	RemoteFileDesc currentDesc = fileDesc;
-	while (isRootId(currentDesc.id))
-	{
-		if (!m_idMap.contains(currentDesc.parentId))
-		{
-			ERRLOG
-				<< "Cannot find parent path for remote file descriptor"
-				<< " (currentDesc: " << currentDesc.toString()
-				<<", fileDesc: " << fileDesc.toString() << ").";
-			return;
-		}
-
-		currentDesc = m_idMap.value(currentDesc.parentId);
-		path.prepend(currentDesc.name + "/");
-	}
-
-	m_pathMap.insert(path, fileDesc);
-}
-
-bool LocalCache::isRootId(const int id) const
-{
-	return find(m_rootIds.begin(), m_rootIds.end(), id) != m_rootIds.end();
 }
 
 }

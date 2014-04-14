@@ -101,14 +101,14 @@ void LocalFileOrFolderAddedEventHandler::run()
 
 		LocalCache& localCache = LocalCache::instance();
 
-		RemoteFileDesc fd = localCache.fileDescriptor(remotePath);
+		RemoteFileDesc fd = localCache.file(remotePath);
 		if (!fd.isValid())
 		{
 			QLOG_TRACE() << this
 				<< "No RemoteFileObject found in cache for "
 				<< remotePath;
 
-			objParentId = localCache.id(remotePath, true);
+			objParentId = localCache.file(remotePath, true).id;
 
 			if (objParentId)
 			{
@@ -415,7 +415,7 @@ void LocalFileOrFolderDeletedEventHandler::run()
 
 	// Cached:
 
-	int objId = LocalCache::instance().id(remotePath);
+	int objId = LocalCache::instance().file(remotePath).id;
 
 	if (objId)
 	{

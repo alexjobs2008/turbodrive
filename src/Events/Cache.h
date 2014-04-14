@@ -16,8 +16,7 @@ class LocalCache : public QObject
 public:
 	static LocalCache& instance();
 
-	int id(const QString& remotePath, bool forParent = false) const;
-	RemoteFileDesc fileDescriptor(const QString& remotePath, bool forParent = false) const;
+	RemoteFileDesc file(const QString& remotePath, bool forParent = false) const;
 
 	void clear();
 
@@ -25,20 +24,14 @@ public:
 	void addFile(const RemoteFileDesc&);
 
 private:
+	QString fullPath(const RemoteFileDesc&) const;
+	RemoteFileDesc fileById(int id) const;
+
 	QString toString() const;
-
-	void insertIntoPathMap(const RemoteFileDesc&);
-
-	bool isRootId(const int id) const;
 
 private:
 	mutable QMutex m_mutex;
-
-	std::vector<int> m_rootIds;
-
-	QMap<QString, RemoteFileDesc> m_pathMap;
-	QMap<int, RemoteFileDesc> m_idMap;
-
+	std::map<QString, RemoteFileDesc> m_files;
 };
 
 }
