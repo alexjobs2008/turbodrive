@@ -23,9 +23,7 @@ NotificationResourceRef NotificationResource::create()
 
 void NotificationResource::listenRemoteFileEvents()
 {
-	QLOG_INFO() << "Listening for remote file events...";
-
- 	HeaderList headers;
+	HeaderList headers;
 	ParamList params;
 	QByteArray idValue = AppController::instance().serviceChannel().toLatin1();
 
@@ -63,8 +61,6 @@ bool NotificationResource::processGetResponse(int status,
 		return true;
 	}
 
-	QLOG_TRACE() << "RPL: " << data;
-
 	if (data.trimmed().isEmpty())
 	{
 		listenRemoteFileEvents();
@@ -79,8 +75,6 @@ bool NotificationResource::processGetResponse(int status,
 	}
 
 	QJsonArray array = doc.array();
-
-	QLOG_TRACE() << "RPL items: " << array.size();
 
 	for (int i = 0; i < array.size(); i++)
 	{
