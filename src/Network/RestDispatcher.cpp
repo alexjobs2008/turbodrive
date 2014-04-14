@@ -52,7 +52,7 @@ void GeneralRestDispatcher::loadServices()
 
 	int currentEnv = Settings::instance().get(Settings::env).toInt();
 
-	QLOG_TRACE() << "Environment:" << currentEnv;
+	QLOG_INFO() << "Environment:" << currentEnv;
 
 	switch(currentEnv)
 	{
@@ -192,31 +192,22 @@ void GeneralRestDispatcher::request(const RestResource::RequestRef &restRequest)
 {
 	QMutexLocker locker(&requestMutex);
 
-	QLOG_TRACE() << "RestDispatcher::request:"
-		<< restRequest->path << ". Params: " << restRequest->params;
-
 	Q_ASSERT(services.contains(restRequest->service));
 	RestService* service = services.value(restRequest->service);
 
 	switch(mode)
 	{
 	case Authorized:
-		//QLOG_TRACE() << "RestDispatcher::request(): adding request to authenticatedRequests queue for service" << service->name();
 		service->authenticatedRequests.enqueue(restRequest);
-		//QLOG_TRACE() << "Added. Queue size: " << service->authenticatedRequests.size();
 		break;
 	case Unauthorized:
 		if (restRequest->resource->restricted())
 		{
-			//QLOG_TRACE() << "RestDispatcher::request(): adding request to authenticatedRequests queue for service" << service->name();
 			service->authenticatedRequests.enqueue(restRequest);
-			//QLOG_TRACE() << "Added. Queue size: " << service->authenticatedRequests.size();
 		}
 		else
 		{
-			//QLOG_TRACE() << "RestDispatcher::request(): adding request to unauthenticatedRequests queue for service" << service->name();
 			service->unauthenticatedRequests.enqueue(restRequest);
-			//QLOG_TRACE() << "Added. Queue size: " << service->unauthenticatedRequests.size();
 		}
 		break;
 	default:
@@ -224,31 +215,16 @@ void GeneralRestDispatcher::request(const RestResource::RequestRef &restRequest)
 		break;
 	}
 
-	//QLOG_TRACE() << "RestDispatcher::request() calling next(). Current thread:" << QThread::currentThreadId();
-
 	next();
 }
 
 void GeneralRestDispatcher::next()
 {
-	// uncomment QLOG_TRACE() and requestCount lines for advanced logging
-
-	//QLOG_TRACE() << "RestDispatcher::next(). Current thread:" << QThread::currentThreadId();
-
 	QMutexLocker locker(&nextMutex);
-
-	//QLOG_TRACE() << "RestDispatcher::next(). Passed mutex lock. Current thread:" << QThread::currentThreadId();
-
-//	int requestCount = 0;
 
 	QList<RestService*> serviceList = services.values();
 	foreach(RestService* service, serviceList)
 	{
-		if (!service->currentRequest.isNull())
-		{
-			QLOG_TRACE() << "current request:" << service->currentRequest->service << service->currentRequest->resource->path();
-		}
-
 		while (service->currentRequest.isNull()) /// !!!
 		{
 		/* If we're Authenticated, then consume the Unauthenticated queue first
@@ -258,26 +234,20 @@ void GeneralRestDispatcher::next()
 			{
 				if (service->queuesAreEmpty())
 				{
-					//QLOG_TRACE() << "Both queues ARE empty for" << service->name();
 					break;
 				}
 
 				if (!service->unauthenticatedRequests.isEmpty())
 				{
-					QLOG_TRACE() << "unauthenticatedRequests queue isn't empty for" << service->name();
-
 					service->currentRequest =
 						service->unauthenticatedRequests.dequeue();
 				}
 				else
 				{
-					QLOG_TRACE() << "authenticatedRequests queue isn't empty for" << service->name();
-
 					service->currentRequest =
 						service->authenticatedRequests.dequeue();
 				}
 
-				QLOG_TRACE() << "current request:" << service->currentRequest->service << service->currentRequest->resource->path();
 			}
 			else // mode == Unauthorized
 			{
@@ -288,24 +258,15 @@ void GeneralRestDispatcher::next()
 					service->unauthenticatedRequests.dequeue();
 			}
 
-//			QLOG_TRACE() << "RestDispatcher::next() doing operation"
-//				<< service->currentRequest->operation;
-
 			doOperation(service->currentRequest->operation, service);
-
-//			requestCount++;
 		}
 	}
-
-//	QLOG_TRACE() << "RestDispatcher::next() requests sent: " << requestCount;
 }
 
 void GeneralRestDispatcher::setMode(Mode newMode)
 {
 	if (mode == newMode)
 		return;
-
-	QLOG_TRACE() << "RestDispatcher: setting mode: " << newMode;
 
 	mode = newMode;
 
@@ -364,8 +325,6 @@ QUrl GeneralRestDispatcher::buildUrl(const QString& serviceName,
 		}
 		url.setQuery(urlQuery);
 	}
-
-	// QLOG_TRACE() << "Built URL: " << url.toString();
 
 	return url;
 }
@@ -453,8 +412,6 @@ QUrlQuery GeneralRestDispatcher::createParams(RestResource::ParamList &params)
 void GeneralRestDispatcher::doOperation(RestResource::Operation operation,
 								RestService* service)
 {
-	QLOG_TRACE() << "RestDispatcher:doOperation" << service->currentRequest->path;
-
 	if (operation == QNetworkAccessManager::PostOperation
 		|| operation == QNetworkAccessManager::PutOperation
 		|| operation == QNetworkAccessManager::DeleteOperation)
@@ -470,8 +427,6 @@ void GeneralRestDispatcher::doOperation(RestResource::Operation operation,
 			{
 				bodyData =
 					urlQuery.toString(QUrl::FullyEncoded).toUtf8();
-
-				QLOG_TRACE() << "bodyData: " << bodyData;
 			}
 			else
 			{
@@ -488,12 +443,10 @@ void GeneralRestDispatcher::doOperation(RestResource::Operation operation,
 		if (operation == QNetworkAccessManager::PostOperation)
 		{
 			networkAccessManager->post(createRequest(service), bodyData);
-			QLOG_TRACE() << "RestDispatcher:doOperation: POST request sent";
 		}
 		else if (operation == QNetworkAccessManager::PutOperation)
 		{
 			networkAccessManager->put(createRequest(service), bodyData);
-			QLOG_TRACE() << "RestDispatcher:doOperation: PUT request sent";
 		}
 		else if (operation == QNetworkAccessManager::DeleteOperation)
 		{
@@ -502,49 +455,37 @@ void GeneralRestDispatcher::doOperation(RestResource::Operation operation,
 
 			buffer->setData(bodyData);
 
-			//QLOG_TRACE() << "HTTP DELETE" << bodyData;
-
 			QNetworkRequest request = createRequest(service);
 
 			networkAccessManager->sendCustomRequest(request
 				, QString("DELETE").toLatin1()
 				, buffer);
-
-			QLOG_TRACE() << "RestDispatcher:doOperation: DELETE request sent";
 		}
 
 	}
 	else if (operation == QNetworkAccessManager::GetOperation)
 	{
 		networkAccessManager->get(createRequest(service));
-		QLOG_TRACE() << "RestDispatcher:doOperation: GET request sent";
 	}
 	else if (operation == QNetworkAccessManager::DeleteOperation)
 	{
 		networkAccessManager->deleteResource(createRequest(service));
-		QLOG_TRACE() << "RestDispatcher:doOperation: DELETE request sent";
 	}
 	else if (operation == QNetworkAccessManager::HeadOperation)
 	{
 		networkAccessManager->head(createRequest(service));
-		QLOG_TRACE() << "RestDispatcher:doOperation: HEAD request sent";
 	}
 	else if (operation == QNetworkAccessManager::CustomOperation)
 	{
-		QLOG_TRACE() << "RestDispatcher: custom operation, nothing to do.";
 		service->currentRequest.clear();
 	}
 }
 
 void GeneralRestDispatcher::replyFinished(QNetworkReply* networkReply)
 {
-	QLOG_TRACE() << "replyFinished: " << networkReply
-		<< networkReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt()
-		<< networkReply->url().toString();
-
 	if (networkReply->error() != QNetworkReply::NoError)
 	{
-		QLOG_TRACE() << "Error: " << networkReply->error();
+		QLOG_ERROR() << "Error: " << networkReply->error();
 	}
 
 	QObject* originatingObject = networkReply->request().originatingObject();
@@ -552,7 +493,7 @@ void GeneralRestDispatcher::replyFinished(QNetworkReply* networkReply)
 	if(!originatingObject)
 	{
 		// this should never happen
-		QLOG_TRACE() << "Reply discarded because no originating object found.";
+		QLOG_ERROR() << "Reply discarded because no originating object found.";
 		return;
 	}
 
@@ -560,7 +501,7 @@ void GeneralRestDispatcher::replyFinished(QNetworkReply* networkReply)
 	if(!service)
 	{
 		// this should never happen also
-		QLOG_TRACE() <<
+		QLOG_ERROR() <<
 			"Reply discarded because originating object isn't a service.";
 		return;
 	}
@@ -568,7 +509,7 @@ void GeneralRestDispatcher::replyFinished(QNetworkReply* networkReply)
 
 	if (service->currentRequest.isNull())
 	{
-		QLOG_TRACE() <<
+		QLOG_ERROR() <<
 			"Reply discarded because current service request is null.";
 
 		next();
@@ -586,8 +527,6 @@ void GeneralRestDispatcher::replyFinished(QNetworkReply* networkReply)
 
 		if (authenticationRequired)
 		{
-			QLOG_TRACE () << "Redirecting...";
-
 			service->authenticatedRequests.insert(
 				service->authenticatedRequests.begin()
 				, service->currentRequest);
@@ -605,7 +544,6 @@ void GeneralRestDispatcher::replyFinished(QNetworkReply* networkReply)
 
 	service->currentRequest.clear();
 
-	QLOG_TRACE() << "RestDispatcher::replyFinished() " << networkReply << ", calling next()";
 	next();
 }
 
