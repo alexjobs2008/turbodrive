@@ -85,12 +85,12 @@ void Syncer::onGetChildrenSucceeded(const QList<RemoteFileDesc>& list)
 					GetChildrenResource::create();
 
 				connect(getChildrenRes.data(),
-					SIGNAL(succeeded(QList<Drive::RemoteFileDesc>)),
+					&GetChildrenResource::succeeded,
 					this,
-					SLOT(onGetChildrenSucceeded(QList<Drive::RemoteFileDesc>)));
+					&Syncer::onGetChildrenSucceeded);
 
-				connect(getChildrenRes.data(), SIGNAL(failed()),
-					this, SLOT(onGetFailed()));
+				connect(getChildrenRes.data(), &GetChildrenResource::failed,
+					this, &Syncer::onGetFailed);
 
 				++folderCounter;
 				getChildrenRes->getChildren(fileDesc.id);
