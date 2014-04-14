@@ -111,8 +111,8 @@ void Syncer::getRoots()
 	connect(getChildrenRes.data(), &GetChildrenResource::succeeded,
 		this, &Syncer::onGetRootsSucceeded);
 
-	connect(getChildrenRes.data(), SIGNAL(failed()),
-		this, SLOT(onGetFailed()));
+	connect(getChildrenRes.data(), &GetChildrenResource::failed,
+		this, &Syncer::onGetFailed);
 
 	getChildrenRes->getChildren(0);
 }
