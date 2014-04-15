@@ -40,12 +40,6 @@ LoginWidget::LoginWidget(QWidget *parent)
 	setAttribute(Qt::WA_DeleteOnClose, false);
 	setAttribute(Qt::WA_QuitOnClose, false);
 
-/*
-	setWindowTitle(QString(tr("%1 %2", "%1 - app name, %2 - Sign In"))
-		.arg(Strings::appName)
-		.arg(tr("Sign In")));
-*/
-
 	setWindowTitle(QString(tr("%1 Sign In"))
 		.arg(Strings::getAppString(Strings::AppName)));
 
@@ -65,125 +59,7 @@ LoginWidget::LoginWidget(QWidget *parent)
 		| Qt::WindowTitleHint
 		| Qt::WindowCloseButtonHint);
 
-	// logo
-	QLabel *logoLabel = new QLabel(this);
-	logoLabel->setObjectName("logo");
-	logoLabel->setPixmap(QPixmap(":/logo.png"));
-
-	// app name
-	QLabel *nameLabel = new QLabel(this);
-	nameLabel->setObjectName("appName");
-	nameLabel->setPixmap(QPixmap(":/name_ru.png"));
-
-	// spinner
-	spinner = new CommonUI::SpinnerWidget(tr("Please wait..."),
-		":/spinner/24-", 80, this);
-
-
-	// controls
-
-	username = new CommonUI::LabeledEdit(
-		tr("&Phone:")
-		, CommonUI::LabeledEdit::Text
-		, QString()
-		, 0
-		, "\\+375\\d+"
-		, 100
-		, this);
-
-	username->setName("username");
-
-	password = new CommonUI::LabeledEdit(
-		tr("&Password:")
-		, CommonUI::LabeledEdit::Text
-		, QString()
-		, 0
-		, QString()
-		, 0
-		, this);
-
-	password->setName("password");
-	password->lineEdit()->setEchoMode(QLineEdit::Password);
-
-	forgot = new CommonUI::LinkLabel(tr("Forgot?"), "forgot", this);
-	forgot->setObjectName("forgot");
-
-	password->layout()->addWidget(forgot, 1);
-	password->layout()->addStretch(1);
-
-	cRememberPassword = new QCheckBox(
-		QString(tr("&Sign me in when %1 starts"))
-		.arg(Strings::getAppString(Strings::AppName))
-		, this);
-
-	cRememberPassword->setObjectName("rememberPassword");
-
-	// Sign In or Sign Up
-	QLabel *lAligner = new QLabel(QString(), this);
-	lAligner->setObjectName("bottomAligner");
-
-	pbSignIn = new QPushButton(tr("Sign in"), this);
-	pbSignIn->setObjectName("signIn");
-
-	pbSignIn->setAutoDefault(true);
-	pbSignIn->setMouseTracking(true);
-
-	QLabel *orLabel = new QLabel(tr("or"), this);
-	orLabel->setObjectName("or");
-
-	signUp = new CommonUI::LinkLabel(tr("Create account"), "signUp", this);
-	signUp->setObjectName("signUp");
-	signUp->setEnabled(false);
-
-	actionsFrame = new QFrame(this);
-	actionsFrame->setObjectName("actionsFrame");
-	actionsFrame->setContentsMargins(0, 0, 0, 0);
-
-	QHBoxLayout *blActions = new QHBoxLayout(actionsFrame);
-	blActions->setContentsMargins(0, 0, 0, 0);
-	blActions->setSpacing(0);
-
-	blActions->addWidget(lAligner, 0);
-	blActions->addWidget(pbSignIn, 0, Qt::AlignLeft | Qt::AlignVCenter);
-	blActions->addWidget(orLabel, 0, Qt::AlignLeft | Qt::AlignVCenter);
-	blActions->addWidget(signUp, 0, Qt::AlignLeft | Qt::AlignVCenter);
-	blActions->addStretch(1);
-
-	// main layout
-
-	QVBoxLayout *layout = new QVBoxLayout(this);
-	layout->setContentsMargins(0, 0, 0, 0);
-	layout->setSpacing(0);
-
-
-	layout->addWidget(logoLabel, 0, Qt::AlignCenter);
-	layout->addWidget(nameLabel, 0, Qt::AlignCenter);
-	layout->addWidget(spinner);
-	layout->addWidget(username);
-	layout->addWidget(password);
-	layout->addSpacing(4);
-	layout->addWidget(cRememberPassword);
-	layout->addSpacing(4);
-	layout->addWidget(actionsFrame);
-	layout->addStretch(1);
-
-	username->setText(Settings::instance().get(Settings::email).toString());
-	password->setText(Settings::instance().get(Settings::password).toString());
-	cRememberPassword->
-		setChecked(Settings::instance().get(Settings::autoLogin).toBool());
-
-	QMetaObject::connectSlotsByName(this);
-
-	// load and set stylesheet from resources
-	CommonUI::StyleSheetReader::setStyleSheetFor(this);
-
-	username->installEventFilter(this);
-	password->installEventFilter(this);
-	cRememberPassword->installEventFilter(this);
-
-	// set real-time stylesheet loader for this
-	RealtimeStyleSheetLoader *rsl = new RealtimeStyleSheetLoader(this);
-	rsl->addWidget(this);
+	initControls();
 }
 
 LoginWidget::~LoginWidget()
@@ -192,9 +68,9 @@ LoginWidget::~LoginWidget()
 
 bool LoginWidget::eventFilter(QObject *watched, QEvent *event)
 {
-	if (watched == username
-		|| watched == password
-		|| watched == cRememberPassword)
+	if (watched == m_username
+		|| watched == m_password
+		|| watched == m_autoLogin)
 	{
 		if (event->type() == QEvent::KeyPress)
 		{
@@ -202,7 +78,7 @@ bool LoginWidget::eventFilter(QObject *watched, QEvent *event)
 			if (keyEvent->key() == Qt::Key_Return
 				|| keyEvent->key() == Qt::Key_Enter)
 			{
-				pbSignIn->click();
+				m_login->click();
 				return true;
 			}
 		}
@@ -221,10 +97,10 @@ void LoginWidget::on_signIn_clicked(bool checked)
 {
 	Q_UNUSED(checked)
 
-	QString usernameCandidate = username->lineEdit()->text().trimmed();
+	QString usernameCandidate = m_username->lineEdit()->text().trimmed();
 	int pos = usernameCandidate.size();
 
-	if (username->lineEdit()->validator()->validate(usernameCandidate, pos)
+	if (m_username->lineEdit()->validator()->validate(usernameCandidate, pos)
 		!= QValidator::Acceptable)
 	{
 		setError(tr("Please provide a valid phone number"));
@@ -232,53 +108,48 @@ void LoginWidget::on_signIn_clicked(bool checked)
 		return;
 	}
 
-	if (password->lineEdit()->text().trimmed().isEmpty())
+	if (m_password->lineEdit()->text().trimmed().isEmpty())
 	{
 		setError(tr("Please provide a non-empty password"));
-		password->lineEdit()->setText(QString());
-		password->lineEdit()->setFocus(Qt::MouseFocusReason);
+		m_password->lineEdit()->setText(QString());
+		m_password->lineEdit()->setFocus(Qt::MouseFocusReason);
 		return;
 	}
 
 	Settings::instance().set(Settings::autoLogin,
-		cRememberPassword->isChecked(), Settings::RealSetting);
+		m_autoLogin->isChecked(), Settings::RealSetting);
 
 	QLOG_TRACE() << "Login from UI requested";
 
 	enableControls(false);
 
-	emit loginRequest(username->text().trimmed(), password->text().trimmed());
+	emit loginRequest(m_username->text().trimmed(), m_password->text().trimmed());
 }
 
 void LoginWidget::enableControls(bool enable)
 {
-	spinner->setOn(!enable);
-	username->setEnabled(enable);
-	password->setEnabled(enable);
-	cRememberPassword->setEnabled(enable);
-	actionsFrame->setEnabled(enable);
-
-	if (registerLink.isEmpty())
-	{
-		signUp->setEnabled(false);
-	}
+	m_spinner->setOn(!enable);
+	m_username->setEnabled(enable);
+	m_password->setEnabled(enable);
+	m_autoLogin->setEnabled(enable);
+	m_register->setEnabled(!registerLink.isEmpty() && enable);
 }
 
 void LoginWidget::focusOnEmail()
 {
-	username->lineEdit()->selectAll();
-	username->lineEdit()->setFocus(Qt::MouseFocusReason);
+	m_username->lineEdit()->selectAll();
+	m_username->lineEdit()->setFocus(Qt::MouseFocusReason);
 }
 
 void LoginWidget::setError(const QString& text)
 {
-	spinner->setSubstText(text);
+	m_spinner->setSubstText(text);
 }
 
 void LoginWidget::setRegisterLink(const QString& link)
 {
 	registerLink = link;
-	signUp->setEnabled(actionsFrame->isEnabled());
+	m_register->setEnabled(!registerLink.isEmpty() && m_username->isEnabled());
 }
 
 void LoginWidget::on_signUp_linkActivated(const QString &link)
@@ -289,7 +160,96 @@ void LoginWidget::on_signUp_linkActivated(const QString &link)
 
 void LoginWidget::on_forgot_linkActivated(const QString &link)
 {
-	emit passwordResetRequest(username->text().trimmed());
+	emit passwordResetRequest(m_username->text().trimmed());
+}
+
+void LoginWidget::initControls()
+{
+	QLabel* logoLabel = new QLabel(this);
+	logoLabel->setObjectName("logo");
+	logoLabel->setPixmap(QPixmap(":/logo.png"));
+	logoLabel->setScaledContents(true);
+
+	m_spinner = new CommonUI::SpinnerWidget(tr("Please wait..."),
+		":/spinner/24-", 80, this);
+
+	QLabel* loginLabel = new QLabel(this);
+	loginLabel->setObjectName("login");
+	loginLabel->setText(tr("Login"));
+
+	m_register = new CommonUI::LinkLabel(tr("Create account"), "signUp", this);
+	m_register->setObjectName("signUp");
+	m_register->setEnabled(false);
+
+	QHBoxLayout* labelsLayout = new QHBoxLayout();
+	labelsLayout->setContentsMargins(0, 0, 0, 0);
+	labelsLayout->addWidget(loginLabel, 0, Qt::AlignLeft | Qt::AlignVCenter);
+	labelsLayout->addWidget(m_register, 0, Qt::AlignRight | Qt::AlignVCenter);
+
+	QFrame* labels = new QFrame(this);
+	labels->setObjectName("labels");
+	labels->setLayout(labelsLayout);
+
+	m_username = new CommonUI::LabeledEdit(
+		QString::null
+		, CommonUI::LabeledEdit::Text
+		, QString()
+		, 0
+		, "\\+375\\d+"
+		, 100
+		, this);
+	m_username->setName("username");
+	m_username->installEventFilter(this);
+	m_username->setText(Settings::instance().get(Settings::email).toString());
+	m_username->lineEdit()->setPlaceholderText(tr("Phone"));
+
+	m_password = new CommonUI::LabeledEdit(
+		QString::null
+		, CommonUI::LabeledEdit::Text
+		, QString()
+		, 0
+		, QString()
+		, 0
+		, this);
+	m_password->setName("password");
+	m_password->lineEdit()->setEchoMode(QLineEdit::Password);
+	m_password->installEventFilter(this);
+	m_password->setText(Settings::instance().get(Settings::password).toString());
+	m_password->lineEdit()->setPlaceholderText(tr("Password"));
+
+	m_autoLogin = new QCheckBox(
+		QString(tr("&Sign me in when %1 starts"))
+		.arg(Strings::getAppString(Strings::AppName))
+		, this);
+	m_autoLogin->setObjectName("rememberPassword");
+	m_autoLogin->installEventFilter(this);
+	m_autoLogin->setChecked(Settings::instance().get(Settings::autoLogin).toBool());
+
+	m_login = new QPushButton(tr("Sign in"), this);
+	m_login->setObjectName("signIn");
+	m_login->setAutoDefault(true);
+	m_login->setMouseTracking(true);
+
+	m_resetPassword = new CommonUI::LinkLabel(tr("Forgot?"), "forgot", this);
+	m_resetPassword->setObjectName("forgot");
+
+	QVBoxLayout *layout = new QVBoxLayout(this);
+	layout->addWidget(logoLabel, 0, Qt::AlignCenter);
+	layout->addWidget(m_spinner);
+	layout->addWidget(labels, 0, Qt::AlignCenter);
+	layout->addWidget(m_username, 0, Qt::AlignCenter);
+	layout->addWidget(m_password, 0, Qt::AlignCenter);
+	layout->addWidget(m_autoLogin, 0, Qt::AlignCenter);
+	layout->addWidget(m_login, 0, Qt::AlignCenter);
+	layout->addStretch(1);
+	layout->addWidget(m_resetPassword, 0, Qt::AlignCenter);
+
+	QMetaObject::connectSlotsByName(this);
+
+	CommonUI::StyleSheetReader::setStyleSheetFor(this);
+
+	RealtimeStyleSheetLoader *rsl = new RealtimeStyleSheetLoader(this);
+	rsl->addWidget(this);
 }
 
 void LoginWidget::setFolder()

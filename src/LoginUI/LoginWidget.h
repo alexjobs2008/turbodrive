@@ -75,7 +75,7 @@ signals:
 	/**
 	* @brief Emitted when Sign In button gets clicked or Enter pressed
 	*/
-	void loginRequest(const QString& login, const QString& password);
+	void loginRequest(const QString& login, const QString& m_password);
 
 	/**
 	* @brief Emitted when user requested password reset
@@ -92,18 +92,18 @@ private slots:
 	void on_forgot_linkActivated(const QString &link);
 
 private:
+	void initControls();
 	void setFolder();
 
-	CommonUI::SpinnerWidget *spinner;
+	CommonUI::SpinnerWidget *m_spinner;
 
-	CommonUI::LabeledEdit *username;
-	CommonUI::LabeledEdit *password;
-	CommonUI::LinkLabel *forgot;
+	CommonUI::LabeledEdit *m_username;
+	CommonUI::LabeledEdit *m_password;
+	CommonUI::LinkLabel *m_resetPassword;
 
-	QCheckBox *cRememberPassword;
-	QFrame *actionsFrame;
-	QPushButton *pbSignIn;
-	CommonUI::LinkLabel *signUp;
+	QCheckBox *m_autoLogin;
+	QPushButton *m_login;
+	CommonUI::LinkLabel *m_register;
 
 	QString registerLink;
 };
