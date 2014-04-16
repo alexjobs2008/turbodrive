@@ -36,7 +36,7 @@ namespace Drive
 {
 
 const QString SettingsWidget::linkHelp =
-	"http://mts.turbocloud.by/";
+	QLatin1String("http://mts.turbocloud.by/");
 
 SettingsWidget& SettingsWidget::instance()
 {
@@ -109,10 +109,6 @@ SettingsWidget::SettingsWidget(QWidget *parent)
 	CommonUI::LinkLabel *llHelp =
 		new CommonUI::LinkLabel(tr("Help"), linkHelp, this);
 	llHelp->setObjectName("help");
-
-	//QPushButton *pbHelp = new QPushButton(textHelp, this);
-	//pbHelp->setObjectName("help");
-
 
 	QPushButton *pbOK = new QPushButton(tr("OK"), this);
 	pbOK->setObjectName("OK");
@@ -246,7 +242,7 @@ Delegate::~Delegate()
 QSize Delegate::sizeHint(const QStyleOptionViewItem & option,
 						const QModelIndex & index) const
 {
-	return QSize(80, 48);
+	return QSize(128, 48);
 }
 
 void Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
