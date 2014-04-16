@@ -13,53 +13,31 @@ AboutWidget::AboutWidget(QWidget *parent)
 {
 	QHBoxLayout *mainLayout = new QHBoxLayout(this);
 
-	QLabel *pic = new QLabel(this);
-	pic->setPixmap(QPixmap(":/clouds.png"));
-
 	QWidget *info = new QWidget(this);
 	QVBoxLayout *infoLayout = new QVBoxLayout(info);
 
-	QLabel *labelCompanyName = new QLabel(info);
-	labelCompanyName->setObjectName("labelCompanyName");
-	labelCompanyName->setText(Strings::getAppString(Strings::CompanyName));
+	QLabel *labelNameAndVersion = new QLabel(info);
+	labelNameAndVersion->setText(QString("%1 %2")
+								 .arg(Strings::getAppString(Strings::AppFullName))
+								 .arg(Strings::s_version));
 
-	QLabel *labelAppName = new QLabel(info);
-	labelAppName->setObjectName("labelAppName");
-	labelAppName->setText(Strings::getAppString(Strings::AppName));
-
-	labelAppName->setStyleSheet("QLabel {font-size: 12pt;};");
-
-	QLabel *labelAppVersion = new QLabel(info);
-	labelAppVersion->setObjectName("labelAppVersion");
-	labelAppVersion->setText(QString("%1").arg(Strings::s_version));
-
-	QLabel *labelHomepage = new QLabel(tr("Homepage:"), this);
-	labelHomepage->setObjectName("labelHomepage");
-
-	QLabel *labelHomepageLink = new QLabel(
-		QString("<a href=\"%1\">%2</a>")
-		.arg(Strings::s_url)
-		.arg(Strings::getAppString(Strings::WebSiteText))
-		, info);
-	labelHomepageLink->setObjectName("labelHomepageLink");
-	labelHomepageLink->setOpenExternalLinks(true);
+	QLabel *labelHomepage = new QLabel(info);
+	labelHomepage->setText(QString("%1 <a href=\"%2\">%3</a>")
+						   .arg(tr("Homepage:"))
+						   .arg(Strings::s_url)
+						   .arg(Strings::getAppString(Strings::WebSiteText)));
+	labelHomepage->setOpenExternalLinks(true);
 
 	QLabel *labelCopyright =
 		new QLabel(Strings::getAppString(Strings::Copyright));
-	labelCopyright->setObjectName("labelCopyright");
-	labelCopyright->setAlignment(Qt::AlignRight);
 
 	infoLayout->setSpacing(0);
-	infoLayout->addWidget(labelCompanyName, 0, Qt::AlignRight);
-	infoLayout->addWidget(labelAppName, 0, Qt::AlignRight);
-	infoLayout->addWidget(labelAppVersion, 0, Qt::AlignRight);
-	infoLayout->addWidget(labelHomepage, 0, Qt::AlignRight);
-	infoLayout->addWidget(labelHomepageLink, 0, Qt::AlignRight);
+	infoLayout->addWidget(labelNameAndVersion);
+	infoLayout->addWidget(labelHomepage);
+	infoLayout->addWidget(labelCopyright);
 	infoLayout->addStretch(1);
-	infoLayout->addWidget(labelCopyright, 0, Qt::AlignRight);
 
-	mainLayout->addWidget(pic);
-	mainLayout->addWidget(info, 1);
+	mainLayout->addWidget(info);
 }
 
 }

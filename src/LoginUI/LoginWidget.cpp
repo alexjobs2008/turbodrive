@@ -179,7 +179,7 @@ void LoginWidget::initControls()
 
 	m_register = new CommonUI::LinkLabel(tr("Create account"), "signUp", this);
 	m_register->setObjectName("signUp");
-	m_register->setEnabled(false);
+	m_register->setEnabled(!m_registerLink.isEmpty());
 
 	QHBoxLayout* labelsLayout = new QHBoxLayout();
 	labelsLayout->setContentsMargins(0, 0, 0, 0);
