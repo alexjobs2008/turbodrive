@@ -42,7 +42,7 @@ public:
 
 	static PasswordResetResourceRef create();
 
-	void resetPassword(const QString& email);
+	void resetPassword(const QString& username);
 
 	virtual QString path() const;
 	virtual QString service() const;

@@ -152,13 +152,12 @@ void LoginWidget::setRegisterLink(const QString& link)
 	m_register->setEnabled(!m_registerLink.isEmpty() && m_username->isEnabled());
 }
 
-void LoginWidget::on_signUp_linkActivated(const QString &link)
+void LoginWidget::on_signUp_linkActivated(const QString&)
 {
-	Q_UNUSED(link)
 	QDesktopServices::openUrl(QUrl(m_registerLink));
 }
 
-void LoginWidget::on_forgot_linkActivated(const QString &link)
+void LoginWidget::on_forgot_linkActivated(const QString&)
 {
 	emit passwordResetRequest(m_username->text().trimmed());
 }

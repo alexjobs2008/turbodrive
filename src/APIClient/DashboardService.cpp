@@ -68,7 +68,7 @@ PasswordResetResourceRef PasswordResetResource::create()
 	return resource;
 }
 
-void PasswordResetResource::resetPassword(const QString& email)
+void PasswordResetResource::resetPassword(const QString& username)
 {
 	QLOG_INFO() << "Requesting password reset...";
 
@@ -77,14 +77,14 @@ void PasswordResetResource::resetPassword(const QString& email)
 //		QString("application/x-www-form-urlencoded").toLatin1()));
 
 	ParamList params;
-	params.append(ParamPair("email", email.toLatin1()));
+	params.append(ParamPair("username", username.toLatin1()));
 
 	doOperation(QNetworkAccessManager::PostOperation, params, "data", headers);
 }
 
 QString PasswordResetResource::path() const
 {
-	return "/api/v1/resetPassword";
+	return "/api/v1/user/password-reset";
 }
 
 QString PasswordResetResource::service() const
@@ -110,7 +110,7 @@ bool PasswordResetResource::processPostResponse(int status,
 	case 200:
 		emit resetSuccessfully();
 		break;
-	case 406:
+	case 403:
 		emit resetFailed(tr("Password reset failed: too many attempts, please try again later."));
 		break;
 	case 404:

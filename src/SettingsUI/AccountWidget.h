@@ -4,6 +4,7 @@
 #include <QtWidgets/QFrame>
 
 class QLabel;
+class QPushButton;
 
 namespace Drive
 {
@@ -22,16 +23,18 @@ public slots:
 signals:
 	void openFolder();
 	void logout();
+	void resetPassword(const QString& username);
 
 private slots:
 	void on_folderLabel_linkActivated(const QString &);
 	void on_pbLogout_clicked(bool checked);
+	void on_m_resetPasswordPushButton_clicked(bool);
 
 private:
 	QLabel *nameLabel;
 	QLabel *loginLabel;
 	QLabel *avatarLabel;
-
+	QPushButton* m_resetPasswordPushButton;
 };
 
 class UserDataWidget : public QFrame

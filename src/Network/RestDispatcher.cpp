@@ -133,8 +133,8 @@ void GeneralRestDispatcher::cancelAll()
 	foreach(RestService* service, servicesList)
 	{
 		cancelCurrent(service);
-		cancelAll(service->authenticatedRequests);
-		cancelAll(service->unauthenticatedRequests);
+		cancelAll(service->m_authenticatedRequests);
+		cancelAll(service->m_unauthenticatedRequests);
 	}
 
 	networkAccessManager->abortAllRequests();
@@ -148,25 +148,25 @@ void GeneralRestDispatcher::cancelAll(const RestResourceRef& restResource)
 	foreach(RestService* service, servicesList)
 	{
 		cancelCurrent(service, &restResource);
-		cancelAll(service->authenticatedRequests, &restResource);
-		cancelAll(service->unauthenticatedRequests, &restResource);
+		cancelAll(service->m_authenticatedRequests, &restResource);
+		cancelAll(service->m_unauthenticatedRequests, &restResource);
 	}
 }
 
 void GeneralRestDispatcher::cancelCurrent(RestService *service,
 								const RestResourceRef *restResource)
 {
-	if (!service->currentRequest.isNull())
-		if (!restResource || service->currentRequest->resource == *restResource)
+	if (!service->m_currentRequest.isNull())
+		if (!restResource || service->m_currentRequest->resource == *restResource)
 		{
 			QLOG_INFO() << "Current resource request canceled";
 
 			if (restResource)
 				restResource->data()->requestCancelled();
 			else
-				service->currentRequest->resource->requestCancelled();
+				service->m_currentRequest->resource->requestCancelled();
 
-			service->currentRequest->isCanceled = true;
+			service->m_currentRequest->isCanceled = true;
 		}
 }
 
@@ -207,16 +207,16 @@ void GeneralRestDispatcher::request(const RestResource::RequestRef &restRequest)
 	switch(mode)
 	{
 	case Authorized:
-		service->authenticatedRequests.enqueue(restRequest);
+		service->m_authenticatedRequests.enqueue(restRequest);
 		break;
 	case Unauthorized:
 		if (restRequest->resource->restricted())
 		{
-			service->authenticatedRequests.enqueue(restRequest);
+			service->m_authenticatedRequests.enqueue(restRequest);
 		}
 		else
 		{
-			service->unauthenticatedRequests.enqueue(restRequest);
+			service->m_unauthenticatedRequests.enqueue(restRequest);
 		}
 		break;
 	default:
@@ -234,7 +234,7 @@ void GeneralRestDispatcher::next()
 	QList<RestService*> serviceList = services.values();
 	foreach(RestService* service, serviceList)
 	{
-		while (service->currentRequest.isNull()) /// !!!
+		while (service->m_currentRequest.isNull()) /// !!!
 		{
 		/* If we're Authenticated, then consume the Unauthenticated queue first
 		and then the Authenticated queue. If we're Unauthenticated,
@@ -246,28 +246,28 @@ void GeneralRestDispatcher::next()
 					break;
 				}
 
-				if (!service->unauthenticatedRequests.isEmpty())
+				if (!service->m_unauthenticatedRequests.isEmpty())
 				{
-					service->currentRequest =
-						service->unauthenticatedRequests.dequeue();
+					service->m_currentRequest =
+						service->m_unauthenticatedRequests.dequeue();
 				}
 				else
 				{
-					service->currentRequest =
-						service->authenticatedRequests.dequeue();
+					service->m_currentRequest =
+						service->m_authenticatedRequests.dequeue();
 				}
 
 			}
 			else // mode == Unauthorized
 			{
-				if (service->unauthenticatedRequests.isEmpty())
+				if (service->m_unauthenticatedRequests.isEmpty())
 					break;
 
-				service->currentRequest =
-					service->unauthenticatedRequests.dequeue();
+				service->m_currentRequest =
+					service->m_unauthenticatedRequests.dequeue();
 			}
 
-			doOperation(service->currentRequest->operation, service);
+			doOperation(service->m_currentRequest->operation, service);
 		}
 	}
 }
@@ -364,25 +364,25 @@ QNetworkRequest GeneralRestDispatcher::createRequest(RestService* service) const
 	QUrl url;
 	QNetworkRequest request;
 
-	if (service->currentRequest->operation
+	if (service->m_currentRequest->operation
 			== QNetworkAccessManager::PostOperation
-		|| service->currentRequest->operation
+		|| service->m_currentRequest->operation
 			== QNetworkAccessManager::PutOperation
-		|| service->currentRequest->operation
+		|| service->m_currentRequest->operation
 			== QNetworkAccessManager::DeleteOperation)
 	{
 		// no need to handle query params for POST, PUT and DELETE
 		// as they already handled
-		request = QNetworkRequest(buildUrl(service->currentRequest->service,
-			service->currentRequest->path));
+		request = QNetworkRequest(buildUrl(service->m_currentRequest->service,
+			service->m_currentRequest->path));
 	}
 	else
 	{
-		request = QNetworkRequest(buildUrl(service->currentRequest->service,
-			service->currentRequest->path, service->currentRequest->params));
+		request = QNetworkRequest(buildUrl(service->m_currentRequest->service,
+			service->m_currentRequest->path, service->m_currentRequest->params));
 	}
 
-	foreach (RestResource::HeaderPair header, service->currentRequest->headers)
+	foreach (RestResource::HeaderPair header, service->m_currentRequest->headers)
 	{
 		request.setRawHeader(header.first, header.second);
 	}
@@ -427,10 +427,10 @@ void GeneralRestDispatcher::doOperation(RestResource::Operation operation,
 	{
 		QByteArray bodyData;
 
-		if (!service->currentRequest->params.isEmpty())
+		if (!service->m_currentRequest->params.isEmpty())
 		{
 			QUrlQuery urlQuery =
-				createParams(service->currentRequest->params);
+				createParams(service->m_currentRequest->params);
 
 			if (!urlQuery.isEmpty())
 			{
@@ -440,14 +440,16 @@ void GeneralRestDispatcher::doOperation(RestResource::Operation operation,
 			else
 			{
 				QLOG_ERROR() << "Failed to convert request params.";
-				service->currentRequest.clear();
+				service->m_currentRequest.clear();
 				return;
 		}
 		}
 		else
 		{
-			bodyData = service->currentRequest->data;
+			bodyData = service->m_currentRequest->data;
 		}
+		QLOG_INFO() << "Service: " << service->toString();
+		QLOG_INFO() << "Request body: " << bodyData;
 
 		if (operation == QNetworkAccessManager::PostOperation)
 		{
@@ -460,7 +462,7 @@ void GeneralRestDispatcher::doOperation(RestResource::Operation operation,
 		else if (operation == QNetworkAccessManager::DeleteOperation)
 		{
 			QBuffer *buffer =
-				new QBuffer(service->currentRequest.data()->resource.data());
+				new QBuffer(service->m_currentRequest.data()->resource.data());
 
 			buffer->setData(bodyData);
 
@@ -486,7 +488,7 @@ void GeneralRestDispatcher::doOperation(RestResource::Operation operation,
 	}
 	else if (operation == QNetworkAccessManager::CustomOperation)
 	{
-		service->currentRequest.clear();
+		service->m_currentRequest.clear();
 	}
 }
 
@@ -516,7 +518,7 @@ void GeneralRestDispatcher::replyFinished(QNetworkReply* networkReply)
 	}
 
 
-	if (service->currentRequest.isNull())
+	if (service->m_currentRequest.isNull())
 	{
 		QLOG_ERROR() <<
 			"Reply discarded because current service request is null.";
@@ -525,22 +527,22 @@ void GeneralRestDispatcher::replyFinished(QNetworkReply* networkReply)
 		return;
 	}
 
-	if (!service->currentRequest->isCanceled)
+	if (!service->m_currentRequest->isCanceled)
 	{
 		bool authenticationRequired = false;
 
-		service->currentRequest->resource->requestFinished(
+		service->m_currentRequest->resource->requestFinished(
 			RestResource::ReplyRef(
-				new RestResource::Reply(service->currentRequest, networkReply))
+				new RestResource::Reply(service->m_currentRequest, networkReply))
 			, authenticationRequired);
 
 		if (authenticationRequired)
 		{
-			service->authenticatedRequests.insert(
-				service->authenticatedRequests.begin()
-				, service->currentRequest);
+			service->m_authenticatedRequests.insert(
+				service->m_authenticatedRequests.begin()
+				, service->m_currentRequest);
 
-			service->currentRequest.clear();
+			service->m_currentRequest.clear();
 
 			setMode(Unauthorized);
 			return;
@@ -551,7 +553,7 @@ void GeneralRestDispatcher::replyFinished(QNetworkReply* networkReply)
 		QLOG_INFO() << "Resource request is already canceled.";
 	}
 
-	service->currentRequest.clear();
+	service->m_currentRequest.clear();
 
 	next();
 }

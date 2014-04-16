@@ -17,21 +17,19 @@ public:
 
 	virtual ~RestService();
 
-	inline bool queuesAreEmpty()
-	{
-		return authenticatedRequests.isEmpty()
-			&& unauthenticatedRequests.isEmpty();
-	}
+	bool queuesAreEmpty() const;
 
 	const QString& name() const;
 	const QString& address() const;
 
+	QString toString() const;
+
 private:
-	const QString serviceName;
-	const QString serviceAddress;
-	RestResource::RequestRef currentRequest;
-	QQueue<RestResource::RequestRef> authenticatedRequests;
-	QQueue<RestResource::RequestRef> unauthenticatedRequests;
+	const QString m_name;
+	const QString m_address;
+	RestResource::RequestRef m_currentRequest;
+	QQueue<RestResource::RequestRef> m_authenticatedRequests;
+	QQueue<RestResource::RequestRef> m_unauthenticatedRequests;
 
 	friend class GeneralRestDispatcher;
 };

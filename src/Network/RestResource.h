@@ -44,7 +44,7 @@ public:
 			, const ParamList& params
 			, const HeaderList& headers);
 
-		//~Request();
+		QString toString() const;
 
 		RestResourceRef resource;
 		Operation operation;

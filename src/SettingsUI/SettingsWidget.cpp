@@ -86,7 +86,10 @@ SettingsWidget::SettingsWidget(QWidget *parent)
 	stackedWidget = new QStackedWidget(this);
 
 	accountWidget = new AccountWidget(this);
-	connect(accountWidget, SIGNAL(openFolder()), this, SIGNAL(openFolder()));
+	connect(accountWidget, &AccountWidget::openFolder, this, &SettingsWidget::openFolder);
+	connect(accountWidget, &AccountWidget::logout, this, &SettingsWidget::logout);
+	connect(accountWidget, &AccountWidget::resetPassword, this, &SettingsWidget::resetPassword);
+
 
 	ConnectionWidget *connectionWidget = new ConnectionWidget(this);
 	AdvancedWidget *advancedWidget = new AdvancedWidget(this);
@@ -131,8 +134,6 @@ SettingsWidget::SettingsWidget(QWidget *parent)
 	layoutMain->addSpacing(2);
 	layoutMain->addWidget(separator);
 	layoutMain->addWidget(fButtonBox);
-
-	connect(accountWidget, SIGNAL(logout()), this, SIGNAL(logout()));
 
 	connect(&Settings::instance(), SIGNAL(dirtyStateChanged(bool)),
 		this, SLOT(onSettingsDirtyChanged(bool)));

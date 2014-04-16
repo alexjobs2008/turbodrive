@@ -159,8 +159,6 @@ void AppController::createTrayIcon()
 
 void AppController::createSettingsWidget()
 {
-	//settingsWidget = QSharedPointer<SettingsWidget>(new SettingsWidget());
-
 	SettingsWidget& settingsWidget = SettingsWidget::instance();
 
 	settingsWidget.setObjectName("settingsWidget");
@@ -172,14 +170,17 @@ void AppController::createSettingsWidget()
 
 	settingsWidget.setWindowIcon(QIcon(":/icons/preferences.png"));
 
-	connect(&settingsWidget, SIGNAL(openFolder()),
-		actionOpenFolder, SLOT(trigger()));
+	connect(&settingsWidget, &SettingsWidget::openFolder,
+		actionOpenFolder, &QAction::trigger);
 
-	connect(&settingsWidget, SIGNAL(logout()),
-		this, SLOT(on_settingsWidget_logout()));
+	connect(&settingsWidget, &SettingsWidget::logout,
+		this, &AppController::on_settingsWidget_logout);
 
-	connect(this, SIGNAL(profileDataUpdated(ProfileData)),
-		&settingsWidget, SLOT(onProfileDataUpdated(ProfileData)));
+	connect(&settingsWidget, &SettingsWidget::resetPassword,
+		&LoginController::instance(), &LoginController::passwordReset);
+
+	connect(this, &AppController::profileDataUpdated,
+		&settingsWidget, &SettingsWidget::onProfileDataUpdated);
 }
 
 void AppController::setState(State newState)

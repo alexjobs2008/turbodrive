@@ -31,6 +31,7 @@ public slots:
 signals:
 	void openFolder();
 	void logout();
+	void resetPassword(const QString& username);
 
 protected:
 	virtual void resizeEvent(QResizeEvent *event);

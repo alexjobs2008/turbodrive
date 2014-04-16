@@ -29,13 +29,13 @@ RestResource::Request::Request(const RestResourceRef& restResource
 							, const QString& path
 							, const QByteArray& data
 							, const HeaderList& headers)
-		: resource(restResource)
-		, operation(operation)
-		, service(service)
-		, path(path)
-		, data(data)
-		, headers(headers)
-		, isCanceled(false)
+	: resource(restResource)
+	, operation(operation)
+	, service(service)
+	, path(path)
+	, data(data)
+	, headers(headers)
+	, isCanceled(false)
 {
 }
 
@@ -45,14 +45,31 @@ RestResource::Request::Request(const RestResourceRef& restResource
 							, const QString& path
 							, const ParamList& params
 							, const HeaderList& headers)
-		: resource(restResource)
-		, operation(operation)
-		, service(service)
-		, path(path)
-		, params(params)
-		, headers(headers)
-		, isCanceled(false)
+	: resource(restResource)
+	, operation(operation)
+	, service(service)
+	, path(path)
+	, params(params)
+	, headers(headers)
+	, isCanceled(false)
 {
+}
+
+QString RestResource::Request::toString() const
+{
+	QVariantMap map;
+
+#define MAKE_PAIR(value) QLatin1String(#value), QVariant(value)
+	map.insert(MAKE_PAIR(resource));
+	map.insert(MAKE_PAIR(operation));
+	map.insert(MAKE_PAIR(service));
+	map.insert(MAKE_PAIR(path));
+//	map.insert(MAKE_PAIR(params));
+//	map.insert(MAKE_PAIR(headers));
+	map.insert(MAKE_PAIR(isCanceled));
+#undef MAKE_PAIR
+
+	return QJsonDocument(QJsonObject::fromVariantMap(map)).toJson();
 }
 
 RestResource::Reply::Reply(const RequestRef& restResourceRequest

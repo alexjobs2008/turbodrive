@@ -23,12 +23,15 @@ AccountWidget::AccountWidget(QWidget *parent)
 	avatarLabel->setPixmap(QPixmap(":/user.png"));
 	avatarLabel->setStyleSheet("QLabel {border: 1px solid black; min-height: 128px; max-height: 128px; min-width: 128px; max-width: 128px;}");
 
-	QPushButton *pbResetPassword = new QPushButton(tr("Reset Password"), this);
+	m_resetPasswordPushButton = new QPushButton(tr("Reset Password"), this);
+	m_resetPasswordPushButton->setObjectName("m_resetPasswordPushButton");
+	m_resetPasswordPushButton->setEnabled(false);
+
 	QPushButton *pbLogout = new QPushButton(tr("Logout"), this);
 	pbLogout->setObjectName("pbLogout");
 	QVBoxLayout *blButtons = new QVBoxLayout();
 	blButtons->addWidget(pbLogout);
-	blButtons->addWidget(pbResetPassword);
+	blButtons->addWidget(m_resetPasswordPushButton);
 	blButtons->addStretch(1);
 
 	QLabel *folderLabel = new QLabel(this);
@@ -82,6 +85,7 @@ void AccountWidget::setProfileData(const ProfileData& profileData)
 		.arg(profileData.lastName));
 
 	loginLabel->setText(profileData.username);
+	m_resetPasswordPushButton->setEnabled(!loginLabel->text().isEmpty());
 
 	if (!profileData.avatar.isNull())
 		avatarLabel->setPixmap(profileData.avatar);
@@ -96,6 +100,11 @@ void AccountWidget::on_folderLabel_linkActivated(const QString &link)
 void AccountWidget::on_pbLogout_clicked(bool checked)
 {
 	emit logout();
+}
+
+void AccountWidget::on_m_resetPasswordPushButton_clicked(bool)
+{
+	emit resetPassword(loginLabel->text());
 }
 
 }

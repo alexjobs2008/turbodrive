@@ -21,7 +21,7 @@ public slots:
 	void showLoginFormOrLogin();
 	void showLoginForm();
 	void login(const QString& username, const QString& password);
-	void passwordReset(const QString& email);
+	void passwordReset(const QString& username);
 	void closeAll();
 	void requestUserData();
 

@@ -85,7 +85,8 @@ LoginController& LoginController::instance()
 LoginController::LoginController(QObject *parent)
 	: QObject(parent)
 {
-	connect(this, SIGNAL(loginFinished()), this, SLOT(onLoginFinished()));
+	connect(this, &LoginController::loginFinished,
+			this, &LoginController::onLoginFinished);
 }
 
 LoginController::~LoginController()
@@ -159,7 +160,7 @@ void LoginController::login(const QString& username, const QString& password)
 	authResource->login(inputData);
 }
 
-void LoginController::passwordReset(const QString& email)
+void LoginController::passwordReset(const QString& username)
 {
 	QLOG_INFO() << "LoginController::passwordReset()";
 
@@ -168,6 +169,10 @@ void LoginController::passwordReset(const QString& email)
 		loginWidget->enableControls(false);
 		QCoreApplication::processEvents();
 	}
+
+	const QString cleanUsername = username.startsWith(QLatin1Char('+'))
+		? username.mid(1)
+		: username;
 
 	PasswordResetResourceRef passwordResetResource =
 		PasswordResetResource::create();
@@ -178,7 +183,7 @@ void LoginController::passwordReset(const QString& email)
 	connect(passwordResetResource.data(), SIGNAL(resetFailed(QString)),
 		this,  SLOT(onPasswordResetFailed(QString)));
 
-	passwordResetResource->resetPassword(email);
+	passwordResetResource->resetPassword(cleanUsername);
 }
 
 void LoginController::closeAll()

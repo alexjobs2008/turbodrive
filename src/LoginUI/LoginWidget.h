@@ -88,8 +88,8 @@ protected:
 
 private slots:
 	void on_signIn_clicked(bool checked);
-	void on_signUp_linkActivated(const QString &link);
-	void on_forgot_linkActivated(const QString &link);
+	void on_signUp_linkActivated(const QString&);
+	void on_forgot_linkActivated(const QString&);
 
 private:
 	void initControls();
