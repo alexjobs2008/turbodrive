@@ -3,8 +3,6 @@
 
 #include <QtCore/QObject>
 
-#define STRINGS_CONTEXT "AppStrings"
-
 namespace Drive
 {
 
@@ -20,24 +18,13 @@ enum AppStringType
 	Copyright
 };
 
-static const char* appStrings[] =
-{
-	QT_TRANSLATE_NOOP(STRINGS_CONTEXT, "Assistent"),
-	QT_TRANSLATE_NOOP(STRINGS_CONTEXT, "Disk"),
-	QT_TRANSLATE_NOOP(STRINGS_CONTEXT, "Assistent.Disk"),
-	QT_TRANSLATE_NOOP(STRINGS_CONTEXT, "www.assistent.by"),
-	QT_TRANSLATE_NOOP(STRINGS_CONTEXT, "Copyright (c) 2013 Assistent, Inc.\n"
-									"All rights reserved.")
-};
-
 const QString getAppString(AppStringType type);
 
-static const char* companyNameEn = "Assistent";
-static const char* companyDomain = "assistent.by";
-static const char* appNameEn = "Drive";
-static const char* appFullNameEn = "Assistent.Drive";
-static const char* appVersion = "1.0b";
-static const char* websiteLink = "http://assistent.by";
+static const char* s_company = "MTS";
+static const char* s_domain = "http://disk.mts.by/";
+static const char* s_application = "Disk";
+static const char* s_version = "1.0";
+static const char* s_url = "http://disk.mts.by/";
 
 }
 

@@ -1,1 +1,1 @@
-lupdate . -ts ../translations/trans.ts
+lupdate . -ts ./translations.ts

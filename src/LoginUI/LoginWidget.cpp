@@ -33,7 +33,7 @@ namespace Drive
 
 LoginWidget::LoginWidget(QWidget *parent)
 	: QFrame(parent)
-	, registerLink(QString())
+	, m_registerLink(QLatin1String("http://mts.turbocloud.by/login.html"))
 {
 	initResources();
 
@@ -132,7 +132,7 @@ void LoginWidget::enableControls(bool enable)
 	m_username->setEnabled(enable);
 	m_password->setEnabled(enable);
 	m_autoLogin->setEnabled(enable);
-	m_register->setEnabled(!registerLink.isEmpty() && enable);
+	m_register->setEnabled(!m_registerLink.isEmpty() && enable);
 }
 
 void LoginWidget::focusOnEmail()
@@ -148,14 +148,14 @@ void LoginWidget::setError(const QString& text)
 
 void LoginWidget::setRegisterLink(const QString& link)
 {
-	registerLink = link;
-	m_register->setEnabled(!registerLink.isEmpty() && m_username->isEnabled());
+	m_registerLink = link;
+	m_register->setEnabled(!m_registerLink.isEmpty() && m_username->isEnabled());
 }
 
 void LoginWidget::on_signUp_linkActivated(const QString &link)
 {
 	Q_UNUSED(link)
-	QDesktopServices::openUrl(QUrl(registerLink));
+	QDesktopServices::openUrl(QUrl(m_registerLink));
 }
 
 void LoginWidget::on_forgot_linkActivated(const QString &link)

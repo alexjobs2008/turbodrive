@@ -484,5 +484,32 @@ Choose Drive folder location and which folders and files to sync.</source>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
+    <message>
+        <location filename="Util/AppStrings.cpp" line="15"/>
+        <source>MTS</source>
+        <translation>МТС</translation>
+    </message>
+    <message>
+        <location filename="Util/AppStrings.cpp" line="16"/>
+        <source>Disk</source>
+        <translation>Диск</translation>
+    </message>
+    <message>
+        <location filename="Util/AppStrings.cpp" line="17"/>
+        <source>MTS Disk</source>
+        <translation>МТС Диск</translation>
+    </message>
+    <message>
+        <location filename="Util/AppStrings.cpp" line="18"/>
+        <source>http://disk.mts.by/</source>
+        <translation>http://disk.mts.by/</translation>
+    </message>
+    <message>
+        <location filename="Util/AppStrings.cpp" line="19"/>
+        <source>Copyrights (c) MTS
+All rights reserved.</source>
+        <translation>Copyrights (c) МТС
+Все права защищены.</translation>
+    </message>
 </context>
 </TS>

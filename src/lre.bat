@@ -1,1 +1,1 @@
-lrelease ../translations/trans.ts -qm ./Application/res/drive_ru.qm
+lrelease ./translations.ts -qm ./Application/res/drive_ru.qm

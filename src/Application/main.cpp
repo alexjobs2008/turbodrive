@@ -63,10 +63,10 @@ int main(int argc, char *argv[])
 	translator.load(":/drive_ru.qm");
 	app.installTranslator(&translator);
 
-	QCoreApplication::setOrganizationName(Strings::companyNameEn);
-	QCoreApplication::setOrganizationDomain(Strings::companyDomain);
-	QCoreApplication::setApplicationName(Strings::appNameEn);
-	QCoreApplication::setApplicationVersion(Strings::appVersion);
+	QCoreApplication::setOrganizationName(Strings::s_company);
+	QCoreApplication::setOrganizationDomain(Strings::s_domain);
+	QCoreApplication::setApplicationName(Strings::s_application);
+	QCoreApplication::setApplicationVersion(Strings::s_version);
 
 	initLogging();
 	QLOG_TRACE() << "Should continue: " << app.shouldContinue();

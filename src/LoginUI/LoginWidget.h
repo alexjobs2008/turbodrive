@@ -105,7 +105,7 @@ private:
 	QPushButton *m_login;
 	CommonUI::LinkLabel *m_register;
 
-	QString registerLink;
+	QString m_registerLink;
 };
 
 }

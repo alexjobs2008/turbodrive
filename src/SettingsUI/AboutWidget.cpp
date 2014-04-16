@@ -31,14 +31,14 @@ AboutWidget::AboutWidget(QWidget *parent)
 
 	QLabel *labelAppVersion = new QLabel(info);
 	labelAppVersion->setObjectName("labelAppVersion");
-	labelAppVersion->setText(QString("v%1").arg(Strings::appVersion));
+	labelAppVersion->setText(QString("%1").arg(Strings::s_version));
 
 	QLabel *labelHomepage = new QLabel(tr("Homepage:"), this);
 	labelHomepage->setObjectName("labelHomepage");
 
 	QLabel *labelHomepageLink = new QLabel(
 		QString("<a href=\"%1\">%2</a>")
-		.arg(Strings::websiteLink)
+		.arg(Strings::s_url)
 		.arg(Strings::getAppString(Strings::WebSiteText))
 		, info);
 	labelHomepageLink->setObjectName("labelHomepageLink");
