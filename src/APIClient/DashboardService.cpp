@@ -46,7 +46,7 @@ bool RegisterLinkResource::processGetResponse(int status,
 											const HeaderList& headers)
 {
 	QString link = getDataFromJson(data);
-	if (!link.isEmpty())
+	if (status == 200 && !link.isEmpty())
 	{
 		QLOG_INFO() << "Register link received: " << link;
 		emit linkReceived(link);
