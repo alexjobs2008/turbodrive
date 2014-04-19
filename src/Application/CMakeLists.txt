@@ -170,8 +170,8 @@ set(CPACK_CREATE_DESKTOP_LINKS "${PROJECT_NAME}")
 set(CPACK_NSIS_PACKAGE_NAME "${SPACED_NAME}")
 
 set(CPACK_NSIS_DISPLAY_NAME "${SPACED_NAME}")
-set(CPACK_NSIS_HELP_LINK "http:\\\\\\\\mts.turbocloud.by\\\\")
-set(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\mts.turbocloud.by\\\\")
+set(CPACK_NSIS_HELP_LINK "http:\\\\\\\\disk.mts.by\\\\")
+set(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\disk.mts.by\\\\")
 
 set(CPACK_NSIS_INSTALLED_ICON_NAME "${PROJECT_NAME}.exe")
 

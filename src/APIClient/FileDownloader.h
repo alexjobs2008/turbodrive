@@ -11,7 +11,7 @@
 //#define DISK_DOWNLOAD_URL "http://c0-0-40.files.assistent.th/api/v1/content/%1"
 
 // FIXME: use FilesService to build url
-#define DISK_DOWNLOAD_URL "http://mts.turbocloud.by/api/v1/content/%1"
+#define DISK_DOWNLOAD_URL "http://disk.mts.by/api/v1/content/%1"
 
 class QNetworkAccessManager;
 class QFile;

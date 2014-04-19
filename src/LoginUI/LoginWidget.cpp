@@ -33,7 +33,7 @@ namespace Drive
 
 LoginWidget::LoginWidget(QWidget *parent)
 	: QFrame(parent)
-	, m_registerLink(QLatin1String("http://mts.turbocloud.by/login.html"))
+	, m_registerLink(QLatin1String("http://disk.mts.by/login.html"))
 {
 	initResources();
 

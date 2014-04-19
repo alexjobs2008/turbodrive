@@ -70,6 +70,8 @@ bool NotificationResource::processGetResponse(int status,
 	QJsonDocument doc = QJsonDocument::fromJson(data);
 	if (!doc.isArray())
 	{
+		QLOG_ERROR()
+				<< "[NotificationResource]: Received data is not a JSON array.";
 		listenRemoteFileEvents();
 		return true;
 	}

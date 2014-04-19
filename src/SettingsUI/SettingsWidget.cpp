@@ -36,7 +36,7 @@ namespace Drive
 {
 
 const QString SettingsWidget::linkHelp =
-	QLatin1String("http://mts.turbocloud.by/");
+	QLatin1String("http://disk.mts.by/");
 
 SettingsWidget& SettingsWidget::instance()
 {
