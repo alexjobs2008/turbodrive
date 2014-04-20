@@ -115,7 +115,7 @@ void GeneralRestDispatcher::loadServices()
 		services.insert("FilesService", new RestService("FilesService", "http://disk.mts.by", this));
 		services.insert("ContentService", new RestService("ContentService", "http://disk.mts.by", this));
 		services.insert("SharingService", new RestService("SharingService", "http://disk.mts.by", this));
-		services.insert("NotificationService", new RestService("NotificationService", "http://disk.mts.by", this));
+		services.insert("NotificationService", new RestService("NotificationService", "http://rpl.disk.mts.by", this));
 		break;
 	default:
 		Q_ASSERT(false);
