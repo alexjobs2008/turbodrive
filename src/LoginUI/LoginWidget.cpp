@@ -133,7 +133,7 @@ LoginWidget::LoginWidget(QWidget *parent)
 
 	signUp = new CommonUI::LinkLabel(tr("Create account"), "signUp", this);
 	signUp->setObjectName("signUp");
-	signUp->setEnabled(false);
+	signUp->setEnabled(!registerLink.isEmpty());
 
 	actionsFrame = new QFrame(this);
 	actionsFrame->setObjectName("actionsFrame");
