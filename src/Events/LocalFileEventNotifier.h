@@ -1,12 +1,9 @@
 #ifndef LOCAL_DISPATCHER
 #define LOCAL_DISPATCHER
 
-#include <QtCore/QObject>
-#include <QtCore/QSet>
-
 #include <iostream>
-
-#include "3rdparty/efsw/include/efsw/efsw.h"
+#include <auto_ptr.h>
+#include <QtCore/QObject>
 #include "3rdparty/efsw/include/efsw/efsw.hpp"
 
 namespace Drive
@@ -19,52 +16,39 @@ class LocalListener;
 class LocalFileEventNotifier: public QObject
 {
 	Q_OBJECT
+
 public:
 	static LocalFileEventNotifier& instance();
-	~LocalFileEventNotifier();
 
-public slots:
-	void setFolder();
-	void stop();
+	Q_SLOT void setFolder();
+	Q_SLOT void stop();
 
-//  Exclusions logic moved to EventDispatcher
-//	void addExclusion(const QString& localPath);
-//	void removeExclusion(const QString& localPath);
-
-signals:
-	void newLocalFileEvent(const LocalFileEvent& event);
-
-private slots:
-	void onNewLocalFileEvent(const LocalFileEvent& event);
+	Q_SIGNAL void newLocalFileEvent(const LocalFileEvent& event);
 
 private:
-	LocalFileEventNotifier(QObject *parent = 0);
+	LocalFileEventNotifier(QObject* parent = nullptr);
 	Q_DISABLE_COPY(LocalFileEventNotifier)
 
-	efsw::FileWatcher fileWatcher;
-	LocalListener *listener;
-	efsw::WatchID watchID;
-	QSet<QString> exclusions;
+private:
+	efsw::FileWatcher m_fileWatcher;
+	std::auto_ptr<LocalListener> m_listener;
+	efsw::WatchID m_watchID;
 };
 
 class LocalListener : public QObject, public efsw::FileWatchListener
 {
 	Q_OBJECT
+
 public:
-	LocalListener(QObject *parent = 0);
+	LocalListener(QObject* parent = nullptr);
 
-	void handleFileAction(efsw::WatchID watchid, const std::string& dir,
-		const std::string& filename, efsw::Action action, std::string oldFilename = "" );
+	virtual void handleFileAction(efsw::WatchID watchid,
+			const std::string& dir, const std::string& filename,
+			efsw::Action action, std::string oldFilename = "") override;
 
-signals:
-	void newLocalFileEvent(const LocalFileEvent& localFileEvent);
-
+	Q_SIGNAL void newLocalFileEvent(const LocalFileEvent& localFileEvent);
 };
-
-
-
-
 
 }
 
-#endif LOCAL_DISPATCHER
+#endif
