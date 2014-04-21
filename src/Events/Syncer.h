@@ -38,11 +38,11 @@ private:
 	void fireEvents();
 
 private:
-	QString currentLocalPathPrefix;
-	int folderCounter;
+	QString m_currentLocalPathPrefix;
+	int m_folderCounter;
 
-	QList<LocalFileEvent> localEvents;
-	QList<RemoteFileEvent> remoteEvents;
+	QList<LocalFileEvent> m_localEvents;
+	QList<RemoteFileEvent> m_remoteEvents;
 };
 
 }
