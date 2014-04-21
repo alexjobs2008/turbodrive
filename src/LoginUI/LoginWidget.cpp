@@ -194,7 +194,7 @@ void LoginWidget::initControls()
 		, CommonUI::LabeledEdit::Text
 		, QString()
 		, 0
-		, "\\+375\\d+"
+		, "375\\d+"
 		, 100
 		, this);
 	m_username->setName("username");
