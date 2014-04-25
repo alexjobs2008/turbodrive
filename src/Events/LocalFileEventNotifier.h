@@ -2,7 +2,7 @@
 #define LOCAL_DISPATCHER
 
 #include <iostream>
-#include <auto_ptr.h>
+#include <memory>
 #include <QtCore/QObject>
 #include "3rdparty/efsw/include/efsw/efsw.hpp"
 

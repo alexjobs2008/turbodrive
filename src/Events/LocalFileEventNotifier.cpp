@@ -33,7 +33,7 @@ void LocalFileEventNotifier::setFolder()
 		this, &LocalFileEventNotifier::newLocalFileEvent);
 
 	m_watchID = m_fileWatcher.addWatch(Settings::instance()
-		.get(Settings::folderPath).toString().toStdString(), m_listener, true);
+		.get(Settings::folderPath).toString().toStdString(), m_listener.get(), true);
 }
 
 void LocalFileEventNotifier::stop()
