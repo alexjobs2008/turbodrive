@@ -252,11 +252,6 @@ void LoginController::onPasswordResetSucceeded()
 	{
 		loginWidget->enableControls(true);
 	}
-
-	QWidget *w = loginWidget ? loginWidget : 0;
-
-	QMessageBox::information(w, tr("Please check your email"),
-		tr("We've sent you an email with further instructions about password reset."));
 }
 
 void LoginController::onPasswordResetFailed(const QString& error)
@@ -265,9 +260,6 @@ void LoginController::onPasswordResetFailed(const QString& error)
 	{
 		loginWidget->enableControls(true);
 	}
-
-	QWidget *w = loginWidget ? loginWidget : 0;
-	QMessageBox::warning(w, tr("Password reset failed"), error);
 }
 
 void LoginController::onProfileDataReceived(const QJsonObject& data)

@@ -275,22 +275,16 @@ void LocalFileOrFolderAddedEventHandler::onGetFileObjectFailed(
 void LocalFileOrFolderAddedEventHandler::
 	onGetFileObjectParentIdSucceeded(int id)
 {
-	QLOG_TRACE() << this
-		<< "getFileObjectParentIdSucceeded, file object Parent id:" << id;
-
-	QFileInfo fileInfo(localEvent.localPath());
+	const QFileInfo fileInfo(localEvent.localPath());
 	if (fileInfo.isDir())
 	{
-		CreateRestResourceRef createRestResource =
-			CreateRestResource::create();
+		auto createRestResource = CreateRestResource::create();
 
-		connect(createRestResource.data()
-			, SIGNAL(succeeded(Drive::RemoteFileDesc))
-			, this
-			, SLOT(onCreateFolderSucceeded(Drive::RemoteFileDesc)));
+		connect(createRestResource.data(), &CreateRestResource::succeeded,
+				this, &LocalFileOrFolderAddedEventHandler::onCreateFolderSucceeded);
 
-		connect(createRestResource.data(), SIGNAL(failed(QString)),
-			this, SLOT(onCreateFolderFailed(QString)));
+		connect(createRestResource.data(), &CreateRestResource::failed,
+				this, &LocalFileOrFolderAddedEventHandler::onCreateFolderFailed);
 
 		createRestResource->createFolder(id, localEvent.fileName());
 	}

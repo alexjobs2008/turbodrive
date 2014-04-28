@@ -205,7 +205,7 @@ RestResource::RequestRef
 		const HeaderList& headers) const
 {
 	RequestRef restRequest(new Request(self(), static_cast<Operation>(operation), service(), path(), data, headers));
-	GeneralRestDispatcher::instance().request(restRequest);
+	Q_EMIT request(restRequest);
 	return restRequest;
 }
 
@@ -214,7 +214,7 @@ RestResource::RequestRef
 		const HeaderList& headers) const
 {
 	RequestRef restRequest(new Request(self(), static_cast<Operation>(operation), service(), path(), params, headers));
-	GeneralRestDispatcher::instance().request(restRequest);
+	Q_EMIT request(restRequest);
 	return restRequest;
 }
 
@@ -278,6 +278,13 @@ QByteArray RestResource::encodeParamsAsJson(const ParamList &params)
 	return doc.toJson(QJsonDocument::Compact);
 }
 
+void RestResource::init()
+{
+	GeneralRestDispatcher& dispatcher = GeneralRestDispatcher::instance();
+	connect(this, &RestResource::request,
+			&dispatcher, &GeneralRestDispatcher::request);
+}
+
 bool RestResource::processGetResponse(int status, const QByteArray& data, const HeaderList& headers)
 {
 	Q_UNUSED(data);
@@ -316,9 +323,4 @@ bool RestResource::processHeadResponse(int status, const QByteArray& data, const
 	Q_UNUSED(status);
 	Q_UNUSED(headers);
 	return false;
-}
-
-void RestResource::cancelAll() const
-{
-	GeneralRestDispatcher::instance().cancelAll(self());
 }

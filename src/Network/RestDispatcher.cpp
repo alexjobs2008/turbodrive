@@ -30,6 +30,8 @@ GeneralRestDispatcher::GeneralRestDispatcher(QObject *parent)
 	//_authenticationHelper(new RestAuthenticationHelper(this)),
 	//_mode(Unknown)
 {
+	qRegisterMetaType<RestResource::RequestRef>("RequestRef");
+
 	connect(networkAccessManager, SIGNAL(finished(QNetworkReply*)),
 		this, SLOT(replyFinished(QNetworkReply*)));
 	connect(networkAccessManager, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)),

@@ -13,22 +13,22 @@ namespace Drive
 
 Syncer::Syncer(QObject *parent)
 	: QObject(parent)
-	, currentLocalPathPrefix(QString())
-	, folderCounter(0)
+	, m_currentLocalPathPrefix(QString())
+	, m_folderCounter(0)
 {
 }
 
 void Syncer::fullSync()
 {
-	localEvents.clear();
-	remoteEvents.clear();
+	m_localEvents.clear();
+	m_remoteEvents.clear();
 
 	getRoots();
 }
 
 void Syncer::onGetChildrenSucceeded(const QList<RemoteFileDesc>& list)
 {
-	--folderCounter;
+	--m_folderCounter;
 
 	Q_FOREACH(RemoteFileDesc fileDesc, list)
 	{
@@ -47,7 +47,7 @@ void Syncer::onGetChildrenSucceeded(const QList<RemoteFileDesc>& list)
 			event.log();
 
 			//emit newRemoteEvent(event);
-			remoteEvents << event;
+			m_remoteEvents << event;
 
 			emit newFile(fileDesc);
 		}
@@ -70,7 +70,7 @@ void Syncer::onGetChildrenSucceeded(const QList<RemoteFileDesc>& list)
 			event.log();
 
 			//emit newRemoteEvent(event);
-			remoteEvents << event;
+			m_remoteEvents << event;
 
 			emit newFile(fileDesc);
 		}
@@ -92,12 +92,12 @@ void Syncer::onGetChildrenSucceeded(const QList<RemoteFileDesc>& list)
 				connect(getChildrenRes.data(), &GetChildrenResource::failed,
 					this, &Syncer::onGetFailed);
 
-				++folderCounter;
+				++m_folderCounter;
 				getChildrenRes->getChildren(fileDesc.id);
 			}
 	}
 
-	if (!folderCounter)
+	if (!m_folderCounter)
 	{
 		fireEvents();
 	}
@@ -128,7 +128,7 @@ void Syncer::getChildren()
 	connect(getChildrenRes.data(), &GetChildrenResource::failed,
 		this, &Syncer::onGetFailed);
 
-	++folderCounter;
+	++m_folderCounter;
 
 	const int diskId = -2;
 	getChildrenRes->getChildren(diskId);
@@ -195,7 +195,7 @@ void Syncer::syncLocalFolder(const QString& localFolderPath)
 					event.logCompact();
 
 //!					newLocalEvent(event);
-					localEvents << event;
+					m_localEvents << event;
 
 					syncLocalFolder(info.absoluteFilePath());
 				}
@@ -209,7 +209,7 @@ void Syncer::syncLocalFolder(const QString& localFolderPath)
 				event.filePath = info.fileName();
 
 //!				newLocalEvent(event);
-				localEvents << event;
+				m_localEvents << event;
 			}
 
 		}
@@ -218,14 +218,14 @@ void Syncer::syncLocalFolder(const QString& localFolderPath)
 
 void Syncer::fireEvents()
 {
-	for (int i = 0; i < localEvents.size(); ++i)
+	for (int i = 0; i < m_localEvents.size(); ++i)
 	{
-		emit newLocalEvent(localEvents.at(i));
+		emit newLocalEvent(m_localEvents.at(i));
 	}
 
-	for (int i = 0; i < remoteEvents.size(); ++i)
+	for (int i = 0; i < m_remoteEvents.size(); ++i)
 	{
-		emit newRemoteEvent(remoteEvents.at(i));
+		emit newRemoteEvent(m_remoteEvents.at(i));
 	}
 }
 

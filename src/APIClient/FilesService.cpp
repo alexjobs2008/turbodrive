@@ -202,10 +202,7 @@ void CreateRestResource::createFolder(int parentId, const QString& folderName)
 	this->parentId = parentId;
 
 	HeaderList headers;
-	QByteArray data;
 	ParamList params;
-
-	QLOG_TRACE() << "UTF8Name:" << folderName.toUtf8();
 
 	params.append(ParamPair("name", folderName.toUtf8()));
 	params.append(ParamPair("parentId", QString::number(parentId).toUtf8()));

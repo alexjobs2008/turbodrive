@@ -30,9 +30,6 @@ public:
 	LocalFileOrFolderAddedEventHandler(LocalFileEvent localEvent,
 		QObject *parent = 0);
 
-signals:
-	void failed(const QString& error);
-
 protected:
 	void run();
 
@@ -73,9 +70,6 @@ public:
 	LocalFileOrFolderDeletedEventHandler(LocalFileEvent localEvent,
 		QObject *parent = 0);
 
-signals:
-	void failed(const QString& error);
-
 protected:
 	void run();
 
@@ -95,9 +89,6 @@ class LocalFileOrFolderRenamedEventHandler: public LocalEventHandlerBase
 public:
 	LocalFileOrFolderRenamedEventHandler(LocalFileEvent localEvent,
 		QObject *parent = 0);
-
-signals:
-	void failed(const QString& error);
 
 protected:
 	void run();
