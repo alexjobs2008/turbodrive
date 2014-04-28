@@ -8,8 +8,6 @@
 
 #include "RestTypedefs.h"
 
-class GeneralRestDispatcher;
-
 class RestResource;
 typedef QSharedPointer<RestResource> RestResourceRef;
 
@@ -80,9 +78,6 @@ public:
 	virtual ~RestResource();
 
 public:
-	void cancelAll() const;
-
-public:
 	static const QByteArray contentTypeHeader;
 	static const QByteArray contentLengthHeader;
 	static const QByteArray locationHeader;
@@ -103,6 +98,8 @@ signals:
 	void restOperationUnknownStatus(const RestResourceRef& restResource, int status);
 	void restOperationCancelled(const RestResourceRef& restResource);
 
+	void request(const RestResource::RequestRef& request) const;
+
 protected:
 	explicit RestResource(QObject *parent = 0);
 
@@ -111,6 +108,7 @@ protected:
 	{
 		QSharedPointer<T> restResource(new T());
 		restResource->_self = restResource.template staticCast<RestResource>();
+		restResource->init();
 		return restResource;
 	}
 
@@ -140,6 +138,7 @@ protected:
 
 private:
 	friend class GeneralRestDispatcher;
+	void init();
 	void requestFinished(const ReplyRef& requestReply, bool& authenticationRequired);
 	void requestCancelled();
 
@@ -158,14 +157,6 @@ private:
 	QWeakPointer<RestResource> _self;
 };
 
-template <class T>
-void clearSharedResource(T& resource)
-{
-	if (!resource.isNull())
-	{
-		resource->cancelAll();
-		resource.clear();
-	}
-}
+Q_DECLARE_METATYPE(RestResource::RequestRef)
 
 #endif // RESTRESOURCE_H
