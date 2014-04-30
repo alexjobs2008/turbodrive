@@ -159,18 +159,16 @@ void FileEventDispatcher::finish()
 
 void FileEventDispatcher::next()
 {
-	QLOG_TRACE() << "EventDispatcher::next()";
-	log();
-
 	if (state == Paused)
+	{
 		return;
+	}
 
 	if (priorityLocalEvents.isEmpty()
 		&& priorityRemoteEvents.isEmpty()
 		&& remoteEvents.isEmpty()
 		&& localEvents.isEmpty())
 	{
-		QLOG_INFO() << "EventDispatcher: nothing to process";
 		finish();
 		return;
 	}
@@ -248,9 +246,6 @@ void FileEventDispatcher::next()
 
 void FileEventDispatcher::handleEvent(const RemoteFileEvent& remoteEvent)
 {
-	QLOG_TRACE() << "FileEventDispatcher::handleEvent CURRENT POS:"
-		<< currentPosition;
-
 	dontIncrementTotalCount = false;
 
 	if (remoteFileEventShouldBeIgnored(remoteEvent))
@@ -279,7 +274,7 @@ void FileEventDispatcher::handleEvent(const RemoteFileEvent& remoteEvent)
 //		return;
 //	}
 
-	EventHandlerBase *handlerThread = 0;
+	EventHandlerBase *handlerThread = nullptr;
 
 	switch (remoteEvent.type)
 	{
@@ -295,6 +290,7 @@ void FileEventDispatcher::handleEvent(const RemoteFileEvent& remoteEvent)
 		dontIncrementCurrentPosition = true;
 		break;
 	case RemoteFileEvent::Renamed:
+	case RemoteFileEvent::Moved:
 		handlerThread = new RemoteFileRenamedEventHandler(remoteEvent);
 		break;
 	case RemoteFileEvent::Trashed:
@@ -555,16 +551,6 @@ bool FileEventDispatcher::shouldBeGrouped(const LocalFileEvent &event)
 	}
 
 	return false;
-}
-
-void FileEventDispatcher::log()
-{
-	QLOG_TRACE() << "EventDispatcher"
-		<< "state:" << stateToString()
-		<< "remote events queue size:" << remoteEvents.size()
-		<< "; local events queue size:" << localEvents.size()
-		<< "; priority remote events queue size:" << priorityRemoteEvents.size()
-		<< "; priority local events queue size:" << priorityLocalEvents.size();
 }
 
 QString FileEventDispatcher::stateToString()

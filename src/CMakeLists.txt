@@ -19,15 +19,18 @@ if (${BUILD_SYSTEM} STREQUAL "mingw")
 	set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11")
 endif()
 
+# Force asserts in debug and release modes
+add_definitions(-DQT_FORCE_ASSERTS)
+
 # 3rd-party libs
 add_subdirectory("3rdParty")
 
 # QSystemTrayIcon that supports states & animations
 add_subdirectory("AnimatedSystemTrayIcon")
 
-
 # Single app lib and its local server name definition
 add_definitions(-DLOCAL_SERVER_NAME="AssistentDriveSA")
+
 add_subdirectory("SingleApp")
 
 add_subdirectory("Util")

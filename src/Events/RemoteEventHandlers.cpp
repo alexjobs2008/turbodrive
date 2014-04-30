@@ -1,5 +1,7 @@
 #include "RemoteEventHandlers.h"
 
+#include "Cache.h"
+
 #include "Events/LocalFileEvent.h"
 #include "QsLog/QsLog.h"
 #include "APIClient/FilesService.h"
@@ -12,48 +14,36 @@ namespace Drive
 {
 
 RemoteEventHandlerBase::RemoteEventHandlerBase(
-	RemoteFileEvent remoteEvent, QObject *parent)
+		RemoteFileEvent remoteEvent, QObject *parent)
 	: EventHandlerBase(parent)
-	, remoteEvent(remoteEvent)
+	, m_remoteEvent(remoteEvent)
 {
-	QLOG_TRACE() << "Thread" << this
-		<< "is starting processing remote file event:";
-
-	remoteEvent.logCompact();
-}
-
-RemoteEventHandlerBase::~RemoteEventHandlerBase()
-{
-	QLOG_TRACE() << "Thread" << this
-		<< "has finished processing remote file event:";
-
-	remoteEvent.logCompact();
 }
 
 // ===========================================================================
 
 RemoteFolderCreatedEventHandler::RemoteFolderCreatedEventHandler(
-	RemoteFileEvent remoteEvent, QObject *parent)
+		RemoteFileEvent remoteEvent, QObject *parent)
 	: RemoteEventHandlerBase(remoteEvent, parent)
 {
 }
 
 void RemoteFolderCreatedEventHandler::run()
 {
-	if (!remoteEvent.isValid())
+	if (!m_remoteEvent.isValid())
 	{
 		QLOG_ERROR() << "remote event is not valid";
 		return;
 	}
 
-	if (remoteEvent.type != RemoteFileEvent::Created)
+	if (m_remoteEvent.type != RemoteFileEvent::Created)
 	{
-		QLOG_ERROR() << "remote event type:" << remoteEvent.type
+		QLOG_ERROR() << "remote event type:" << m_remoteEvent.type
 			<< ", should be" << RemoteFileEvent::Created;
 		return;
 	}
 
-	if (remoteEvent.fileDesc.type == RemoteFileDesc::File)
+	if (m_remoteEvent.fileDesc.type == RemoteFileDesc::File)
 	{
 		QLOG_ERROR() << "Remote event 'created' contains a file, not a folder";
 		return;
@@ -65,7 +55,7 @@ void RemoteFolderCreatedEventHandler::run()
 	connect(getAncestorsRes.data(), SIGNAL(succeeded(QString)),
 		this, SLOT(onGetAncestorsSucceeded(QString)));
 
-	getAncestorsRes->getAncestors(remoteEvent.fileDesc.id);
+	getAncestorsRes->getAncestors(m_remoteEvent.fileDesc.id);
 
 	exec();
 }
@@ -117,17 +107,16 @@ RemoteFileRenamedEventHandler::RemoteFileRenamedEventHandler(
 
 void RemoteFileRenamedEventHandler::run()
 {
-	if (!remoteEvent.isValid())
+	if (!m_remoteEvent.isValid())
+	{
 		return;
+	}
 
-	if (remoteEvent.type != RemoteFileEvent::Renamed)
+	if (m_remoteEvent.type != RemoteFileEvent::Renamed
+		&& m_remoteEvent.type != RemoteFileEvent::Moved)
+	{
 		return;
-
-//	if (remoteEvent.fileDesc.type == RemoteFileDesc::File)
-//	{
-//		QLOG_ERROR() << "Remote event 'created' contains a file, not a folder";
-//		return;
-//	}
+	}
 
 	GetAncestorsRestResourceRef getAncestorsRes =
 		GetAncestorsRestResource::create();
@@ -138,49 +127,36 @@ void RemoteFileRenamedEventHandler::run()
 	connect(getAncestorsRes.data(), SIGNAL(failed()),
 		this, SLOT(onGetAncestorsFailed()));
 
-	getAncestorsRes->getAncestors(remoteEvent.fileDesc.id);
+	getAncestorsRes->getAncestors(m_remoteEvent.fileDesc.id);
 
 	exec();
 }
 
 void RemoteFileRenamedEventHandler::onGetAncestorsSucceeded(const QString& fullPath)
 {
-	QString newLocalPath =
+	const QString newLocalPath =
 		Utils::instance().remotePathToLocalPath(fullPath);
 
-	QStringList localDirs =
-		newLocalPath.split(QDir::separator(), QString::SkipEmptyParts);
+	LocalCache& cache = LocalCache::instance();
 
-	localDirs.removeLast();
+	const RemoteFileDesc file = cache.file(m_remoteEvent.fileDesc.id);
+	Q_ASSERT(file.isValid());
 
-	QString oldLocalPath = localDirs
-		.join(QDir::separator())
-		.append(QDir::separator())
-		.append(remoteEvent.originName);
+	const QString oldLocalPath =
+			Utils::instance().remotePathToLocalPath(cache.fullPath(file));
 
-	bool result = false;
-
-	QFile file(oldLocalPath);
-	if (file.exists()) {
-		//LocalFileEventDispatcher::instance().addExclusion(localPath);
-		result = file.rename(newLocalPath);
-	}
-
-	if (result)
+	if (!QFile::rename(oldLocalPath, newLocalPath)
+		&& !QFile::copy(oldLocalPath, newLocalPath))
 	{
-		QLOG_INFO() << "Local file/folder renamed:"
-			<< remoteEvent.fileDesc.name;
+		QLOG_FATAL() << "Failed to rename: "
+					 << oldLocalPath << " -> " << newLocalPath << ".";
+		Q_ASSERT(false);
 	}
-	else
-	{
-		QString errorMsg =
-			QString("Local file/folder rename failed: %1, %2")
-			.arg(oldLocalPath)
-			.arg(remoteEvent.fileDesc.name);
 
-		emit failed(errorMsg);
-		QLOG_ERROR() << errorMsg;
-	}
+	// we must add new file descriptor to cache to prevent
+	// LocalFileOrFolderAddedEventHandler of uploading
+	// duplicate file to server
+	cache.addFile(m_remoteEvent.fileDesc);
 
 	processEventsAndQuit();
 }
@@ -201,13 +177,13 @@ RemoteFileTrashedEventHandler::RemoteFileTrashedEventHandler(
 
 void RemoteFileTrashedEventHandler::run()
 {
-	if (!remoteEvent.isValid())
+	if (!m_remoteEvent.isValid())
 		return;
 
-	if (remoteEvent.type != RemoteFileEvent::Trashed)
+	if (m_remoteEvent.type != RemoteFileEvent::Trashed)
 		return;
 
-	onGetAncestorsSucceeded(remoteEvent.fileDesc.originalPath);
+	onGetAncestorsSucceeded(m_remoteEvent.fileDesc.originalPath);
 
 //  Latest backend changes (as of 30.12.2013) made the following obsolete:
 //
@@ -231,7 +207,7 @@ void RemoteFileTrashedEventHandler::onGetAncestorsSucceeded(
 	QLOG_TRACE() << "file object remote path: " << fullPath;
 
 	localPath = Utils::instance().remotePathToLocalPath(fullPath, true);
-	localPath.append(remoteEvent.fileDesc.name);
+	localPath.append(m_remoteEvent.fileDesc.name);
 
 	QLOG_TRACE() << "file/folder local path: " << localPath;
 
@@ -294,19 +270,19 @@ void RemoteFileUploadedEventHandler::run()
 	QLOG_INFO() << "RemoteFileUploadedEventHandler::run(): "
 		<< this;
 
-	remoteEvent.logCompact();
+	m_remoteEvent.logCompact();
 
-	if (!remoteEvent.isValid())
+	if (!m_remoteEvent.isValid())
 	{
 		QLOG_ERROR() << "Remote file event is not valid:";
-		remoteEvent.logCompact();
+		m_remoteEvent.logCompact();
 		return;
 	}
 
-	if (remoteEvent.type != RemoteFileEvent::Uploaded)
+	if (m_remoteEvent.type != RemoteFileEvent::Uploaded)
 		return;
 
-	if (remoteEvent.fileDesc.type == RemoteFileDesc::Dir)
+	if (m_remoteEvent.fileDesc.type == RemoteFileDesc::Dir)
 	{
 		QLOG_ERROR() <<
 			"Remote event 'uploaded' contains a folder, not a file";
@@ -322,7 +298,7 @@ void RemoteFileUploadedEventHandler::run()
 	connect(getAncestorsRes.data(), SIGNAL(failed()),
 		this, SLOT(onGetAncestorsFailed()));
 
-	getAncestorsRes->getAncestors(remoteEvent.fileDesc.id);
+	getAncestorsRes->getAncestors(m_remoteEvent.fileDesc.id);
 
 	exec();
 }
@@ -344,7 +320,7 @@ void RemoteFileUploadedEventHandler::onGetAncestorsSucceeded(
 	if (fileInfo.exists())
 	{
 		if (fileInfo.lastModified().toTime_t()
-			> remoteEvent.fileDesc.modifiedAt)
+			> m_remoteEvent.fileDesc.modifiedAt)
 		{
 			QLOG_TRACE() << "Local file is newer than remote file";
 
@@ -365,7 +341,7 @@ void RemoteFileUploadedEventHandler::onGetAncestorsSucceeded(
 			return;
 		}
 		else if (fileInfo.lastModified().toTime_t()
-			== remoteEvent.fileDesc.modifiedAt)
+			== m_remoteEvent.fileDesc.modifiedAt)
 		{
 			QLOG_TRACE() << "Local file timestamp == remote file timestamp";
 			emit succeeded();
@@ -376,8 +352,8 @@ void RemoteFileUploadedEventHandler::onGetAncestorsSucceeded(
 
 	// Local file either doesn't exist or is older
 
-	downloader = new FileDownloader(remoteEvent.fileDesc.id,
-		localFilePath, remoteEvent.fileDesc.modifiedAt, this);
+	downloader = new FileDownloader(m_remoteEvent.fileDesc.id,
+		localFilePath, m_remoteEvent.fileDesc.modifiedAt, this);
 
 	connect(downloader, SIGNAL(succeeded()),
 		this, SLOT(onDownloadSucceeded()));
@@ -434,28 +410,28 @@ void RemoteFileOrFolderRestoredEventHandler::run()
 	QLOG_INFO() << "RemoteFileRestoredEventHandler::run(): "
 		<< this;
 
-	remoteEvent.logCompact();
+	m_remoteEvent.logCompact();
 
-	if (!remoteEvent.isValid())
+	if (!m_remoteEvent.isValid())
 	{
 		QLOG_ERROR() << "Remote file event is not valid:";
-		remoteEvent.logCompact();
+		m_remoteEvent.logCompact();
 		return;
 	}
 
-	if (remoteEvent.type != RemoteFileEvent::Restored)
+	if (m_remoteEvent.type != RemoteFileEvent::Restored)
 		return;
 
-	if (remoteEvent.fileDesc.type == RemoteFileDesc::Dir)
+	if (m_remoteEvent.fileDesc.type == RemoteFileDesc::Dir)
 	{
 		// 1. fire folder created remote event
 		// 2. if has children, then getChildren and create remote events for them
 
-		RemoteFileEvent newRemoteEvent(remoteEvent);
+		RemoteFileEvent newRemoteEvent(m_remoteEvent);
 		newRemoteEvent.type = RemoteFileEvent::Created;
 		emit newPriorityRemoteFileEvent(newRemoteEvent);
 
-		if (remoteEvent.fileDesc.hasChildren)
+		if (m_remoteEvent.fileDesc.hasChildren)
 		{
 			GetChildrenResourceRef getChildrenRes =
 				GetChildrenResource::create();
@@ -466,14 +442,14 @@ void RemoteFileOrFolderRestoredEventHandler::run()
 			connect(getChildrenRes.data(), SIGNAL(failed()),
 				this, SLOT(onGetChildrenFailed()));
 
-			getChildrenRes->getChildren(remoteEvent.fileDesc.id);
+			getChildrenRes->getChildren(m_remoteEvent.fileDesc.id);
 
 			exec();
 		}
 	}
-	else if (remoteEvent.fileDesc.type == RemoteFileDesc::File)
+	else if (m_remoteEvent.fileDesc.type == RemoteFileDesc::File)
 	{
-		RemoteFileEvent newRemoteEvent(remoteEvent);
+		RemoteFileEvent newRemoteEvent(m_remoteEvent);
 		newRemoteEvent.type = RemoteFileEvent::Uploaded;
 		emit newPriorityRemoteFileEvent(newRemoteEvent);
 
@@ -489,10 +465,10 @@ void RemoteFileOrFolderRestoredEventHandler::onGetChildrenSucceeded(
 	{
 		RemoteFileEvent newRemoteEvent;
 		newRemoteEvent.fileDesc = fileDesc;
-		newRemoteEvent.timestamp = remoteEvent.timestamp;
-		newRemoteEvent.unixtime = remoteEvent.unixtime;
-		newRemoteEvent.projectId = remoteEvent.projectId;
-		newRemoteEvent.workspaceId = remoteEvent.workspaceId;
+		newRemoteEvent.timestamp = m_remoteEvent.timestamp;
+		newRemoteEvent.unixtime = m_remoteEvent.unixtime;
+		newRemoteEvent.projectId = m_remoteEvent.projectId;
+		newRemoteEvent.workspaceId = m_remoteEvent.workspaceId;
 
 		if (fileDesc.type == RemoteFileDesc::Dir)
 		{
@@ -530,16 +506,16 @@ void RemoteFileCopiedEventHandler::run()
 	QLOG_INFO() << "RemoteFileCopiedEventHandler::run(): "
 		<< this;
 
-	remoteEvent.logCompact();
+	m_remoteEvent.logCompact();
 
-	if (!remoteEvent.isValid())
+	if (!m_remoteEvent.isValid())
 	{
 		QLOG_ERROR() << "Remote file event is not valid:";
-		remoteEvent.logCompact();
+		m_remoteEvent.logCompact();
 		return;
 	}
 
-	if (remoteEvent.type != RemoteFileEvent::Copied)
+	if (m_remoteEvent.type != RemoteFileEvent::Copied)
 		return;
 
 	// 1. get source remote path
@@ -561,7 +537,7 @@ void RemoteFileCopiedEventHandler::run()
 		, this
 		, SLOT(onGetAncestorsFailed(QString)));
 
-	getSourceAncestorsRes->getAncestors(remoteEvent.sourceId);
+	getSourceAncestorsRes->getAncestors(m_remoteEvent.sourceId);
 
 	FilesRestResourceRef filesRestResource = FilesRestResource::create();
 
@@ -573,7 +549,7 @@ void RemoteFileCopiedEventHandler::run()
 	connect(filesRestResource.data(), SIGNAL(failed(QString)),
 		this, SLOT(onGetFileObjectFailed(QString)));
 
-	filesRestResource->getFileObject(remoteEvent.targetId);
+	filesRestResource->getFileObject(m_remoteEvent.targetId);
 
 	exec();
 }

@@ -3,27 +3,33 @@
 
 #include "EventHandlerBase.h"
 #include "APIClient/ApiTypes.h"
+#include "Events/Cache.h"
 
 namespace Drive
 {
 
-class RemoteEventHandlerBase : public EventHandlerBase
+class RemoteEventHandlerBase: public EventHandlerBase
 {
 	Q_OBJECT
+
 public:
 	RemoteEventHandlerBase(RemoteFileEvent remoteEvent, QObject* parent);
 
-	virtual ~RemoteEventHandlerBase();
+private:
+	virtual void beforeStart()
+	{
+		LocalCache::instance().addFile(m_remoteEvent.fileDesc);
+	}
 
 protected:
-	RemoteFileEvent remoteEvent;
+	const RemoteFileEvent m_remoteEvent;
 };
 
 class RemoteFolderCreatedEventHandler : public RemoteEventHandlerBase
 {
 	Q_OBJECT
 public:
-	RemoteFolderCreatedEventHandler(RemoteFileEvent remoteEvent,
+	RemoteFolderCreatedEventHandler(RemoteFileEvent m_remoteEvent,
 		QObject *parent = 0);
 
 protected:
@@ -38,11 +44,14 @@ class RemoteFileRenamedEventHandler : public RemoteEventHandlerBase
 {
 	Q_OBJECT
 public:
-	RemoteFileRenamedEventHandler(RemoteFileEvent remoteEvent,
+	RemoteFileRenamedEventHandler(RemoteFileEvent m_remoteEvent,
 		QObject *parent = 0);
 
 protected:
 	void run();
+
+private:
+	virtual void beforeStart() { }
 
 private slots:
 	void onGetAncestorsSucceeded(const QString& fullPath);
@@ -53,7 +62,7 @@ class RemoteFileTrashedEventHandler : public RemoteEventHandlerBase
 {
 	Q_OBJECT
 public:
-	RemoteFileTrashedEventHandler(RemoteFileEvent remoteEvent,
+	RemoteFileTrashedEventHandler(RemoteFileEvent m_remoteEvent,
 		QObject *parent = 0);
 
 protected:
@@ -74,7 +83,7 @@ class RemoteFileUploadedEventHandler : public RemoteEventHandlerBase
 {
 	Q_OBJECT
 public:
-	RemoteFileUploadedEventHandler(RemoteFileEvent remoteEvent,
+	RemoteFileUploadedEventHandler(RemoteFileEvent m_remoteEvent,
 		QObject *parent = 0);
 
 protected:
@@ -95,7 +104,7 @@ class RemoteFileOrFolderRestoredEventHandler : public RemoteEventHandlerBase
 {
 	Q_OBJECT
 public:
-	RemoteFileOrFolderRestoredEventHandler(RemoteFileEvent remoteEvent,
+	RemoteFileOrFolderRestoredEventHandler(RemoteFileEvent m_remoteEvent,
 		QObject *parent = 0);
 
 protected:
@@ -114,7 +123,7 @@ class RemoteFileCopiedEventHandler : public RemoteEventHandlerBase
 {
 	Q_OBJECT
 public:
-	RemoteFileCopiedEventHandler(RemoteFileEvent remoteEvent,
+	RemoteFileCopiedEventHandler(RemoteFileEvent m_remoteEvent,
 		QObject *parent = 0);
 
 protected:

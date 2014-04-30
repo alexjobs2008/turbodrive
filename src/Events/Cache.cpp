@@ -55,15 +55,40 @@ RemoteFileDesc LocalCache::file(const QString& remotePath, const bool forParent)
 	return invalidDesc;
 }
 
-void LocalCache::addRoot(const RemoteFileDesc& d)
+RemoteFileDesc LocalCache::file(const int id, const bool forParent) const
 {
-	if (d.type != RemoteFileDesc::Dir)
+	LOCK_MUTEX;
+
+	const RemoteFileDesc result = fileById(id);
+	if (!result.isValid())
 	{
-		ERRLOG << "Descriptor ignored (root and not a dir): " << d.toString() << ".";
+		ERRLOG << "Remote file descriptor not found "
+			<< "(id: " << id << ").";
+		return result;
+	}
+
+	return forParent ? file(result.parentId) : result;
+}
+
+void LocalCache::addRoot(const RemoteFileDesc& file)
+{
+	// not need LOCK_MUTEX here, because we use addFile internally
+
+	if (file.type != RemoteFileDesc::Dir)
+	{
+		ERRLOG << "Root descriptor ignored (not a dir): "
+				<< file.toString() << ".";
 		return;
 	}
 
-	RemoteFileDesc rootDescriptor(d);
+	if (fileById(file.id).isValid())
+	{
+		ERRLOG << "Root descriptor ignored (root with same id already exists): "
+				<< file.toString() << ".";
+		return;
+	}
+
+	RemoteFileDesc rootDescriptor(file);
 	rootDescriptor.parentId = -1;
 	addFile(rootDescriptor);
 }
@@ -71,15 +96,15 @@ void LocalCache::addRoot(const RemoteFileDesc& d)
 void LocalCache::addFile(const RemoteFileDesc& file)
 {
 	LOCK_MUTEX;
+	removeById(file.id);
 	const QString path = fullPath(file);
-	DLOG << "New file: [" << path << ", " << file.toString() << ".";
 	m_files.insert(std::make_pair(path, file));
 }
 
-QString LocalCache::fullPath(const RemoteFileDesc& file) const
+QString LocalCache::fullPath(const RemoteFileDesc& d) const
 {
 	QString result;
-	RemoteFileDesc currentFile = file;
+	RemoteFileDesc currentFile = d;
 	for (;;)
 	{
 		result.prepend(currentFile.name);
@@ -109,6 +134,21 @@ RemoteFileDesc LocalCache::fileById(const int id) const
 	invalidDesc.parentId = 0;
 	invalidDesc.name = QString::null;
 	return invalidDesc;
+}
+
+bool LocalCache::removeById(const int id)
+{
+	auto result = false;
+	for (auto it = m_files.begin(); it != m_files.end(); ++it)
+	{
+		if (it->second.id == id)
+		{
+			m_files.erase(it);
+			result = true;
+			break;
+		}
+	}
+	return result;
 }
 
 QString LocalCache::toString() const

@@ -17,15 +17,19 @@ public:
 	static LocalCache& instance();
 
 	RemoteFileDesc file(const QString& remotePath, bool forParent = false) const;
+	RemoteFileDesc file(int id, bool forParent = false) const;
 
 	void clear();
 
 	void addRoot(const RemoteFileDesc&);
 	void addFile(const RemoteFileDesc&);
 
-private:
 	QString fullPath(const RemoteFileDesc&) const;
+
+private:
 	RemoteFileDesc fileById(int id) const;
+
+	bool removeById(int id);
 
 	QString toString() const;
 
