@@ -39,11 +39,14 @@ public:
 
 	virtual ~EventHandlerBase() {};
 
-	void start() { m_thread->start(); }
+	void start() { beforeStart(); m_thread->start(); }
 
 protected:
 	virtual void run() = 0;
-	void exec() { }
+	void exec() {}
+
+private:
+	virtual void beforeStart() const {}
 
 public slots:
 	virtual void cancel()

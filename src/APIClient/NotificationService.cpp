@@ -2,7 +2,6 @@
 
 #include "Application/AppController.h"
 #include "APIClient/ApiTypes.h"
-#include "Events/Cache.h"
 
 #include "QsLog/QsLog.h"
 
@@ -88,8 +87,6 @@ bool NotificationResource::processGetResponse(int status,
 
 			if (remoteEvent.isValid())
 			{
-				LocalCache::instance().addFile(remoteEvent.fileDesc);
-
 				emit newRemoteFileEvent(remoteEvent);
 				lastEventTimestamp = remoteEvent.timestamp;
 			}
