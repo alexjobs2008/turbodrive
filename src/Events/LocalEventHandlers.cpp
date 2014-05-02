@@ -396,7 +396,7 @@ void LocalFileOrFolderAddedEventHandler::onRemoveFailed(const QString& error)
 LocalFileOrFolderDeletedEventHandler::LocalFileOrFolderDeletedEventHandler(
 	LocalFileEvent localEvent, QObject *parent)
 	: LocalEventHandlerBase(localEvent, parent)
-	, remoteFileObjectId(0)
+	, m_remoteFileObjectId(0)
 {
 }
 
@@ -422,13 +422,15 @@ void LocalFileOrFolderDeletedEventHandler::run()
 
 	GetChildrenResourceRef getChildrenResource = GetChildrenResource::create();
 
-	connect(getChildrenResource.data(), SIGNAL(getFileObjectIdSucceeded(int)),
-		this, SLOT(onGetFileObjectIdSucceeded(int)));
+	connect(getChildrenResource.data(), &GetChildrenResource::getFileObjectIdSucceeded,
+		this, &LocalFileOrFolderDeletedEventHandler::onGetFileObjectIdSucceeded);
 
-	connect(getChildrenResource.data(), SIGNAL(getFileObjectIdFailed()),
-		this, SLOT(onGetFileObjectIdFailed()));
+	connect(getChildrenResource.data(), &GetChildrenResource::getFileObjectIdFailed,
+		this, &LocalFileOrFolderDeletedEventHandler::onGetFileObjectIdFailed);
 
 	getChildrenResource->getFileObjectId(remotePath);
+
+	m_currentResource = getChildrenResource;
 
 	exec();
 }
@@ -438,19 +440,18 @@ void LocalFileOrFolderDeletedEventHandler::onGetFileObjectIdSucceeded(int id)
 	QLOG_TRACE() <<
 		"LocalFileOrFolderDeletedEventHandler file object id:" << id;
 
-	QFileInfo fileInfo(localEvent.localPath());
-
 	TrashRestResourceRef trashRestResource = TrashRestResource::create();
 
-	connect(trashRestResource.data(), SIGNAL(succeeded()),
-		this, SLOT(onTrashSucceeded()));
+	connect(trashRestResource.data(), &TrashRestResource::succeeded,
+		this, &LocalFileOrFolderDeletedEventHandler::onTrashSucceeded);
 
-	connect(trashRestResource.data(), SIGNAL(failed(QString)),
-		this, SLOT(onTrashFailed(QString)));
+	connect(trashRestResource.data(), &TrashRestResource::failed,
+		this, &LocalFileOrFolderDeletedEventHandler::onTrashFailed);
 
 	trashRestResource->trash(id);
 
-	remoteFileObjectId = id;
+	m_remoteFileObjectId = id;
+	m_currentResource = trashRestResource;
 }
 
 void LocalFileOrFolderDeletedEventHandler::onGetFileObjectIdFailed()
@@ -463,10 +464,10 @@ void LocalFileOrFolderDeletedEventHandler::onTrashSucceeded()
 {
 	QLOG_TRACE() << "Remote filed object trashed.";
 
-	if (remoteFileObjectId)
+	if (m_remoteFileObjectId)
 	{
 		RemoteFileEventExclusion exclusion(RemoteFileEvent::Trashed
-			, remoteFileObjectId);
+			, m_remoteFileObjectId);
 		emit newRemoteFileEventExclusion(exclusion);
 	}
 

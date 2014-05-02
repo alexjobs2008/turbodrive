@@ -145,17 +145,13 @@ void RemoteFileRenamedEventHandler::onGetAncestorsSucceeded(const QString& fullP
 	const QString oldLocalPath =
 			Utils::instance().remotePathToLocalPath(cache.fullPath(file));
 
-	if (!QFile::rename(oldLocalPath, newLocalPath)
-		&& !QFile::copy(oldLocalPath, newLocalPath))
-	{
-		QLOG_FATAL() << "Failed to rename: "
-					 << oldLocalPath << " -> " << newLocalPath << ".";
-		Q_ASSERT(false);
-	}
+	Q_EMIT newLocalFileEventExclusion(
+			LocalFileEventExclusion(LocalFileEvent::Added, newLocalPath));
+	Q_EMIT newLocalFileEventExclusion(
+			LocalFileEventExclusion(LocalFileEvent::Deleted, oldLocalPath));
 
-	// we must add new file descriptor to cache to prevent
-	// LocalFileOrFolderAddedEventHandler of uploading
-	// duplicate file to server
+	Q_ASSERT(QFile::rename(oldLocalPath, newLocalPath));
+
 	cache.addFile(m_remoteEvent.fileDesc);
 
 	processEventsAndQuit();

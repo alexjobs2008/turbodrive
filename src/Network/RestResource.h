@@ -11,9 +11,6 @@
 class RestResource;
 typedef QSharedPointer<RestResource> RestResourceRef;
 
-class GenericRestResource;
-typedef QSharedPointer<GenericRestResource> GenericRestResourceRef;
-
 template <typename T1, typename T2> struct QPair;
 
 class RestResource : public QObject
