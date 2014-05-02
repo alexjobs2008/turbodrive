@@ -71,7 +71,7 @@ public:
 		QObject *parent = 0);
 
 protected:
-	void run();
+	virtual void run() override;
 
 private slots:
 	void onGetFileObjectIdSucceeded(int id);
@@ -80,7 +80,8 @@ private slots:
 	void onTrashFailed(const QString& error);
 
 private:
-	int remoteFileObjectId;
+	int m_remoteFileObjectId;
+	RestResourceRef m_currentResource;
 };
 
 class LocalFileOrFolderRenamedEventHandler: public LocalEventHandlerBase

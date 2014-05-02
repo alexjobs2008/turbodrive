@@ -430,11 +430,11 @@ void GetChildrenResource::getNextChildId(int parentId)
 
 	GetChildIdResourceRef getChildIdResource = GetChildIdResource::create();
 
-	connect(getChildIdResource.data(), SIGNAL(succeeded(int)),
-		this, SLOT(onGetChildIdSucceeded(int)));
+	connect(getChildIdResource.data(), &GetChildIdResource::succeeded,
+		this, &GetChildrenResource::onGetChildIdSucceeded);
 
-	connect(getChildIdResource.data(), SIGNAL(failed()),
-		this, SLOT(onGetChildIdFailed()));
+	connect(getChildIdResource.data(), &GetChildIdResource::failed,
+		this, &GetChildrenResource::onGetChildIdFailed);
 
 	//getNextChildId(getChildIdResource, 0);
 
@@ -564,7 +564,7 @@ bool GetChildIdResource::processGetResponse(int status,
 
 	if (id)
 	{
-		QLOG_TRACE() << "GetChildIdResource id found:" << id;
+		QLOG_TRACE() << this << "GetChildIdResource id found:" << id;
 		emit succeeded(id);
 	}
 	else
