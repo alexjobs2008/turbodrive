@@ -2,6 +2,7 @@
 
 #include "Settings/settings.h"
 #include "APIClient/ApiTypes.h"
+#include <Util/FileUtils.h>
 
 #include "QsLog/QsLog.h"
 
@@ -130,7 +131,11 @@ bool GetAncestorsRestResource::processGetResponse(int status,
 				RemoteFileDesc fileDesc = RemoteFileDesc::fromJson(obj);
 				if (!fileDesc.name.isEmpty())
 				{
-					fullPath.append(QString("/%1").arg(fileDesc.name));
+					if (i != 0)
+					{
+						fullPath.append(Utils::separator());
+					}
+					fullPath.append(fileDesc.name);
 				}
 			}
 		}

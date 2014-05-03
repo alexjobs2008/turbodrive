@@ -10,7 +10,7 @@
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDateTime>
 
-#define DISK_ROOT_PATH QLatin1String("/#root/#disk")
+#define DISK_ROOT_PATH QLatin1String("#root/#disk")
 
 namespace Drive
 {
