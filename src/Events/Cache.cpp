@@ -1,5 +1,5 @@
 #include "Cache.h"
-
+#include "Util/FileUtils.h"
 #include "QsLog/QsLog.h"
 
 #include <QtCore/QMutexLocker>
@@ -11,18 +11,6 @@
 namespace Drive
 {
 
-namespace
-{
-
-QString parentPath(const QString& path)
-{
-	QStringList list = path.split("/", QString::SkipEmptyParts);
-	list.removeLast();
-	return list.join("/");
-}
-
-}
-
 LocalCache& LocalCache::instance()
 {
 	static LocalCache myself;
@@ -31,22 +19,22 @@ LocalCache& LocalCache::instance()
 
 void LocalCache::clear()
 {
+	LOCK_MUTEX;
 	m_files.clear();
 }
 
 RemoteFileDesc LocalCache::file(const QString& remotePath, const bool forParent) const
 {
-	LOCK_MUTEX;
+	const QString path = forParent ? Utils::parentPath(remotePath) : remotePath;
 
-	const QString path = forParent ? parentPath(remotePath) : remotePath;
-	auto it = m_files.find(path);
-	if (it != m_files.end())
 	{
-		return it->second;
+		LOCK_MUTEX;
+		auto it = m_files.find(path);
+		if (it != m_files.end())
+		{
+			return it->second;
+		}
 	}
-
-	ERRLOG << "Remote file descriptor not found "
-		<< "(remote path: " << remotePath << ").";
 
 	RemoteFileDesc invalidDesc;
 	invalidDesc.id = 0;
@@ -57,8 +45,6 @@ RemoteFileDesc LocalCache::file(const QString& remotePath, const bool forParent)
 
 RemoteFileDesc LocalCache::file(const int id, const bool forParent) const
 {
-	LOCK_MUTEX;
-
 	const RemoteFileDesc result = fileById(id);
 	if (!result.isValid())
 	{
@@ -72,8 +58,6 @@ RemoteFileDesc LocalCache::file(const int id, const bool forParent) const
 
 void LocalCache::addRoot(const RemoteFileDesc& file)
 {
-	// not need LOCK_MUTEX here, because we use addFile internally
-
 	if (file.type != RemoteFileDesc::Dir)
 	{
 		ERRLOG << "Root descriptor ignored (not a dir): "
@@ -95,10 +79,19 @@ void LocalCache::addRoot(const RemoteFileDesc& file)
 
 void LocalCache::addFile(const RemoteFileDesc& file)
 {
-	LOCK_MUTEX;
 	removeById(file.id);
 	const QString path = fullPath(file);
-	m_files.insert(std::make_pair(path, file));
+
+	{
+		LOCK_MUTEX;
+		m_files.insert(std::make_pair(path, file));
+	}
+}
+
+void LocalCache::removeFile(const RemoteFileDesc& file)
+{
+	Q_ASSERT(file.parentId != -1);
+	Q_ASSERT(removeById(file.id));
 }
 
 QString LocalCache::fullPath(const RemoteFileDesc& d) const
@@ -121,11 +114,14 @@ QString LocalCache::fullPath(const RemoteFileDesc& d) const
 
 RemoteFileDesc LocalCache::fileById(const int id) const
 {
-	for (auto it = m_files.begin(); it != m_files.end(); ++it)
 	{
-		if (it->second.id == id)
+		LOCK_MUTEX;
+		for (auto it = m_files.begin(); it != m_files.end(); ++it)
 		{
-			return it->second;
+			if (it->second.id == id)
+			{
+				return it->second;
+			}
 		}
 	}
 
@@ -138,6 +134,7 @@ RemoteFileDesc LocalCache::fileById(const int id) const
 
 bool LocalCache::removeById(const int id)
 {
+	LOCK_MUTEX;
 	auto result = false;
 	for (auto it = m_files.begin(); it != m_files.end(); ++it)
 	{

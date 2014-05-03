@@ -40,6 +40,7 @@ class Utils
 {
 public:
 	static QString separator();
+	static QString parentPath(const QString& path);
 	static QString toLocalPath(const QString& remotePath);
 	static QString toRemotePath(const QString& localPath);
 };
