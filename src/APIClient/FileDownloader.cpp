@@ -46,8 +46,8 @@ void FileDownloader::download()
 		QString::number(
 		AppController::instance().profileData().defaultWorkspace().id).toUtf8());
 
-	connect(nam, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)),
-		this, SLOT(onSslErrors(QNetworkReply*,const QList<QSslError>&)));
+	connect(nam, &QNetworkAccessManager::sslErrors,
+			this, &FileDownloader::onSslErrors);
 
 	QLOG_TRACE() << "Downloading file:" << request.url();
 
@@ -57,23 +57,23 @@ void FileDownloader::download()
 	elapsedTimer.start();
 	totalSize = 0;
 
-	bool b = connect(reply, SIGNAL(finished()),
-		this, SLOT(onReplyFinished()));
+	bool b = connect(reply, &QNetworkReply::finished,
+			this, &FileDownloader::onReplyFinished);
 
 	QLOG_TRACE() << b;
 
-	b = connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
-		this, SLOT(onError(QNetworkReply::NetworkError)));
+	b = connect(reply, static_cast<void (QNetworkReply::*)(QNetworkReply::NetworkError)>(&QNetworkReply::error),
+			this, &FileDownloader::onError);
 
 	QLOG_TRACE() << b;
 
-	b = connect(reply, SIGNAL(downloadProgress(qint64, qint64)),
-		this, SLOT(onDownloadProgress(qint64, qint64)));
+	b = connect(reply, &QNetworkReply::downloadProgress,
+			this, &FileDownloader::onDownloadProgress);
 
 	QLOG_TRACE() << b;
 
-	b = connect(reply, SIGNAL(readyRead()),
-		this, SLOT(onReadyRead()));
+	b = connect(reply, &QNetworkReply::readyRead,
+			this, &FileDownloader::onReadyRead);
 
 	QLOG_TRACE() <<
 		reply->isRunning() << reply->isFinished() << reply->errorString();

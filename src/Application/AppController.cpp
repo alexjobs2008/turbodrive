@@ -51,8 +51,8 @@ AppController::AppController(QWidget *parent)
 	QMetaObject::connectSlotsByName(this);
 
 	LoginController& loginController = LoginController::instance();
-	connect(&loginController, SIGNAL(loginFinished()),
-		this, SLOT(onLoginFinished()));
+	connect(&loginController, &LoginController::loginFinished,
+			this, &AppController::onLoginFinished);
 
 	SettingsWidget::instance().hide();
 }
@@ -145,14 +145,14 @@ void AppController::createTrayIcon()
 
 	m_trayIcon->setContextMenu(trayMenu);
 
-	connect(this, SIGNAL(stateChanged(Drive::State)),
-		m_trayIcon.data(), SLOT(setState(Drive::State)));
+	connect(this, &AppController::stateChanged,
+			m_trayIcon.data(), &TrayIcon::setState);
 
-	connect(this, SIGNAL(processingProgress(int, int)),
-		m_trayIcon.data(), SLOT(onProcessingProgress(int, int)));
+	connect(this, &AppController::processingProgress,
+			m_trayIcon.data(), &TrayIcon::onProcessingProgress);
 
-	connect(m_trayIcon.data(), SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
-		this, SLOT(on_trayIcon_activated(QSystemTrayIcon::ActivationReason)));
+	connect(m_trayIcon.data(), &TrayIcon::activated,
+			this, &AppController::on_trayIcon_activated);
 
 	m_trayIcon->show();
 }
@@ -269,24 +269,24 @@ void AppController::onLoginFinished()
 
 	FileEventDispatcher& eventDispatcher = FileEventDispatcher::instance();
 
-	connect(&eventDispatcher, SIGNAL(processing()),
-		this, SLOT(onQueueProcessing()));
+	connect(&eventDispatcher, &FileEventDispatcher::processing,
+			this, &AppController::onQueueProcessing);
 
-	connect(&eventDispatcher, SIGNAL(finished()),
-		this, SLOT(onQueueFinished()));
+	connect(&eventDispatcher, &FileEventDispatcher::finished,
+			this, &AppController::onQueueFinished);
 
-	connect(&eventDispatcher, SIGNAL(progress(int, int)),
-		this, SLOT(onProcessingProgress(int, int)));
+	connect(&eventDispatcher, &FileEventDispatcher::progress,
+			this, &AppController::onProcessingProgress);
 
 	LocalFileEventNotifier& localNotifier = LocalFileEventNotifier::instance();
 
-	connect(&localNotifier, SIGNAL(newLocalFileEvent(LocalFileEvent)),
-		&eventDispatcher, SLOT(addLocalFileEvent(LocalFileEvent)));
+	connect(&localNotifier, &LocalFileEventNotifier::newLocalFileEvent,
+			&eventDispatcher, &FileEventDispatcher::addLocalFileEvent);
 
 	NotificationResourceRef remoteNotifier = NotificationResource::create();
 
-	connect(remoteNotifier.data(), SIGNAL(newRemoteFileEvent(RemoteFileEvent)),
-		&eventDispatcher, SLOT(addRemoteFileEvent(RemoteFileEvent)));
+	connect(remoteNotifier.data(), &NotificationResource::newRemoteFileEvent,
+			&eventDispatcher, &FileEventDispatcher::addRemoteFileEvent);
 
 	if (!syncer)
 	{
@@ -299,9 +299,9 @@ void AppController::onLoginFinished()
 	connect(syncer, &Syncer::newFile, &localCache, &LocalCache::addFile);
 
 	connect(syncer, &Syncer::newRemoteEvent,
-		&eventDispatcher, &FileEventDispatcher::addRemoteFileEvent);
+			&eventDispatcher, &FileEventDispatcher::addRemoteFileEvent);
 	connect(syncer, &Syncer::newLocalEvent,
-		&eventDispatcher, &FileEventDispatcher::addLocalFileEvent);
+			&eventDispatcher, &FileEventDispatcher::addLocalFileEvent);
 
 	syncer->fullSync();
 

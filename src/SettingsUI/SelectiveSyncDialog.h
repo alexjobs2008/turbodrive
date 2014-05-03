@@ -27,7 +27,7 @@ public slots:
 
 private slots:
 	void onGetChildrenSucceeded(QList<RemoteFileDesc> list);
-	void onGetChildrenFailed(QString);
+	void onGetChildrenFailed();
 
 private:
 	QTreeView *treeView;

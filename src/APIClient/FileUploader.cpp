@@ -121,14 +121,14 @@ void FileUploader::uploadFile(int parentFolderId, const QString &filePath)
 
 	multiPart->setParent(reply); // delete the multiPart with the reply
 
-	connect(reply, SIGNAL(finished()),
-		this, SLOT(onFinished()));
+	connect(reply, &QNetworkReply::finished,
+			this, &FileUploader::onFinished);
 
-	connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
-		this, SLOT(onError(QNetworkReply::NetworkError)));
+	connect(reply, static_cast<void (QNetworkReply::*)(QNetworkReply::NetworkError)>(&QNetworkReply::error),
+			this, &FileUploader::onError);
 
-	connect(reply, SIGNAL(uploadProgress(qint64, qint64)),
-		this, SLOT(uploadProgress(qint64, qint64)));
+	connect(reply, &QNetworkReply::uploadProgress,
+			this, &FileUploader::uploadProgress);
 }
 
 void FileUploader::onFinished()

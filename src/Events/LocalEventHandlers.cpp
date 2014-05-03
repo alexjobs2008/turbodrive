@@ -93,38 +93,24 @@ void LocalFileOrFolderAddedEventHandler::onGetFileObjectIdSucceeded(int id)
 
 	FilesRestResourceRef filesRestResource = FilesRestResource::create();
 
-	connect(filesRestResource.data()
-		, SIGNAL(getFileObjectSucceeded(Drive::RemoteFileDesc))
-		, this
-		, SLOT(onGetFileObjectSucceeded(Drive::RemoteFileDesc)));
+	connect(filesRestResource.data(), &FilesRestResource::getFileObjectSucceeded,
+			this, &LocalFileOrFolderAddedEventHandler::onGetFileObjectSucceeded);
 
-	connect(filesRestResource.data(), SIGNAL(failed(QString)),
-		this, SLOT(onGetFileObjectFailed(QString)));
+	connect(filesRestResource.data(), &FilesRestResource::failed,
+			this, &LocalFileOrFolderAddedEventHandler::onGetFileObjectFailed);
 
 	filesRestResource->getFileObject(id);
 }
 
 void LocalFileOrFolderAddedEventHandler::onGetFileObjectIdFailed()
 {
-	// no file object exists, let's create one
+	m_getChildrenResource =GetChildrenResource::create();
 
-	QLOG_TRACE() << this << "getFileObjectIdFailed, let's create one.";
+	connect(m_getChildrenResource.data(), &GetChildrenResource::getFileObjectIdSucceeded,
+			this, &LocalFileOrFolderAddedEventHandler::onGetFileObjectParentIdSucceeded);
 
-//	GetChildrenResourceRef getChildrenResource =
-//		GetChildrenResource::create();
-
-	m_getChildrenResource =
-		GetChildrenResource::create();
-
-	connect(m_getChildrenResource.data()
-		, SIGNAL(getFileObjectIdSucceeded(int))
-		, this
-		, SLOT(onGetFileObjectParentIdSucceeded(int)));
-
-	connect(m_getChildrenResource.data()
-		, SIGNAL(getFileObjectIdFailed())
-		, this
-		, SLOT(onGetFileObjectParentIdFailed()));
+	connect(m_getChildrenResource.data(), &GetChildrenResource::getFileObjectIdFailed,
+			this, &LocalFileOrFolderAddedEventHandler::onGetFileObjectParentIdFailed);
 
 	m_getChildrenResource->getFileObjectParentId(m_remotePath);
 }
@@ -170,27 +156,23 @@ void LocalFileOrFolderAddedEventHandler::onGetFileObjectSucceeded(
 
 			TrashRestResourceRef trashRes = TrashRestResource::create();
 
-			connect(trashRes.data(), SIGNAL(succeeded()),
-				this, SLOT(onTrashSucceeded()));
+			connect(trashRes.data(), &TrashRestResource::succeeded,
+				this, &LocalFileOrFolderAddedEventHandler::onTrashSucceeded);
 
-			connect(trashRes.data(), SIGNAL(failed(QString)),
-				this, SLOT(onTrashFailed(QString)));
+			connect(trashRes.data(), &TrashRestResource::failed,
+				this, &LocalFileOrFolderAddedEventHandler::onTrashFailed);
 
 			trashRes->trash(fileDesc.id);
 		}
 	}
 }
 
-void LocalFileOrFolderAddedEventHandler::onGetFileObjectFailed(
-	const QString& error)
+void LocalFileOrFolderAddedEventHandler::onGetFileObjectFailed(const QString&)
 {
-	QLOG_TRACE() << this << "getFileObjectFailed:" << error;
-
 	processEventsAndQuit();
 }
 
-void LocalFileOrFolderAddedEventHandler::
-	onGetFileObjectParentIdSucceeded(int id)
+void LocalFileOrFolderAddedEventHandler::onGetFileObjectParentIdSucceeded(int id)
 {
 	const QFileInfo fileInfo(localEvent.localPath());
 	if (fileInfo.isDir())
@@ -209,11 +191,11 @@ void LocalFileOrFolderAddedEventHandler::
 	{
 		FileUploader *uploader = new FileUploader(this);
 
-		connect(uploader, SIGNAL(succeeded(Drive::RemoteFileDesc)),
-			this, SLOT(onUploadSucceeded(Drive::RemoteFileDesc)));
+		connect(uploader, &FileUploader::succeeded,
+			this, &LocalFileOrFolderAddedEventHandler::onUploadSucceeded);
 
-		connect(uploader, SIGNAL(failed(QString)),
-			this, SLOT(onUploadFailed(QString)));
+		connect(uploader, &FileUploader::failed,
+			this, &LocalFileOrFolderAddedEventHandler::onUploadFailed);
 
 		uploader->uploadFile(id, localEvent.localPath());
 	}
@@ -221,8 +203,6 @@ void LocalFileOrFolderAddedEventHandler::
 
 void LocalFileOrFolderAddedEventHandler::onGetFileObjectParentIdFailed()
 {
-	QLOG_ERROR() << this
-		<< ": failed to create remote file object, no parent id";
 	processEventsAndQuit();
 }
 
@@ -277,11 +257,11 @@ void LocalFileOrFolderAddedEventHandler::onTrashSucceeded()
 
 	FilesRestResourceRef filesRestResource = FilesRestResource::create();
 
-	connect(filesRestResource.data(), SIGNAL(succeeded()),
-		this, SLOT(onRemoveSucceeded()));
+	connect(filesRestResource.data(), &FilesRestResource::succeeded,
+		this, &LocalFileOrFolderAddedEventHandler::onRemoveSucceeded);
 
-	connect(filesRestResource.data(), SIGNAL(failed(QString)),
-		this, SLOT(onRemoveFailed(QString)));
+	connect(filesRestResource.data(), &FilesRestResource::failed,
+		this, &LocalFileOrFolderAddedEventHandler::onRemoveFailed);
 
 	filesRestResource->remove(m_remoteFileDesc.id);
 
@@ -437,11 +417,11 @@ void LocalFileOrFolderRenamedEventHandler::run()
 
 	m_currentResource = GetChildrenResource::create();
 
-	connect(m_currentResource.data(), SIGNAL(getFileObjectIdSucceeded(int)),
-		this, SLOT(onGetFileObjectIdSucceeded(int)));
+	connect(m_currentResource.data(), &GetChildrenResource::getFileObjectIdSucceeded,
+		this, &LocalFileOrFolderRenamedEventHandler::onGetFileObjectIdSucceeded);
 
-	connect(m_currentResource.data(), SIGNAL(getFileObjectIdFailed()),
-		this, SLOT(onGetFileObjectIdFailed()));
+	connect(m_currentResource.data(), &GetChildrenResource::getFileObjectIdFailed,
+		this, &LocalFileOrFolderRenamedEventHandler::onGetFileObjectIdFailed);
 
 	m_currentResource->getFileObjectId(oldRemotePath);
 
@@ -454,11 +434,11 @@ void LocalFileOrFolderRenamedEventHandler::onGetFileObjectIdSucceeded(int id)
 
 	FilesRestResourceRef filesRestResource = FilesRestResource::create();
 
-	connect(filesRestResource.data(), SIGNAL(succeeded()),
-		this, SLOT(onRenameSucceeded()));
+	connect(filesRestResource.data(), &FilesRestResource::succeeded,
+		this, &LocalFileOrFolderRenamedEventHandler::onRenameSucceeded);
 
-	connect(filesRestResource.data(), SIGNAL(failed(QString)),
-		this, SLOT(onRenameFailed(QString)));
+	connect(filesRestResource.data(), &FilesRestResource::failed,
+		this, &LocalFileOrFolderRenamedEventHandler::onRenameFailed);
 
 	filesRestResource->rename(id, m_newName);
 }

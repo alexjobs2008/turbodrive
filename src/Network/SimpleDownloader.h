@@ -23,7 +23,6 @@ public:
 		QObject *parent = 0);
 
 signals:
-	void finished(const QByteArray& data);
 	void finished(const QPixmap& pixmap);
 
 private slots:

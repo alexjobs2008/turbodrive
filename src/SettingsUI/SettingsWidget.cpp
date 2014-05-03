@@ -136,10 +136,11 @@ SettingsWidget::SettingsWidget(QWidget *parent)
 	layoutMain->addWidget(separator);
 	layoutMain->addWidget(fButtonBox);
 
-	connect(accountWidget, SIGNAL(logout()), this, SIGNAL(logout()));
+	connect(accountWidget, &AccountWidget::logout,
+		   	this, &SettingsWidget::logout);
 
-	connect(&Settings::instance(), SIGNAL(dirtyStateChanged(bool)),
-		this, SLOT(onSettingsDirtyChanged(bool)));
+	connect(&Settings::instance(), &Settings::dirtyStateChanged,
+			this, &SettingsWidget::onSettingsDirtyChanged);
 
 	QMetaObject::connectSlotsByName(this);
 

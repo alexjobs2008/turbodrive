@@ -131,7 +131,7 @@ protected:
 
 private slots:
 	void onGetAncestorsSucceeded(QString);
-	void onGetAncestorsFailed(QString);
+	void onGetAncestorsFailed();
 
 private:
 	QString localSourcePath;

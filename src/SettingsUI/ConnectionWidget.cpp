@@ -344,8 +344,10 @@ ProxySettingsDialog::ProxySettingsDialog(QWidget *parent, Qt::WindowFlags f)
 	layout->addWidget(separator);
 	layout->addWidget(buttonBox);
 
-	connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-	connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+	connect(buttonBox, &QDialogButtonBox::accepted,
+			this, &ProxySettingsDialog::accept);
+	connect(buttonBox, &QDialogButtonBox::rejected,
+			this, &ProxySettingsDialog::reject);
 
 	QMetaObject::connectSlotsByName(this);
 }

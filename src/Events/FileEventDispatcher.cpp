@@ -357,42 +357,38 @@ void FileEventDispatcher::startHandlerThreadOrProcessNext(
 {
 	if (handlerThread)
 	{
-		connect(handlerThread, SIGNAL(finished()),
-			this, SLOT(onFinishProcessingEvent()));
+		connect(handlerThread, &EventHandlerBase::finished,
+				this, &FileEventDispatcher::onFinishProcessingEvent);
 
-		connect(handlerThread, SIGNAL(succeeded()),
-			this, SLOT(onEventHandlerSucceeded()));
+		connect(handlerThread, &EventHandlerBase::succeeded,
+				this, &FileEventDispatcher::onEventHandlerSucceeded);
 
-		connect(handlerThread, SIGNAL(failed(QString)),
-			this, SLOT(onEventHandlerFailed(QString)));
+		connect(handlerThread, &EventHandlerBase::failed,
+				this, &FileEventDispatcher::onEventHandlerFailed);
 
-		connect(handlerThread
-			, SIGNAL(newLocalFileEventExclusion(LocalFileEventExclusion))
-			, this
-			, SLOT(onNewLocalFileEventExclusion(LocalFileEventExclusion))
-				, Qt::BlockingQueuedConnection);
+		connect(handlerThread, &EventHandlerBase::newLocalFileEventExclusion,
+				this, &FileEventDispatcher::onNewLocalFileEventExclusion,
+				Qt::BlockingQueuedConnection);
 
-		connect(handlerThread
-			, SIGNAL(newRemoteFileEventExclusion(RemoteFileEventExclusion))
-			, this
-			, SLOT(onNewRemoteFileEventExclusion(RemoteFileEventExclusion))
-				, Qt::BlockingQueuedConnection);
+		connect(handlerThread, &EventHandlerBase::newRemoteFileEventExclusion,
+				this, &FileEventDispatcher::onNewRemoteFileEventExclusion,
+				Qt::BlockingQueuedConnection);
 
-		connect(handlerThread, SIGNAL(newRemoteFileEvent(RemoteFileEvent)),
-			this, SLOT(addRemoteFileEvent(RemoteFileEvent))
-			, Qt::BlockingQueuedConnection);
+		connect(handlerThread, &EventHandlerBase::newRemoteFileEvent,
+				this, &FileEventDispatcher::addRemoteFileEvent,
+				Qt::BlockingQueuedConnection);
 
-		connect(handlerThread, SIGNAL(newLocalFileEvent(LocalFileEvent)),
-			this, SLOT(addLocalFileEvent(LocalFileEvent))
-			, Qt::BlockingQueuedConnection);
+		connect(handlerThread, &EventHandlerBase::newLocalFileEvent,
+				this, &FileEventDispatcher::addLocalFileEvent,
+				Qt::BlockingQueuedConnection);
 
-		connect(handlerThread, SIGNAL(newPriorityRemoteFileEvent(RemoteFileEvent)),
-			this, SLOT(addPriorityRemoteFileEvent(RemoteFileEvent))
-			, Qt::BlockingQueuedConnection);
+		connect(handlerThread, &EventHandlerBase::newPriorityRemoteFileEvent,
+				this, &FileEventDispatcher::addPriorityRemoteFileEvent,
+				Qt::BlockingQueuedConnection);
 
-		connect(handlerThread, SIGNAL(newPriorityLocalFileEvent(LocalFileEvent)),
-			this, SLOT(addPriorityLocalFileEvent(LocalFileEvent))
-			, Qt::BlockingQueuedConnection);
+		connect(handlerThread, &EventHandlerBase::newPriorityLocalFileEvent,
+				this, &FileEventDispatcher::addPriorityLocalFileEvent,
+				Qt::BlockingQueuedConnection);
 
 		eventHandlers << handlerThread;
 

@@ -32,15 +32,10 @@ GeneralRestDispatcher::GeneralRestDispatcher(QObject *parent)
 {
 	qRegisterMetaType<RestResource::RequestRef>("RequestRef");
 
-	connect(networkAccessManager, SIGNAL(finished(QNetworkReply*)),
-		this, SLOT(replyFinished(QNetworkReply*)));
-	connect(networkAccessManager, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)),
-		this, SLOT(onSslErrors(QNetworkReply*,const QList<QSslError>&)));
-
-	//connect(networkAccessManager, SIGNAL(proxyAuthenticationRequired(const QNetworkProxy&,QAuthenticator*)), this, SIGNAL(proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)));
-
-	//connect(_authenticationHelper, SIGNAL(reconnectSucceded()), this, SLOT(onDispatcherAuthorized()));
-	//connect(_authenticationHelper, SIGNAL(reconnectFailed(RestDispatcher::ReconnectError)), this, SLOT(onDispatcherReconnectFailed(RestDispatcher::ReconnectError)));
+	connect(networkAccessManager, &QNetworkAccessManager::finished,
+			this, &GeneralRestDispatcher::replyFinished);
+	connect(networkAccessManager, &QNetworkAccessManager::sslErrors,
+			this, &GeneralRestDispatcher::onSslErrors);
 
 	loadServices();
 }

@@ -398,14 +398,6 @@ void GetChildrenResource::getFirstChildId()
 
 		currentItem = 0;
 
-//		GetChildIdResourceRef getChildIdResource = GetChildIdResource::create();
-//
-//		QLOG_TRACE() << "connected 1: "  << connect(getChildIdResource.data(), SIGNAL(succeeded(int)),
-//			this, SLOT(onGetChildIdSucceeded(int)));
-//
-//		QLOG_TRACE() << "connected 2: "  << connect(getChildIdResource.data(), SIGNAL(failed()),
-//			this, SLOT(onGetChildIdFailed()));
-
 		getNextChildId(0);
 	}
 	else
