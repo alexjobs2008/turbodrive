@@ -43,8 +43,10 @@ SelectiveSyncDialog::SelectiveSyncDialog(QWidget * parent, Qt::WindowFlags f)
 		, Qt::Horizontal
 		, this);
 
-	connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-	connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+	connect(buttonBox, &QDialogButtonBox::accepted,
+			this, &SelectiveSyncDialog::accept);
+	connect(buttonBox, &QDialogButtonBox::rejected,
+			this, &SelectiveSyncDialog::reject);
 
 	layout->addSpacing(4);
 	layout->addWidget(topLabel);
@@ -53,26 +55,14 @@ SelectiveSyncDialog::SelectiveSyncDialog(QWidget * parent, Qt::WindowFlags f)
 	layout->addSpacing(8);
 	layout->addWidget(buttonBox);
 
-//	FilesRestResourceRef filesRestResource = FilesRestResource::create();
-//
-//	connect(filesRestResource.data()
-//		, SIGNAL(getFileObjectSucceeded(Drive::RemoteFileDesc))
-//		, this
-//		, SLOT(onGetFileObjectSucceeded(Drive::RemoteFileDesc)));
-//
-//	connect(filesRestResource.data(), SIGNAL(failed(QString)),
-//		this, SLOT(onGetFileObjectFailed(QString)));
-//
-//	filesRestResource->getFileObject(-2);
-
 	GetChildrenResourceRef getChildrenRes =
-		GetChildrenResource::create();
+			GetChildrenResource::create();
 
-	connect(getChildrenRes.data(), SIGNAL(succeeded(QList<RemoteFileDesc>)),
-		this, SLOT(onGetChildrenSucceeded(QList<RemoteFileDesc>)));
+	connect(getChildrenRes.data(), &GetChildrenResource::succeeded,
+			this, &SelectiveSyncDialog::onGetChildrenSucceeded);
 
-	connect(getChildrenRes.data(), SIGNAL(failed()),
-		this, SLOT(onGetChildrenFailed()));
+	connect(getChildrenRes.data(), &GetChildrenResource::failed,
+			this, &SelectiveSyncDialog::onGetChildrenFailed);
 
 	getChildrenRes->getChildren(-2);
 
@@ -103,7 +93,7 @@ void SelectiveSyncDialog::onGetChildrenSucceeded(QList<RemoteFileDesc> list)
 	treeView->setModel(model);
 }
 
-void SelectiveSyncDialog::onGetChildrenFailed(QString)
+void SelectiveSyncDialog::onGetChildrenFailed()
 {
 	reject();
 }
@@ -125,11 +115,11 @@ void TreeModel::loadItems(TreeItem* parentItem, const QModelIndex& parentIndex)
 
 	getChildrenResource = GetChildrenResource::create();
 
-	connect(getChildrenResource.data(), SIGNAL(succeeded(QList<RemoteFileDesc>)),
-		this, SLOT(onGetChildrenSucceeded(QList<RemoteFileDesc>)));
+	connect(getChildrenResource.data(), &GetChildrenResource::succeeded,
+			this, &TreeModel::onGetChildrenSucceeded);
 
-	connect(getChildrenResource.data(), SIGNAL(failed()),
-		this, SLOT(onGetChildrenFailed()));
+	connect(getChildrenResource.data(), &GetChildrenResource::failed,
+			this, &TreeModel::onGetChildrenFailed);
 
 	getChildrenResource->getChildren(parentItem->fileObject().id);
 

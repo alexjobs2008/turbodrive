@@ -12,8 +12,8 @@ RestNetworkAccessManager::RestNetworkAccessManager(QObject *parent)
 	: QNetworkAccessManager(parent)
 	, data(new Data())
 {
-	connect(this, SIGNAL(finished(QNetworkReply*)),
-		this, SLOT(onFinished(QNetworkReply*)));
+	connect(this, &RestNetworkAccessManager::finished,
+			this, &RestNetworkAccessManager::onFinished);
 }
 
 RestNetworkAccessManager::~RestNetworkAccessManager()

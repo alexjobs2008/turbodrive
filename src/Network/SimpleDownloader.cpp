@@ -14,14 +14,14 @@ SimpleDownloader::SimpleDownloader(QUrl url, Type type, QObject *parent)
 	reply = nam->get(request);
 	reply->setParent(nam);
 
-	connect(reply, SIGNAL(finished()),
-		this, SLOT(onReplyFinished()));
+	connect(reply, &QNetworkReply::finished,
+			this, &SimpleDownloader::onReplyFinished);
 
-	connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
-		this, SLOT(onError(QNetworkReply::NetworkError)));
+	connect(reply, static_cast<void (QNetworkReply::*)(QNetworkReply::NetworkError)>(&QNetworkReply::error),
+		this, &SimpleDownloader::onError);
 
-	connect(reply, SIGNAL(downloadProgress(qint64, qint64)),
-		this, SLOT(onDownloadProgress(qint64, qint64)));
+	connect(reply, &QNetworkReply::downloadProgress,
+		this, &SimpleDownloader::onDownloadProgress);
 
 	urlString = url.toString();
 }
@@ -44,11 +44,7 @@ void SimpleDownloader::onReplyFinished()
 	QLOG_INFO() << "Download finished: " << data.size()
 		<< "bytes. " << urlString;
 
-	if (type == SimpleDownloader::Data)
-	{
-		emit finished(data);
-	}
-	else if (type == SimpleDownloader::Pixmap)
+	if (type == SimpleDownloader::Pixmap)
 	{
 		QPixmap pixmap;
 		pixmap.loadFromData(data);

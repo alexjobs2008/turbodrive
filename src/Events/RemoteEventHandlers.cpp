@@ -52,8 +52,8 @@ void RemoteFolderCreatedEventHandler::run()
 	GetAncestorsRestResourceRef getAncestorsRes =
 		GetAncestorsRestResource::create();
 
-	connect(getAncestorsRes.data(), SIGNAL(succeeded(QString)),
-		this, SLOT(onGetAncestorsSucceeded(QString)));
+	connect(getAncestorsRes.data(), &GetAncestorsRestResource::succeeded,
+		this, &RemoteFolderCreatedEventHandler::onGetAncestorsSucceeded);
 
 	getAncestorsRes->getAncestors(m_remoteEvent.fileDesc.id);
 
@@ -120,11 +120,11 @@ void RemoteFileRenamedEventHandler::run()
 	GetAncestorsRestResourceRef getAncestorsRes =
 		GetAncestorsRestResource::create();
 
-	connect(getAncestorsRes.data(), SIGNAL(succeeded(QString)),
-		this, SLOT(onGetAncestorsSucceeded(QString)));
+	connect(getAncestorsRes.data(), &GetAncestorsRestResource::succeeded,
+			this, &RemoteFileRenamedEventHandler::onGetAncestorsSucceeded);
 
-	connect(getAncestorsRes.data(), SIGNAL(failed()),
-		this, SLOT(onGetAncestorsFailed()));
+	connect(getAncestorsRes.data(), &GetAncestorsRestResource::failed,
+			this, &RemoteFileRenamedEventHandler::onGetAncestorsFailed);
 
 	getAncestorsRes->getAncestors(m_remoteEvent.fileDesc.id);
 
@@ -177,21 +177,6 @@ void RemoteFileTrashedEventHandler::run()
 		return;
 
 	onGetAncestorsSucceeded(m_remoteEvent.fileDesc.originalPath);
-
-//  Latest backend changes (as of 30.12.2013) made the following obsolete:
-//
-//	GetAncestorsRestResourceRef getAncestorsRes =
-//		GetAncestorsRestResource::create();
-//
-//	connect(getAncestorsRes.data(), SIGNAL(succeeded(QString)),
-//		this, SLOT(onGetAncestorsSucceeded(QString)));
-//
-//	connect(getAncestorsRes.data(), SIGNAL(failed()),
-//		this, SLOT(onGetAncestorsFailed(QString)));
-//
-//	getAncestorsRes->getAncestors(remoteEvent.fileDesc.parentId);
-//
-//	exec();
 }
 
 void RemoteFileTrashedEventHandler::onGetAncestorsSucceeded(
@@ -270,11 +255,11 @@ void RemoteFileUploadedEventHandler::run()
 	GetAncestorsRestResourceRef getAncestorsRes =
 		GetAncestorsRestResource::create();
 
-	connect(getAncestorsRes.data(), SIGNAL(succeeded(QString)),
-		this, SLOT(onGetAncestorsSucceeded(QString)));
+	connect(getAncestorsRes.data(), &GetAncestorsRestResource::succeeded,
+			this, &RemoteFileUploadedEventHandler::onGetAncestorsSucceeded);
 
-	connect(getAncestorsRes.data(), SIGNAL(failed()),
-		this, SLOT(onGetAncestorsFailed()));
+	connect(getAncestorsRes.data(), &GetAncestorsRestResource::failed,
+			this, &RemoteFileUploadedEventHandler::onGetAncestorsFailed);
 
 	getAncestorsRes->getAncestors(m_remoteEvent.fileDesc.id);
 
@@ -333,11 +318,11 @@ void RemoteFileUploadedEventHandler::onGetAncestorsSucceeded(
 	downloader = new FileDownloader(m_remoteEvent.fileDesc.id,
 		m_localFilePath, m_remoteEvent.fileDesc.modifiedAt, this);
 
-	connect(downloader, SIGNAL(succeeded()),
-		this, SLOT(onDownloadSucceeded()));
+	connect(downloader, &FileDownloader::succeeded,
+			this, &RemoteFileUploadedEventHandler::onDownloadSucceeded);
 
-	connect(downloader, SIGNAL(failed(QString)),
-		this, SLOT(onDownloadFailed(QString)));
+	connect(downloader, &FileDownloader::failed,
+			this, &RemoteFileUploadedEventHandler::onDownloadFailed);
 
 	LocalFileEventExclusion
 		addedEventExclusion(LocalFileEvent::Added, m_localFilePath);
@@ -414,11 +399,11 @@ void RemoteFileOrFolderRestoredEventHandler::run()
 			GetChildrenResourceRef getChildrenRes =
 				GetChildrenResource::create();
 
-			connect(getChildrenRes.data(), SIGNAL(succeeded(QList<Drive::RemoteFileDesc>)),
-				this, SLOT(onGetChildrenSucceeded(QList<Drive::RemoteFileDesc>)));
+			connect(getChildrenRes.data(), &GetChildrenResource::succeeded,
+					this, &RemoteFileOrFolderRestoredEventHandler::onGetChildrenSucceeded);
 
-			connect(getChildrenRes.data(), SIGNAL(failed()),
-				this, SLOT(onGetChildrenFailed()));
+			connect(getChildrenRes.data(), &GetChildrenResource::failed,
+					this, &RemoteFileOrFolderRestoredEventHandler::onGetChildrenFailed);
 
 			getChildrenRes->getChildren(m_remoteEvent.fileDesc.id);
 
@@ -505,27 +490,21 @@ void RemoteFileCopiedEventHandler::run()
 	GetAncestorsRestResourceRef getSourceAncestorsRes =
 		GetAncestorsRestResource::create();
 
-	connect(getSourceAncestorsRes.data()
-		, SIGNAL(succeeded(QString))
-		, this
-		, SLOT(onGetAncestorsSucceeded(QString)));
+	connect(getSourceAncestorsRes.data(), &GetAncestorsRestResource::succeeded,
+			this, &RemoteFileCopiedEventHandler::onGetAncestorsSucceeded);
 
-	connect(getSourceAncestorsRes.data()
-		, SIGNAL(failed())
-		, this
-		, SLOT(onGetAncestorsFailed(QString)));
+	connect(getSourceAncestorsRes.data(), &GetAncestorsRestResource::failed,
+			this, &RemoteFileCopiedEventHandler::onGetAncestorsFailed);
 
 	getSourceAncestorsRes->getAncestors(m_remoteEvent.sourceId);
 
 	FilesRestResourceRef filesRestResource = FilesRestResource::create();
 
-	connect(filesRestResource.data()
-		, SIGNAL(getFileObjectSucceeded(Drive::RemoteFileDesc))
-		, this
-		, SLOT(onGetFileObjectSucceeded(Drive::RemoteFileDesc)));
+//	connect(filesRestResource.data(), &FilesRestResource::getFileObjectSucceeded,
+//			this, &RemoteFileCopiedEventHandler::onGetFileObjectSucceeded);
 
-	connect(filesRestResource.data(), SIGNAL(failed(QString)),
-		this, SLOT(onGetFileObjectFailed(QString)));
+//	connect(filesRestResource.data(), &FilesRestResource::failed,
+//			this, &RemoteFileCopiedEventHandler::onGetFileObjectFailed);
 
 	filesRestResource->getFileObject(m_remoteEvent.targetId);
 
@@ -537,7 +516,7 @@ void RemoteFileCopiedEventHandler::onGetAncestorsSucceeded(QString)
 
 }
 
-void RemoteFileCopiedEventHandler::onGetAncestorsFailed(QString)
+void RemoteFileCopiedEventHandler::onGetAncestorsFailed()
 {
 
 }

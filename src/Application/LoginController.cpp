@@ -13,6 +13,7 @@
 #include "Network/SimpleDownloader.h"
 
 #include <QtCore/QCoreApplication>
+#include <QtCore/QJsonObject>
 #include <QtWidgets/QMessageBox>
 
 #include <QDir>
@@ -126,8 +127,8 @@ void LoginController::showLoginForm()
 
 
 		RegisterLinkResourceRef regLink = RegisterLinkResource::create();
-		connect(regLink.data(), SIGNAL(linkReceived(QString)),
-			loginWidget, SLOT(setRegisterLink(QString)));
+		connect(regLink.data(), &RegisterLinkResource::linkReceived,
+			loginWidget, &LoginWidget::setRegisterLink);
 
 		regLink->requestRegisterLink();
 	}
@@ -177,11 +178,11 @@ void LoginController::passwordReset(const QString& username)
 	PasswordResetResourceRef passwordResetResource =
 		PasswordResetResource::create();
 
-	connect(passwordResetResource.data(), SIGNAL(resetSuccessfully()),
-		this,  SLOT(onPasswordResetSucceeded()));
+	connect(passwordResetResource.data(), &PasswordResetResource::resetSuccessfully,
+			this, &LoginController::onPasswordResetSucceeded);
 
-	connect(passwordResetResource.data(), SIGNAL(resetFailed(QString)),
-		this,  SLOT(onPasswordResetFailed(QString)));
+	connect(passwordResetResource.data(), &PasswordResetResource::resetFailed,
+			this, &LoginController::onPasswordResetFailed);
 
 	passwordResetResource->resetPassword(cleanUsername);
 }
@@ -202,11 +203,11 @@ void LoginController::requestUserData()
 
 	ProfileRestResourceRef userResource = ProfileRestResource::create();
 
-	connect(userResource.data(), SIGNAL(profileDataReceived(QJsonObject)),
-		this,  SLOT(onProfileDataReceived(QJsonObject)));
+	connect(userResource.data(), &ProfileRestResource::profileDataReceived,
+			this, &LoginController::onProfileDataReceived);
 
-	connect(userResource.data(), SIGNAL(profileDataError()),
-		this,  SLOT(onProfileDataError()));
+	connect(userResource.data(), &ProfileRestResource::profileDataError,
+			this, &LoginController::onProfileDataError);
 
 	userResource->requestProfileData();
 }
@@ -303,12 +304,8 @@ void LoginController::onProfileDataReceived(const QJsonObject& data)
 
 		QLOG_TRACE() << "Downloading avatar from: " << newUrl;
 
-		connect(d, SIGNAL(finished(QPixmap)),
-			this, SLOT(onAvatarDownloaded(QPixmap)));
-	}
-	else
-	{
-		QLOG_INFO() << "No avatar set. URL is: " << profileData.avatarUrl;
+		connect(d, &SimpleDownloader::finished,
+				this, &LoginController::onAvatarDownloaded);
 	}
 }
 

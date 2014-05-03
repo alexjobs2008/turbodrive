@@ -135,8 +135,8 @@ SettingsWidget::SettingsWidget(QWidget *parent)
 	layoutMain->addWidget(separator);
 	layoutMain->addWidget(fButtonBox);
 
-	connect(&Settings::instance(), SIGNAL(dirtyStateChanged(bool)),
-		this, SLOT(onSettingsDirtyChanged(bool)));
+	connect(&Settings::instance(), &Settings::dirtyStateChanged,
+			this, &SettingsWidget::onSettingsDirtyChanged);
 
 	QMetaObject::connectSlotsByName(this);
 

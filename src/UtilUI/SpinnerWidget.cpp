@@ -30,8 +30,8 @@ SpinnerWidget::SpinnerWidget(const QString& text, const QString& imgPath,
 
 	spinnerAnimation = new PixmapAnimation(imgPath, this);
 
-	connect(spinnerAnimation, SIGNAL(nextPixmap(QPixmap)),
-		spinner, SLOT(setPixmap(QPixmap)));
+	connect(spinnerAnimation, &PixmapAnimation::nextPixmap,
+			spinner, &QLabel::setPixmap);
 
 	layout->addStretch(1);
 	layout->addWidget(spinner);
