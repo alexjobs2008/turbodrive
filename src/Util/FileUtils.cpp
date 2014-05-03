@@ -159,6 +159,11 @@ QString Utils::separator()
 	return QLatin1String("/");
 }
 
+QString Utils::parentPath(const QString &path)
+{
+	return QDir::cleanPath(path + separator() + QLatin1String(".."));
+}
+
 QString Utils::toLocalPath(const QString& remotePath)
 {
 	const QString folderPath = QDir::cleanPath(

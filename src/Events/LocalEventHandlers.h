@@ -98,9 +98,9 @@ private slots:
 	void onRenameFailed(const QString& error);
 
 private:
-	int remoteFileObjectId;
-	QString newName;
-	GetChildrenResourceRef getChildrenResource;
+	int m_remoteFileObjectId;
+	QString m_newName;
+	GetChildrenResourceRef m_currentResource;
 };
 
 

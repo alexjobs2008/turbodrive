@@ -319,44 +319,45 @@ LocalFileOrFolderDeletedEventHandler::LocalFileOrFolderDeletedEventHandler(
 
 void LocalFileOrFolderDeletedEventHandler::run()
 {
-	if (localEvent.type != LocalFileEvent::Deleted)
-		return;
+	Q_ASSERT(localEvent.type == LocalFileEvent::Deleted);
 
-	QString remotePath = Utils::toRemotePath(localEvent.localPath());
+	const QString remotePath = Utils::toRemotePath(localEvent.localPath());
 
 	// Cached:
 
-	int objId = LocalCache::instance().file(remotePath).id;
-
-	if (objId)
 	{
-		onGetFileObjectIdSucceeded(objId);
-		exec();
-		return;
+		LocalCache& cache = LocalCache::instance();
+		const RemoteFileDesc file = cache.file(remotePath);
+		if (file.isValid())
+		{
+			cache.removeFile(file);
+			onGetFileObjectIdSucceeded(file.id);
+			exec();
+			return;
+		}
 	}
 
 	// Not cached:
 
-	GetChildrenResourceRef getChildrenResource = GetChildrenResource::create();
+	{
+		GetChildrenResourceRef getChildrenResource = GetChildrenResource::create();
 
-	connect(getChildrenResource.data(), &GetChildrenResource::getFileObjectIdSucceeded,
-		this, &LocalFileOrFolderDeletedEventHandler::onGetFileObjectIdSucceeded);
+		connect(getChildrenResource.data(), &GetChildrenResource::getFileObjectIdSucceeded,
+			this, &LocalFileOrFolderDeletedEventHandler::onGetFileObjectIdSucceeded);
 
-	connect(getChildrenResource.data(), &GetChildrenResource::getFileObjectIdFailed,
-		this, &LocalFileOrFolderDeletedEventHandler::onGetFileObjectIdFailed);
+		connect(getChildrenResource.data(), &GetChildrenResource::getFileObjectIdFailed,
+			this, &LocalFileOrFolderDeletedEventHandler::onGetFileObjectIdFailed);
 
-	getChildrenResource->getFileObjectId(remotePath);
+		getChildrenResource->getFileObjectId(remotePath);
 
-	m_currentResource = getChildrenResource;
+		m_currentResource = getChildrenResource;
 
-	exec();
+		exec();
+	}
 }
 
 void LocalFileOrFolderDeletedEventHandler::onGetFileObjectIdSucceeded(int id)
 {
-	QLOG_TRACE() <<
-		"LocalFileOrFolderDeletedEventHandler file object id:" << id;
-
 	TrashRestResourceRef trashRestResource = TrashRestResource::create();
 
 	connect(trashRestResource.data(), &TrashRestResource::succeeded,
@@ -373,7 +374,6 @@ void LocalFileOrFolderDeletedEventHandler::onGetFileObjectIdSucceeded(int id)
 
 void LocalFileOrFolderDeletedEventHandler::onGetFileObjectIdFailed()
 {
-	QLOG_ERROR() << "Failed to trash remote file object: no id";
 	processEventsAndQuit();
 }
 
@@ -404,52 +404,53 @@ void LocalFileOrFolderDeletedEventHandler::onTrashFailed(const QString& error)
 LocalFileOrFolderRenamedEventHandler::LocalFileOrFolderRenamedEventHandler(
 	LocalFileEvent localEvent, QObject *parent)
 	: LocalEventHandlerBase(localEvent, parent)
-	, remoteFileObjectId(0)
+	, m_remoteFileObjectId(0)
 {
 }
 
 void LocalFileOrFolderRenamedEventHandler::run()
 {
-	if (localEvent.type != LocalFileEvent::Moved)
-		return;
+	Q_ASSERT(localEvent.type == LocalFileEvent::Moved);
 
-	QFileInfo oldFileInfo(localEvent.oldLocalPath());
-	QFileInfo newFileInfo(localEvent.localPath());
+	{
+		const QString remotePath = Utils::toRemotePath(localEvent.oldLocalPath());
+		LocalCache& cache = LocalCache::instance();
+		const RemoteFileDesc file = cache.file(remotePath);
+		if (file.isValid())
+		{
+			cache.removeFile(file);
+		}
+	}
+
+	const QFileInfo oldFileInfo(localEvent.oldLocalPath());
+	const QFileInfo newFileInfo(localEvent.localPath());
 
 	if (oldFileInfo.dir().absolutePath() != newFileInfo.dir().absolutePath())
 	{
-		QLOG_TRACE() << "Local Move event: folders are not equal";
 		return;
 	}
 
-	newName = newFileInfo.fileName();
+	m_newName = newFileInfo.fileName();
 
-	QString oldRemotePath =
+	const QString oldRemotePath =
 		Utils::toRemotePath(localEvent.oldLocalPath());
 
-		//	QString localFolderAbsolutePath = newFileInfo.dir().absolutePath();
-		//	QString folderRemotePath =
-		//		Utils::localPathToRemotePath(localFolderAbsolutePath);
+	m_currentResource = GetChildrenResource::create();
 
-	getChildrenResource = GetChildrenResource::create();
-
-	connect(getChildrenResource.data(), SIGNAL(getFileObjectIdSucceeded(int)),
+	connect(m_currentResource.data(), SIGNAL(getFileObjectIdSucceeded(int)),
 		this, SLOT(onGetFileObjectIdSucceeded(int)));
 
-	connect(getChildrenResource.data(), SIGNAL(getFileObjectIdFailed()),
+	connect(m_currentResource.data(), SIGNAL(getFileObjectIdFailed()),
 		this, SLOT(onGetFileObjectIdFailed()));
 
-	getChildrenResource->getFileObjectId(oldRemotePath);
+	m_currentResource->getFileObjectId(oldRemotePath);
 
 	exec();
 }
 
 void LocalFileOrFolderRenamedEventHandler::onGetFileObjectIdSucceeded(int id)
 {
-	remoteFileObjectId = id;
-
-	QLOG_TRACE() <<
-		"LocalFileOrFolderAddedEventHandler file object id:" << id;
+	m_remoteFileObjectId = id;
 
 	FilesRestResourceRef filesRestResource = FilesRestResource::create();
 
@@ -459,33 +460,24 @@ void LocalFileOrFolderRenamedEventHandler::onGetFileObjectIdSucceeded(int id)
 	connect(filesRestResource.data(), SIGNAL(failed(QString)),
 		this, SLOT(onRenameFailed(QString)));
 
-	filesRestResource->rename(id, newName);
+	filesRestResource->rename(id, m_newName);
 }
 
 void LocalFileOrFolderRenamedEventHandler::onGetFileObjectIdFailed()
 {
-	// if failed to find the remote file object,
-	// then create new local event "added"
-	QLOG_TRACE() << "Failed to rename remote file object: no id. "
-		<< "Converting the Moved event to Added event";
-
 	LocalFileEvent event(localEvent);
 	event.type = LocalFileEvent::Added;
-	emit newLocalFileEvent(event);
+	Q_EMIT newLocalFileEvent(event);
 
 	processEventsAndQuit();
 }
 
 void LocalFileOrFolderRenamedEventHandler::onRenameSucceeded()
 {
-	QLOG_TRACE() << "Remote file object rename succeeded: "
-		<< remoteFileObjectId << newName;
-
-	if (remoteFileObjectId)
+	if (m_remoteFileObjectId)
 	{
-		RemoteFileEventExclusion exclusion(RemoteFileEvent::Renamed
-			, remoteFileObjectId);
-		emit newRemoteFileEventExclusion(exclusion);
+		Q_EMIT newRemoteFileEventExclusion(RemoteFileEventExclusion(
+				RemoteFileEvent::Renamed, m_remoteFileObjectId));
 	}
 
 	processEventsAndQuit();
@@ -494,7 +486,7 @@ void LocalFileOrFolderRenamedEventHandler::onRenameSucceeded()
 void LocalFileOrFolderRenamedEventHandler::onRenameFailed(const QString& error)
 {
 	QLOG_ERROR() << "Failed to rename remote file object: "
-		<< remoteFileObjectId << newName << error;
+		<< m_remoteFileObjectId << m_newName << error;
 
 	processEventsAndQuit();
 }

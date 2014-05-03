@@ -24,9 +24,14 @@ public:
 	void addRoot(const RemoteFileDesc&);
 	void addFile(const RemoteFileDesc&);
 
+	void removeFile(const RemoteFileDesc&);
+
 	QString fullPath(const RemoteFileDesc&) const;
 
 private:
+	Q_DISABLE_COPY(LocalCache)
+	LocalCache() {}
+
 	RemoteFileDesc fileById(int id) const;
 
 	bool removeById(int id);
