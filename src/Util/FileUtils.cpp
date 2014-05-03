@@ -2,7 +2,6 @@
 #include "AppStrings.h"
 #include "QsLog/QsLog.h"
 #include "Settings/settings.h"
-//#include "Events/LocalFileEvent.h"
 #include "Events/LocalFileEventNotifier.h"
 
 #include <QtCore/QFile>
@@ -10,6 +9,8 @@
 #include <QtCore/QFileInfo>
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDateTime>
+
+#define DISK_ROOT_PATH QLatin1String("/#root/#disk")
 
 namespace Drive
 {
@@ -153,64 +154,33 @@ FILETIME FileSystemHelper::toWinFileTime(const QDateTime &dateTime)
 }
 #endif // Q_OS_WIN
 
-Utils& Utils::instance()
+QString Utils::separator()
 {
-	static Utils myself;
-	return myself;
+	return QLatin1String("/");
 }
 
-Utils::Utils(QObject *parent)
-	: QObject(parent)
+QString Utils::toLocalPath(const QString& remotePath)
 {
-}
-
-QString Utils::remotePathToLocalPath(const QString& remotePath, bool addSeparapor)
-{
-	QString folderPath = QDir::toNativeSeparators(
+	const QString folderPath = QDir::cleanPath(
 		Settings::instance().get(Settings::folderPath).toString());
-	QString localPath = remotePath;
 
-	if (localPath.startsWith("/") || localPath.startsWith("\\"))
-	{
-		localPath = localPath.right(localPath.size() - 1);
-	}
+	QString cleanedRemotePath = QDir::cleanPath(remotePath);
 
-	if (addSeparapor)
-		if (!localPath.endsWith("/") && !localPath.endsWith("\\"))
-			localPath.append(QDir::separator());
+	Q_ASSERT(cleanedRemotePath.startsWith(DISK_ROOT_PATH));
 
-	if (localPath.contains(DISK_ROOT_PATH))
-	{
-		localPath.replace(DISK_ROOT_PATH, folderPath);
-	}
-	else
-	{
-		QString anotherSeparatorsRootDisk =
-			QDir::toNativeSeparators(DISK_ROOT_PATH);
-
-		if (localPath.contains(anotherSeparatorsRootDisk))
-		{
-			localPath.replace(anotherSeparatorsRootDisk, folderPath);
-		}
-		else
-		{
-			QLOG_TRACE() << "Util::remotePathToLocalPath(): bad remotePath:"
-				<< remotePath;
-		}
-	}
-
-	return QDir::toNativeSeparators(localPath);
+	return cleanedRemotePath.replace(DISK_ROOT_PATH, folderPath);
 }
 
-QString Utils::localPathToRemotePath(const QString& localPath)
+QString Utils::toRemotePath(const QString& localPath)
 {
-	QString folderPath = QDir::toNativeSeparators(
+	const QString folderPath = QDir::cleanPath(
 		Settings::instance().get(Settings::folderPath).toString());
-	QString remotePath = QDir::toNativeSeparators(localPath);
 
-	remotePath.replace(folderPath, DISK_ROOT_PATH);
+	QString cleanedLocalPath = QDir::cleanPath(localPath);
 
-	return QDir::fromNativeSeparators(remotePath);
+	Q_ASSERT(cleanedLocalPath.startsWith(folderPath));
+
+	return cleanedLocalPath.replace(folderPath, DISK_ROOT_PATH);
 }
 
 }

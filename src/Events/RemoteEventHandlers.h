@@ -73,7 +73,7 @@ private slots:
 	void onGetAncestorsFailed();
 
 private:
-	QString localPath;
+	QString m_localPath;
 };
 
 
@@ -97,7 +97,7 @@ private slots:
 
 private:
 	FileDownloader *downloader;
-	QString localFilePath;
+	QString m_localFilePath;
 };
 
 class RemoteFileOrFolderRestoredEventHandler : public RemoteEventHandlerBase

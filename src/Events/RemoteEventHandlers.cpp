@@ -62,8 +62,7 @@ void RemoteFolderCreatedEventHandler::run()
 
 void RemoteFolderCreatedEventHandler::onGetAncestorsSucceeded(const QString& fullPath)
 {
-	QString localFolder =
-		Utils::instance().remotePathToLocalPath(fullPath);
+	const QString localFolder = Utils::toLocalPath(fullPath);
 
 	QDir dir(localFolder);
 	if (!dir.exists())
@@ -134,16 +133,14 @@ void RemoteFileRenamedEventHandler::run()
 
 void RemoteFileRenamedEventHandler::onGetAncestorsSucceeded(const QString& fullPath)
 {
-	const QString newLocalPath =
-		Utils::instance().remotePathToLocalPath(fullPath);
+	const QString newLocalPath = Utils::toLocalPath(fullPath);
 
 	LocalCache& cache = LocalCache::instance();
 
 	const RemoteFileDesc file = cache.file(m_remoteEvent.fileDesc.id);
 	Q_ASSERT(file.isValid());
 
-	const QString oldLocalPath =
-			Utils::instance().remotePathToLocalPath(cache.fullPath(file));
+	const QString oldLocalPath = Utils::toLocalPath(cache.fullPath(file));
 
 	Q_EMIT newLocalFileEventExclusion(
 			LocalFileEventExclusion(LocalFileEvent::Added, newLocalPath));
@@ -200,56 +197,41 @@ void RemoteFileTrashedEventHandler::run()
 void RemoteFileTrashedEventHandler::onGetAncestorsSucceeded(
 	const QString& fullPath)
 {
-	QLOG_TRACE() << "file object remote path: " << fullPath;
+	m_localPath = Utils::toLocalPath(fullPath);
+	m_localPath.append(Utils::separator());
+	m_localPath.append(m_remoteEvent.fileDesc.name);
 
-	localPath = Utils::instance().remotePathToLocalPath(fullPath, true);
-	localPath.append(m_remoteEvent.fileDesc.name);
-
-	QLOG_TRACE() << "file/folder local path: " << localPath;
-
-	QFileInfo fileInfo(localPath);
+	QFileInfo fileInfo(m_localPath);
 	if (!fileInfo.exists())
 	{
-		QLOG_TRACE() << "File/folder doesn't exist: nothing to delete.";
-		processEventsAndQuit();
+		Q_EMIT quitThread();
 	}
-
-	bool isRemoved = false;
 
 	if (fileInfo.isFile() || fileInfo.isSymLink())
 	{
-		LocalFileEventExclusion exclusion(LocalFileEvent::Deleted, localPath);
+		LocalFileEventExclusion exclusion(LocalFileEvent::Deleted, m_localPath);
 		emit newLocalFileEventExclusion(exclusion);
 
-		isRemoved = QFile::remove(localPath);
+		QFile::remove(m_localPath);
 	}
 	else // dir or bundle
 	{
 		LocalFileEventExclusion exclusion(LocalFileEvent::Deleted
-			, localPath
+			, m_localPath
 			, LocalFileEventExclusion::PartialMatch);
 
 		emit newLocalFileEventExclusion(exclusion);
 
-		isRemoved = FileSystemHelper::removeDirWithSubdirs(localPath);
+		FileSystemHelper::removeDirWithSubdirs(m_localPath);
 	}
 
-	if (isRemoved)
-	{
-		QLOG_INFO() << "Successfully removed: " << localPath;
-	}
-	else
-	{
-		QLOG_INFO() << "Failed to remove: " << localPath;
-	}
-
-	processEventsAndQuit();
+	Q_EMIT quitThread();
 }
 
 void RemoteFileTrashedEventHandler::onGetAncestorsFailed()
 {
 	emit failed("Failed to get the remote file object path");
-	processEventsAndQuit();
+	Q_EMIT quitThread();
 }
 
 // ===========================================================================
@@ -257,7 +239,7 @@ void RemoteFileTrashedEventHandler::onGetAncestorsFailed()
 RemoteFileUploadedEventHandler::RemoteFileUploadedEventHandler(
 	RemoteFileEvent remoteEvent, QObject *parent)
 	: RemoteEventHandlerBase(remoteEvent, parent)
-	, localFilePath(QString())
+	, m_localFilePath(QString())
 {
 }
 
@@ -304,15 +286,15 @@ void RemoteFileUploadedEventHandler::onGetAncestorsSucceeded(
 {
 	QLOG_TRACE() << "file remote path: " << fullPath;
 
-	localFilePath = Utils::instance().remotePathToLocalPath(fullPath);
+	m_localFilePath = Utils::toLocalPath(fullPath);
 
-	QLOG_TRACE() << "file local path: " << localFilePath;
+	QLOG_TRACE() << "file local path: " << m_localFilePath;
 
 	// - check if file exist and if it has newer timestamp
 	// - another possible check: if it's a local dir with the same name,
 	//   but that should never happen
 
-	QFileInfo fileInfo(localFilePath);
+	QFileInfo fileInfo(m_localFilePath);
 	if (fileInfo.exists())
 	{
 		if (fileInfo.lastModified().toTime_t()
@@ -349,7 +331,7 @@ void RemoteFileUploadedEventHandler::onGetAncestorsSucceeded(
 	// Local file either doesn't exist or is older
 
 	downloader = new FileDownloader(m_remoteEvent.fileDesc.id,
-		localFilePath, m_remoteEvent.fileDesc.modifiedAt, this);
+		m_localFilePath, m_remoteEvent.fileDesc.modifiedAt, this);
 
 	connect(downloader, SIGNAL(succeeded()),
 		this, SLOT(onDownloadSucceeded()));
@@ -358,10 +340,10 @@ void RemoteFileUploadedEventHandler::onGetAncestorsSucceeded(
 		this, SLOT(onDownloadFailed(QString)));
 
 	LocalFileEventExclusion
-		addedEventExclusion(LocalFileEvent::Added, localFilePath);
+		addedEventExclusion(LocalFileEvent::Added, m_localFilePath);
 
 	LocalFileEventExclusion
-		modifiedEventExclusion(LocalFileEvent::Modified, localFilePath);
+		modifiedEventExclusion(LocalFileEvent::Modified, m_localFilePath);
 
 	emit newLocalFileEventExclusion(addedEventExclusion);
 	emit newLocalFileEventExclusion(modifiedEventExclusion);

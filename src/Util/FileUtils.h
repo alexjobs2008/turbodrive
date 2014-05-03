@@ -8,8 +8,6 @@
 	#include "Windows.h"
 #endif
 
-#define DISK_ROOT_PATH "#root/#disk"
-
 namespace Drive
 {
 
@@ -38,20 +36,12 @@ private:
 
 };
 
-class Utils : public QObject
+class Utils
 {
-	Q_OBJECT
 public:
-	static Utils& instance();
-
-	static QString remotePathToLocalPath(const QString& remotePath,
-		bool addSeparapor = false);
-
-	static QString localPathToRemotePath(const QString& localPath);
-
-private:
-	explicit Utils(QObject *parent = 0);
-	Q_DISABLE_COPY(Utils)
+	static QString separator();
+	static QString toLocalPath(const QString& remotePath);
+	static QString toRemotePath(const QString& localPath);
 };
 
 
