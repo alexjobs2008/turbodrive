@@ -50,7 +50,7 @@ namespace
 bool eventShouldBeIgnored(const LocalFileEvent& event)
 {
 	bool result = false;
-	if (event.type == efsw::Action::Modified)
+	if (event.type == LocalFileEvent::Modified)
 	{
 		// Modified event for local dir should be ignored
 		// because we will consider events for each file in dir.
