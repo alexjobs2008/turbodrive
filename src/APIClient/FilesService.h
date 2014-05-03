@@ -231,17 +231,16 @@ public:
 	virtual bool restricted() const;
 
 signals:
-	void succeeded();
-	void getFileObjectSucceeded(Drive::RemoteFileDesc fileDesc);
+	void succeeded(const Drive::RemoteFileDesc& fileDesc);
 	void failed(const QString& error);
 
 private:
-	virtual bool processPutResponse(int status, const QByteArray& data,
-		const HeaderList& headers);
-	virtual bool processGetResponse(int status, const QByteArray& data,
-		const HeaderList& headers);
-	virtual bool processDelResponse(int status, const QByteArray& data,
-		const HeaderList& headers);
+	virtual bool processPutResponse(int status,
+			const QByteArray& data, const HeaderList&);
+	virtual bool processGetResponse(int status,
+			const QByteArray& data, const HeaderList&);
+	virtual bool processDelResponse(int status,
+			const QByteArray& data, const HeaderList&);
 
 	int id;
 	bool isDeleteRequest;

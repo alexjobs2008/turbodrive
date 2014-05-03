@@ -94,11 +94,10 @@ protected:
 private slots:
 	void onGetFileObjectIdSucceeded(int id);
 	void onGetFileObjectIdFailed();
-	void onRenameSucceeded();
+	void onRenameSucceeded(const Drive::RemoteFileDesc& fileDesc);
 	void onRenameFailed(const QString& error);
 
 private:
-	int m_remoteFileObjectId;
 	QString m_newName;
 	GetChildrenResourceRef m_currentResource;
 };

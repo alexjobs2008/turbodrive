@@ -723,65 +723,56 @@ bool FilesRestResource::restricted() const
 }
 
 bool FilesRestResource::processPutResponse(int status,
-											const QByteArray& data,
-											const HeaderList& headers)
+		const QByteArray& data, const HeaderList&)
 {
-//	QLOG_TRACE() << "FilesRestResource::processPutResponse";
-
-	//	QLOG_TRACE() << "create post: " << status << "."
-	//		<< headers << data;
-
-	if (status == 200)
+	if (status != 200)
 	{
-		emit succeeded();
+		Q_EMIT failed(QString::number(status).append(": ").append(data));
 	}
-	else
-	{
-		emit failed(QString::number(status).append(": ").append(data));
-	}
+
+	const QJsonDocument doc =
+		QJsonDocument::fromJson(this->getDataFromJson(data).toUtf8());
+
+	const RemoteFileDesc fileDesc = RemoteFileDesc::fromJson(doc.object());
+
+	Q_EMIT succeeded(fileDesc);
 
 	return true;
 }
 
 bool FilesRestResource::processGetResponse(int status,
-										const QByteArray& data,
-										const HeaderList& headers)
+		const QByteArray& data, const HeaderList&)
 {
-//	QLOG_TRACE() << "FilesRestResource::processGetResponse:" << status << data;
-
-	if (status == 200)
+	if (status != 200)
 	{
-		QLOG_TRACE() << "GetFileObject: " << this->getDataFromJson(data);
-
-		QJsonDocument doc =
-			QJsonDocument::fromJson(this->getDataFromJson(data).toUtf8());
-
-		RemoteFileDesc fileDesc = RemoteFileDesc::fromJson(doc.object());
-
-		emit getFileObjectSucceeded(fileDesc);
+		Q_EMIT failed(QString::number(status).append(": ").append(data));
 	}
-	else
-	{
-		emit failed(QString::number(status).append(": ").append(data));
-	}
+
+	const QJsonDocument doc =
+		QJsonDocument::fromJson(this->getDataFromJson(data).toUtf8());
+
+	const RemoteFileDesc fileDesc = RemoteFileDesc::fromJson(doc.object());
+
+	Q_EMIT succeeded(fileDesc);
 
 	return true;
 }
 
 bool FilesRestResource::processDelResponse(int status,
-											const QByteArray& data,
-											const HeaderList& headers)
+		const QByteArray& data, const HeaderList&)
 {
-	QLOG_TRACE() << "FilesRestResource::processDeleteResponse:" << status << data;
+	if (status != 200)
+	{
+		Q_EMIT failed(QString::number(status).append(": ").append(data));
+	}
 
-	if (status == 200)
-	{
-		emit succeeded();
-	}
-	else
-	{
-		emit failed(QString::number(status).append(": ").append(data));
-	}
+	const QJsonDocument doc =
+		QJsonDocument::fromJson(this->getDataFromJson(data).toUtf8());
+
+	const RemoteFileDesc fileDesc = RemoteFileDesc::fromJson(doc.object());
+
+	Q_EMIT succeeded(fileDesc);
+
 
 	return true;
 }

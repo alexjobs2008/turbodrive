@@ -42,11 +42,8 @@ LocalFileOrFolderAddedEventHandler::LocalFileOrFolderAddedEventHandler(
 
 void LocalFileOrFolderAddedEventHandler::run()
 {
-	if (localEvent.type != LocalFileEvent::Added
-		&& localEvent.type != LocalFileEvent::Modified)
-	{
-		return;
-	}
+	Q_ASSERT(localEvent.type == LocalFileEvent::Added
+			|| localEvent.type == LocalFileEvent::Modified);
 
 	if (!QFile::exists(localEvent.localPath()))
 	{
@@ -54,8 +51,6 @@ void LocalFileOrFolderAddedEventHandler::run()
 	}
 
 	// TODO: don't process hidden files
-
-	// Cached:
 
 	LocalCache& localCache = LocalCache::instance();
 
@@ -87,13 +82,9 @@ void LocalFileOrFolderAddedEventHandler::run()
 
 void LocalFileOrFolderAddedEventHandler::onGetFileObjectIdSucceeded(int id)
 {
-	QLOG_TRACE() << this << "getFileObjectIdSucceeded:" << id;
-
-	// file object exists, let's get it and check its timestamp
-
 	FilesRestResourceRef filesRestResource = FilesRestResource::create();
 
-	connect(filesRestResource.data(), &FilesRestResource::getFileObjectSucceeded,
+	connect(filesRestResource.data(), &FilesRestResource::succeeded,
 			this, &LocalFileOrFolderAddedEventHandler::onGetFileObjectSucceeded);
 
 	connect(filesRestResource.data(), &FilesRestResource::failed,
@@ -104,7 +95,7 @@ void LocalFileOrFolderAddedEventHandler::onGetFileObjectIdSucceeded(int id)
 
 void LocalFileOrFolderAddedEventHandler::onGetFileObjectIdFailed()
 {
-	m_getChildrenResource =GetChildrenResource::create();
+	m_getChildrenResource = GetChildrenResource::create();
 
 	connect(m_getChildrenResource.data(), &GetChildrenResource::getFileObjectIdSucceeded,
 			this, &LocalFileOrFolderAddedEventHandler::onGetFileObjectParentIdSucceeded);
@@ -118,42 +109,21 @@ void LocalFileOrFolderAddedEventHandler::onGetFileObjectIdFailed()
 void LocalFileOrFolderAddedEventHandler::onGetFileObjectSucceeded(
 	RemoteFileDesc fileDesc)
 {
-	// file object exists
-	// if it's a folder, then do nothing and quit
-	// if it's a file, then check timestamp
-	//	if remote's one is newer, then do nothing and quit
-	//	else delete and upload
-
 	m_remoteFileDesc = fileDesc;
-
-	QLOG_TRACE() << this << "getFileObjectSucceeded:" << fileDesc.id << fileDesc.name << fileDesc.modifiedAt;
 
 	QFileInfo fileInfo(localEvent.localPath());
 	if (fileInfo.isDir())
 	{
-		QLOG_INFO() << "Remote folder already exists: "
-			<< m_remotePath;
-
 		processEventsAndQuit();
 	}
 	else
 	{
 		if (fileDesc.modifiedAt >= fileInfo.lastModified().toTime_t())
 		{
-			QLOG_INFO() << this
-				<< "Remote file object is not older than local, no need to update it."
-				<< m_remotePath;
-			QLOG_TRACE() << "remote ts:"
-				<< QDateTime::fromTime_t(fileDesc.modifiedAt)
-				<< "local ts:"
-				<< QDateTime::fromTime_t(fileInfo.lastModified().toTime_t());
-
 			processEventsAndQuit();
 		}
 		else
 		{
-			// trash, then delete
-
 			TrashRestResourceRef trashRes = TrashRestResource::create();
 
 			connect(trashRes.data(), &TrashRestResource::succeeded,
@@ -209,13 +179,10 @@ void LocalFileOrFolderAddedEventHandler::onGetFileObjectParentIdFailed()
 void LocalFileOrFolderAddedEventHandler
 	::onCreateFolderSucceeded(Drive::RemoteFileDesc fileDesc)
 {
-	QLOG_TRACE() << "Remote folder created" << fileDesc.id << fileDesc.name;
-
 	LocalCache::instance().addFile(fileDesc);
 
-	RemoteFileEventExclusion
-		exclusion(RemoteFileEvent::Created, fileDesc.id);
-	emit newRemoteFileEventExclusion(exclusion);
+	emit newRemoteFileEventExclusion(
+			RemoteFileEventExclusion(RemoteFileEvent::Created, fileDesc.id));
 
 	processEventsAndQuit();
 }
@@ -223,38 +190,31 @@ void LocalFileOrFolderAddedEventHandler
 void LocalFileOrFolderAddedEventHandler::onCreateFolderFailed(
 	const QString& error)
 {
-	QLOG_TRACE() << "Failed to create a remote folder";
-	emit failed(error);
+	Q_EMIT failed(error);
 	processEventsAndQuit();
 }
 
 void LocalFileOrFolderAddedEventHandler::
 	onUploadSucceeded(Drive::RemoteFileDesc fileDesc)
 {
-	QLOG_TRACE() << this << "File uploaded:" << m_remotePath;
+	Q_ASSERT(fileDesc.isValid());
 
-	if (fileDesc.isValid())
-	{
-		LocalCache::instance().addFile(fileDesc);
+	LocalCache::instance().addFile(fileDesc);
 
-		RemoteFileEventExclusion exclusion(RemoteFileEvent::Uploaded, fileDesc.id);
-		emit newRemoteFileEventExclusion(exclusion);
-	}
+	emit newRemoteFileEventExclusion(
+			RemoteFileEventExclusion(RemoteFileEvent::Uploaded, fileDesc.id));
 
 	processEventsAndQuit();
 }
 
 void LocalFileOrFolderAddedEventHandler::onUploadFailed(const QString& error)
 {
-	QLOG_ERROR() << this << "Failed to upload file:" << m_remotePath << error;
-	emit failed(error);
+	Q_EMIT failed(error);
 	processEventsAndQuit();
 }
 
 void LocalFileOrFolderAddedEventHandler::onTrashSucceeded()
 {
-	QLOG_TRACE() << this << "trash succeeded for id" << m_remoteFileDesc.id;
-
 	FilesRestResourceRef filesRestResource = FilesRestResource::create();
 
 	connect(filesRestResource.data(), &FilesRestResource::succeeded,
@@ -265,26 +225,22 @@ void LocalFileOrFolderAddedEventHandler::onTrashSucceeded()
 
 	filesRestResource->remove(m_remoteFileDesc.id);
 
-	RemoteFileEventExclusion
-		exclusion(RemoteFileEvent::Trashed, m_remoteFileDesc.id);
-	emit newRemoteFileEventExclusion(exclusion);
+	Q_EMIT newRemoteFileEventExclusion(
+			RemoteFileEventExclusion(RemoteFileEvent::Trashed, m_remoteFileDesc.id));
 }
 
 void LocalFileOrFolderAddedEventHandler::onTrashFailed(const QString& error)
 {
-	QLOG_ERROR() << this << ": failed to trash remote file object:" << m_remoteFileDesc.id;
 	processEventsAndQuit();
 }
 
 void LocalFileOrFolderAddedEventHandler::onRemoveSucceeded()
 {
-	QLOG_TRACE() << this << "remove succeeded:" << m_remoteFileDesc.id;
 	onGetFileObjectIdFailed();
 }
 
 void LocalFileOrFolderAddedEventHandler::onRemoveFailed(const QString& error)
 {
-	QLOG_ERROR() << this << ": failed to remove remote file object:" << m_remoteFileDesc.id;
 	processEventsAndQuit();
 }
 
@@ -384,7 +340,6 @@ void LocalFileOrFolderDeletedEventHandler::onTrashFailed(const QString& error)
 LocalFileOrFolderRenamedEventHandler::LocalFileOrFolderRenamedEventHandler(
 	LocalFileEvent localEvent, QObject *parent)
 	: LocalEventHandlerBase(localEvent, parent)
-	, m_remoteFileObjectId(0)
 {
 }
 
@@ -392,23 +347,10 @@ void LocalFileOrFolderRenamedEventHandler::run()
 {
 	Q_ASSERT(localEvent.type == LocalFileEvent::Moved);
 
-	{
-		const QString remotePath = Utils::toRemotePath(localEvent.oldLocalPath());
-		LocalCache& cache = LocalCache::instance();
-		const RemoteFileDesc file = cache.file(remotePath);
-		if (file.isValid())
-		{
-			cache.removeFile(file);
-		}
-	}
-
 	const QFileInfo oldFileInfo(localEvent.oldLocalPath());
 	const QFileInfo newFileInfo(localEvent.localPath());
 
-	if (oldFileInfo.dir().absolutePath() != newFileInfo.dir().absolutePath())
-	{
-		return;
-	}
+	Q_ASSERT(oldFileInfo.dir().absolutePath() == newFileInfo.dir().absolutePath());
 
 	m_newName = newFileInfo.fileName();
 
@@ -430,8 +372,6 @@ void LocalFileOrFolderRenamedEventHandler::run()
 
 void LocalFileOrFolderRenamedEventHandler::onGetFileObjectIdSucceeded(int id)
 {
-	m_remoteFileObjectId = id;
-
 	FilesRestResourceRef filesRestResource = FilesRestResource::create();
 
 	connect(filesRestResource.data(), &FilesRestResource::succeeded,
@@ -452,22 +392,19 @@ void LocalFileOrFolderRenamedEventHandler::onGetFileObjectIdFailed()
 	processEventsAndQuit();
 }
 
-void LocalFileOrFolderRenamedEventHandler::onRenameSucceeded()
+void LocalFileOrFolderRenamedEventHandler::onRenameSucceeded(const Drive::RemoteFileDesc& fileDesc)
 {
-	if (m_remoteFileObjectId)
-	{
-		Q_EMIT newRemoteFileEventExclusion(RemoteFileEventExclusion(
-				RemoteFileEvent::Renamed, m_remoteFileObjectId));
-	}
+	Q_ASSERT(fileDesc.isValid());
+
+	LocalCache::instance().addFile(fileDesc);
+	Q_EMIT newRemoteFileEventExclusion(RemoteFileEventExclusion(
+			RemoteFileEvent::Renamed, fileDesc.id));
 
 	processEventsAndQuit();
 }
 
 void LocalFileOrFolderRenamedEventHandler::onRenameFailed(const QString& error)
 {
-	QLOG_ERROR() << "Failed to rename remote file object: "
-		<< m_remoteFileObjectId << m_newName << error;
-
 	processEventsAndQuit();
 }
 
