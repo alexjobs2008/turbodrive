@@ -111,7 +111,7 @@ QString LocalCache::fullPath(const RemoteFileDesc& d) const
 		result.prepend(QLatin1String("/"));
 		if(currentFile.parentId == -1)
 		{
-			result.prepend(QLatin1String("#root"));
+			result.prepend(QLatin1String("/#root"));
 			break;
 		}
 		currentFile = fileById(currentFile.parentId);

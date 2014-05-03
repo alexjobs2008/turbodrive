@@ -18,8 +18,6 @@ public:
 	virtual ~LocalEventHandlerBase();
 
 protected:
-	bool localFileExists();
-
 	LocalFileEvent localEvent;
 };
 
@@ -56,11 +54,10 @@ private slots:
 	void onRemoveFailed(const QString& error);
 
 private:
-	QString remotePath;
-	RemoteFileDesc remotefileDesc;
-	GetChildrenResourceRef getChildrenResource;
-
-	int objParentId; // cached version only
+	const QString m_remotePath;
+	RemoteFileDesc m_remoteFileDesc;
+	GetChildrenResourceRef m_getChildrenResource;
+	int m_parentId;
 };
 
 class LocalFileOrFolderDeletedEventHandler: public LocalEventHandlerBase
