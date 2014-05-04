@@ -26,7 +26,7 @@ LocalFileEventNotifier::LocalFileEventNotifier(QObject *parent)
 {
 }
 
-void LocalFileEventNotifier::setFolder()
+void LocalFileEventNotifier::resetFolder()
 {
 	m_listener.reset(new LocalListener(this));
 	connect(m_listener.get(), &LocalListener::newLocalFileEvent,

@@ -11,8 +11,8 @@
 namespace Drive
 {
 
-Syncer::Syncer(QObject *parent)
-	: QObject(parent)
+Syncer::Syncer()
+	: QObject(nullptr)
 	, m_currentLocalPathPrefix(QString())
 	, m_folderCounter(0)
 {

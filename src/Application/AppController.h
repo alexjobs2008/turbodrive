@@ -9,6 +9,8 @@
 #include <QtCore/QSharedPointer>
 #include <QPointer>
 
+#include <memory>
+
 #include "TrayIcon.h"
 
 class QMenu;
@@ -41,6 +43,10 @@ public:
 	void setTrayIcon(const QPointer<TrayIcon>& trayIcon);
 
 	void createFolder();
+
+	void onSettingChanged(const QString& settingName, QVariant, QVariant);
+
+	void restart();
 
 public slots:
 	void setState(State newState);
@@ -89,7 +95,8 @@ private:
 
 	ProfileData currentProfileData;
 	QString currentAuthToken;
-	Syncer *syncer;
+
+	std::auto_ptr<Syncer> m_syncer;
 };
 
 }

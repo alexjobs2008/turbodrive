@@ -42,7 +42,6 @@ AppController::AppController(QWidget *parent)
 	: QMainWindow(parent)
 	, currentState(NotAuthorized)
 	, currentAuthToken(QString())
-	, syncer(0)
 {
 	createFolder();
 	createActions();
@@ -53,6 +52,10 @@ AppController::AppController(QWidget *parent)
 	LoginController& loginController = LoginController::instance();
 	connect(&loginController, &LoginController::loginFinished,
 			this, &AppController::onLoginFinished);
+
+	connect(&Settings::instance(), &Settings::settingChanged,
+			this, &AppController::onSettingChanged);
+
 
 	SettingsWidget::instance().hide();
 }
@@ -269,44 +272,44 @@ void AppController::onLoginFinished()
 		Settings::instance().get(Settings::folderPath).toString(), 1);
 
 	FileEventDispatcher& eventDispatcher = FileEventDispatcher::instance();
-
-	connect(&eventDispatcher, &FileEventDispatcher::processing,
-			this, &AppController::onQueueProcessing);
-
-	connect(&eventDispatcher, &FileEventDispatcher::finished,
-			this, &AppController::onQueueFinished);
-
-	connect(&eventDispatcher, &FileEventDispatcher::progress,
-			this, &AppController::onProcessingProgress);
+	{
+		eventDispatcher.disconnect(this);
+		connect(&eventDispatcher, &FileEventDispatcher::processing,
+				this, &AppController::onQueueProcessing);
+		connect(&eventDispatcher, &FileEventDispatcher::finished,
+				this, &AppController::onQueueFinished);
+		connect(&eventDispatcher, &FileEventDispatcher::progress,
+				this, &AppController::onProcessingProgress);
+	}
 
 	LocalFileEventNotifier& localNotifier = LocalFileEventNotifier::instance();
-
-	connect(&localNotifier, &LocalFileEventNotifier::newLocalFileEvent,
-			&eventDispatcher, &FileEventDispatcher::addLocalFileEvent);
+	{
+		localNotifier.disconnect(&eventDispatcher);
+		connect(&localNotifier, &LocalFileEventNotifier::newLocalFileEvent,
+				&eventDispatcher, &FileEventDispatcher::addLocalFileEvent);
+	}
 
 	NotificationResourceRef remoteNotifier = NotificationResource::create();
-
-	connect(remoteNotifier.data(), &NotificationResource::newRemoteFileEvent,
-			&eventDispatcher, &FileEventDispatcher::addRemoteFileEvent);
-
-	if (!syncer)
 	{
-		syncer = new Syncer(this);
+		connect(remoteNotifier.data(), &NotificationResource::newRemoteFileEvent,
+				&eventDispatcher, &FileEventDispatcher::addRemoteFileEvent);
 	}
+
+	m_syncer.reset(new Syncer());
 
 	LocalCache &localCache = LocalCache::instance();
 
-	connect(syncer, &Syncer::newRoot, &localCache, &LocalCache::addRoot);
-	connect(syncer, &Syncer::newFile, &localCache, &LocalCache::addFile);
+	connect(m_syncer.get(), &Syncer::newRoot, &localCache, &LocalCache::addRoot);
+	connect(m_syncer.get(), &Syncer::newFile, &localCache, &LocalCache::addFile);
 
-	connect(syncer, &Syncer::newRemoteEvent,
+	connect(m_syncer.get(), &Syncer::newRemoteEvent,
 			&eventDispatcher, &FileEventDispatcher::addRemoteFileEvent);
-	connect(syncer, &Syncer::newLocalEvent,
+	connect(m_syncer.get(), &Syncer::newLocalEvent,
 			&eventDispatcher, &FileEventDispatcher::addLocalFileEvent);
 
-	syncer->fullSync();
+	m_syncer->fullSync();
 
-	localNotifier.setFolder();
+	localNotifier.resetFolder();
 	remoteNotifier->listenRemoteFileEvents();
 }
 
@@ -332,6 +335,24 @@ void AppController::createFolder()
 
 	QDir dir;
 	dir.mkpath(folderPath);
+}
+
+void AppController::onSettingChanged(const QString& settingName,
+		QVariant, QVariant)
+{
+	if (settingName == Settings::folderPath)
+	{
+		restart();
+	}
+}
+
+void AppController::restart()
+{
+	FileEventDispatcher::instance().cancelAll();
+	LocalFileEventNotifier::instance().stop();
+	LocalCache::instance().clear();
+	GeneralRestDispatcher::instance().cancelAll();
+	onLoginFinished();
 }
 
 }

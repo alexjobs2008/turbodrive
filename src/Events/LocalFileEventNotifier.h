@@ -20,7 +20,7 @@ class LocalFileEventNotifier: public QObject
 public:
 	static LocalFileEventNotifier& instance();
 
-	Q_SLOT void setFolder();
+	Q_SLOT void resetFolder();
 	Q_SLOT void stop();
 
 	Q_SIGNAL void newLocalFileEvent(const LocalFileEvent& event);
