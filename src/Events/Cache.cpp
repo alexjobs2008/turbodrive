@@ -84,7 +84,7 @@ void LocalCache::addFile(const RemoteFileDesc& file)
 
 	{
 		LOCK_MUTEX;
-		m_files.insert(std::make_pair(path, file));
+		m_files[path] = file;
 	}
 }
 
