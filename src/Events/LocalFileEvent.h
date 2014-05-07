@@ -7,10 +7,10 @@
 namespace Drive
 {
 
-struct LocalFileEvent
+class LocalFileEvent
 {
 public:
-	enum EventType
+	enum Type
 	{
 		Added = 0,
 		Modified,
@@ -19,23 +19,29 @@ public:
 	};
 
 	LocalFileEvent();
+	LocalFileEvent(Type type,
+			const QString& dir,
+			const QString& filePath = QString::null,
+			const QString& oldFileName = QString::null);
+
+	Type type() const;
+	uint timeStamp() const;
 
 	QString fileName() const;
 	QString localPath() const;
 	QString oldLocalPath() const;
 
-	void log() const;
-	void logCompact() const;
-	static QString typeName(EventType type);
+	LocalFileEvent copyTo(Type type) const;
 
-//private:
+private:
+	LocalFileEvent(Type type, const LocalFileEvent& source);
 
-	uint timestamp;
-	EventType type;
-	QString dir;
-	QString filePath;
-	QString oldFileName;
-	int remoteFileId;
+private:
+	Type m_type;
+	QString m_dir;
+	QString m_filePath;
+	QString m_oldFileName;
+	uint m_timeStamp;
 };
 
 class LocalFileEventExclusion
@@ -47,34 +53,28 @@ public:
 		PartialMatch
 	};
 
-	LocalFileEventExclusion() {};
+	LocalFileEventExclusion() {}
 
-	explicit LocalFileEventExclusion(LocalFileEvent::EventType eventType,
+	explicit LocalFileEventExclusion(LocalFileEvent::Type eventType,
 		const QString& path, PathMatchType matchType = FullMatch);
 
 	inline bool operator==(const LocalFileEventExclusion& rhs);
 
 	PathMatchType matchType() const;
-	LocalFileEvent::EventType eventType() const;
+	LocalFileEvent::Type eventType() const;
 	QString path() const;
 
 	bool matches(const LocalFileEvent &event) const;
-	void log() const;
-	QString pathMatchTypeName() const;
 
 private:
-	//LocalFileEventExclusion() {};
-
-	PathMatchType m_matchType;			// exclusion path match type
-	LocalFileEvent::EventType m_eventType;  // local file event type
-	QString m_path;						// local file path
+	PathMatchType m_matchType;
+	LocalFileEvent::Type m_eventType;
+	QString m_path;
 };
-
-
 
 }
 
-Q_DECLARE_METATYPE(Drive::LocalFileEvent);
-Q_DECLARE_METATYPE(Drive::LocalFileEventExclusion);
+Q_DECLARE_METATYPE(Drive::LocalFileEvent)
+Q_DECLARE_METATYPE(Drive::LocalFileEventExclusion)
 
-#endif LOCAL_FILE_EVENT
+#endif

@@ -1,5 +1,7 @@
 #include "LocalFileEvent.h"
 
+#include "Util/FileUtils.h"
+
 #include "QsLog/QsLog.h"
 
 #include <QtCore/QDateTime>
@@ -9,119 +11,66 @@ namespace Drive
 {
 
 LocalFileEvent::LocalFileEvent()
+	: m_type(Added)
+	, m_timeStamp(QDateTime::currentDateTimeUtc().toTime_t())
 {
-	timestamp = QDateTime::currentDateTimeUtc().toTime_t();
+}
+
+LocalFileEvent::LocalFileEvent(const Type type,
+		const QString& dir, const QString& filePath, const QString& oldFileName)
+	: m_type(type)
+	, m_dir(dir)
+	, m_filePath(filePath)
+	, m_oldFileName(oldFileName)
+	, m_timeStamp(QDateTime::currentDateTimeUtc().toTime_t())
+{
+}
+
+LocalFileEvent::Type LocalFileEvent::type() const
+{
+	return m_type;
+}
+
+uint LocalFileEvent::timeStamp() const
+{
+	return m_timeStamp;
 }
 
 QString LocalFileEvent::fileName() const
 {
-	QLOG_TRACE() << "LocalFileEvent::fileName():";
-	this->logCompact();
-	QLOG_TRACE() << "QDir::fromNativeSeparators(filePath):" << QDir::fromNativeSeparators(localPath());
-
-	return QDir::fromNativeSeparators(localPath())
-		.split("/", QString::SkipEmptyParts).last();
+	return m_filePath.split(Utils::separator(), QString::SkipEmptyParts).last();
 }
 
 QString LocalFileEvent::localPath() const
 {
-	QString nativeDirPath = QDir::toNativeSeparators(dir);
-	QString nativeFilePath = QDir::toNativeSeparators(filePath);
-
-	if (!nativeDirPath.endsWith(QDir::separator())
-		&& !nativeFilePath.startsWith(QDir::separator()))
-	{
-		return nativeDirPath.append(QDir::separator()).append(nativeFilePath);
-	}
-	else
-	{
-		return nativeDirPath.append(nativeFilePath);
-	}
+	return m_dir + Utils::separator() + m_filePath;
 }
 
 QString LocalFileEvent::oldLocalPath() const
 {
-	return oldFileName.isEmpty()
-		? QString()
-		: QDir::toNativeSeparators(dir).append(oldFileName);
+	return m_oldFileName.isEmpty()
+		? QString::null
+		: m_dir + Utils::separator() + m_oldFileName;
 }
 
-void LocalFileEvent::log() const
+LocalFileEvent LocalFileEvent::copyTo(LocalFileEvent::Type type) const
 {
-	QString oldLocal = (!oldLocalPath().trimmed().isEmpty())
-		? QString("(%1)").arg(oldLocalPath()) : QString();
-
-	QLOG_TRACE()
-		<< QDateTime::fromTime_t(timestamp).toString()
-		<< typeName(type)
-		//<< localPath()
-		<< dir
-		<< filePath
-		<< oldLocal;
+	return LocalFileEvent(type, *this);
 }
 
-void LocalFileEvent::logCompact() const
+LocalFileEvent::LocalFileEvent(LocalFileEvent::Type type, const LocalFileEvent& source)
+	: m_type(type)
+	, m_dir(source.m_dir)
+	, m_filePath(source.m_filePath)
+	, m_oldFileName(source.m_oldFileName)
+	, m_timeStamp(source.m_timeStamp)
 {
-	QString sFileType;
-	QString sLastModified;
-
-	QFileInfo fileInfo(localPath());
-	if (fileInfo.exists())
-	{
-		if (fileInfo.isDir())
-		{
-			sFileType = "Folder";
-		}
-		else if (fileInfo.isFile())
-		{
-			sFileType = "File";
-		}
-		else if (fileInfo.isSymLink())
-		{
-			sFileType = "SymLink";
-		}
-		else if (fileInfo.isBundle())
-		{
-			sFileType = "Bundle";
-		}
-		else
-		{
-			sFileType = "Unknown file type";
-		}
-
-		sLastModified = QString("(last modified: %1)")
-			.arg(fileInfo.lastModified().toString());
-	}
-
-	QLOG_TRACE () << "Local file event:"
-		<< sFileType
-		<< localPath()
-		<< "has been "
-		<< typeName(type)
-		<< sLastModified;
-}
-
-QString LocalFileEvent::typeName(EventType type)
-{
-	switch (type)
-	{
-	case Added:
-		return "added";
-	case Modified:
-		return "modified";
-	case Deleted:
-		return "deleted";
-	case Moved:
-		return "moved";
-	default:
-		return QString();
-	}
 }
 
 // ============================================================================
 
 LocalFileEventExclusion::LocalFileEventExclusion(
-	LocalFileEvent::EventType eventType
+	LocalFileEvent::Type eventType
 	, const QString& path
 	, PathMatchType matchType)
 	: m_eventType(eventType)
@@ -143,7 +92,7 @@ LocalFileEventExclusion::PathMatchType
 	return m_matchType;
 }
 
-LocalFileEvent::EventType LocalFileEventExclusion::eventType() const
+LocalFileEvent::Type LocalFileEventExclusion::eventType() const
 {
 	return m_eventType;
 }
@@ -155,7 +104,7 @@ QString LocalFileEventExclusion::path() const
 
 bool LocalFileEventExclusion::matches(const LocalFileEvent &event) const
 {
-	if (m_eventType != event.type)
+	if (m_eventType != event.type())
 		return false;
 
 	switch (m_matchType)
@@ -168,30 +117,6 @@ bool LocalFileEventExclusion::matches(const LocalFileEvent &event) const
 		Q_ASSERT(false);
 		return false;
 		break;
-	}
-}
-
-void LocalFileEventExclusion::log() const
-{
-	QLOG_TRACE() << "Local file event exclusion:"
-		<< LocalFileEvent::typeName(m_eventType)
-		<< m_path
-		<< ", match type:" << pathMatchTypeName();
-}
-
-QString LocalFileEventExclusion::pathMatchTypeName() const
-{
-	switch (m_matchType)
-	{
-	case Drive::LocalFileEventExclusion::FullMatch:
-		return "Full match";
-		break;
-	case Drive::LocalFileEventExclusion::PartialMatch:
-		return "Partial match";
-		break;
-	default:
-		Q_ASSERT(false);
-		return false;
 	}
 }
 

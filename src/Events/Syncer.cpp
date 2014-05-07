@@ -172,44 +172,22 @@ void Syncer::syncLocalFolder(const QString& localFolderPath)
 //					.addExclusion(info.absoluteFilePath());
 //			}
 
-			QLOG_TRACE() << "info.filePath():" << info.filePath();
-
 			if (info.isDir())
 			{
-				QLOG_TRACE() << "SYNCER is processing dir:"
-					<< info.absoluteFilePath();
-//				QLOG_TRACE() << QDir::toNativeSeparators(info.absoluteDir().absolutePath());
-//				QLOG_TRACE() << QDir::toNativeSeparators(Settings::instance().get(Settings::folderPath).toString());
-
-
-				if (QDir::toNativeSeparators(info.absoluteFilePath())
-					!= QDir::toNativeSeparators(Settings::instance().get(Settings::folderPath).toString()))
+				if (QDir::cleanPath(info.absoluteFilePath())
+					!= QDir::cleanPath(Settings::instance().get(Settings::folderPath).toString()))
 				{
-					LocalFileEvent event;
-					event.type = LocalFileEvent::Added;
-					event.dir =
-						QDir::fromNativeSeparators(info.absoluteFilePath());
-					event.filePath = QString();
-
-					QLOG_TRACE() << "adding artificial event: ";
-					event.logCompact();
-
-//!					newLocalEvent(event);
-					m_localEvents << event;
-
+					m_localEvents << LocalFileEvent(LocalFileEvent::Added,
+							QDir::cleanPath(info.absoluteFilePath()));
 					syncLocalFolder(info.absoluteFilePath());
 				}
 			}
 			else
 			{
 				LocalFileEvent event;
-				event.type = LocalFileEvent::Added;
-				event.dir = QDir::fromNativeSeparators(
-					info.absoluteDir().absolutePath()).append(QDir::separator());
-				event.filePath = info.fileName();
-
-//!				newLocalEvent(event);
-				m_localEvents << event;
+				m_localEvents << LocalFileEvent(LocalFileEvent::Added,
+						QDir::cleanPath(info.absolutePath()),
+						info.fileName());
 			}
 
 		}

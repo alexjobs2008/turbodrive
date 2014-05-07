@@ -192,10 +192,10 @@ void FileEventDispatcher::next()
 	{
 		// both queues are not empty, handle the earliest event
 
-		LocalFileEvent& localEvent = priorityLocalEvents.head();
-		RemoteFileEvent& remoteEvent = priorityRemoteEvents.head();
+		const LocalFileEvent& localEvent = priorityLocalEvents.head();
+		const RemoteFileEvent& remoteEvent = priorityRemoteEvents.head();
 
-		if (localEvent.timestamp < remoteEvent.unixtime)
+		if (localEvent.timeStamp() < remoteEvent.unixtime)
 		{
 			handleEvent(priorityLocalEvents.dequeue());
 		}
@@ -222,10 +222,10 @@ void FileEventDispatcher::next()
 	{
 		// both queues are not empty, handle the earliest event
 
-		LocalFileEvent& localEvent = localEvents.head();
-		RemoteFileEvent& remoteEvent = remoteEvents.head();
+		const LocalFileEvent& localEvent = localEvents.head();
+		const RemoteFileEvent& remoteEvent = remoteEvents.head();
 
-		if (localEvent.timestamp < remoteEvent.unixtime)
+		if (localEvent.timeStamp() < remoteEvent.unixtime)
 		{
 			handleEvent(localEvents.dequeue());
 		}
@@ -313,9 +313,6 @@ void FileEventDispatcher::handleEvent(const LocalFileEvent& localEvent)
 
 	dontIncrementTotalCount = false;
 
-	QLOG_TRACE() << "EventDispatcher: handling local file event: ";
-	localEvent.logCompact();
-
 	QString fileName = localEvent.localPath().
 		split(QDir::separator(), QString::SkipEmptyParts).last();
 
@@ -333,7 +330,7 @@ void FileEventDispatcher::handleEvent(const LocalFileEvent& localEvent)
 
 	EventHandlerBase *handlerThread = 0;
 
-	switch (localEvent.type)
+	switch (localEvent.type())
 	{
 	case LocalFileEvent::Added:
 	case LocalFileEvent::Modified:
@@ -456,8 +453,6 @@ void FileEventDispatcher::onNewLocalFileEventExclusion(const LocalFileEventExclu
 {
 	QMutexLocker locker(&localExclusionsMutex);
 
-	localExclusion.log();
-
 	EventHandlerBase *thread = static_cast<EventHandlerBase*>(sender());
 
 	LocalFileEventExclusionList threadLocalExclusions =
@@ -514,7 +509,7 @@ bool FileEventDispatcher::shouldBeGrouped(const LocalFileEvent &event)
 {
 	// Grouping events EEs with some another event E means that EEs
 	// should be ignored because semantically EEs will be processed
-	// bó E handler. So executing EEs handlers would be useless
+	// by E handler. So executing EEs handlers would be useless
 	// ---
 	// Grouping rules:
 	// 1. not processed "modified" event should be grouped with
@@ -529,7 +524,7 @@ bool FileEventDispatcher::shouldBeGrouped(const LocalFileEvent &event)
 	//	a *latter* "deleted" event.
 	//	OTOH: user would have not the current version of a file in the trash
 
-	if (event.type == LocalFileEvent::Modified)
+	if (event.type() == LocalFileEvent::Modified)
 	{
 		for (int i = 0; i < localEvents.size(); ++i)
 		{
@@ -537,8 +532,8 @@ bool FileEventDispatcher::shouldBeGrouped(const LocalFileEvent &event)
 
 			// Rules 1 and 2:
 
-			if ( (queuedEvent.type == LocalFileEvent::Added
-				|| queuedEvent.type == LocalFileEvent::Modified)
+			if ( (queuedEvent.type() == LocalFileEvent::Added
+				|| queuedEvent.type() == LocalFileEvent::Modified)
 				&& queuedEvent.localPath() == event.localPath())
 			{
 				return true;
@@ -608,23 +603,16 @@ void FileEventDispatcher::logEvent(const LocalFileEvent &event, const QString &p
 {
 	QString line = QString::number(++globalCounter)
 		.append("). ")
-		.append(QDateTime::fromTime_t(event.timestamp)
+		.append(QDateTime::fromTime_t(event.timeStamp())
 			.toString(DATETIME_TO_STRING_FORMAT))
 		.append("   ");
 
 	line
 		.append(prefix)
-		.append(event.typeName(event.type))
+		.append(event.type())
 		.append(" \"")
 		.append(event.localPath())
 		.append("\"");
-
-	if (!event.oldFileName.isEmpty())
-	{
-		line.append(", old name: \"")
-			.append(event.oldFileName)
-			.append("\"");
-	}
 
 	line.append("\n");
 

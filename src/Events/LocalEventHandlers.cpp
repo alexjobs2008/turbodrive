@@ -16,18 +16,10 @@ LocalEventHandlerBase::LocalEventHandlerBase(LocalFileEvent localEvent,
 		QObject *parent)
 	: EventHandlerBase(parent), localEvent(localEvent)
 {
-	QLOG_TRACE() << "Thread" << this
-		<< "is staring processing local file event:";
-
-	localEvent.logCompact();
 }
 
 LocalEventHandlerBase::~LocalEventHandlerBase()
 {
-	QLOG_TRACE() << "Thread" << this
-		<< "has finished processing local file event:";
-
-	localEvent.logCompact();
 }
 
 // ===========================================================================
@@ -42,8 +34,8 @@ LocalFileOrFolderAddedEventHandler::LocalFileOrFolderAddedEventHandler(
 
 void LocalFileOrFolderAddedEventHandler::run()
 {
-	Q_ASSERT(localEvent.type == LocalFileEvent::Added
-			|| localEvent.type == LocalFileEvent::Modified);
+	Q_ASSERT(localEvent.type() == LocalFileEvent::Added
+			|| localEvent.type() == LocalFileEvent::Modified);
 
 	if (!QFile::exists(localEvent.localPath()))
 	{
@@ -255,7 +247,7 @@ LocalFileOrFolderDeletedEventHandler::LocalFileOrFolderDeletedEventHandler(
 
 void LocalFileOrFolderDeletedEventHandler::run()
 {
-	Q_ASSERT(localEvent.type == LocalFileEvent::Deleted);
+	Q_ASSERT(localEvent.type() == LocalFileEvent::Deleted);
 
 	const QString remotePath = Utils::toRemotePath(localEvent.localPath());
 
@@ -345,7 +337,7 @@ LocalFileOrFolderRenamedEventHandler::LocalFileOrFolderRenamedEventHandler(
 
 void LocalFileOrFolderRenamedEventHandler::run()
 {
-	Q_ASSERT(localEvent.type == LocalFileEvent::Moved);
+	Q_ASSERT(localEvent.type() == LocalFileEvent::Moved);
 
 	const QFileInfo oldFileInfo(localEvent.oldLocalPath());
 	const QFileInfo newFileInfo(localEvent.localPath());
@@ -385,10 +377,7 @@ void LocalFileOrFolderRenamedEventHandler::onGetFileObjectIdSucceeded(int id)
 
 void LocalFileOrFolderRenamedEventHandler::onGetFileObjectIdFailed()
 {
-	LocalFileEvent event(localEvent);
-	event.type = LocalFileEvent::Added;
-	Q_EMIT newLocalFileEvent(event);
-
+	Q_EMIT newLocalFileEvent(localEvent.copyTo(LocalFileEvent::Added));
 	processEventsAndQuit();
 }
 

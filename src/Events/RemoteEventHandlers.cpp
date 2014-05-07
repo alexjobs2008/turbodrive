@@ -269,72 +269,45 @@ void RemoteFileUploadedEventHandler::run()
 void RemoteFileUploadedEventHandler::onGetAncestorsSucceeded(
 	const QString& fullPath)
 {
-	QLOG_TRACE() << "file remote path: " << fullPath;
-
 	m_localFilePath = Utils::toLocalPath(fullPath);
-
-	QLOG_TRACE() << "file local path: " << m_localFilePath;
-
-	// - check if file exist and if it has newer timestamp
-	// - another possible check: if it's a local dir with the same name,
-	//   but that should never happen
 
 	QFileInfo fileInfo(m_localFilePath);
 	if (fileInfo.exists())
 	{
-		if (fileInfo.lastModified().toTime_t()
-			> m_remoteEvent.fileDesc.modifiedAt)
+		const uint localModified = fileInfo.lastModified().toTime_t();
+		if (localModified > m_remoteEvent.fileDesc.modifiedAt)
 		{
-			QLOG_TRACE() << "Local file is newer than remote file";
-
-			// local file is newer than the remote file,
-			// so no need to download. The local file should be uploaded
-			// and substitute the remote file
-
-			LocalFileEvent event;
-			event.type = LocalFileEvent::Modified;
-			event.timestamp = QDateTime::currentDateTime().toTime_t();
-			event.dir = QDir::fromNativeSeparators(
-				fileInfo.absoluteDir().absolutePath());
-			event.filePath = fileInfo.fileName();
-
-			emit newLocalFileEvent(event);
+			Q_EMIT newLocalFileEvent(LocalFileEvent(LocalFileEvent::Modified,
+					QDir::cleanPath(fileInfo.absolutePath()),
+					fileInfo.fileName()));
 			processEventsAndQuit();
-			emit succeeded();
+			Q_EMIT succeeded();
 			return;
 		}
-		else if (fileInfo.lastModified().toTime_t()
-			== m_remoteEvent.fileDesc.modifiedAt)
+		else if (localModified == m_remoteEvent.fileDesc.modifiedAt)
 		{
-			QLOG_TRACE() << "Local file timestamp == remote file timestamp";
-			emit succeeded();
+			Q_EMIT succeeded();
 			processEventsAndQuit();
 			return;
 		}
 	}
 
-	// Local file either doesn't exist or is older
-
-	downloader = new FileDownloader(m_remoteEvent.fileDesc.id,
+	m_downloader = new FileDownloader(m_remoteEvent.fileDesc.id,
 		m_localFilePath, m_remoteEvent.fileDesc.modifiedAt, this);
 
-	connect(downloader, &FileDownloader::succeeded,
+	connect(m_downloader, &FileDownloader::succeeded,
 			this, &RemoteFileUploadedEventHandler::onDownloadSucceeded);
 
-	connect(downloader, &FileDownloader::failed,
+	connect(m_downloader, &FileDownloader::failed,
 			this, &RemoteFileUploadedEventHandler::onDownloadFailed);
 
-	LocalFileEventExclusion
-		addedEventExclusion(LocalFileEvent::Added, m_localFilePath);
+	Q_EMIT newLocalFileEventExclusion(LocalFileEventExclusion(
+			LocalFileEvent::Added, m_localFilePath));
+	Q_EMIT newLocalFileEventExclusion(LocalFileEventExclusion(
+			LocalFileEvent::Modified, m_localFilePath));
 
-	LocalFileEventExclusion
-		modifiedEventExclusion(LocalFileEvent::Modified, m_localFilePath);
-
-	emit newLocalFileEventExclusion(addedEventExclusion);
-	emit newLocalFileEventExclusion(modifiedEventExclusion);
-
-	downloader->limitSpeed(50);
-	downloader->download();
+	m_downloader->limitSpeed(50);
+	m_downloader->download();
 
 }
 

@@ -96,7 +96,7 @@ private slots:
 	void onDownloadFailed(const QString& error);
 
 private:
-	FileDownloader *downloader;
+	FileDownloader *m_downloader;
 	QString m_localFilePath;
 };
 

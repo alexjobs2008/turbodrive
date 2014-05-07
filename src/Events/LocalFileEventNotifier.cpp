@@ -50,15 +50,11 @@ namespace
 bool eventShouldBeIgnored(const LocalFileEvent& event)
 {
 	bool result = false;
-	if (event.type == LocalFileEvent::Modified)
+	if (event.type() == LocalFileEvent::Modified)
 	{
 		// Modified event for local dir should be ignored
 		// because we will consider events for each file in dir.
-
-		const QString localPath = QDir::toNativeSeparators(event.dir)
-				.append(QDir::toNativeSeparators(event.filePath));
-
-		const QFileInfo fileInfo(localPath);
+		const QFileInfo fileInfo(event.localPath());
 		result = fileInfo.exists() && fileInfo.isDir();
 	}
 	return result;
@@ -72,36 +68,36 @@ LocalListener::LocalListener(QObject *parent)
 {
 }
 
-void LocalListener::handleFileAction(efsw::WatchID watchid,
+void LocalListener::handleFileAction(efsw::WatchID,
 									const std::string& dir,
 									const std::string& filename,
 									efsw::Action action,
 									std::string oldFilename)
 {
-	LocalFileEvent localEvent;
-	localEvent.dir = QString::fromStdString(dir);
-	localEvent.filePath = QString::fromStdString(filename);
-	localEvent.oldFileName = QString::fromStdString(oldFilename);
-
-	switch( action )
+	LocalFileEvent::Type type = LocalFileEvent::Added;
+	switch(action)
 	{
 	case efsw::Actions::Add:
-		localEvent.type = LocalFileEvent::Added;
+		type = LocalFileEvent::Added;
 		break;
 	case efsw::Actions::Delete:
-		localEvent.type = LocalFileEvent::Deleted;
+		type = LocalFileEvent::Deleted;
 		break;
 	case efsw::Actions::Modified:
-		localEvent.type = LocalFileEvent::Modified;
+		type = LocalFileEvent::Modified;
 		break;
 	case efsw::Actions::Moved:
-		localEvent.type = LocalFileEvent::Moved;
+		type = LocalFileEvent::Moved;
 		break;
 	default:
-		QLOG_ERROR() << "Unknown local file event type.";
 		Q_ASSERT(false);
 		return;
 	}
+
+	const LocalFileEvent localEvent(type,
+			QDir::cleanPath(QString::fromStdString(dir)),
+			QDir::cleanPath(QString::fromStdString(filename)),
+			QDir::cleanPath(QString::fromStdString(oldFilename)));
 
 	if (eventShouldBeIgnored(localEvent))
 	{
