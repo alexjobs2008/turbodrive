@@ -18,6 +18,30 @@
 
 using namespace Drive;
 
+void messageHandler(QtMsgType type, const QMessageLogContext& context, const QString& message)
+{
+	static const QString format = QString::fromLatin1("%0 (%1@%2).");
+	const QByteArray fullString = format
+			.arg(message).arg(context.file).arg(context.line)
+			.toLocal8Bit();
+	const char* fullMessage = fullString.data();
+	switch (type)
+	{
+		case QtDebugMsg:
+			QLOG_DEBUG() << fullMessage;
+			break;
+		case QtWarningMsg:
+			QLOG_WARN() << fullMessage;
+			break;
+		case QtCriticalMsg:
+			QLOG_ERROR() << fullMessage;
+			break;
+		case QtFatalMsg:
+			QLOG_FATAL() << fullMessage;
+			break;
+	}
+}
+
 void initLogging()
 {
 	using namespace QsLogging;
@@ -69,6 +93,7 @@ int main(int argc, char *argv[])
 	QCoreApplication::setApplicationVersion(Strings::s_version);
 
 	initLogging();
+	qInstallMessageHandler(messageHandler);
 	QLOG_TRACE() << "Should continue: " << app.shouldContinue();
 
 	if(app.shouldContinue())
