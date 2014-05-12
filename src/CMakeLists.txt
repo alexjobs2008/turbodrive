@@ -22,6 +22,9 @@ endif()
 # Force asserts in debug and release modes
 add_definitions(-DQT_FORCE_ASSERTS)
 
+# Show filename and line number in logs
+add_definitions(-DQS_LOG_LINE_NUMBERS)
+
 # 3rd-party libs
 add_subdirectory("3rdParty")
 
