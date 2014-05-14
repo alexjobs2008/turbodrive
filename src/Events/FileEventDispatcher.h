@@ -105,7 +105,7 @@ private:
 
 	QList<EventHandlerBase*> eventHandlers;
 
-	QMap<EventHandlerBase*, LocalFileEventExclusionList> localFileEventExclusions;
+	LocalFileEventExclusionList localFileEventExclusions;
 	QList<RemoteFileEventExclusion> remoteFileEventExclusions;
 
 	QMutex remoteExclusionsMutex;

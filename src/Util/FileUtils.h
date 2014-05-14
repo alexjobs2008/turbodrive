@@ -45,9 +45,7 @@ public:
 	static QString toRemotePath(const QString& localPath);
 };
 
-
-
 }
 
 
-#endif FILE_UTILS_H
+#endif // FILE_UTILS_H

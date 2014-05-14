@@ -440,9 +440,7 @@ void FileEventDispatcher::onFinishProcessingEvent()
 	EventHandlerBase *thread = static_cast<EventHandlerBase*>(sender());
 
 	QLOG_TRACE() << "Thread" << thread << "is finished processing.";
-	QLOG_TRACE() << "Removing local file event exclusions for " << thread;
 
-	localFileEventExclusions.remove(thread);
 	eventHandlers.removeOne(thread);
 
 	thread->deleteLater();
@@ -452,29 +450,19 @@ void FileEventDispatcher::onFinishProcessingEvent()
 void FileEventDispatcher::onNewLocalFileEventExclusion(const LocalFileEventExclusion &localExclusion)
 {
 	QMutexLocker locker(&localExclusionsMutex);
-
-	EventHandlerBase *thread = static_cast<EventHandlerBase*>(sender());
-
-	LocalFileEventExclusionList threadLocalExclusions =
-		localFileEventExclusions.value(thread, LocalFileEventExclusionList());
-
-	threadLocalExclusions << localExclusion;
-	localFileEventExclusions.insert(thread, threadLocalExclusions);
+	localFileEventExclusions << localExclusion;
 }
 
 bool FileEventDispatcher::localFileEventShouldBeIgnored(const LocalFileEvent &event)
 {
-	QMapIterator<EventHandlerBase*, LocalFileEventExclusionList> i(localFileEventExclusions);
-	while (i.hasNext())
+	for (int i = 0; i < localFileEventExclusions.size(); ++i)
 	{
-		i.next();
-		LocalFileEventExclusionList exclusions = i.value();
-		foreach (LocalFileEventExclusion localFileEventExclusion, exclusions)
+		const LocalFileEventExclusion& localFileEventExclusion =
+				localFileEventExclusions.at(i);
+		if (localFileEventExclusion.matches(event))
 		{
-			if (localFileEventExclusion.matches(event))
-			{
-				return true;
-			}
+			localFileEventExclusions.removeAt(i);
+			return true;
 		}
 	}
 
