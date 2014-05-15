@@ -42,7 +42,7 @@ public:
 	*/
 
 	explicit LoginWidget(QWidget *parent = 0);
-	virtual ~LoginWidget();
+	virtual ~LoginWidget() {}
 
 public slots:
 
@@ -56,7 +56,7 @@ public slots:
 	* @brief Focuses text cursor on email field
 	* @details Should be used if email isn't recognized
 	*/
-	void focusOnEmail();
+	void focusOnUsername();
 
 	/**
 	* @brief Displays error text above email text edit control
@@ -94,6 +94,7 @@ private slots:
 private:
 	void initControls();
 	void setFolder();
+	QString cleanedUsername() const;
 
 	CommonUI::SpinnerWidget *m_spinner;
 

@@ -62,10 +62,6 @@ LoginWidget::LoginWidget(QWidget *parent)
 	initControls();
 }
 
-LoginWidget::~LoginWidget()
-{
-}
-
 bool LoginWidget::eventFilter(QObject *watched, QEvent *event)
 {
 	if (watched == m_username
@@ -84,6 +80,21 @@ bool LoginWidget::eventFilter(QObject *watched, QEvent *event)
 		}
 	}
 
+	if (watched == m_username->lineEdit())
+	{
+		static const QString s_initText = QString::fromLatin1("+375");
+		if (event->type() == QEvent::FocusIn
+			&& m_username->text().trimmed().isEmpty())
+		{
+			m_username->setText(s_initText);
+		}
+		if (event->type() == QEvent::FocusOut
+			&& m_username->text().trimmed() == s_initText)
+		{
+			m_username->setText(QString::null);
+		}
+	}
+
 	return false;
 }
 
@@ -97,14 +108,14 @@ void LoginWidget::on_signIn_clicked(bool checked)
 {
 	Q_UNUSED(checked)
 
-	QString usernameCandidate = m_username->lineEdit()->text().trimmed();
+	QString usernameCandidate = cleanedUsername();
 	int pos = usernameCandidate.size();
 
 	if (m_username->lineEdit()->validator()->validate(usernameCandidate, pos)
 		!= QValidator::Acceptable)
 	{
 		setError(tr("Please provide a valid phone number"));
-		focusOnEmail();
+		focusOnUsername();
 		return;
 	}
 
@@ -135,7 +146,7 @@ void LoginWidget::enableControls(bool enable)
 	m_register->setEnabled(!m_registerLink.isEmpty() && enable);
 }
 
-void LoginWidget::focusOnEmail()
+void LoginWidget::focusOnUsername()
 {
 	m_username->lineEdit()->selectAll();
 	m_username->lineEdit()->setFocus(Qt::MouseFocusReason);
@@ -159,7 +170,7 @@ void LoginWidget::on_signUp_linkActivated(const QString&)
 
 void LoginWidget::on_forgot_linkActivated(const QString&)
 {
-	emit passwordResetRequest(m_username->text().trimmed());
+	emit passwordResetRequest(cleanedUsername());
 }
 
 void LoginWidget::initControls()
@@ -194,13 +205,15 @@ void LoginWidget::initControls()
 		, CommonUI::LabeledEdit::Text
 		, QString()
 		, 0
-		, "375\\d+"
+		, "\\+?375\\d+"
 		, 100
 		, this);
 	m_username->setName("username");
 	m_username->installEventFilter(this);
 	m_username->setText(Settings::instance().get(Settings::email).toString());
-	m_username->lineEdit()->setPlaceholderText(tr("Phone"));
+
+	m_username->lineEdit()->installEventFilter(this);
+	m_username->lineEdit()->setPlaceholderText(tr("+375 ХХ ХХХХХХХ"));
 
 	m_password = new CommonUI::LabeledEdit(
 		QString::null
@@ -258,6 +271,15 @@ void LoginWidget::setFolder()
 
 	QDir dir;
 	dir.mkpath(folderPath);
+}
+
+QString LoginWidget::cleanedUsername() const
+{
+	static const QString s_prefix = QString::fromLatin1("+");
+	const QString username = m_username->text().trimmed();
+	return username.startsWith(s_prefix)
+			? username.mid(1)
+			: username;
 }
 
 }

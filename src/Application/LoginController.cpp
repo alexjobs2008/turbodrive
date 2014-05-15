@@ -163,17 +163,11 @@ void LoginController::login(const QString& username, const QString& password)
 
 void LoginController::passwordReset(const QString& username)
 {
-	QLOG_INFO() << "LoginController::passwordReset()";
-
 	if (loginWidget)
 	{
 		loginWidget->enableControls(false);
 		QCoreApplication::processEvents();
 	}
-
-	const QString cleanUsername = username.startsWith(QLatin1Char('+'))
-		? username.mid(1)
-		: username;
 
 	PasswordResetResourceRef passwordResetResource =
 		PasswordResetResource::create();
@@ -184,7 +178,7 @@ void LoginController::passwordReset(const QString& username)
 	connect(passwordResetResource.data(), &PasswordResetResource::resetFailed,
 			this, &LoginController::onPasswordResetFailed);
 
-	passwordResetResource->resetPassword(cleanUsername);
+	passwordResetResource->resetPassword(username);
 }
 
 void LoginController::closeAll()
@@ -241,7 +235,7 @@ void LoginController::onLoginFailed(const QString& error)
 	showLoginForm();
 
 	loginWidget->enableControls();
-	loginWidget->focusOnEmail();
+	loginWidget->focusOnUsername();
 	loginWidget->setError(error);
 
 	AppController::instance().setState(NotAuthorized);
