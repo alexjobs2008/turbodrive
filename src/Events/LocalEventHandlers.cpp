@@ -39,10 +39,15 @@ void LocalFileOrFolderAddedEventHandler::run()
 
 	if (!QFile::exists(localEvent.localPath()))
 	{
+		processEventsAndQuit();
 		return;
 	}
 
-	// TODO: don't process hidden files
+	if (QFileInfo(localEvent.localPath()).isHidden())
+	{
+		processEventsAndQuit();
+		return;
+	}
 
 	LocalCache& localCache = LocalCache::instance();
 
@@ -341,6 +346,12 @@ void LocalFileOrFolderRenamedEventHandler::run()
 
 	const QFileInfo oldFileInfo(localEvent.oldLocalPath());
 	const QFileInfo newFileInfo(localEvent.localPath());
+
+	if (newFileInfo.isHidden())
+	{
+		processEventsAndQuit();
+		return;
+	}
 
 	Q_ASSERT(oldFileInfo.dir().absolutePath() == newFileInfo.dir().absolutePath());
 
