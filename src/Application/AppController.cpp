@@ -243,13 +243,10 @@ void AppController::on_actionExit_triggered()
 
 void AppController::on_trayIcon_activated(QSystemTrayIcon::ActivationReason reason)
 {
-	QLOG_TRACE() << "ActivationReason:" << reason;
-
-	if (reason == QSystemTrayIcon::DoubleClick)
+	if (reason == QSystemTrayIcon::Trigger)
+	{
 		actionOpenFolder->trigger();
-
-//	if (reason == QSystemTrayIcon::Trigger)
-//		QMessageBox::information(0, "", "test");
+	}
 }
 
 void AppController::on_settingsWidget_logout()
