@@ -194,7 +194,8 @@ QVariant Settings::defaultSettingValue(const QString& settingName) const
 		QString homePath = QStandardPaths::
 			standardLocations(QStandardPaths::HomeLocation).at(0);
 
-		return QString("%1/%2").arg(homePath).arg(Strings::s_application);
+		return QString("%1/%2").arg(homePath).arg(
+					Strings::getAppString(Strings::AppFullName));
 	}
 
 	if (settingName == desktopNotifications)
