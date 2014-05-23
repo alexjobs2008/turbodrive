@@ -70,10 +70,6 @@ void initLogging()
 
 int main(int argc, char *argv[])
 {
-	// TODO: remove this and use toUTF8 and fromUTF8 + QLatin1String
-	// http://qt-project.org/wiki/Strings_and_encodings_in_Qt
-	QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
-
 	SingleApplication app(argc, argv);
 
 	qRegisterMetaType<Drive::RemoteFileEvent>("RemoteFileEvent");
