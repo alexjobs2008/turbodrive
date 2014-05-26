@@ -32,8 +32,12 @@ void LocalFileEventNotifier::resetFolder()
 	connect(m_listener.get(), &LocalListener::newLocalFileEvent,
 		this, &LocalFileEventNotifier::newLocalFileEvent);
 
-	m_watchID = m_fileWatcher.addWatch(Settings::instance()
-		.get(Settings::folderPath).toString().toStdString(), m_listener.get(), true);
+	const QString dirPath = Settings::instance().get(Settings::folderPath).toString();
+	const std::string stdDirPath = dirPath.toLocal8Bit().constData();
+
+	m_watchID = m_fileWatcher.addWatch(stdDirPath, m_listener.get(), true);
+	QLOG_DEBUG() << "Directory watcher initialized (" << m_watchID << ").";
+	Q_ASSERT(m_watchID > 0);
 }
 
 void LocalFileEventNotifier::stop()
@@ -95,9 +99,9 @@ void LocalListener::handleFileAction(efsw::WatchID,
 	}
 
 	const LocalFileEvent localEvent(type,
-			QDir::cleanPath(QString::fromStdString(dir)),
-			QDir::cleanPath(QString::fromStdString(filename)),
-			QDir::cleanPath(QString::fromStdString(oldFilename)));
+			QDir::cleanPath(QString::fromLocal8Bit(dir.c_str())),
+			QDir::cleanPath(QString::fromLocal8Bit(filename.c_str())),
+			QDir::cleanPath(QString::fromLocal8Bit(oldFilename.c_str())));
 
 	if (eventShouldBeIgnored(localEvent))
 	{
