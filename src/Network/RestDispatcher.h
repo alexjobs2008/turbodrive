@@ -5,6 +5,7 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QDateTime>
+#include <QtCore/QQueue>
 #include <QtNetwork/QNetworkCookie>
 #include <QtNetwork/QNetworkCookieJar>
 #include <QMutex>
@@ -17,6 +18,13 @@ class RestService;
 class QUrl;
 class QUrlQuery;
 class QNetworkReply;
+
+namespace Drive
+{
+
+class RemoteConfig;
+
+}
 
 class GeneralRestDispatcher : public QObject
 {
@@ -50,17 +58,17 @@ public:
 	QList<QNetworkCookie> getCookies();
 
 signals:
-	void dispatcherAboutToBeAuthorized();
 	void dispatcherAuthorized();
 	void dispatcherUnauthorized();
 	void dispatcherReconnectFailed(GeneralRestDispatcher::ReconnectErrorReason);
 	void proxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*);
 	void cookiesReceived(const QList<QNetworkCookie> &cookies);
 
-protected slots:
-	virtual void loadServices();
+protected:
+	void initServices();
+	void onServices(const QHash<QString, RestService*>& m_services);
 
-private slots:
+private:
 	void replyFinished(QNetworkReply* networkReply);
 	void onSslErrors(QNetworkReply *reply, const QList<QSslError> & errors);
 
@@ -82,12 +90,16 @@ private:
 
 	void doOperation(RestResource::Operation operation, RestService* service);
 
+private:
 	Mode mode;
 	RestNetworkAccessManager *networkAccessManager;
-	QHash<QString, RestService*> services;
+	QHash<QString, RestService*> m_services;
 	QString authToken;
 	int workspaceId;
-	QDateTime authTimestamp;
+
+	Drive::RemoteConfig* m_remoteConfig;
+
+	QQueue<RestResource::RequestRef> m_queuedRequests;
 
 	QMutex requestMutex;
 	QMutex nextMutex;

@@ -16,6 +16,7 @@ set(HEADERS
 	RestDispatcher.h
 	ConnectionController.h
 	SimpleDownloader.h
+	remoteconfig.h
 )
 
 set(SOURCES
@@ -25,6 +26,7 @@ set(SOURCES
 	RestDispatcher.cpp
 	ConnectionController.cpp
 	SimpleDownloader.cpp
+	remoteconfig.cpp
 )
 
 source_group(_h FILES ${HEADERS})

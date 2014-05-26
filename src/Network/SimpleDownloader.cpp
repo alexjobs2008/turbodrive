@@ -1,53 +1,57 @@
 #include "SimpleDownloader.h"
 #include "QsLog/QsLog.h"
 
+#include <QtCore/QJsonDocument>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtGui/QPixmap>
 
 SimpleDownloader::SimpleDownloader(QUrl url, Type type, QObject *parent)
 	: QObject(parent)
-	, type(type)
+	, m_type(type)
+	, m_url(url.toString())
+	, m_networkAccessManager(new QNetworkAccessManager(this))
 {
-	nam = new QNetworkAccessManager(this);
-	QNetworkRequest request(url);
 
-	reply = nam->get(request);
-	reply->setParent(nam);
+	m_networkReply = m_networkAccessManager->get(QNetworkRequest(url));
+	m_networkReply->setParent(m_networkAccessManager);
 
-	connect(reply, &QNetworkReply::finished,
+	connect(m_networkReply, &QNetworkReply::finished,
 			this, &SimpleDownloader::onReplyFinished);
 
-	connect(reply, static_cast<void (QNetworkReply::*)(QNetworkReply::NetworkError)>(&QNetworkReply::error),
+	connect(m_networkReply, static_cast<void (QNetworkReply::*)(QNetworkReply::NetworkError)>(&QNetworkReply::error),
 		this, &SimpleDownloader::onError);
 
-	connect(reply, &QNetworkReply::downloadProgress,
+	connect(m_networkReply, &QNetworkReply::downloadProgress,
 		this, &SimpleDownloader::onDownloadProgress);
-
-	urlString = url.toString();
 }
 
-void SimpleDownloader::onDownloadProgress(qint64 bytesReceived,
-										qint64 bytesTotal)
+void SimpleDownloader::onDownloadProgress(
+		const qint64 bytesReceived, const qint64 bytesTotal)
 {
 	QLOG_TRACE() << "received" << bytesReceived << "bytes of " << bytesTotal
-		<< "from" << urlString;
+		<< "from" << m_url;
 }
 
-void SimpleDownloader::onError(QNetworkReply::NetworkError error)
+void SimpleDownloader::onError(const QNetworkReply::NetworkError error)
 {
-	QLOG_ERROR() << "Error downloading" << urlString << ": " << error;
+	QLOG_ERROR() << "Error downloading" << m_url << ": " << error;
 }
 
 void SimpleDownloader::onReplyFinished()
 {
-	QByteArray data = reply->readAll();
+	const QByteArray data = m_networkReply->readAll();
 	QLOG_INFO() << "Download finished: " << data.size()
-		<< "bytes. " << urlString;
+		<< "bytes. " << m_url;
 
-	if (type == SimpleDownloader::Pixmap)
+	if (m_type == SimpleDownloader::Data)
+	{
+		Q_EMIT finished(data);
+	}
+	else
 	{
 		QPixmap pixmap;
 		pixmap.loadFromData(data);
-		emit finished(pixmap);
+		Q_EMIT pixmapDownloaded(pixmap);
 	}
 }
+

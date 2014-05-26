@@ -298,7 +298,7 @@ void LoginController::onProfileDataReceived(const QJsonObject& data)
 
 		QLOG_TRACE() << "Downloading avatar from: " << newUrl;
 
-		connect(d, &SimpleDownloader::finished,
+		connect(d, &SimpleDownloader::pixmapDownloaded,
 				this, &LoginController::onAvatarDownloaded);
 	}
 }

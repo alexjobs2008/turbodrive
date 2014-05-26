@@ -31,21 +31,12 @@ public:
 	static const QString proxyUsage;
 	static const QString proxyCustomSettings;
 	static const QString env;
+	static const QString remoteConfig;
 
 	enum Kind
 	{
 		RealSetting = 0,
 		CandidateSetting
-	};
-
-	enum Env
-	{
-		AssistentDotTh = 0,
-		AssistentDotBy,
-		NewAssistentDotBy,
-		TurbocloudDotRu,
-		AssistentDotThVersionX,
-		MTSDotTurbocloudDotRu,
 	};
 
 	static Settings& instance();

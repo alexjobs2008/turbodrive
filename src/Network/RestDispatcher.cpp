@@ -1,6 +1,7 @@
 #include "RestDispatcher.h"
 #include "RestNetworkAccessManager.h"
 #include "RestService.h"
+#include "remoteconfig.h"
 #include "Settings/settings.h"
 #include "QsLog/QsLog.h"
 
@@ -16,6 +17,7 @@
 
 using namespace Drive;
 
+
 GeneralRestDispatcher& GeneralRestDispatcher::instance()
 {
 	static GeneralRestDispatcher restDispatcher;
@@ -27,8 +29,7 @@ GeneralRestDispatcher::GeneralRestDispatcher(QObject *parent)
 	, mode(Mode::Unauthorized)
 	, networkAccessManager(new RestNetworkAccessManager(this))
 	, authToken(QString())
-	//_authenticationHelper(new RestAuthenticationHelper(this)),
-	//_mode(Unknown)
+	, m_remoteConfig(new RemoteConfig(Settings::instance().get(Settings::remoteConfig).toString(), this))
 {
 	qRegisterMetaType<RestResource::RequestRef>("RequestRef");
 
@@ -37,96 +38,32 @@ GeneralRestDispatcher::GeneralRestDispatcher(QObject *parent)
 	connect(networkAccessManager, &QNetworkAccessManager::sslErrors,
 			this, &GeneralRestDispatcher::onSslErrors);
 
-	loadServices();
+	connect(m_remoteConfig, &RemoteConfig::services,
+			this, &GeneralRestDispatcher::onServices);
+
+	initServices();
 }
 
-void GeneralRestDispatcher::loadServices()
+void GeneralRestDispatcher::initServices()
 {
 	cancelAll();
+	qDeleteAll(m_services);
+	m_services.clear();
+}
 
-	qDeleteAll(services);
-	services.clear();
-
-	int currentEnv = Settings::instance().get(Settings::env).toInt();
-
-	QLOG_INFO() << "Environment:" << currentEnv;
-
-	switch(currentEnv)
+void GeneralRestDispatcher::onServices(const QHash<QString, RestService*>& services)
+{
+	m_services = services;
+	for (const auto& r: m_queuedRequests)
 	{
-	case Settings::Env::AssistentDotThVersionX:
-		services.insert("AuthService", new RestService("AuthService", "http://auth.assistent.th", this));
-		services.insert("DashboardService", new RestService("DashboardService", "http://c0-0-40.assistent.th", this));
-		services.insert("ProfileService", new RestService("ProfileService", "http://c0-0-40.api.assistent.th", this));
-		services.insert("FilesService", new RestService("FilesService", "http://c0-0-40.files.assistent.th", this));
-		services.insert("ContentService", new RestService("ContentService", "http://c0-0-40.files.assistent.th", this));
-		services.insert("SharingService", new RestService("SharingService", "http://c0-0-40.files.assistent.th", this));
-		services.insert("NotificationService", new RestService("NotificationService", "http://rpl.c0-0-40.files.assistent.th", this));
-		break;
-	case Settings::Env::AssistentDotTh:
-		services.insert("AuthService", new RestService("AuthService", "http://auth.assistent.th", this));
-		services.insert("DashboardService", new RestService("DashboardService", "http://assistent.th", this));
-		services.insert("ProfileService", new RestService("ProfileService", "http://api.assistent.th", this));
-		services.insert("FilesService", new RestService("FilesService", "http://files.assistent.th", this));
-		services.insert("ContentService", new RestService("ContentService", "http://files.assistent.th", this));
-		services.insert("SharingService", new RestService("SharingService", "http://files.assistent.th", this));
-		services.insert("NotificationService", new RestService("NotificationService", "http://rpl.files.assistent.th", this));
-		break;
-	case Settings::Env::AssistentDotBy:
-		services.insert("AuthService", new RestService("AuthService", "https://auth.assistent.by", this));
-		services.insert("DashboardService", new RestService("DashboardService", "https://dashboard.assistent.by", this));
-		services.insert("ProfileService", new RestService("ProfileService", "https://api.assistent.by", this));
-		services.insert("FilesService", new RestService("FilesService", "https://files.assistent.by", this));
-		services.insert("ContentService", new RestService("ContentService", "https://files.assistent.by", this));
-		services.insert("SharingService", new RestService("SharingService", "https://files.assistent.by", this));
-		break;
-	case Settings::Env::NewAssistentDotBy:
-		services.insert("AuthService", new RestService("AuthService", "https://auth.new.assistent.by", this));
-		services.insert("DashboardService", new RestService("DashboardService", "http://new.assistent.by", this));
-		services.insert("ProfileService", new RestService("ProfileService", "http://api.new.assistent.by", this));
-		services.insert("FilesService", new RestService("FilesService", "http://disk.new.assistent.by", this));
-		services.insert("ContentService", new RestService("ContentService", "http://disk.new.assistent.by", this));
-		services.insert("SharingService", new RestService("SharingService", "http://disk.new.assistent.by", this));
-		services.insert("NotificationService", new RestService("NotificationService", "http://rpl.disk.new.assistent.by", this));
-
-//		services.insert("AuthService", new RestService("AuthService", "http://auth.assistent.yutas", this));
-//		services.insert("DashboardService", new RestService("DashboardService", "http://assistent.yutas", this));
-//		services.insert("ProfileService", new RestService("ProfileService", "http://api.assistent.yutas", this));
-//		services.insert("FilesService", new RestService("FilesService", "http://files.assistent.yutas", this));
-//		services.insert("ContentService", new RestService("ContentService", "http://files.assistent.yutas", this));
-//		services.insert("SharingService", new RestService("SharingService", "http://files.assistent.yutas", this));
-//		services.insert("NotificationService", new RestService("NotificationService", "http://rpl.files.assistent.yutas", this));
-//
-		break;
-	case Settings::Env::TurbocloudDotRu:
-		services.insert("AuthService", new RestService("AuthService", "https://auth.turbocloud.ru", this));
-		services.insert("DashboardService", new RestService("DashboardService", "https://dashboard.turbocloud.ru", this));
-		services.insert("ProfileService", new RestService("ProfileService", "https://api.turbocloud.ru", this));
-		services.insert("FilesService", new RestService("FilesService", "https://files.turbocloud.ru", this));
-		services.insert("ContentService", new RestService("ContentService", "https://files.turbocloud.ru", this));
-		services.insert("SharingService", new RestService("SharingService", "https://files.turbocloud.ru", this));
-		break;
-	case Settings::Env::MTSDotTurbocloudDotRu:
-		services.insert("AuthService", new RestService("AuthService", "http://disk.mts.by", this));
-		services.insert("DashboardService", new RestService("DashboardService", "http://disk.mts.by", this));
-		services.insert("ProfileService", new RestService("ProfileService", "http://disk.mts.by", this));
-		services.insert("FilesService", new RestService("FilesService", "http://disk.mts.by", this));
-		services.insert("ContentService", new RestService("ContentService", "http://disk.mts.by", this));
-		services.insert("SharingService", new RestService("SharingService", "http://disk.mts.by", this));
-		services.insert("NotificationService", new RestService("NotificationService", "http://rpl.disk.mts.by", this));
-		break;
-	default:
-		Q_ASSERT(false);
-		break;
+		request(r);
 	}
-
-	// _services.insert("", new RestService(this, "", ""));
-
-	authTimestamp = QDateTime();
+	m_queuedRequests.clear();
 }
 
 void GeneralRestDispatcher::cancelAll()
 {
-	QList<RestService*> servicesList = services.values();
+	QList<RestService*> servicesList = m_services.values();
 	foreach(RestService* service, servicesList)
 	{
 		cancelCurrent(service);
@@ -141,7 +78,7 @@ void GeneralRestDispatcher::cancelAll(const RestResourceRef& restResource)
 {
 	QMutexLocker locker(&cancelMutex);
 
-	QList<RestService*> servicesList = services.values();
+	QList<RestService*> servicesList = m_services.values();
 	foreach(RestService* service, servicesList)
 	{
 		cancelCurrent(service, &restResource);
@@ -198,8 +135,14 @@ void GeneralRestDispatcher::request(const RestResource::RequestRef &restRequest)
 {
 	QMutexLocker locker(&requestMutex);
 
-	Q_ASSERT(services.contains(restRequest->service));
-	RestService* service = services.value(restRequest->service);
+	if (m_services.isEmpty())
+	{
+		m_queuedRequests.push_back(restRequest);
+		return;
+	}
+
+	Q_ASSERT(m_services.contains(restRequest->service));
+	RestService* service = m_services.value(restRequest->service);
 
 	switch(mode)
 	{
@@ -228,7 +171,7 @@ void GeneralRestDispatcher::next()
 {
 	QMutexLocker locker(&nextMutex);
 
-	QList<RestService*> serviceList = services.values();
+	QList<RestService*> serviceList = m_services.values();
 	foreach(RestService* service, serviceList)
 	{
 		while (service->m_currentRequest.isNull()) /// !!!
@@ -279,13 +222,10 @@ void GeneralRestDispatcher::setMode(Mode newMode)
 	switch(mode)
 	{
 	case Unauthorized:
-		authTimestamp = QDateTime();
-		emit dispatcherUnauthorized();
+		Q_EMIT dispatcherUnauthorized();
 		break;
 	case Authorized:
-		emit dispatcherAboutToBeAuthorized();
-		authTimestamp = QDateTime::currentDateTime().toUTC();
-		emit dispatcherAuthorized();
+		Q_EMIT dispatcherAuthorized();
 		break;
 	default:
 		Q_ASSERT(false);
@@ -305,8 +245,8 @@ QUrl GeneralRestDispatcher::buildUrl(const QString& serviceName,
 		return QUrl(path);
 	}
 
-	QString strBaseUrl = services.contains(serviceName) ?
-		services.value(serviceName)->address() : "";
+	QString strBaseUrl = m_services.contains(serviceName) ?
+		m_services.value(serviceName)->address() : "";
 
 	Q_ASSERT(!strBaseUrl.isEmpty());
 

@@ -32,6 +32,7 @@ const QString Settings::uploadSpeed("upload_speed");
 const QString Settings::proxyUsage("proxy_usage");
 const QString Settings::proxyCustomSettings("proxy_custom_settings");
 const QString Settings::env("environment");
+const QString Settings::remoteConfig("remote_config");
 
 #define DEFAULT_DOWNLOAD_SPEED 50
 #define DEFAULT_UPLOAD_SPEED 50
@@ -247,8 +248,12 @@ QVariant Settings::defaultSettingValue(const QString& settingName) const
 		return QVariant::fromValue(proxySettings);
 	}
 
-	if (settingName == env)
-		return Env::MTSDotTurbocloudDotRu;
+	if (settingName == remoteConfig)
+	{
+		static const QString s_url = QString::fromLatin1(
+				"http://mobile.turboheads.by/config/mts_desktop.json");
+		return s_url;
+	}
 
 	QLOG_DEBUG() << "Setting" << settingName << "has no default value.";
 	return QVariant();

@@ -11,19 +11,20 @@ class QNetworkAccessManager;
 class SimpleDownloader : public QObject
 {
 	Q_OBJECT
-public:
 
+public:
 	enum Type
 	{
 		Data = 0,
 		Pixmap
 	};
 
-	explicit SimpleDownloader(QUrl url, Type type = Pixmap,
-		QObject *parent = 0);
+	explicit SimpleDownloader(QUrl url,
+		Type m_type = Pixmap, QObject *parent = nullptr);
 
-signals:
-	void finished(const QPixmap& pixmap);
+	Q_SIGNAL void finished(const QByteArray& data);
+
+	Q_SIGNAL void pixmapDownloaded(const QPixmap& pixmap);
 
 private slots:
 	void onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal);
@@ -31,10 +32,11 @@ private slots:
 	void onReplyFinished();
 
 private:
-	Type type;
-	QNetworkAccessManager *nam;
-	QNetworkReply *reply;
-	QString urlString;
+	const Type m_type;
+	const QString m_url;
+
+	QNetworkAccessManager* m_networkAccessManager;
+	QNetworkReply* m_networkReply;
 };
 
 #endif // SIMPLE_DOWNLOADER_H
