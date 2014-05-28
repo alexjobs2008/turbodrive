@@ -81,11 +81,11 @@ void initMetaTypes()
 	qRegisterMetaType<Drive::LocalFileEventExclusion>("LocalFileEventExclusion");
 }
 
-void initTranslator()
+void initTranslator(SingleApplication& app)
 {
-	QTranslator translator;
-	translator.load(":/drive_ru.qm");
-	app.installTranslator(&translator);
+	QTranslator* translator = new QTranslator(&app);
+	translator->load(":/drive_ru.qm");
+	app.installTranslator(translator);
 }
 
 void initApplicationInfo()
@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
 	SingleApplication app(argc, argv);
 
 	initMetaTypes();
-	initTranslator();
+	initTranslator(app);
 	initApplicationInfo();
 	initLogging();
 
