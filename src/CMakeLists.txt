@@ -20,7 +20,7 @@ if (${BUILD_SYSTEM} STREQUAL "mingw")
 endif()
 
 # Application version
-add_definitions(-DVERSION="0.9.0.0")
+add_definitions(-DVERSION="1.0.0.0")
 
 # Force asserts in debug and release modes
 add_definitions(-DQT_FORCE_ASSERTS)

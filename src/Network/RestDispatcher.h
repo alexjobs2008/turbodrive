@@ -19,13 +19,6 @@ class QUrl;
 class QUrlQuery;
 class QNetworkReply;
 
-namespace Drive
-{
-
-class RemoteConfig;
-
-}
-
 class GeneralRestDispatcher : public QObject
 {
 	Q_OBJECT
@@ -57,6 +50,8 @@ public:
 
 	QList<QNetworkCookie> getCookies();
 
+	void onServices(const QHash<QString, RestService*>& m_services);
+
 signals:
 	void dispatcherAuthorized();
 	void dispatcherUnauthorized();
@@ -66,7 +61,6 @@ signals:
 
 protected:
 	void initServices();
-	void onServices(const QHash<QString, RestService*>& m_services);
 
 private:
 	void replyFinished(QNetworkReply* networkReply);
@@ -96,8 +90,6 @@ private:
 	QHash<QString, RestService*> m_services;
 	QString authToken;
 	int workspaceId;
-
-	Drive::RemoteConfig* m_remoteConfig;
 
 	QQueue<RestResource::RequestRef> m_queuedRequests;
 

@@ -1,7 +1,6 @@
 #include "RestDispatcher.h"
 #include "RestNetworkAccessManager.h"
 #include "RestService.h"
-#include "remoteconfig.h"
 #include "Settings/settings.h"
 #include "QsLog/QsLog.h"
 
@@ -29,7 +28,6 @@ GeneralRestDispatcher::GeneralRestDispatcher(QObject *parent)
 	, mode(Mode::Unauthorized)
 	, networkAccessManager(new RestNetworkAccessManager(this))
 	, authToken(QString())
-	, m_remoteConfig(new RemoteConfig(Settings::instance().get(Settings::remoteConfig).toString(), this))
 {
 	qRegisterMetaType<RestResource::RequestRef>("RequestRef");
 
@@ -37,9 +35,6 @@ GeneralRestDispatcher::GeneralRestDispatcher(QObject *parent)
 			this, &GeneralRestDispatcher::replyFinished);
 	connect(networkAccessManager, &QNetworkAccessManager::sslErrors,
 			this, &GeneralRestDispatcher::onSslErrors);
-
-	connect(m_remoteConfig, &RemoteConfig::services,
-			this, &GeneralRestDispatcher::onServices);
 
 	initServices();
 }

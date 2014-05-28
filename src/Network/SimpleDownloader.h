@@ -20,7 +20,7 @@ public:
 	};
 
 	explicit SimpleDownloader(QUrl url,
-		Type m_type = Pixmap, QObject *parent = nullptr);
+		Type m_type = Pixmap, QObject* parent = nullptr);
 
 	Q_SIGNAL void finished(const QByteArray& data);
 

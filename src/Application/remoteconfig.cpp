@@ -1,7 +1,7 @@
 #include "remoteconfig.h"
 
-#include "SimpleDownloader.h"
-#include "RestService.h"
+#include "Network/SimpleDownloader.h"
+#include "Network/RestService.h"
 
 #include <QtCore>
 
@@ -12,22 +12,29 @@ RemoteConfig::RemoteConfig(const QString& url, QObject* parent)
 	: QObject(parent)
 	, m_downloader(new SimpleDownloader(url, SimpleDownloader::Data, this))
 {
-	connect(m_downloader, &SimpleDownloader::finished,
+	connect(m_downloader.get(), &SimpleDownloader::finished,
 			this, &RemoteConfig::onDownloadFinished);
+}
+
+QString RemoteConfig::updateUrl() const
+{
+	return m_updateUrl;
 }
 
 void RemoteConfig::onDownloadFinished(const QByteArray& data)
 {
+	m_downloader.reset();
+
 	QJsonParseError error;
 
 	auto doc = QJsonDocument::fromJson(data, &error);
 	Q_ASSERT(error.error == QJsonParseError::NoError);
 
-	parseServices(data);
-	parseUpdate(data);
+	parseServices(doc);
+	parseUpdate(doc);
 }
 
-void RemoteConfig::parseServices(const QByteArray& data)
+void RemoteConfig::parseServices(const QJsonDocument& doc)
 {
 	static const auto dataKey = QString::fromLatin1("data");
 	static const auto environmentKey = QString::fromLatin1("environment");
@@ -48,23 +55,23 @@ void RemoteConfig::parseServices(const QByteArray& data)
 	Q_EMIT services(servicesHash);
 }
 
-void RemoteConfig::parseUpdate(const QByteArray& data)
+void RemoteConfig::parseUpdate(const QJsonDocument& doc)
 {
 	static const auto dataKey = QString::fromLatin1("data");
 	static const auto updateKey = QString::fromLatin1("update");
 	static const auto versionKey = QString::fromLatin1("version");
 	static const auto urlKey = QString::fromLatin1("url");
 
-	const QJsonObject update = doc.object()
+	const QJsonObject updateObj = doc.object()
 			.value(dataKey).toObject()
 			.value(updateKey).toObject();
 
-	const QString version = update.value(versionKey).toString();
-	const QString url = update.value(urlKey).toString();
+	const QString version = updateObj.value(versionKey).toString();
+	m_updateUrl = updateObj.value(urlKey).toString();
 
-	if (version != QCoreApplication::applicationVersion())
+	if (!version.isEmpty() && version != QCoreApplication::applicationVersion())
 	{
-		Q_EMIT update(version, url);
+		Q_EMIT update(version);
 	}
 }
 

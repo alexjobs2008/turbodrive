@@ -1,5 +1,6 @@
 #include "AppController.h"
 #include "LoginController.h"
+#include "remoteconfig.h"
 
 #include "Util/AppStrings.h"
 #include "Util/FileUtils.h"
@@ -10,6 +11,7 @@
 #include "QsLog/QsLog.h"
 
 #include "Network/RestDispatcher.h"
+#include "Network/RestService.h"
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QUrl>
@@ -42,7 +44,14 @@ AppController::AppController(QWidget *parent)
 	: QMainWindow(parent)
 	, currentState(NotAuthorized)
 	, currentAuthToken(QString())
+	, m_remoteConfig(new RemoteConfig(Settings::instance().get(Settings::remoteConfig).toString()))
 {
+	GeneralRestDispatcher& dispatcher = GeneralRestDispatcher::instance();
+	connect(m_remoteConfig.get(), &RemoteConfig::update,
+			this, &AppController::onUpdate);
+	connect(m_remoteConfig.get(), &RemoteConfig::services,
+			&dispatcher, &GeneralRestDispatcher::onServices);
+
 	createFolder();
 	createActions();
 	createSettingsWidget();
@@ -58,12 +67,6 @@ AppController::AppController(QWidget *parent)
 
 
 	SettingsWidget::instance().hide();
-}
-
-AppController::~AppController()
-{
-//	if (syncer) delete syncer;
-//	if (localCache) delete localCache;
 }
 
 State AppController::state() const
@@ -119,7 +122,6 @@ void AppController::createActions()
 	actionPause->setObjectName("actionPause");
 	actionPause->setIcon(QIcon(":/icons/pause.png"));
 	actionPause->setVisible(false);
-	actionPause->setEnabled(false);
 
 	actionResume = new QAction(tr("Resume Sync"), this);
 	actionResume->setObjectName("actionResume");
@@ -128,6 +130,10 @@ void AppController::createActions()
 	actionPreferences = new QAction(tr("Preferences..."), this);
 	actionPreferences->setObjectName("actionPreferences");
 	actionPreferences->setIcon(QIcon(":/icons/preferences.png"));
+
+	actionDownloadUpdate = new QAction(tr("Download update"), this);
+	actionDownloadUpdate->setObjectName("actionUpdate");
+	actionDownloadUpdate->setVisible(false);
 
 	actionExit = new QAction(tr("Exit"), this);
 	actionExit->setObjectName("actionExit");
@@ -141,6 +147,8 @@ void AppController::createTrayIcon()
 	trayMenu->addAction(actionPreferences);
 	trayMenu->addSeparator();
 	trayMenu->addAction(actionPause);
+	trayMenu->addSeparator();
+	trayMenu->addAction(actionDownloadUpdate);
 	trayMenu->addSeparator();
 	trayMenu->addAction(actionExit);
 
@@ -156,6 +164,9 @@ void AppController::createTrayIcon()
 
 	connect(m_trayIcon.data(), &TrayIcon::activated,
 			this, &AppController::on_trayIcon_activated);
+
+	connect(m_trayIcon.data(), &TrayIcon::messageClicked,
+			this, &AppController::on_trayIcon_messageClicked);
 
 	m_trayIcon->show();
 }
@@ -183,7 +194,15 @@ void AppController::createSettingsWidget()
 		&LoginController::instance(), &LoginController::passwordReset);
 
 	connect(this, &AppController::profileDataUpdated,
-		&settingsWidget, &SettingsWidget::onProfileDataUpdated);
+			&settingsWidget, &SettingsWidget::onProfileDataUpdated);
+}
+
+void AppController::downloadUpdate()
+{
+	const QString url = m_remoteConfig->updateUrl();
+	Q_ASSERT(!url.isEmpty());
+
+	QDesktopServices::openUrl(QUrl(url));
 }
 
 void AppController::setState(State newState)
@@ -234,6 +253,11 @@ void AppController::on_actionPreferences_triggered()
 	settingsWidget.activateWindow(); // for Windows
 }
 
+void AppController::on_actionUpdate_triggered()
+{
+	downloadUpdate();
+}
+
 void AppController::on_actionExit_triggered()
 {
 	QLOG_TRACE() << "Exiting";
@@ -247,6 +271,11 @@ void AppController::on_trayIcon_activated(QSystemTrayIcon::ActivationReason reas
 	{
 		actionOpenFolder->trigger();
 	}
+}
+
+void AppController::on_trayIcon_messageClicked()
+{
+	downloadUpdate();
 }
 
 void AppController::on_settingsWidget_logout()
@@ -323,6 +352,24 @@ void AppController::onQueueFinished()
 void AppController::onProcessingProgress(int currentPos, int totalEvents)
 {
 	emit processingProgress(currentPos, totalEvents);
+}
+
+void AppController::onUpdate(const QString& version)
+{
+	QLOG_INFO() << "New version available: " << version
+				<< ", url: " << m_remoteConfig->updateUrl() << ".";
+
+	actionDownloadUpdate->setVisible(true);
+
+	if (!m_trayIcon.isNull())
+	{
+		static const QString title =
+				trUtf8("New version is available for download!");
+		static const QString message =
+				trUtf8("Click this message to download new version.");
+		m_trayIcon->showMessage(title, message,
+				QSystemTrayIcon::Information, 60000);
+	}
 }
 
 void AppController::createFolder()

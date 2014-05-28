@@ -4,7 +4,7 @@
 <context>
     <name>Drive::AboutWidget</name>
     <message>
-        <location filename="SettingsUI/AboutWidget.cpp" line="36"/>
+        <location filename="SettingsUI/AboutWidget.cpp" line="26"/>
         <source>Homepage:</source>
         <translation>Сайт:</translation>
     </message>
@@ -22,18 +22,18 @@
         <translation>Сбросить пароль</translation>
     </message>
     <message>
-        <location filename="SettingsUI/AccountWidget.cpp" line="27"/>
+        <location filename="SettingsUI/AccountWidget.cpp" line="30"/>
         <source>Logout</source>
         <translation>Выйти</translation>
     </message>
     <message>
-        <location filename="SettingsUI/AccountWidget.cpp" line="48"/>
+        <location filename="SettingsUI/AccountWidget.cpp" line="51"/>
         <source>Open %1 folder</source>
         <comment>%1 - product name</comment>
         <translation>Открыть папку %1</translation>
     </message>
     <message>
-        <location filename="SettingsUI/AccountWidget.cpp" line="51"/>
+        <location filename="SettingsUI/AccountWidget.cpp" line="54"/>
         <source>Sync status: Up to date</source>
         <translation>Статус: обновлено</translation>
     </message>
@@ -84,34 +84,49 @@
 <context>
     <name>Drive::AppController</name>
     <message>
-        <location filename="Application/AppController.cpp" line="111"/>
+        <location filename="Application/AppController.cpp" line="117"/>
         <source>Open Folder</source>
         <translation>Открыть папку</translation>
     </message>
     <message>
-        <location filename="Application/AppController.cpp" line="115"/>
+        <location filename="Application/AppController.cpp" line="121"/>
         <source>Pause Sync</source>
         <translation>Приостановить синхронизацию</translation>
     </message>
     <message>
-        <location filename="Application/AppController.cpp" line="121"/>
+        <location filename="Application/AppController.cpp" line="126"/>
         <source>Resume Sync</source>
         <translation>Возобновить синхронизацию</translation>
     </message>
     <message>
-        <location filename="Application/AppController.cpp" line="125"/>
+        <location filename="Application/AppController.cpp" line="130"/>
         <source>Preferences...</source>
         <translation>Настройки...</translation>
     </message>
     <message>
-        <location filename="Application/AppController.cpp" line="129"/>
+        <location filename="Application/AppController.cpp" line="134"/>
+        <source>Download update</source>
+        <translation>Загрузить обновление</translation>
+    </message>
+    <message>
+        <location filename="Application/AppController.cpp" line="138"/>
         <source>Exit</source>
         <translation>Выход</translation>
     </message>
     <message>
-        <location filename="Application/AppController.cpp" line="171"/>
+        <location filename="Application/AppController.cpp" line="183"/>
         <source>Preferences</source>
         <translation>Настройки</translation>
+    </message>
+    <message>
+        <location filename="Application/AppController.cpp" line="367"/>
+        <source>New version is available for download!</source>
+        <translation>Новая версия доступна для загрузки!</translation>
+    </message>
+    <message>
+        <location filename="Application/AppController.cpp" line="369"/>
+        <source>Click this message to download new version.</source>
+        <translation>Нажмите на это сообщение для загрузки новой версии.</translation>
     </message>
 </context>
 <context>
@@ -199,14 +214,14 @@
 <context>
     <name>Drive::FileSystemHelper</name>
     <message>
-        <location filename="Util/FileUtils.cpp" line="55"/>
+        <location filename="Util/FileUtils.cpp" line="56"/>
         <source>[.ShellClassInfo]InfoTip=%1
 IconFile=%2
 IconIndex=%3</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="Util/FileUtils.cpp" line="60"/>
+        <location filename="Util/FileUtils.cpp" line="61"/>
         <source>%1 Folder</source>
         <translation>Папка %1</translation>
     </message>
@@ -224,22 +239,19 @@ IconIndex=%3</source>
         <translation>Не удалось очистить целевую директорию.</translation>
     </message>
     <message>
-        <location filename="Application/LoginController.cpp" line="253"/>
         <source>Please check your email</source>
-        <translation>Проверьте входящую почту</translation>
+        <translation type="vanished">Проверьте входящую почту</translation>
     </message>
     <message>
-        <location filename="Application/LoginController.cpp" line="254"/>
         <source>We&apos;ve sent you an email with further instructions about password reset.</source>
-        <translation>Мы отправили вам письмо с дальнейшими инструкциями по сбросу пароля.</translation>
+        <translation type="vanished">Мы отправили вам письмо с дальнейшими инструкциями по сбросу пароля.</translation>
     </message>
     <message>
-        <location filename="Application/LoginController.cpp" line="265"/>
         <source>Password reset failed</source>
-        <translation>Ошибка сброса пароля</translation>
+        <translation type="vanished">Ошибка сброса пароля</translation>
     </message>
     <message>
-        <location filename="Application/LoginController.cpp" line="320"/>
+        <location filename="Application/LoginController.cpp" line="308"/>
         <source>Login failed: can&apos;t obtain user details</source>
         <translation>Ошибка извлечения информации о пользователе</translation>
     </message>
@@ -252,7 +264,7 @@ IconIndex=%3</source>
         <translation>Авторизация %1</translation>
     </message>
     <message>
-        <location filename="LoginUI/LoginWidget.cpp" line="173"/>
+        <location filename="LoginUI/LoginWidget.cpp" line="183"/>
         <source>Please wait...</source>
         <translation>Пожалуйста, подождите...</translation>
     </message>
@@ -269,32 +281,31 @@ IconIndex=%3</source>
         <translation type="vanished">&amp;Пароль:</translation>
     </message>
     <message>
-        <location filename="LoginUI/LoginWidget.cpp" line="233"/>
+        <location filename="LoginUI/LoginWidget.cpp" line="247"/>
         <source>Forgot?</source>
         <translation>Не можете войти в аккаунт?</translation>
     </message>
     <message>
-        <location filename="LoginUI/LoginWidget.cpp" line="221"/>
+        <location filename="LoginUI/LoginWidget.cpp" line="235"/>
         <source>&amp;Sign me in when %1 starts</source>
         <translation>Автом. авторизация при запуске</translation>
     </message>
     <message>
-        <location filename="LoginUI/LoginWidget.cpp" line="178"/>
+        <location filename="LoginUI/LoginWidget.cpp" line="188"/>
         <source>Login</source>
         <translation>Вход</translation>
     </message>
     <message>
-        <location filename="LoginUI/LoginWidget.cpp" line="204"/>
         <source>Phone</source>
-        <translation>Телефон</translation>
+        <translation type="vanished">Телефон</translation>
     </message>
     <message>
-        <location filename="LoginUI/LoginWidget.cpp" line="218"/>
+        <location filename="LoginUI/LoginWidget.cpp" line="232"/>
         <source>Password</source>
         <translation>Пароль</translation>
     </message>
     <message>
-        <location filename="LoginUI/LoginWidget.cpp" line="228"/>
+        <location filename="LoginUI/LoginWidget.cpp" line="242"/>
         <source>Sign in</source>
         <translation>Войти</translation>
     </message>
@@ -303,18 +314,18 @@ IconIndex=%3</source>
         <translation type="vanished">или</translation>
     </message>
     <message>
-        <location filename="LoginUI/LoginWidget.cpp" line="180"/>
+        <location filename="LoginUI/LoginWidget.cpp" line="190"/>
         <source>Create account</source>
         <translation>Регистрация</translation>
     </message>
     <message>
-        <location filename="LoginUI/LoginWidget.cpp" line="106"/>
+        <location filename="LoginUI/LoginWidget.cpp" line="117"/>
         <source>Please provide a valid phone number</source>
         <oldsource>Please provide a valid email</oldsource>
         <translation>Пожалуйста, введите корректный номер телефона</translation>
     </message>
     <message>
-        <location filename="LoginUI/LoginWidget.cpp" line="113"/>
+        <location filename="LoginUI/LoginWidget.cpp" line="124"/>
         <source>Please provide a non-empty password</source>
         <translation>Пожалуйста, введите пароль</translation>
     </message>
@@ -369,7 +380,7 @@ IconIndex=%3</source>
     <name>Drive::RemoteFileUploadedEventHandler</name>
     <message>
         <location filename="Events/EventHandlers.cpp" line="360"/>
-        <location filename="Events/RemoteEventHandlers.cpp" line="418"/>
+        <location filename="Events/RemoteEventHandlers.cpp" line="337"/>
         <source>File uploaded event handler failed: %1</source>
         <translation>При отправке файла возникла ошибка: %1</translation>
     </message>
@@ -390,27 +401,27 @@ IconIndex=%3</source>
 <context>
     <name>Drive::SettingsWidget</name>
     <message>
-        <location filename="SettingsUI/SettingsWidget.cpp" line="110"/>
+        <location filename="SettingsUI/SettingsWidget.cpp" line="113"/>
         <source>Help</source>
         <translation>Помощь</translation>
     </message>
     <message>
-        <location filename="SettingsUI/SettingsWidget.cpp" line="117"/>
+        <location filename="SettingsUI/SettingsWidget.cpp" line="116"/>
         <source>OK</source>
         <translation>ОК</translation>
     </message>
     <message>
-        <location filename="SettingsUI/SettingsWidget.cpp" line="119"/>
+        <location filename="SettingsUI/SettingsWidget.cpp" line="118"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
     <message>
-        <location filename="SettingsUI/SettingsWidget.cpp" line="121"/>
+        <location filename="SettingsUI/SettingsWidget.cpp" line="120"/>
         <source>Apply</source>
         <translation>Применить</translation>
     </message>
     <message>
-        <location filename="SettingsUI/SettingsWidget.cpp" line="176"/>
+        <location filename="SettingsUI/SettingsWidget.cpp" line="173"/>
         <source>Account</source>
         <translation>Пользователь</translation>
     </message>
@@ -419,12 +430,12 @@ IconIndex=%3</source>
         <translation type="vanished">Соединение</translation>
     </message>
     <message>
-        <location filename="SettingsUI/SettingsWidget.cpp" line="180"/>
+        <location filename="SettingsUI/SettingsWidget.cpp" line="177"/>
         <source>Advanced</source>
         <translation>Дополнительно</translation>
     </message>
     <message>
-        <location filename="SettingsUI/SettingsWidget.cpp" line="182"/>
+        <location filename="SettingsUI/SettingsWidget.cpp" line="179"/>
         <source>About</source>
         <translation>О программе</translation>
     </message>
@@ -485,27 +496,27 @@ Choose Drive folder location and which folders and files to sync.</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="Util/AppStrings.cpp" line="15"/>
+        <location filename="Util/AppStrings.cpp" line="16"/>
         <source>MTS</source>
         <translation>МТС</translation>
     </message>
     <message>
-        <location filename="Util/AppStrings.cpp" line="16"/>
+        <location filename="Util/AppStrings.cpp" line="17"/>
         <source>Disk</source>
         <translation>Диск</translation>
     </message>
     <message>
-        <location filename="Util/AppStrings.cpp" line="17"/>
+        <location filename="Util/AppStrings.cpp" line="18"/>
         <source>MTS Disk</source>
         <translation>МТС Диск</translation>
     </message>
     <message>
-        <location filename="Util/AppStrings.cpp" line="18"/>
+        <location filename="Util/AppStrings.cpp" line="19"/>
         <source>http://disk.mts.by/</source>
         <translation>http://disk.mts.by/</translation>
     </message>
     <message>
-        <location filename="Util/AppStrings.cpp" line="19"/>
+        <location filename="Util/AppStrings.cpp" line="20"/>
         <source>Copyrights (c) MTS
 All rights reserved.</source>
         <translation>Copyrights (c) МТС

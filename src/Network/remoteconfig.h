@@ -16,6 +16,7 @@ public:
 	RemoteConfig(const QString& url, QObject* parent);
 
 	Q_SIGNAL void services(const QHash<QString, RestService*>&);
+	Q_SIGNAL void update(const QString& version, const QString& url);
 
 private:
 	void onDownloadFinished(const QByteArray& data);

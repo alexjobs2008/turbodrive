@@ -14,6 +14,7 @@ set(HEADERS
 	AppController.h
 	LoginController.h
 	TrayIcon.h
+	remoteconfig.h
 )
 
 set(SOURCES
@@ -21,6 +22,7 @@ set(SOURCES
 	AppController.cpp
 	LoginController.cpp
 	TrayIcon.cpp
+	remoteconfig.cpp
 )
 
 set(QRC_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/res/res.qrc)

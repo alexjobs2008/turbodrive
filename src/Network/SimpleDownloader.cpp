@@ -5,7 +5,7 @@
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtGui/QPixmap>
 
-SimpleDownloader::SimpleDownloader(QUrl url, Type type, QObject *parent)
+SimpleDownloader::SimpleDownloader(QUrl url, Type type, QObject* parent)
 	: QObject(parent)
 	, m_type(type)
 	, m_url(url.toString())

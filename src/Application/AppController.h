@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include "types.h"
+#include "Events/Syncer.h"
 #include "APIClient/ApiTypes.h"
 
 #include <QtWidgets/QMainWindow>
@@ -22,6 +23,7 @@ namespace Drive
 class SettingsWidget;
 class Syncer;
 class LocalCache;
+class RemoteConfig;
 
 class AppController : public QMainWindow
 {
@@ -61,9 +63,11 @@ private slots:
 	void on_actionPause_triggered();
 	void on_actionResume_triggered();
 	void on_actionPreferences_triggered();
+	void on_actionUpdate_triggered();
 	void on_actionExit_triggered();
 
 	void on_trayIcon_activated(QSystemTrayIcon::ActivationReason reason);
+	void on_trayIcon_messageClicked();
 	void on_settingsWidget_logout();
 
 	void onLoginFinished();
@@ -72,14 +76,17 @@ private slots:
 
 	void onProcessingProgress(int, int);
 
+	void onUpdate(const QString& version);
+
 private:
 	Q_DISABLE_COPY(AppController)
-	explicit AppController(QWidget *parent = 0);
-	~AppController();
+	explicit AppController(QWidget *parent = nullptr);
 
 	void createActions();
 	void createTrayIcon();
 	void createSettingsWidget();
+
+	void downloadUpdate();
 
 	QPointer<TrayIcon> m_trayIcon;
 
@@ -89,6 +96,7 @@ private:
 	QAction *actionPause;
 	QAction *actionResume;
 	QAction *actionPreferences;
+	QAction *actionDownloadUpdate;
 	QAction *actionExit;
 
 	State currentState;
@@ -96,7 +104,8 @@ private:
 	ProfileData currentProfileData;
 	QString currentAuthToken;
 
-	std::auto_ptr<Syncer> m_syncer;
+	std::unique_ptr<Syncer> m_syncer;
+	std::unique_ptr<RemoteConfig> m_remoteConfig;
 };
 
 }
