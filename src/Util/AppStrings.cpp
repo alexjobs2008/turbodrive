@@ -1,6 +1,6 @@
 #include "AppStrings.h"
 
-#define STRINGS_CONTEXT "AppStrings"
+#include <QtCore/QObject>
 
 namespace Drive
 {
@@ -10,13 +10,14 @@ namespace Strings
 
 const QString getAppString(AppStringType type)
 {
-	static QString s_appStrings[] =
+	static const char* stringsContext = "AppStrings";
+	static const QString s_appStrings[] =
 	{
-		QObject::tr("MTS", STRINGS_CONTEXT),
-		QObject::tr("Disk", STRINGS_CONTEXT),
-		QObject::tr("MTS Disk", STRINGS_CONTEXT),
-		QObject::tr("http://disk.mts.by/", STRINGS_CONTEXT),
-		QObject::tr("Copyrights (c) MTS\nAll rights reserved.", STRINGS_CONTEXT)
+		QObject::tr("MTS", stringsContext),
+		QObject::tr("Disk", stringsContext),
+		QObject::tr("MTS Disk", stringsContext),
+		QObject::tr("http://disk.mts.by/", stringsContext),
+		QObject::tr("Copyrights (c) MTS\nAll rights reserved.", stringsContext)
 	};
 	return s_appStrings[type];
 }

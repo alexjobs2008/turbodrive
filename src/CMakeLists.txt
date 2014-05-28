@@ -19,6 +19,9 @@ if (${BUILD_SYSTEM} STREQUAL "mingw")
 	set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11")
 endif()
 
+# Application version
+add_definitions(-DVERSION="0.9.0.0")
+
 # Force asserts in debug and release modes
 add_definitions(-DQT_FORCE_ASSERTS)
 

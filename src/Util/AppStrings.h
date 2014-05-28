@@ -1,7 +1,7 @@
 #ifndef APP_STRINGS_H
 #define APP_STRINGS_H
 
-#include <QtCore/QObject>
+#include <QtCore/QString>
 
 namespace Drive
 {
@@ -20,11 +20,10 @@ enum AppStringType
 
 const QString getAppString(AppStringType type);
 
-static const char* s_company = "MTS";
-static const char* s_domain = "http://disk.mts.by/";
-static const char* s_application = "Disk";
-static const char* s_version = "1.0";
-static const char* s_url = "http://disk.mts.by/";
+static const QString s_company = QString::fromLatin1("MTS");
+static const QString s_domain = QString::fromLatin1("http://disk.mts.by/");
+static const QString s_application = QString::fromLatin1("Disk");
+static const QString s_version = QString::fromLatin1(VERSION);
 
 }
 

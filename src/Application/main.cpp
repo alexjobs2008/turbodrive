@@ -65,33 +65,47 @@ void initLogging()
 	logger.addDestination(debugDestination);
 	logger.addDestination(fileDestination);
 
+	qInstallMessageHandler(messageHandler);
+
 	QLOG_TRACE() << "Started (" << QCoreApplication::applicationPid() << ").";
+
 }
 
-int main(int argc, char *argv[])
+void initMetaTypes()
 {
-	SingleApplication app(argc, argv);
-
 	qRegisterMetaType<Drive::RemoteFileEvent>("RemoteFileEvent");
 	qRegisterMetaType<Drive::RemoteFileDesc>("RemoteFileDesc");
 	qRegisterMetaType<QList<Drive::RemoteFileDesc> >("RemoteFileDescList");
 	qRegisterMetaType<Drive::RemoteFileEventExclusion>("RemoteFileEventExclusion");
 	qRegisterMetaType<Drive::LocalFileEvent>("LocalFileEvent");
 	qRegisterMetaType<Drive::LocalFileEventExclusion>("LocalFileEventExclusion");
+}
 
+void initTranslator()
+{
 	QTranslator translator;
 	translator.load(":/drive_ru.qm");
 	app.installTranslator(&translator);
+}
 
+void initApplicationInfo()
+{
 	QCoreApplication::setOrganizationName(Strings::s_company);
 	QCoreApplication::setOrganizationDomain(Strings::s_domain);
 	QCoreApplication::setApplicationName(Strings::s_application);
 	QCoreApplication::setApplicationVersion(Strings::s_version);
+}
 
+int main(int argc, char *argv[])
+{
+	SingleApplication app(argc, argv);
+
+	initMetaTypes();
+	initTranslator();
+	initApplicationInfo();
 	initLogging();
-	qInstallMessageHandler(messageHandler);
-	QLOG_TRACE() << "Should continue: " << app.shouldContinue();
 
+	QLOG_TRACE() << "Should continue: " << app.shouldContinue();
 	if(app.shouldContinue())
 	{
 		Drive::AppController::instance().setTrayIcon(app.trayIcon());

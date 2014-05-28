@@ -19,12 +19,12 @@ AboutWidget::AboutWidget(QWidget *parent)
 	QLabel *labelNameAndVersion = new QLabel(info);
 	labelNameAndVersion->setText(QString("%1 %2")
 								 .arg(Strings::getAppString(Strings::AppFullName))
-								 .arg(Strings::s_version));
+								 .arg(QCoreApplication::applicationVersion()));
 
 	QLabel *labelHomepage = new QLabel(info);
 	labelHomepage->setText(QString("%1 <a href=\"%2\">%3</a>")
 						   .arg(tr("Homepage:"))
-						   .arg(Strings::s_url)
+						   .arg(QCoreApplication::organizationDomain())
 						   .arg(Strings::getAppString(Strings::WebSiteText)));
 	labelHomepage->setOpenExternalLinks(true);
 
