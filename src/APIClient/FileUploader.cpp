@@ -19,42 +19,19 @@
 #include <QtNetwork/QNetworkReply>
 #include <QtNetwork/QHttpMultiPart>
 
-
 namespace Drive
 {
 
-FileUploader::FileUploader(QObject *parent)
-	: QObject(parent)
-	, authToken(QString())
+namespace
 {
-	man = new QNetworkAccessManager(this);
-}
 
-FileUploader::~FileUploader()
+QNetworkRequest createRequest()
 {
-	QLOG_TRACE() << "FileUploader::~FileUploader()";
-}
+	// TODO: FIXME: use FilesService to build url
+	static const auto s_uploadUrl =
+			QString::fromLatin1("http://disk.mts.by/api/v1/content/create");
 
-void FileUploader::uploadFile(int parentFolderId, const QString &filePath)
-{
-	QFileInfo fileInfo(filePath);
-	if (!fileInfo.exists())
-	{
-		emit failed("Upload Error. File does not exist: " + filePath);
-		return;
-	}
-
-	file = new QFile(filePath, this);
-
-	if (!file->open(QIODevice::ReadOnly))
-	{
-		emit failed("Upload Error. Unable to open file: " + filePath);
-		return;
-	}
-
-	QUrl url(UPLOAD_URL);
-
-	QNetworkRequest request(url);
+	auto request = QNetworkRequest(QUrl(s_uploadUrl));
 
 	request.setRawHeader(RestResource::authTokenHeader,
 		AppController::instance().authToken().toUtf8());
@@ -63,134 +40,224 @@ void FileUploader::uploadFile(int parentFolderId, const QString &filePath)
 		QString::number(AppController::instance()
 			.profileData().defaultWorkspace().id).toUtf8());
 
-	// data = { "folderId" : NN }
-	QVariantMap map;
-	map.insert("folderId", parentFolderId);
-	QJsonObject jobject = QJsonObject::fromVariantMap(map);
-	QJsonDocument doc(jobject);
-
-	QLOG_TRACE() << "data:" << doc.toJson(QJsonDocument::Compact);
-
-	typedef QPair<QString, QString> StringPair;
-	QList<StringPair> list;
-	list << StringPair("data", doc.toJson(QJsonDocument::Compact));
-	list << StringPair("qqpartindex", "0");
-	list << StringPair("qqpartbyteoffset", "0");
-	list << StringPair("qqchunksize", QString("%1").arg(fileInfo.size()));
-	list << StringPair("qqtotalparts", "1");
-	list << StringPair("qqtotalfilesize", QString("%1").arg(fileInfo.size()));
-	list << StringPair("qqfilename", fileInfo.fileName());
-	list << StringPair("qquuid", QUuid::createUuid().toString());
-	list << StringPair("createdAt",
-		QString::number(fileInfo.created().toTime_t()));
-	list << StringPair("updatedAt",
-		QString::number(fileInfo.lastModified().toTime_t()));
-
-	QHttpMultiPart *multiPart =
-		new QHttpMultiPart(QHttpMultiPart::FormDataType);
-
-	QLOG_TRACE() << multiPart->boundary();
-
-	while (!list.isEmpty())
-	{
-		StringPair pair = list.takeFirst();
-		QHttpPart httpPart;
-		httpPart.setHeader(QNetworkRequest::ContentDispositionHeader,
-			QVariant(QString("form-data; name=\"%1\"").arg(pair.first)));
-
-		httpPart.setBody(pair.second.toUtf8());
-
-		multiPart->append(httpPart);
-	}
-
-	QHttpPart qqfilePart;
-	qqfilePart.setHeader(QNetworkRequest::ContentDispositionHeader
-		, QVariant(QString("form-data; name=\"qqfile\"; filename=\"%1\"")
-		.arg(fileInfo.fileName())));
-
-	qqfilePart.setBodyDevice(file);
-
-	multiPart->append(qqfilePart);
-
-	// file->setParent(multiPart);
-
-	reply = man->post(request, multiPart);
-
-	QLOG_TRACE() << request.rawHeaderList();
-	QLOG_TRACE() << multiPart->children();
-
-	multiPart->setParent(reply); // delete the multiPart with the reply
-
-	connect(reply, &QNetworkReply::finished,
-			this, &FileUploader::onFinished);
-
-	connect(reply, static_cast<void (QNetworkReply::*)(QNetworkReply::NetworkError)>(&QNetworkReply::error),
-			this, &FileUploader::onError);
-
-	connect(reply, &QNetworkReply::uploadProgress,
-			this, &FileUploader::uploadProgress);
+	return request;
 }
 
-void FileUploader::onFinished()
+QHttpPart createHttpPart(const char* name, const QVariant& body)
 {
-	int status =
-		reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+	static const auto s_header = QString::fromLatin1("form-data; name=\"%1\"");
+	QHttpPart httpPart;
+	httpPart.setHeader(
+			QNetworkRequest::ContentDispositionHeader,
+			QVariant(s_header.arg(QLatin1String(name))));
+	Q_ASSERT(body.canConvert<QString>());
+	httpPart.setBody(body.toString().toUtf8());
+	return httpPart;
+}
 
-	QString replyBody(reply->readAll());
+class ChunkUploader: public QObject
+{
+	Q_OBJECT
 
-	QLOG_TRACE() << "Uploader: reply finished:"
-		<< status
-		<< reply->url().toString()
-		<< replyBody;
-
-	RemoteFileDesc fileDesc;
-	fileDesc.id = 0;
-
-	if (status == 200)
+public:
+	ChunkUploader(
+			QFile& file, const int offset, const int size,
+			const int chunkIndex, const int totalChunks,
+			const int folderId, QObject* parent = nullptr)
+		: QObject(parent)
+		, m_file(file)
+		, m_offset(offset)
+		, m_size(size)
+		, m_chunkIndex(chunkIndex)
+		, m_chunksTotal(totalChunks)
+		, m_folderId(folderId)
+		, m_networkReply(nullptr)
 	{
-		QJsonDocument doc = QJsonDocument::fromJson(replyBody.toUtf8());
-		if (doc.isObject())
+		Q_ASSERT(m_file.isOpen());
+	}
+
+	Q_SLOT void start()
+	{
+		static const auto s_message = QString::fromLatin1(
+				"%1 Chunk uploading started.");
+		QLOG_INFO() << s_message.arg(state());
+
+		const auto request = createRequest();
+		const auto multiPart = createHttpMultiPart();
+
+		m_networkReply = m_network.post(request, multiPart);
+		Q_ASSERT(m_networkReply);
+
+		// delete the multiPart with the reply
+		multiPart->setParent(m_networkReply);
+
+		connect(m_networkReply, &QNetworkReply::finished,
+				this, &ChunkUploader::onFinished);
+
+		connect(m_networkReply, static_cast<void (QNetworkReply::*)(QNetworkReply::NetworkError)>(&QNetworkReply::error),
+				this, &ChunkUploader::onError);
+	}
+
+	Q_SIGNAL void finished(const QByteArray& replyData);
+	Q_SIGNAL void error(QNetworkReply::NetworkError);
+
+public:
+	Q_SLOT void onFinished()
+	{
+		const auto status = m_networkReply->attribute(
+				QNetworkRequest::HttpStatusCodeAttribute).toInt();
+		static const auto s_message = QString::fromLatin1(
+				"%1 Chunk uploading finished with http status %1.");
+		QLOG_INFO() << s_message.arg(state(), QString::number(status));
+
+		if (status == 200)
 		{
-			QJsonObject replyObj = doc.object();
-			if (replyObj.contains("data"))
-			{
-				QJsonValue dataValue = replyObj.value("data");
-				if (dataValue.isObject())
-				{
-					QJsonObject dataObj = dataValue.toObject();
-					fileDesc = RemoteFileDesc::fromJson(dataObj);
-				}
-			}
+			static const auto s_message = QString::fromLatin1(
+					"%1 Chunk uploading finished successfully."
+					"Network reply data received: '%2'.");
+			const QByteArray replyData = m_networkReply->readAll();
+			QLOG_INFO() << s_message.arg(state(), QString(replyData));
+			Q_EMIT finished(replyData);
 		}
-
-		emit succeeded(fileDesc);
-	}
-	else
-	{
-		emit failed("File upload failed " + QString::number(status)
-			+ ", " + QString::number(reply->error()));
+		else
+		{
+			onError(m_networkReply->error());
+		}
 	}
 
-	if (file)
+	Q_SLOT void onError(const QNetworkReply::NetworkError code)
 	{
-		file->close();
+		static const auto s_message = QString::fromLatin1(
+				"%1 Chunk uploading failed with network error %2.");
+		QLOG_ERROR() << s_message.arg(state(), QString::number(code));
+		Q_EMIT error(code);
 	}
+
+private:
+	QByteArray read() const
+	{
+		Q_ASSERT(m_file.isOpen());
+		Q_ASSERT(m_file.seek(m_offset));
+		const QByteArray data = m_file.read(m_size);
+		Q_ASSERT(data.size() == m_size);
+		return data;
+	}
+
+	QHttpMultiPart* createHttpMultiPart() const
+	{
+		static const auto s_folderId = QString::fromLatin1("folderId");
+		QJsonObject data;
+		data.insert(s_folderId, m_folderId);
+		const auto dataJson = QJsonDocument(data).toJson(QJsonDocument::Compact);
+
+		const QFileInfo fileInfo(m_file);
+
+		QHttpMultiPart* multiPart =
+			new QHttpMultiPart(QHttpMultiPart::FormDataType);
+		multiPart->append(createHttpPart("data", dataJson));
+		multiPart->append(createHttpPart("qqpartindex", m_chunkIndex));
+		multiPart->append(createHttpPart("qqpartbyteoffset", m_offset));
+		multiPart->append(createHttpPart("qqchunksize", m_size));
+		multiPart->append(createHttpPart("qqtotalparts", m_chunksTotal));
+		multiPart->append(createHttpPart("qqtotalfilesize", m_file.size()));
+		multiPart->append(createHttpPart("qqfilename", m_file.fileName()));
+		multiPart->append(createHttpPart("qquuid", QUuid::createUuid().toString()));
+		multiPart->append(createHttpPart("createdAt", fileInfo.created().toTime_t()));
+		multiPart->append(createHttpPart("updatedAt", fileInfo.lastModified().toTime_t()));
+
+		multiPart->append(createHttpPart("qqfile", read()));
+
+//		QHttpPart qqfilePart;
+//		qqfilePart.setHeader(QNetworkRequest::ContentDispositionHeader,
+//				QVariant(QLatin1String("form-data; name=\"qqfile\"; filename=\"%1\"").arg(m_file.fileName())));
+//		qqfilePart.setBody(read());
+//		multiPart->append(qqfilePart);
+
+		return multiPart;
+	}
+
+	QString state() const
+	{
+		static const auto s_message = QString::fromLatin1("[%1:%2:%3]");
+		return s_message.arg(
+				m_file.fileName(),
+				QString::number(m_offset),
+				QString::number(m_size));
+	}
+
+private:
+	QFile& m_file;
+	const int m_offset;
+	const int m_size;
+	const int m_folderId;
+
+	const int m_chunkIndex;
+	const int m_chunksTotal;
+
+	QNetworkAccessManager m_network;
+	QNetworkReply* m_networkReply;
+};
+
+}
+
+FileUploader::FileUploader(const int folderId, const QString& filePath, QObject* parent)
+	: QObject(parent)
+{
+	auto file = new QFile(filePath, this);
+	Q_ASSERT(file->exists());
+	Q_ASSERT(file->open(QIODevice::ReadOnly));
+
+	static const qint64 s_maxChunkSize = 2048 * 1024;
+
+	const int chunksTotal = std::ceil(file->size() / s_maxChunkSize);
+	std::vector<ChunkUploader*> uploaders(chunksTotal);
+
+	for (int chunkIndex = 0, offset = 0;
+			offset < file->size();
+			++chunkIndex, offset += s_maxChunkSize)
+	{
+		const int size = std::min(file->size() - offset, s_maxChunkSize);
+		auto nextUploader = new ChunkUploader(*file, offset, size,
+				chunkIndex, chunksTotal, folderId, this);
+		if (!uploaders.empty())
+		{
+			connect(uploaders.back(), &ChunkUploader::finished,
+					nextUploader, &ChunkUploader::start);
+		}
+		connect(nextUploader, &ChunkUploader::error,
+				this, &FileUploader::onError);
+		uploaders.push_back(nextUploader);
+	}
+
+	Q_ASSERT(!uploaders.empty());
+	connect(uploaders.back(), &ChunkUploader::finished,
+			this, &FileUploader::onFinished);
+
+	uploaders.front()->start();
+}
+
+void FileUploader::onFinished(const QByteArray& data)
+{
+	QJsonDocument doc = QJsonDocument::fromJson(data);
+
+	Q_ASSERT(doc.isObject());
+	const QJsonObject replyObj = doc.object();
+
+	Q_ASSERT(replyObj.contains("data"));
+	const QJsonValue dataValue = replyObj.value("data");
+
+	Q_ASSERT(dataValue.isObject());
+	const QJsonObject dataObj = dataValue.toObject();
+
+	Q_EMIT succeeded(RemoteFileDesc::fromJson(dataObj));
 }
 
 void FileUploader::onError(QNetworkReply::NetworkError code)
 {
-	QLOG_INFO() << "Uploader error:" << code;
-	emit failed(QString::number(code));
-
-	if (file)
-	{
-		file->close();
-	}
-}
-
-void FileUploader::uploadProgress(qint64 bytesSent, qint64 bytesTotal)
-{
-	QLOG_INFO() << "Upload progress: " << bytesSent << "of" << bytesTotal;
+	QLOG_ERROR() << "Uploader error:" << code;
+	Q_EMIT failed(QString::number(code));
 }
 
 }
+
+#include "FileUploader.moc"

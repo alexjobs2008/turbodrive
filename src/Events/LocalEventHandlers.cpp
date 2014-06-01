@@ -156,15 +156,13 @@ void LocalFileOrFolderAddedEventHandler::onGetFileObjectParentIdSucceeded(int id
 	}
 	else
 	{
-		FileUploader *uploader = new FileUploader(this);
+		FileUploader *uploader = new FileUploader(id, localEvent.localPath(), this);
 
 		connect(uploader, &FileUploader::succeeded,
 			this, &LocalFileOrFolderAddedEventHandler::onUploadSucceeded);
 
 		connect(uploader, &FileUploader::failed,
 			this, &LocalFileOrFolderAddedEventHandler::onUploadFailed);
-
-		uploader->uploadFile(id, localEvent.localPath());
 	}
 }
 

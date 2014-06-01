@@ -3,20 +3,8 @@
 
 #include "APIClient/ApiTypes.h"
 
+#include <QtCore/QFile>
 #include <QtNetwork/QNetworkReply>
-
-//#define UPLOAD_URL "http://files.assistent.th/api/v1/content/create"
-//#define UPLOAD_URL "http://disk.new.assistent.by/api/v1/content/create"
-//#define UPLOAD_URL "http://c0-0-40.files.assistent.th/api/v1/content/create"
-
-// FIXME: use FilesService to build url
-#define UPLOAD_URL "http://disk.mts.by/api/v1/content/create"
-
-
-class QNetworkAccessManager;
-class QByteArray;
-class QFileInfo;
-class QFile;
 
 namespace Drive
 {
@@ -24,35 +12,18 @@ namespace Drive
 class FileUploader : public QObject
 {
 	Q_OBJECT
+
 public:
+	FileUploader(int folderId, const QString& filePath, QObject* parent = nullptr);
 
-	FileUploader(QObject *parent = 0);
-	~FileUploader();
-
-	void uploadFile(int parentFolderId, const QString &filePath);
-
-signals:
-	void succeeded(Drive::RemoteFileDesc fileDesc);
-	void failed(const QString& error);
-
-private slots:
-	void onFinished();
-	void onError(QNetworkReply::NetworkError code);
-	void uploadProgress(qint64 bytesSent, qint64 bytesTotal);
-
+	Q_SIGNAL void succeeded(Drive::RemoteFileDesc fileDesc);
+	Q_SIGNAL void failed(const QString& error);
 
 private:
-	// created body for POST request with
-	QByteArray createPostBody(int workspaceId, int parentFolderId, const QFileInfo &fileInfo);
-
-	QFile *file;
-	QString authToken;
-	QNetworkAccessManager *man;
-	QNetworkReply *reply;
-
+	Q_SLOT void onFinished(const QByteArray& data);
+	Q_SLOT void onError(QNetworkReply::NetworkError code);
 };
 
 }
-
 
 #endif // FILE_UPLOADER_H
