@@ -12,27 +12,27 @@ namespace Drive
 
 FileUploader::FileUploader(const int folderId, const QString& filePath, QObject* parent)
 	: QObject(parent)
+	, m_file(new QFile(filePath, this))
 {
-	auto file = new QFile(filePath, this);
-	Q_ASSERT(file->exists());
+	Q_ASSERT(m_file->exists());
 
 	// FIXME: get rid of this terrible solution
-	while(!file->open(QIODevice::ReadOnly))
+	while(!m_file->open(QIODevice::ReadOnly))
 	{
-		QLOG_ERROR() << file->errorString();
+		QLOG_ERROR() << m_file->errorString();
 	}
 
 	static const qint64 s_maxChunkSize = 2048 * 1024;
 
-	const int chunksTotal = std::ceil(file->size() / s_maxChunkSize);
+	const int chunksTotal = std::ceil(m_file->size() / s_maxChunkSize);
 	std::vector<ChunkUploader*> uploaders;
 
 	for (int chunkIndex = 0, offset = 0;
-			offset < file->size();
+			offset < m_file->size();
 			++chunkIndex, offset += s_maxChunkSize)
 	{
-		const int size = std::min(file->size() - offset, s_maxChunkSize);
-		auto nextUploader = new ChunkUploader(*file, offset, size,
+		const int size = std::min(m_file->size() - offset, s_maxChunkSize);
+		auto nextUploader = new ChunkUploader(*m_file, offset, size,
 				chunkIndex, chunksTotal, folderId, this);
 		if (!uploaders.empty())
 		{
@@ -65,12 +65,22 @@ void FileUploader::onFinished(const QByteArray& data)
 	const QJsonObject dataObj = dataValue.toObject();
 
 	Q_EMIT succeeded(RemoteFileDesc::fromJson(dataObj));
+
+	if (m_file)
+	{
+		m_file->close();
+	}
 }
 
 void FileUploader::onError(QNetworkReply::NetworkError code)
 {
 	QLOG_ERROR() << "Uploader error:" << code;
 	Q_EMIT failed(QString::number(code));
+
+	if (m_file)
+	{
+		m_file->close();
+	}
 }
 
 }

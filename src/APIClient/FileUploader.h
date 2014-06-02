@@ -5,6 +5,8 @@
 
 #include <QtNetwork/QNetworkReply>
 
+class QFile;
+
 namespace Drive
 {
 
@@ -21,6 +23,9 @@ public:
 private:
 	Q_SLOT void onFinished(const QByteArray& data);
 	Q_SLOT void onError(QNetworkReply::NetworkError code);
+
+private:
+	QFile* m_file;
 };
 
 }
