@@ -6,6 +6,7 @@
 
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
+#include <QtCore/QUuid>
 
 namespace Drive
 {
@@ -24,6 +25,7 @@ FileUploader::FileUploader(const int folderId, const QString& filePath, QObject*
 
 	static const qint64 s_maxChunkSize = 2048 * 1024;
 
+	const QString uuid = QUuid::createUuid().toString();
 	const int chunksTotal = std::ceil(m_file->size() / s_maxChunkSize);
 	std::vector<ChunkUploader*> uploaders;
 
@@ -32,7 +34,7 @@ FileUploader::FileUploader(const int folderId, const QString& filePath, QObject*
 			++chunkIndex, offset += s_maxChunkSize)
 	{
 		const int size = std::min(m_file->size() - offset, s_maxChunkSize);
-		auto nextUploader = new ChunkUploader(*m_file, offset, size,
+		auto nextUploader = new ChunkUploader(uuid, *m_file, offset, size,
 				chunkIndex, chunksTotal, folderId, this);
 		if (!uploaders.empty())
 		{

@@ -14,7 +14,7 @@ class ChunkUploader: public QObject
 	Q_OBJECT
 
 public:
-	ChunkUploader(
+	ChunkUploader(const QString& uuid,
 			QFile& file, const int offset, const int size,
 			const int chunkIndex, const int totalChunks,
 			const int folderId, QObject* parent = nullptr);
@@ -34,6 +34,8 @@ private:
 	QString state() const;
 
 private:
+	const QString m_uuid;
+
 	QFile& m_file;
 	const int m_offset;
 	const int m_size;

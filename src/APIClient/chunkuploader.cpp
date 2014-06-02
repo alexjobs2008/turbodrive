@@ -51,11 +51,12 @@ QHttpPart createHttpPart(const char* name, const QVariant& body)
 
 }
 
-ChunkUploader::ChunkUploader(
+ChunkUploader::ChunkUploader(const QString& uuid,
 		QFile& file, const int offset, const int size,
 		const int chunkIndex, const int totalChunks,
 		const int folderId, QObject* parent)
 	: QObject(parent)
+	, m_uuid(uuid)
 	, m_file(file)
 	, m_offset(offset)
 	, m_size(size)
@@ -147,7 +148,7 @@ QHttpMultiPart* ChunkUploader::createHttpMultiPart() const
 	multiPart->append(createHttpPart("qqtotalparts", m_chunksTotal));
 	multiPart->append(createHttpPart("qqtotalfilesize", m_file.size()));
 	multiPart->append(createHttpPart("qqfilename", fileInfo.fileName()));
-	multiPart->append(createHttpPart("qquuid", QUuid::createUuid().toString()));
+	multiPart->append(createHttpPart("qquuid", m_uuid));
 	multiPart->append(createHttpPart("createdAt", fileInfo.created().toTime_t()));
 	multiPart->append(createHttpPart("updatedAt", fileInfo.lastModified().toTime_t()));
 
