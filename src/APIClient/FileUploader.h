@@ -3,7 +3,6 @@
 
 #include "APIClient/ApiTypes.h"
 
-#include <QtCore/QFile>
 #include <QtNetwork/QNetworkReply>
 
 namespace Drive

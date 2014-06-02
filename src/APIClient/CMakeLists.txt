@@ -18,6 +18,7 @@ set(HEADERS
 	FileDownloader.h
 	FilesService.h
 	NotificationService.h
+	chunkuploader.h
 )
 
 set(SOURCES
@@ -29,6 +30,7 @@ set(SOURCES
 	FileDownloader.cpp
 	FilesService.cpp
 	NotificationService.cpp
+	chunkuploader.cpp
 )
 
 source_group(_h FILES ${HEADERS})
