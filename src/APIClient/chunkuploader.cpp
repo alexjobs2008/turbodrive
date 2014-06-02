@@ -93,21 +93,21 @@ void ChunkUploader::onFinished()
 {
 	const auto status = m_networkReply->attribute(
 			QNetworkRequest::HttpStatusCodeAttribute).toInt();
-	static const auto s_message = QString::fromLatin1(
-			"%1 Chunk uploading finished with http status %1.");
-	QLOG_INFO() << s_message.arg(state(), QString::number(status));
 
 	if (status == 200)
 	{
 		static const auto s_message = QString::fromLatin1(
 				"%1 Chunk uploading finished successfully."
-				"Network reply data received: '%2'.");
+				" Network reply data received: '%2'.");
 		const QByteArray replyData = m_networkReply->readAll();
 		QLOG_INFO() << s_message.arg(state(), QString(replyData));
 		Q_EMIT finished(replyData);
 	}
 	else
 	{
+		static const auto s_message = QString::fromLatin1(
+				"%1 Chunk uploading failed with http status %2.");
+		QLOG_ERROR() << s_message.arg(state(), QString::number(status));
 		onError(m_networkReply->error());
 	}
 }
@@ -151,13 +151,13 @@ QHttpMultiPart* ChunkUploader::createHttpMultiPart() const
 	multiPart->append(createHttpPart("createdAt", fileInfo.created().toTime_t()));
 	multiPart->append(createHttpPart("updatedAt", fileInfo.lastModified().toTime_t()));
 
-	multiPart->append(createHttpPart("qqfile", read()));
-
-//		QHttpPart qqfilePart;
-//		qqfilePart.setHeader(QNetworkRequest::ContentDispositionHeader,
-//				QVariant(QLatin1String("form-data; name=\"qqfile\"; filename=\"%1\"").arg(m_file.fileName())));
-//		qqfilePart.setBody(read());
-//		multiPart->append(qqfilePart);
+	static const auto s_qqfile =
+			QString::fromLatin1("form-data; name=\"qqfile\"; filename=\"%1\"");
+	QHttpPart qqfilePart;
+	qqfilePart.setHeader(QNetworkRequest::ContentDispositionHeader,
+			QVariant(s_qqfile.arg(m_file.fileName())));
+	qqfilePart.setBody(read());
+	multiPart->append(qqfilePart);
 
 	return multiPart;
 }

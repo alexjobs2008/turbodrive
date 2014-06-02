@@ -15,12 +15,17 @@ FileUploader::FileUploader(const int folderId, const QString& filePath, QObject*
 {
 	auto file = new QFile(filePath, this);
 	Q_ASSERT(file->exists());
-	Q_ASSERT(file->open(QIODevice::ReadOnly));
+
+	// FIXME: get rid of this terrible solution
+	while(!file->open(QIODevice::ReadOnly))
+	{
+		QLOG_ERROR() << file->errorString();
+	}
 
 	static const qint64 s_maxChunkSize = 2048 * 1024;
 
 	const int chunksTotal = std::ceil(file->size() / s_maxChunkSize);
-	std::vector<ChunkUploader*> uploaders(chunksTotal);
+	std::vector<ChunkUploader*> uploaders;
 
 	for (int chunkIndex = 0, offset = 0;
 			offset < file->size();
