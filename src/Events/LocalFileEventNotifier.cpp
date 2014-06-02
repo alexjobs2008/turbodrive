@@ -100,8 +100,8 @@ void LocalListener::handleFileAction(efsw::WatchID,
 
 	const LocalFileEvent localEvent(type,
 			QDir::cleanPath(QString::fromLocal8Bit(dir.c_str())),
-			QDir::cleanPath(QString::fromLocal8Bit(filename.c_str())),
-			QDir::cleanPath(QString::fromLocal8Bit(oldFilename.c_str())));
+			QDir::cleanPath(QString::fromUtf8(filename.c_str())),
+			QDir::cleanPath(QString::fromUtf8(oldFilename.c_str())));
 
 	if (eventShouldBeIgnored(localEvent))
 	{
