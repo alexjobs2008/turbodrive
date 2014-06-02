@@ -146,7 +146,7 @@ QHttpMultiPart* ChunkUploader::createHttpMultiPart() const
 	multiPart->append(createHttpPart("qqchunksize", m_size));
 	multiPart->append(createHttpPart("qqtotalparts", m_chunksTotal));
 	multiPart->append(createHttpPart("qqtotalfilesize", m_file.size()));
-	multiPart->append(createHttpPart("qqfilename", m_file.fileName()));
+	multiPart->append(createHttpPart("qqfilename", fileInfo.fileName()));
 	multiPart->append(createHttpPart("qquuid", QUuid::createUuid().toString()));
 	multiPart->append(createHttpPart("createdAt", fileInfo.created().toTime_t()));
 	multiPart->append(createHttpPart("updatedAt", fileInfo.lastModified().toTime_t()));
@@ -155,7 +155,7 @@ QHttpMultiPart* ChunkUploader::createHttpMultiPart() const
 			QString::fromLatin1("form-data; name=\"qqfile\"; filename=\"%1\"");
 	QHttpPart qqfilePart;
 	qqfilePart.setHeader(QNetworkRequest::ContentDispositionHeader,
-			QVariant(s_qqfile.arg(m_file.fileName())));
+			QVariant(s_qqfile.arg(fileInfo.fileName())));
 	qqfilePart.setBody(read());
 	multiPart->append(qqfilePart);
 
@@ -166,7 +166,7 @@ QString ChunkUploader::state() const
 {
 	static const auto s_message = QString::fromLatin1("[%1:%2:%3]");
 	return s_message.arg(
-			m_file.fileName(),
+			QFileInfo(m_file).fileName(),
 			QString::number(m_offset),
 			QString::number(m_size));
 }
