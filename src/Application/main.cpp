@@ -66,9 +66,6 @@ void initLogging()
 	logger.addDestination(fileDestination);
 
 	qInstallMessageHandler(messageHandler);
-
-	QLOG_TRACE() << "Started (" << QCoreApplication::applicationPid() << ").";
-
 }
 
 void initMetaTypes()
@@ -96,6 +93,17 @@ void initApplicationInfo()
 	QCoreApplication::setApplicationVersion(Strings::s_version);
 }
 
+void logStartInfo()
+{
+	static const auto s_message = QString::fromLatin1(
+			"New application instance started. Application version: %1."
+			" PID: %2. System encoding: %3.");
+	QLOG_INFO() << s_message
+			.arg(QCoreApplication::applicationVersion())
+			.arg(QCoreApplication::applicationPid())
+			.arg(QString(QTextCodec::codecForLocale()->name()));
+}
+
 int main(int argc, char *argv[])
 {
 	SingleApplication app(argc, argv);
@@ -104,8 +112,8 @@ int main(int argc, char *argv[])
 	initTranslator(app);
 	initApplicationInfo();
 	initLogging();
+	logStartInfo();
 
-	QLOG_TRACE() << "Should continue: " << app.shouldContinue();
 	if(app.shouldContinue())
 	{
 		Drive::AppController::instance().setTrayIcon(app.trayIcon());
@@ -113,5 +121,8 @@ int main(int argc, char *argv[])
 		return app.exec();
 	}
 
+	static const auto s_message = QString::fromLatin1(
+			"Duplicate instance detected - exiting.");
+	QLOG_INFO() << s_message;
 	return 0;
 }
