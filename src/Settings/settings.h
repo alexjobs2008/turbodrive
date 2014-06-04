@@ -46,6 +46,8 @@ public:
 	void set(const QString& settingName, QVariant value,
 		Kind kind = CandidateSetting);
 
+	void log() const;
+
 	static QList<int> supportedLanguages();
 
 public slots:

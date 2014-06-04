@@ -8,6 +8,8 @@
 #include <QtCore/QDir>
 #include <QtCore/QStandardPaths>
 #include <QtCore/QLocale>
+#include <QtCore/QJsonDocument>
+#include <QtCore/QJsonObject>
 
 // DO NOT FORGET TO WRITE THE MIGRATION
 // WHEN YOU ARE ABOUT TO INCREASE SETTINGS VERSION!
@@ -146,6 +148,28 @@ void Settings::set(const QString& settingName, QVariant value, Kind kind)
 		candidateSettings.insert(settingName, value);
 		emit dirtyStateChanged(true);
 	}
+}
+
+void Settings::log() const
+{
+	QJsonObject json;
+	for (auto key: settings->allKeys())
+	{
+		if (key == password)
+		{
+			static const auto s_password = QString::fromLatin1("***");
+			json.insert(key, s_password);
+		}
+		else
+		{
+			json.insert(key, settings->value(key).toString());
+		}
+	}
+
+	static const auto s_message = QString::fromLatin1(
+			"Application settings: %1.");
+	QLOG_INFO() << s_message.arg(QLatin1String(QJsonDocument(json)
+			.toJson(QJsonDocument::Compact)));
 }
 
 QList<int> Settings::supportedLanguages()

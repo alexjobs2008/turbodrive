@@ -1,13 +1,14 @@
 #include "AppController.h"
 #include "LoginController.h"
 
-#include "Util/AppStrings.h"
-#include "SingleApp/SingleApp.h"
-#include "QsLog/QsLog.h"
-#include "QsLog/QsLogDest.h"
-
 #include "APIClient/ApiTypes.h"
 #include "Events/LocalFileEvent.h"
+#include "SingleApp/SingleApp.h"
+#include "Settings/settings.h"
+#include "Util/AppStrings.h"
+
+#include "QsLog/QsLog.h"
+#include "QsLog/QsLogDest.h"
 
 #include <QtCore/QTextCodec>
 #include <QtCore/QTranslator>
@@ -97,12 +98,16 @@ void logStartInfo()
 {
 	static const auto s_message = QString::fromLatin1(
 			"New application instance started. Application version: %1."
-			" PID: %2. System encoding: %3.");
+			" Build timestamp: %2. PID: %3. System encoding: %4.");
+	static const auto s_timestamp =
+			QString::fromLatin1(__DATE__ " " __TIME__);
 	QLOG_INFO() << s_message
 			.arg(QCoreApplication::applicationVersion())
+			.arg(s_timestamp)
 			.arg(QCoreApplication::applicationPid())
 			.arg(QString(QTextCodec::codecForLocale()->name()));
 }
+
 
 int main(int argc, char *argv[])
 {
@@ -113,6 +118,7 @@ int main(int argc, char *argv[])
 	initApplicationInfo();
 	initLogging();
 	logStartInfo();
+	Settings::instance().log();
 
 	if(app.shouldContinue())
 	{
