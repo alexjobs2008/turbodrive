@@ -86,20 +86,11 @@ QVariant Settings::get(const QString& settingName) const
 #endif
 	}
 
-//	QLOG_DEBUG() << "getting setting value: " << settingName;
-	if (settingName == proxyUsage)
+	if (settingName == folderPath && !settings->contains(settingName))
 	{
-//		QLOG_DEBUG() << "obtaining proxyUsage...";
-		if (settings->contains(settingName))
-		{
-//			QLOG_DEBUG() << "we have it: " << settings->value(settingName).toInt();
-//			QLOG_DEBUG() << "returning: " << settings->value(settingName);
-			return settings->value(settingName);
-		}
-//		else
-//		{
-//			QLOG_DEBUG() << "we DON'T have it";
-//		}
+		// explicity save folder path to prevent wrong behaviour
+		// when default value will change
+		settings->setValue(settingName, defaultSettingValue(settingName));
 	}
 
 	return settings->value(settingName, defaultSettingValue(settingName));
