@@ -1,4 +1,4 @@
-#ifndef FILES_SERVICE_H
+﻿#ifndef FILES_SERVICE_H
 #define FILES_SERVICE_H
 
 #include "Network/RestResource.h"

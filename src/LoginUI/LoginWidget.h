@@ -1,4 +1,4 @@
-#ifndef LOGIN_WIDGET_H
+﻿#ifndef LOGIN_WIDGET_H
 #define LOGIN_WIDGET_H
 
 #include <QtWidgets/QFrame>

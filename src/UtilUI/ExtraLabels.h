@@ -1,4 +1,4 @@
-#ifndef EXTRA_LABELS_H
+﻿#ifndef EXTRA_LABELS_H
 #define EXTRA_LABELS_H
 
 #include <QtWidgets/QLabel>

@@ -1,4 +1,4 @@
-#ifndef SINGLE_APP_H
+﻿#ifndef SINGLE_APP_H
 #define SINGLE_APP_H
 
 #include <QtWidgets/QApplication>

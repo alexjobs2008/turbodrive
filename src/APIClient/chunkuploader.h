@@ -1,4 +1,4 @@
-#ifndef CHUNK_UPLOADER_H
+﻿#ifndef CHUNK_UPLOADER_H
 #define CHUNK_UPLOADER_H
 
 #include "APIClient/ApiTypes.h"

@@ -1,4 +1,4 @@
-#ifndef LOCAL_DISPATCHER
+﻿#ifndef LOCAL_DISPATCHER
 #define LOCAL_DISPATCHER
 
 #include <iostream>

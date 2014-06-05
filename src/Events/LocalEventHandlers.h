@@ -1,4 +1,4 @@
-#ifndef LOCAL_EVENT_HANDLERS
+﻿#ifndef LOCAL_EVENT_HANDLERS
 #define LOCAL_EVENT_HANDLERS
 
 #include "EventHandlerBase.h"

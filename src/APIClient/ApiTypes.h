@@ -1,4 +1,4 @@
-#ifndef API_TYPES_H
+﻿#ifndef API_TYPES_H
 #define API_TYPES_H
 
 #include <QtCore/QJsonDocument>

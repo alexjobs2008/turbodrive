@@ -1,4 +1,4 @@
-#ifndef QUEUE_PROCESSOR_H
+﻿#ifndef QUEUE_PROCESSOR_H
 #define QUEUE_PROCESSOR_H
 
 #include "APIClient/APITypes.h"

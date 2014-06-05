@@ -1,4 +1,4 @@
-#ifndef REMOTE_CONFIG_H
+﻿#ifndef REMOTE_CONFIG_H
 #define REMOTE_CONFIG_H
 
 #include "Network/SimpleDownloader.h"

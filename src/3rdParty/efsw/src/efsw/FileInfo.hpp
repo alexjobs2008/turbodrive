@@ -1,4 +1,4 @@
-#ifndef EFSW_FILEINFO_HPP
+﻿#ifndef EFSW_FILEINFO_HPP
 #define EFSW_FILEINFO_HPP
 
 #include <efsw/base.hpp>

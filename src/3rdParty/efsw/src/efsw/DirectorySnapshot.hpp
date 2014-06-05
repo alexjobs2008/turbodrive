@@ -1,4 +1,4 @@
-#ifndef EFSW_DIRECTORYSNAPSHOT_HPP
+﻿#ifndef EFSW_DIRECTORYSNAPSHOT_HPP
 #define EFSW_DIRECTORYSNAPSHOT_HPP
 
 #include <efsw/DirectorySnapshotDiff.hpp>

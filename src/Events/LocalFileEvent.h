@@ -1,4 +1,4 @@
-#ifndef LOCAL_FILE_EVENT
+﻿#ifndef LOCAL_FILE_EVENT
 #define LOCAL_FILE_EVENT
 
 #include <QtCore/QString>

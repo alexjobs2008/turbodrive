@@ -1,4 +1,4 @@
-#ifndef CONNECTION_CONTROLLER_H
+﻿#ifndef CONNECTION_CONTROLLER_H
 #define CONNECTION_CONTROLLER_H
 
 #include <QtCore/QObject>

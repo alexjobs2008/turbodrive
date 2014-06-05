@@ -1,4 +1,4 @@
-#ifndef REMOTE_EVENT_HANDLERS
+﻿#ifndef REMOTE_EVENT_HANDLERS
 #define REMOTE_EVENT_HANDLERS
 
 #include "EventHandlerBase.h"

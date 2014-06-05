@@ -1,4 +1,4 @@
-#ifndef LOCAL_CACHE_H
+﻿#ifndef LOCAL_CACHE_H
 #define LOCAL_CACHE_H
 
 #include <QtCore/QObject>

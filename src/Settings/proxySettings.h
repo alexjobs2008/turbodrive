@@ -1,4 +1,4 @@
-#ifndef PROXY_SETTINGS_H
+﻿#ifndef PROXY_SETTINGS_H
 #define PROXY_SETTINGS_H
 
 #include <QtCore\QMetaType>

@@ -1,4 +1,4 @@
-#ifndef ABOUT_WIDGET_H
+﻿#ifndef ABOUT_WIDGET_H
 #define ABOUT_WIDGET_H
 
 #include <QtWidgets/QFrame>

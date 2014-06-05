@@ -1,4 +1,4 @@
-#ifndef PROFILE_SERVICE_H
+﻿#ifndef PROFILE_SERVICE_H
 #define PROFILE_SERVICE_H
 
 #include "Network/RestResource.h"

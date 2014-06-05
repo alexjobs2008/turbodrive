@@ -1,4 +1,4 @@
-#ifndef ANIMATED_SYSTEM_TRAY_ICON_H
+﻿#ifndef ANIMATED_SYSTEM_TRAY_ICON_H
 #define ANIMATED_SYSTEM_TRAY_ICON_H
 
 #include <QtWidgets/QSystemTrayIcon>

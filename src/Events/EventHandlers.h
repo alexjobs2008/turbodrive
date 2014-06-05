@@ -1,4 +1,4 @@
-#ifndef EVENT_TYPES_H
+﻿#ifndef EVENT_TYPES_H
 #define EVENT_TYPES_H
 
 #include "APIClient/ApiTypes.h"

@@ -1,4 +1,4 @@
-#ifndef EVENT_HANDLER_BASE
+﻿#ifndef EVENT_HANDLER_BASE
 #define EVENT_HANDLER_BASE
 
 #include <QtCore/QPointer>

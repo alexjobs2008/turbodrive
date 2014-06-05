@@ -1,4 +1,4 @@
-#ifndef EFSW_FILEWATCHERFSEVENTS_HPP
+﻿#ifndef EFSW_FILEWATCHERFSEVENTS_HPP
 #define EFSW_FILEWATCHERFSEVENTS_HPP
 
 #include <efsw/FileWatcherImpl.hpp>

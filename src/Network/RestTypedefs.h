@@ -1,4 +1,4 @@
-#ifndef REST_TYPEDEFS_H
+﻿#ifndef REST_TYPEDEFS_H
 #define REST_TYPEDEFS_H
 
 #include <QtCore/QSharedPointer>

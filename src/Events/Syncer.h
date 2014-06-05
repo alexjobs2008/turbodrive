@@ -1,4 +1,4 @@
-#ifndef SYNCER_H
+﻿#ifndef SYNCER_H
 #define SYNCER_H
 
 #include "APIClient/ApiTypes.h"

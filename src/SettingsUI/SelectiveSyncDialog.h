@@ -1,4 +1,4 @@
-#ifndef SELECTIVE_SYNC_H
+﻿#ifndef SELECTIVE_SYNC_H
 #define SELECTIVE_SYNC_H
 
 #include "APIClient/ApiTypes.h"

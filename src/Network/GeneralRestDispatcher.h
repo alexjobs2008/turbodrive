@@ -1,4 +1,4 @@
-#ifndef GENERAL_REST_DISPATCHER_H
+﻿#ifndef GENERAL_REST_DISPATCHER_H
 #define GENERAL_REST_DISPATCHER_H
 
 #include "RestResource.h"

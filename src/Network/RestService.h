@@ -1,4 +1,4 @@
-#ifndef REST_SERVICE_H
+﻿#ifndef REST_SERVICE_H
 #define REST_SERVICE_H
 
 #include "RestResource.h"

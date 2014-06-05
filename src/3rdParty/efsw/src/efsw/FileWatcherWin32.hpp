@@ -1,4 +1,4 @@
-#ifndef EFSW_FILEWATCHERWIN32_HPP
+﻿#ifndef EFSW_FILEWATCHERWIN32_HPP
 #define EFSW_FILEWATCHERWIN32_HPP
 
 #include <efsw/base.hpp>

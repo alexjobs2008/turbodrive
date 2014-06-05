@@ -1,4 +1,4 @@
-#ifndef REST_DISPATCHER_H
+﻿#ifndef REST_DISPATCHER_H
 #define REST_DISPATCHER_H
 
 #include "RestResource.h"

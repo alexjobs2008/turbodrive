@@ -1,4 +1,4 @@
-#ifndef FILE_UTILS_H
+﻿#ifndef FILE_UTILS_H
 #define FILE_UTILS_H
 
 #include <QtCore/QObject>

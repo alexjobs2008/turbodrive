@@ -1,4 +1,4 @@
-#ifndef FILE_UPLOADER_H
+﻿#ifndef FILE_UPLOADER_H
 #define FILE_UPLOADER_H
 
 #include "APIClient/ApiTypes.h"

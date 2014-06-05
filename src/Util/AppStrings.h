@@ -1,4 +1,4 @@
-#ifndef APP_STRINGS_H
+﻿#ifndef APP_STRINGS_H
 #define APP_STRINGS_H
 
 #include <QtCore/QString>

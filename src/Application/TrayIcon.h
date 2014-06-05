@@ -1,4 +1,4 @@
-#ifndef APP_TRAY_ICON_H
+﻿#ifndef APP_TRAY_ICON_H
 #define APP_TRAY_ICON_H
 
 #include "types.h"

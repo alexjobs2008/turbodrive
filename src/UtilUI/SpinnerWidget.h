@@ -1,4 +1,4 @@
-#ifndef SPINNER_WIDGET_H
+﻿#ifndef SPINNER_WIDGET_H
 #define SPINNER_WIDGET_H
 
 #include <QtWidgets/QFrame>

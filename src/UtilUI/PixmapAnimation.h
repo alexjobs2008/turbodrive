@@ -1,4 +1,4 @@
-#ifndef PIXMAP_ANIMATION_H
+﻿#ifndef PIXMAP_ANIMATION_H
 #define PIXMAP_ANIMATION_H
 
 #include <QtCore/QObject>

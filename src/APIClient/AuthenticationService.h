@@ -1,4 +1,4 @@
-#ifndef AUTHENTICATION_SERVICE_H
+﻿#ifndef AUTHENTICATION_SERVICE_H
 #define AUTHENTICATION_SERVICE_H
 
 #include "Network/RestResource.h"

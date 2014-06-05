@@ -1,4 +1,4 @@
-#ifndef FIRST_SETTINGS_H
+﻿#ifndef FIRST_SETTINGS_H
 #define FIRST_SETTINGS_H
 
 #include <QtWidgets/QFrame>

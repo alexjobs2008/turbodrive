@@ -1,4 +1,4 @@
-#ifndef ACCOUNT_WIDGET_H
+﻿#ifndef ACCOUNT_WIDGET_H
 #define ACCOUNT_WIDGET_H
 
 #include <QtWidgets/QFrame>

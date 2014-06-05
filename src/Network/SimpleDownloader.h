@@ -1,4 +1,4 @@
-#ifndef SIMPLE_DOWNLOADER_H
+﻿#ifndef SIMPLE_DOWNLOADER_H
 #define SIMPLE_DOWNLOADER_H
 
 #include <QObject>

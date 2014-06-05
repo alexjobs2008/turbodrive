@@ -1,4 +1,4 @@
-#ifndef EFSW_DIRWATCHERGENERIC_HPP
+﻿#ifndef EFSW_DIRWATCHERGENERIC_HPP
 #define EFSW_DIRWATCHERGENERIC_HPP
 
 #include <efsw/WatcherGeneric.hpp>

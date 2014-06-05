@@ -1,4 +1,4 @@
-#ifndef APP_TYPES_H
+﻿#ifndef APP_TYPES_H
 #define APP_TYPES_H
 
 #include <QtCore/QObject>

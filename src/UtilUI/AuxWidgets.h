@@ -1,4 +1,4 @@
-#ifndef AUXWIDGETS_H
+﻿#ifndef AUXWIDGETS_H
 #define AUXWIDGETS_H
 
 #include <QtWidgets/QFrame>

@@ -1,4 +1,4 @@
-#ifndef NOTIFICATION_SERVICE
+﻿#ifndef NOTIFICATION_SERVICE
 #define NOTIFICATION_SERVICE
 
 #include "Network/RestResource.h"

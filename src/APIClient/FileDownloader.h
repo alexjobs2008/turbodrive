@@ -1,4 +1,4 @@
-#ifndef FILE_DOWNLOADER_H
+﻿#ifndef FILE_DOWNLOADER_H
 #define FILE_DOWNLOADER_H
 
 #include <QtNetwork/QNetworkReply>

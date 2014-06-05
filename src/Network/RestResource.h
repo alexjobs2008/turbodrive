@@ -1,4 +1,4 @@
-#ifndef RESTRESOURCE_H
+﻿#ifndef RESTRESOURCE_H
 #define RESTRESOURCE_H
 
 #include <QtCore/QObject>

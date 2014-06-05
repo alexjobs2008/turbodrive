@@ -1,4 +1,4 @@
-#ifndef DASHBOARD_SERVICE_H
+﻿#ifndef DASHBOARD_SERVICE_H
 #define DASHBOARD_SERVICE_H
 
 #include "Network/RestResource.h"

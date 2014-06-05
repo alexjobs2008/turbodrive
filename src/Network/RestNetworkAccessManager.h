@@ -1,4 +1,4 @@
-#ifndef REST_NETWORK_ACCESS_MANAGER_H
+﻿#ifndef REST_NETWORK_ACCESS_MANAGER_H
 #define REST_NETWORK_ACCESS_MANAGER_H
 
 #include <QtNetwork/QNetworkAccessManager>
