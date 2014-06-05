@@ -1,4 +1,4 @@
-#include "TrayIcon.h"
+﻿#include "TrayIcon.h"
 
 #include "Util/AppStrings.h"
 #include "QsLog/QsLog.h"

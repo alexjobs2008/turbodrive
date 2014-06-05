@@ -1,4 +1,4 @@
-#include "RestService.h"
+﻿#include "RestService.h"
 
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>

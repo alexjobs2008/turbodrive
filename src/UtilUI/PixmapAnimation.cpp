@@ -1,4 +1,4 @@
-#include "pixmapAnimation.h"
+﻿#include "pixmapAnimation.h"
 
 #include <QtGui/QPixmap>
 

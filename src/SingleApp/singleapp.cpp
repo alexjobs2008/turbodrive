@@ -1,4 +1,4 @@
-#include "singleapp.h"
+﻿#include "singleapp.h"
 
 #include "settings/settings.h"
 #include "Application/TrayIcon.h"

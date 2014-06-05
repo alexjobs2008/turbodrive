@@ -1,4 +1,4 @@
-#include "RestDispatcher.h"
+﻿#include "RestDispatcher.h"
 #include "RestNetworkAccessManager.h"
 #include "RestService.h"
 #include "Settings/settings.h"

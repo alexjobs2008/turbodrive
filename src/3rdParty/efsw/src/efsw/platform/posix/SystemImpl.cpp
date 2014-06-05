@@ -1,4 +1,4 @@
-#include <efsw/platform/posix/SystemImpl.hpp>
+﻿#include <efsw/platform/posix/SystemImpl.hpp>
 
 #if defined( EFSW_PLATFORM_POSIX )
 

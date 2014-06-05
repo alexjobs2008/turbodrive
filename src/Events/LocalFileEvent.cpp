@@ -1,4 +1,4 @@
-#include "LocalFileEvent.h"
+﻿#include "LocalFileEvent.h"
 
 #include "Util/FileUtils.h"
 

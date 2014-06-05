@@ -1,4 +1,4 @@
-#include "ConnectionWidget.h"
+﻿#include "ConnectionWidget.h"
 #include "Settings/settings.h"
 #include "Settings/proxySettings.h"
 #include "QsLog/QsLog.h"

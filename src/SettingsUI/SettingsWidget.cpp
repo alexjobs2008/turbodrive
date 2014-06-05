@@ -1,4 +1,4 @@
-#include "SettingsWidget.h"
+﻿#include "SettingsWidget.h"
 
 #include "APIClient/ApiTypes.h"
 #include "QsLog/QsLog.h"

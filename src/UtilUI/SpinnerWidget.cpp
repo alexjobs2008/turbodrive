@@ -1,4 +1,4 @@
-#include "SpinnerWidget.h"
+﻿#include "SpinnerWidget.h"
 #include "PixmapAnimation.h"
 
 #include <QtWidgets/QBoxLayout>

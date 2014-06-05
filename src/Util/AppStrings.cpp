@@ -1,4 +1,4 @@
-#include "AppStrings.h"
+﻿#include "AppStrings.h"
 
 #include <QtCore/QObject>
 

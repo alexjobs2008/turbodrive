@@ -1,4 +1,4 @@
-#include "LoginWidget.h"
+﻿#include "LoginWidget.h"
 #include "Settings/settings.h"
 #include "QsLog/QsLog.h"
 #include "Util/AppStrings.h"

@@ -1,4 +1,4 @@
-#include "EventHandlers.h"
+﻿#include "EventHandlers.h"
 
 #include "APIClient/FileDownloader.h"
 #include "APIClient/FileUploader.h"

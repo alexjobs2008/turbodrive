@@ -1,4 +1,4 @@
-#include "Syncer.h"
+﻿#include "Syncer.h"
 #include "APIClient/FilesService.h"
 #include "Application/AppController.h"
 #include "Settings/settings.h"

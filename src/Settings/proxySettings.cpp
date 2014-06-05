@@ -1,4 +1,4 @@
-#include "proxySettings.h"
+﻿#include "proxySettings.h"
 #include "QsLog//QsLog.h"
 
 QDataStream &operator<<(QDataStream& out, const Drive::ProxyUsage& proxyUsage)

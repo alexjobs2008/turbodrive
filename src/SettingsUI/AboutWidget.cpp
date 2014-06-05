@@ -1,4 +1,4 @@
-#include "AboutWidget.h"
+﻿#include "AboutWidget.h"
 #include "Util/AppStrings.h"
 
 #include <QtWidgets/QBoxLayout>

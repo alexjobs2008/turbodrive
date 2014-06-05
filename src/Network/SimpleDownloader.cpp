@@ -1,4 +1,4 @@
-#include "SimpleDownloader.h"
+﻿#include "SimpleDownloader.h"
 #include "QsLog/QsLog.h"
 
 #include <QtCore/QJsonDocument>

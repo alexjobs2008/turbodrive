@@ -1,4 +1,4 @@
-#include "LocalFileEventNotifier.h"
+﻿#include "LocalFileEventNotifier.h"
 
 #include <iostream>
 #include <QtCore/QDir>

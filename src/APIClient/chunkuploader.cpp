@@ -1,4 +1,4 @@
-#include "chunkuploader.h"
+﻿#include "chunkuploader.h"
 
 #include "QsLog/QsLog.h"
 

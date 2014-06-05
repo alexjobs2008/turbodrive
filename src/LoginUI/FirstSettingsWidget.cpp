@@ -1,4 +1,4 @@
-#include "FirstSettingsWidget.h"
+﻿#include "FirstSettingsWidget.h"
 
 #include <QtWidgets/QBoxLayout>
 #include <QtWidgets/QRadioButton>

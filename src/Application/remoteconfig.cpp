@@ -1,4 +1,4 @@
-#include "remoteconfig.h"
+﻿#include "remoteconfig.h"
 
 #include "Network/SimpleDownloader.h"
 #include "Network/RestService.h"

@@ -1,4 +1,4 @@
-#include "ProfileService.h"
+﻿#include "ProfileService.h"
 
 #include "Settings/settings.h"
 #include "QsLog/QsLog.h"

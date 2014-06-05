@@ -1,4 +1,4 @@
-#include "singleapp.h"
+﻿#include "singleapp.h"
 
 int main(int argc, char *argv[])
 {

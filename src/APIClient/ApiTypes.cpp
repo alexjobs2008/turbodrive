@@ -1,4 +1,4 @@
-#include "ApiTypes.h"
+﻿#include "ApiTypes.h"
 
 #include "Application/AppController.h"
 #include "QsLog/QsLog.h"

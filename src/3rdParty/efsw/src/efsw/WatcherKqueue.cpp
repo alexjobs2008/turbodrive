@@ -1,4 +1,4 @@
-#include <efsw/WatcherKqueue.hpp>
+﻿#include <efsw/WatcherKqueue.hpp>
 
 #if EFSW_PLATFORM == EFSW_PLATFORM_KQUEUE || EFSW_PLATFORM == EFSW_PLATFORM_FSEVENTS
 

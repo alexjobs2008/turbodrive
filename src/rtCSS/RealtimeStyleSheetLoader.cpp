@@ -1,4 +1,4 @@
-#include "RealtimeStyleSheetLoader.h"
+﻿#include "RealtimeStyleSheetLoader.h"
 #include "QsLog/QsLog.h"
 
 #include <QtCore/QFileSystemWatcher>

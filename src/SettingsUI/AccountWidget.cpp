@@ -1,4 +1,4 @@
-#include "AccountWidget.h"
+﻿#include "AccountWidget.h"
 
 #include "APIClient/ApiTypes.h"
 #include "Util/AppStrings.h"

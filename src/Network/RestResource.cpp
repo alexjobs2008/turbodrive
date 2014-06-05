@@ -1,4 +1,4 @@
-#include "RestResource.h"
+﻿#include "RestResource.h"
 #include "RestDispatcher.h"
 
 #include "QsLog/QsLog.h"

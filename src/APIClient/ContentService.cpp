@@ -1,4 +1,4 @@
-#include "ContentService.h"
+﻿#include "ContentService.h"
 
 #include "Settings/settings.h"
 #include "QsLog/QsLog.h"

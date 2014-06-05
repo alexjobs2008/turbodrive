@@ -1,4 +1,4 @@
-#include "FileUtils.h"
+﻿#include "FileUtils.h"
 #include "AppStrings.h"
 #include "QsLog/QsLog.h"
 #include "Settings/settings.h"

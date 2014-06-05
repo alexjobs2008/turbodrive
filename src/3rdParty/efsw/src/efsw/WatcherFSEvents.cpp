@@ -1,4 +1,4 @@
-#include <efsw/WatcherFSEvents.hpp>
+﻿#include <efsw/WatcherFSEvents.hpp>
 #include <efsw/FileWatcherFSEvents.hpp>
 #include <efsw/FileSystem.hpp>
 #include <efsw/Debug.hpp>

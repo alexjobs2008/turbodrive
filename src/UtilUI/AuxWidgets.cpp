@@ -1,4 +1,4 @@
-#include "AuxWidgets.h"
+﻿#include "AuxWidgets.h"
 
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>

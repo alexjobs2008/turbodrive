@@ -1,4 +1,4 @@
-#include "Cache.h"
+﻿#include "Cache.h"
 #include "Util/FileUtils.h"
 #include "QsLog/QsLog.h"
 

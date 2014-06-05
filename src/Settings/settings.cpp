@@ -1,4 +1,4 @@
-#include "settings.h"
+﻿#include "settings.h"
 #include "proxySettings.h"
 #include "Util/AppStrings.h"
 #include "QsLog/QsLog.h"

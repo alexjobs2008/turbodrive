@@ -1,4 +1,4 @@
-#include "AuthenticationService.h"
+﻿#include "AuthenticationService.h"
 
 #include "Settings/settings.h"
 #include "QsLog/QsLog.h"

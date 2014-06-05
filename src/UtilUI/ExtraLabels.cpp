@@ -1,4 +1,4 @@
-#include "ExtraLabels.h"
+﻿#include "ExtraLabels.h"
 #include <QtWidgets/QBoxLayout>
 #include <QtCore/QEvent>
 #include <QtGui/QMouseEvent>

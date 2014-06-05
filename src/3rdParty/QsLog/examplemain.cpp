@@ -1,4 +1,4 @@
-#include "QsLog.h"
+﻿#include "QsLog.h"
 #include "QsLogDest.h"
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDir>

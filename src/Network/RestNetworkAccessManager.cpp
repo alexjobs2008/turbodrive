@@ -1,4 +1,4 @@
-#include "RestNetworkAccessManager.h"
+﻿#include "RestNetworkAccessManager.h"
 #include <QtNetwork/QNetworkReply>
 #include <QtCore/QList>
 #include <QtCore/QPointer>

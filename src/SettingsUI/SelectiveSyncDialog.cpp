@@ -1,4 +1,4 @@
-#include "SelectiveSyncDialog.h"
+﻿#include "SelectiveSyncDialog.h"
 
 #include <QtGui/QIcon>
 #include <QtGui/QFont>

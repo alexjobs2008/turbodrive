@@ -1,4 +1,4 @@
-#include "FileDownloader.h"
+﻿#include "FileDownloader.h"
 
 #include "Application/AppController.h"
 #include "Network/RestResource.h"
