@@ -29,9 +29,7 @@ FileUploader::FileUploader(const int folderId, const QString& filePath, QObject*
 	const int chunksTotal = std::ceil(m_file->size() / s_maxChunkSize);
 	std::vector<ChunkUploader*> uploaders;
 
-	for (int chunkIndex = 0, offset = 0;
-			offset < m_file->size();
-			++chunkIndex, offset += s_maxChunkSize)
+	for (int chunkIndex = 0, offset = 0;;)
 	{
 		const int size = std::min(m_file->size() - offset, s_maxChunkSize);
 		auto nextUploader = new ChunkUploader(uuid, *m_file, offset, size,
@@ -44,6 +42,13 @@ FileUploader::FileUploader(const int folderId, const QString& filePath, QObject*
 		connect(nextUploader, &ChunkUploader::error,
 				this, &FileUploader::onError);
 		uploaders.push_back(nextUploader);
+
+		++chunkIndex;
+		offset += s_maxChunkSize;
+		if (offset >= m_file->size())
+		{
+			break;
+		}
 	}
 
 	Q_ASSERT(!uploaders.empty());
