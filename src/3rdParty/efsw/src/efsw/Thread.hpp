@@ -1,4 +1,4 @@
-#ifndef EFSW_THREAD_HPP
+﻿#ifndef EFSW_THREAD_HPP
 #define EFSW_THREAD_HPP
 
 #include <efsw/base.hpp>

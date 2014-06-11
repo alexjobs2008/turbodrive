@@ -1,4 +1,4 @@
-#ifndef EFSW_BASE
+﻿#ifndef EFSW_BASE
 #define EFSW_BASE
 
 #include <efsw/sophist.h>

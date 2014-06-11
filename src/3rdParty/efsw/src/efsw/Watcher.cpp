@@ -1,4 +1,4 @@
-#include <efsw/Watcher.hpp>
+﻿#include <efsw/Watcher.hpp>
 
 namespace efsw {
 

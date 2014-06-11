@@ -1,4 +1,4 @@
-#ifndef EFSW_SYSTEM_HPP
+﻿#ifndef EFSW_SYSTEM_HPP
 #define EFSW_SYSTEM_HPP
 
 #include <efsw/base.hpp>

@@ -1,4 +1,4 @@
-#include <efsw/FileInfo.hpp>
+﻿#include <efsw/FileInfo.hpp>
 #include <efsw/FileSystem.hpp>
 #include <efsw/String.hpp>
 #include <sys/stat.h>

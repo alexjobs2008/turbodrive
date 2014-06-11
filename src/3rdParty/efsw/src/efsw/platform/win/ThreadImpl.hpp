@@ -1,4 +1,4 @@
-#ifndef EFSW_THREADIMPLWIN_HPP
+﻿#ifndef EFSW_THREADIMPLWIN_HPP
 #define EFSW_THREADIMPLWIN_HPP
 
 #include <efsw/base.hpp>

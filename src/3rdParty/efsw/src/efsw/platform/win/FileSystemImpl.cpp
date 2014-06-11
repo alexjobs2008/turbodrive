@@ -1,4 +1,4 @@
-#include <efsw/platform/win/FileSystemImpl.hpp>
+﻿#include <efsw/platform/win/FileSystemImpl.hpp>
 
 #if EFSW_PLATFORM == EFSW_PLATFORM_WIN32
 

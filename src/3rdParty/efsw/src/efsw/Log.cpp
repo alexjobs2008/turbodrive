@@ -1,4 +1,4 @@
-#include <efsw/efsw.hpp>
+﻿#include <efsw/efsw.hpp>
 
 namespace efsw { namespace Errors {
 

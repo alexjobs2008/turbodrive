@@ -1,4 +1,4 @@
-/**
+﻿/**
 	@author Sepul Sepehr Taghdisian
 
 	Copyright (c) 2013 Martin Lucas Golini

@@ -1,4 +1,4 @@
-#include <efsw/platform/posix/FileSystemImpl.hpp>
+﻿#include <efsw/platform/posix/FileSystemImpl.hpp>
 
 #if defined( EFSW_PLATFORM_POSIX )
 

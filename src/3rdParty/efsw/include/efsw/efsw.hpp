@@ -1,4 +1,4 @@
-/**
+﻿/**
 	@author Martín Lucas Golini
 
 	Copyright (c) 2013 Martín Lucas Golini

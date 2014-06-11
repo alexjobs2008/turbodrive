@@ -1,4 +1,4 @@
-#include <efsw/efsw.hpp>
+﻿#include <efsw/efsw.hpp>
 #include <efsw/System.hpp>
 #include <efsw/FileSystem.hpp>
 #include <signal.h>

@@ -1,4 +1,4 @@
-#include <efsw/Debug.hpp>
+﻿#include <efsw/Debug.hpp>
 #include <iostream>
 
 #ifdef EFSW_COMPILER_MSVC

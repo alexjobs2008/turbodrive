@@ -1,4 +1,4 @@
-/* sophist.h - 0.3 - public domain - Sean Barrett 2010
+﻿/* sophist.h - 0.3 - public domain - Sean Barrett 2010
 ** Knowledge drawn from Brian Hook's posh.h and http://predef.sourceforge.net
 ** Sophist provides portable types; you typedef/#define them to your own names
 **

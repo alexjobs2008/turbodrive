@@ -1,4 +1,4 @@
-#ifndef EFSW_PLATFORMIMPL_HPP
+﻿#ifndef EFSW_PLATFORMIMPL_HPP
 #define EFSW_PLATFORMIMPL_HPP
 
 #include <efsw/base.hpp>
