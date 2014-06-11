@@ -1,4 +1,6 @@
-﻿#include "AppController.h"
+﻿#include "factoriesstorage.h"
+#include "filesystemfactory.h"
+#include "AppController.h"
 #include "LoginController.h"
 
 #include "APIClient/ApiTypes.h"
@@ -108,6 +110,11 @@ void logStartInfo()
 			.arg(QString(QTextCodec::codecForLocale()->name()));
 }
 
+void initFactories()
+{
+	FactoriesStorage::instance().registerFileSystem(
+			IFileSystemFactoryPtr(new FileSystemFactory()));
+}
 
 int main(int argc, char *argv[])
 {
@@ -118,6 +125,7 @@ int main(int argc, char *argv[])
 	initApplicationInfo();
 	initLogging();
 	logStartInfo();
+	initFactories();
 	Settings::instance().log();
 
 	if(app.shouldContinue())

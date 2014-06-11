@@ -15,6 +15,13 @@ set(HEADERS
 	LoginController.h
 	TrayIcon.h
 	remoteconfig.h
+	ifactory.h
+	isingletonfactory.h
+	factoriesstorage.h
+	ifilesystem.h
+	filesystem.h
+	ifilesystemfactory.h
+	filesystemfactory.h
 )
 
 set(SOURCES
@@ -23,6 +30,9 @@ set(SOURCES
 	LoginController.cpp
 	TrayIcon.cpp
 	remoteconfig.cpp
+	factoriesstorage.cpp
+	filesystem.cpp
+	filesystemfactory.cpp
 )
 
 set(QRC_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/res/res.qrc)

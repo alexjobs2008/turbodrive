@@ -1,5 +1,6 @@
 ﻿#include "LocalEventHandlers.h"
 
+#include "Application/factoriesstorage.h"
 #include "Cache.h"
 
 #include "Util/FileUtils.h"
@@ -37,7 +38,7 @@ void LocalFileOrFolderAddedEventHandler::run()
 	Q_ASSERT(localEvent.type() == LocalFileEvent::Added
 			|| localEvent.type() == LocalFileEvent::Modified);
 
-	if (!QFile::exists(localEvent.localPath()))
+	if (!FactoriesStorage::instance().fileSystem().instance().isFileExists(localEvent.localPath().toStdString()))
 	{
 		processEventsAndQuit();
 		return;
