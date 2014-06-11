@@ -1,4 +1,4 @@
-﻿#ifndef EFSW_WATCHERINOTIFY_HPP
+#ifndef EFSW_WATCHERINOTIFY_HPP
 #define EFSW_WATCHERINOTIFY_HPP
 
 #include <efsw/FileWatcherImpl.hpp>

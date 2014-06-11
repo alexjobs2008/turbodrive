@@ -1,4 +1,4 @@
-﻿#ifndef EFSW_MUTEXIMPLWIN_HPP
+#ifndef EFSW_MUTEXIMPLWIN_HPP
 #define EFSW_MUTEXIMPLWIN_HPP
 
 #include <efsw/base.hpp>

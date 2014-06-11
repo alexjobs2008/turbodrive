@@ -1,4 +1,4 @@
-﻿#ifndef EFSW_FILESYSTEMIMPLWIN_HPP
+#ifndef EFSW_FILESYSTEMIMPLWIN_HPP
 #define EFSW_FILESYSTEMIMPLWIN_HPP
 
 #include <efsw/base.hpp>

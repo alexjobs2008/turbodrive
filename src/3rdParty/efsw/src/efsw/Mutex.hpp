@@ -1,4 +1,4 @@
-﻿#ifndef EFSW_MUTEX_HPP
+#ifndef EFSW_MUTEX_HPP
 #define EFSW_MUTEX_HPP
 
 #include <efsw/base.hpp>

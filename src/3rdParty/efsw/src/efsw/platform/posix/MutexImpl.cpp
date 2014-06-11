@@ -1,4 +1,4 @@
-﻿#include <efsw/platform/posix/MutexImpl.hpp>
+#include <efsw/platform/posix/MutexImpl.hpp>
 
 #if defined( EFSW_PLATFORM_POSIX )
 

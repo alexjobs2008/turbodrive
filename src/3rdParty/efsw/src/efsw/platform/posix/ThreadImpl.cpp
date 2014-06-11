@@ -1,4 +1,4 @@
-﻿#include <efsw/platform/posix/ThreadImpl.hpp>
+#include <efsw/platform/posix/ThreadImpl.hpp>
 #include <efsw/Thread.hpp>
 
 #if defined( EFSW_PLATFORM_POSIX )

@@ -1,4 +1,4 @@
-﻿#include <efsw/WatcherWin32.hpp>
+#include <efsw/WatcherWin32.hpp>
 #include <efsw/String.hpp>
 
 #if EFSW_PLATFORM == EFSW_PLATFORM_WIN32

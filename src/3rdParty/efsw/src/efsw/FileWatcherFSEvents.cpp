@@ -1,4 +1,4 @@
-﻿#include <efsw/FileWatcherFSEvents.hpp>
+#include <efsw/FileWatcherFSEvents.hpp>
 #include <efsw/FileSystem.hpp>
 #include <efsw/System.hpp>
 #include <efsw/Debug.hpp>
@@ -110,6 +110,17 @@ WatchID FileWatcherFSEvents::addWatch( const std::string& directory, FileWatchLi
 	}
 	
 	std::string dir( directory );
+
+	FileInfo fi( dir );
+
+	if ( !fi.isDirectory() )
+	{
+		return Errors::Log::createLastError( Errors::FileNotFound, dir );
+	}
+	else if ( !fi.isReadable() )
+	{
+		return Errors::Log::createLastError( Errors::FileNotReadable, dir );
+	}
 
 	FileSystem::dirAddSlashAtEnd( dir );
 

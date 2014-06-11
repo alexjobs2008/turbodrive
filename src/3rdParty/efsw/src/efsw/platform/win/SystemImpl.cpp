@@ -1,4 +1,4 @@
-﻿#include <efsw/platform/win/SystemImpl.hpp>
+#include <efsw/platform/win/SystemImpl.hpp>
 #include <efsw/String.hpp>
 
 #if EFSW_PLATFORM == EFSW_PLATFORM_WIN32

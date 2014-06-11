@@ -1,4 +1,4 @@
-﻿#include <efsw/FileWatcherInotify.hpp>
+#include <efsw/FileWatcherInotify.hpp>
 
 #if EFSW_PLATFORM == EFSW_PLATFORM_INOTIFY
 

@@ -1,4 +1,4 @@
-﻿#include <efsw/System.hpp>
+#include <efsw/System.hpp>
 #include <efsw/platform/platformimpl.hpp>
 
 namespace efsw {

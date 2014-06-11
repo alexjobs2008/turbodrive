@@ -1,4 +1,4 @@
-﻿#include <efsw/Thread.hpp>
+#include <efsw/Thread.hpp>
 #include <efsw/platform/platformimpl.hpp>
 
 namespace efsw {

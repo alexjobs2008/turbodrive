@@ -1,4 +1,4 @@
-﻿/** NOTE:
+/** NOTE:
 *	This code is based on the Utf implementation from SFML2. License zlib/png ( http://www.sfml-dev.org/license.php )
 *	The class was modified to fit efsw own needs. This is not the original implementation from SFML2.
 * */

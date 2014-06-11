@@ -1,4 +1,4 @@
-﻿#ifndef EFSW_FILEWATCHERLINUX_HPP
+#ifndef EFSW_FILEWATCHERLINUX_HPP
 #define EFSW_FILEWATCHERLINUX_HPP
 
 #include <efsw/FileWatcherImpl.hpp>

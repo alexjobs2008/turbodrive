@@ -1,4 +1,4 @@
-﻿#ifndef EFSW_THREADIMPLPOSIX_HPP
+#ifndef EFSW_THREADIMPLPOSIX_HPP
 #define EFSW_THREADIMPLPOSIX_HPP
 
 #include <efsw/base.hpp>

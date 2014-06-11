@@ -1,4 +1,4 @@
-﻿#ifndef EFSW_WATCHEROSX_HPP
+#ifndef EFSW_WATCHEROSX_HPP
 #define EFSW_WATCHEROSX_HPP
 
 #include <efsw/FileWatcherImpl.hpp>

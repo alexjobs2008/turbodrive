@@ -1,4 +1,4 @@
-﻿#ifndef EFSW_DEBUG_HPP
+#ifndef EFSW_DEBUG_HPP
 #define EFSW_DEBUG_HPP
 
 #include <efsw/base.hpp>

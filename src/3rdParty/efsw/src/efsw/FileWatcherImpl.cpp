@@ -1,4 +1,4 @@
-﻿#include <efsw/FileWatcherImpl.hpp>
+#include <efsw/FileWatcherImpl.hpp>
 #include <efsw/String.hpp>
 #include <efsw/System.hpp>
 

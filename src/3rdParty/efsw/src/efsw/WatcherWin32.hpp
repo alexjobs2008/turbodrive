@@ -1,4 +1,4 @@
-﻿#ifndef EFSW_WATCHERWIN32_HPP
+#ifndef EFSW_WATCHERWIN32_HPP
 #define EFSW_WATCHERWIN32_HPP
 
 #include <efsw/FileWatcherImpl.hpp>

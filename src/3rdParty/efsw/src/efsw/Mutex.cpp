@@ -1,4 +1,4 @@
-﻿#include <efsw/Mutex.hpp>
+#include <efsw/Mutex.hpp>
 #include <efsw/platform/platformimpl.hpp>
 
 namespace efsw {

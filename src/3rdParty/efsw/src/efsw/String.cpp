@@ -1,4 +1,4 @@
-﻿#include <iterator>
+#include <iterator>
 #include <efsw/String.hpp>
 #include <efsw/Utf.hpp>
 

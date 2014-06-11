@@ -1,4 +1,4 @@
-﻿#include <efsw/WatcherGeneric.hpp>
+#include <efsw/WatcherGeneric.hpp>
 #include <efsw/FileSystem.hpp>
 #include <efsw/DirWatcherGeneric.hpp>
 

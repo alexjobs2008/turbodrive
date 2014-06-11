@@ -1,4 +1,4 @@
-﻿#include <efsw/FileInfo.hpp>
+#include <efsw/FileInfo.hpp>
 #include <efsw/FileSystem.hpp>
 #include <efsw/String.hpp>
 #include <sys/stat.h>
@@ -100,7 +100,7 @@ void FileInfo::getInfo()
 	int res = stat( Filepath.c_str(), &st );
 	#else
 	struct _stat64i32 st;
-	int res = _wstat64i32( String::fromUtf8( Filepath ).toWideString().c_str(), &st );
+	int res = _wstat( String::fromUtf8( Filepath ).toWideString().c_str(), &st );
 	#endif
 
 	if ( 0 == res )
@@ -132,7 +132,7 @@ void FileInfo::getRealInfo()
 	int res = lstat( Filepath.c_str(), &st );
 	#else
 	struct _stat64i32 st;
-	int res = _wstat64i32( String::fromUtf8( Filepath ).toWideString().c_str(), &st );
+	int res = _wstat( String::fromUtf8( Filepath ).toWideString().c_str(), &st );
 	#endif
 
 	if ( 0 == res )
@@ -208,7 +208,7 @@ bool FileInfo::exists()
 	return stat( Filepath.c_str(), &st ) == 0;
 #else
 	struct _stat64i32 st;
-	return _wstat64i32( String::fromUtf8( Filepath ).toWideString().c_str(), &st ) == 0;
+	return _wstat( String::fromUtf8( Filepath ).toWideString().c_str(), &st ) == 0;
 #endif
 }
 
@@ -233,4 +233,4 @@ bool FileInfo::operator!=( const FileInfo& Other ) const
 	return !(*this == Other);
 }
 
-}
+} 

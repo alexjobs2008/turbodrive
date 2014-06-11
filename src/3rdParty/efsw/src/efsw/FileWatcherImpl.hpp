@@ -1,4 +1,4 @@
-﻿#ifndef EFSW_FILEWATCHERIMPL_HPP
+#ifndef EFSW_FILEWATCHERIMPL_HPP
 #define EFSW_FILEWATCHERIMPL_HPP
 
 #include <efsw/base.hpp>

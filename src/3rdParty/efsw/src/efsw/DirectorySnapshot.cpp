@@ -1,4 +1,4 @@
-﻿#include <efsw/DirectorySnapshot.hpp>
+#include <efsw/DirectorySnapshot.hpp>
 #include <efsw/FileSystem.hpp>
 
 namespace efsw {

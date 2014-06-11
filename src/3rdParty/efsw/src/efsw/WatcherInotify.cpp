@@ -1,4 +1,4 @@
-﻿#include <efsw/WatcherInotify.hpp>
+#include <efsw/WatcherInotify.hpp>
 
 namespace efsw {
 

@@ -1,4 +1,4 @@
-﻿#include <efsw/efsw.h>
+#include <efsw/efsw.h>
 #include <efsw/efsw.hpp>
 #include <vector>
 

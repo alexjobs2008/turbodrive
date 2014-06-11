@@ -1,4 +1,4 @@
-﻿#ifndef EFSW_WATCHERIMPL_HPP
+#ifndef EFSW_WATCHERIMPL_HPP
 #define EFSW_WATCHERIMPL_HPP
 
 #include <efsw/base.hpp>
