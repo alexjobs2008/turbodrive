@@ -23,6 +23,8 @@ public:
 	QPointer<Drive::TrayIcon> trayIcon();
 
 private:
+	const QStringList m_arguments;
+
 	bool m_shouldContinue;
 	QLocalServer* m_localServer;
 	Drive::TrayIcon* m_trayIcon;

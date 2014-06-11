@@ -11,6 +11,7 @@
 
 SingleApplication::SingleApplication(int argc, char *argv[])
 	: QApplication(argc, argv)
+	, m_arguments(QApplication::arguments())
 	, m_shouldContinue(false)
 	, m_localServer(nullptr)
 	, m_trayIcon(nullptr)
@@ -39,7 +40,7 @@ SingleApplication::~SingleApplication()
 			QLOG_DEBUG() << "Restarting...";
 			if (!QProcess::startDetached(
 					QApplication::applicationFilePath(),
-					qApp->arguments(),
+					m_arguments,
 					QApplication::applicationDirPath(),
 					&pid))
 			{
