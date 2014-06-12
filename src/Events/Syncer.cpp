@@ -178,13 +178,13 @@ void Syncer::syncLocalFolder(const QString& localFolderPath)
 					!= QDir::cleanPath(Settings::instance().get(Settings::folderPath).toString()))
 				{
 					m_localEvents << LocalFileEvent(LocalFileEvent::Added,
-							QDir::cleanPath(info.absoluteFilePath()));
+							QDir::cleanPath(info.absolutePath()),
+							info.fileName());
 					syncLocalFolder(info.absoluteFilePath());
 				}
 			}
 			else
 			{
-				LocalFileEvent event;
 				m_localEvents << LocalFileEvent(LocalFileEvent::Added,
 						QDir::cleanPath(info.absolutePath()),
 						info.fileName());

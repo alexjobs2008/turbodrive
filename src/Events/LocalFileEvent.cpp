@@ -38,6 +38,7 @@ uint LocalFileEvent::timeStamp() const
 
 QString LocalFileEvent::fileName() const
 {
+	Q_ASSERT(!m_filePath.isEmpty());
 	return m_filePath.split(Utils::separator(), QString::SkipEmptyParts).last();
 }
 
