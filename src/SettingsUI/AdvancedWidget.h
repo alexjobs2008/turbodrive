@@ -36,4 +36,4 @@ private:
 
 }
 
-#endif ADVANCED_WIDGET_H
+#endif // ADVANCED_WIDGET_H

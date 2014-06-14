@@ -49,4 +49,4 @@ public:
 
 }
 
-#endif ACCOUNT_WIDGET_H
+#endif // ACCOUNT_WIDGET_H

@@ -86,5 +86,5 @@ private:
 
 }
 
-#endif CONNECTION_WIDGET_H
+#endif // CONNECTION_WIDGET_H
 

@@ -16,4 +16,4 @@ public:
 
 }
 
-#endif ABOUT_WIDGET_H
+#endif // ABOUT_WIDGET_H
