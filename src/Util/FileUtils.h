@@ -4,7 +4,6 @@
 #include <QtCore/QObject>
 
 #ifdef Q_OS_WIN
-	#define NOMINMAX
 	#include "Windows.h"
 #endif
 

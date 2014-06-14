@@ -28,4 +28,4 @@ private:
 	QMap<QString, QWidget*> widgets;
 };
 
-#endif REALTIME_STYLESHEET_LOADER
+#endif // REALTIME_STYLESHEET_LOADER

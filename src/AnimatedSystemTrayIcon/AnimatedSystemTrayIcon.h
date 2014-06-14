@@ -52,4 +52,4 @@ private:
 
 };
 
-#endif ANIMATED_SYSTEM_TRAY_ICON_H
+#endif // ANIMATED_SYSTEM_TRAY_ICON_H

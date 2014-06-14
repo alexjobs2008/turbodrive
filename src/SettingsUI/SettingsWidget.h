@@ -85,4 +85,4 @@ private:
 
 }
 
-#endif SETTINGS_WIDGET_H
+#endif // SETTINGS_WIDGET_H
