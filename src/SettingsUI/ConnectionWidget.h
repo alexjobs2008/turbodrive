@@ -31,7 +31,7 @@ private slots:
 	void on_autoProxy_toggled(bool checked);
 	void on_manualProxy_toggled(bool checked);
 
-	void on_proxyConfigure_clicked(bool checked);
+	void on_proxyConfigure_clicked(bool);
 
 private:
 	QBoxLayout* createBandwidthControls();

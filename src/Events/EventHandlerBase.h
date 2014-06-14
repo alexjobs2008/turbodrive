@@ -18,14 +18,12 @@ class EventHandlerBase : public QObject
 {
 	Q_OBJECT
 public:
-	EventHandlerBase(QObject* parent = nullptr)
+	// TODO: remove parent param
+	// The object cannot be moved to thread if it has a parent.
+	// see also QObject::moveToThread docs.
+	EventHandlerBase(QObject*)
 		: QObject(nullptr)
 	{
-		// TODO: remove parent param
-		// The object cannot be moved to thread if it has a parent.
-		// see also QObject::moveToThread docs.
-		parent;
-
 		auto thread = new QThread();
 
 		connect(thread, &QThread::started, this, &EventHandlerBase::run);

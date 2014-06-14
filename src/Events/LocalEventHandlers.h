@@ -48,16 +48,16 @@ private slots:
 	void onUploadFailed(const QString& error);
 
 	void onTrashSucceeded();
-	void onTrashFailed(const QString& error);
+	void onTrashFailed(const QString&);
 
 	void onRemoveSucceeded();
-	void onRemoveFailed(const QString& error);
+	void onRemoveFailed(const QString&);
 
 private:
+	int m_parentId;
 	const QString m_remotePath;
 	RemoteFileDesc m_remoteFileDesc;
 	GetChildrenResourceRef m_getChildrenResource;
-	int m_parentId;
 };
 
 class LocalFileOrFolderDeletedEventHandler: public LocalEventHandlerBase
@@ -95,7 +95,7 @@ private slots:
 	void onGetFileObjectIdSucceeded(int id);
 	void onGetFileObjectIdFailed();
 	void onRenameSucceeded(const Drive::RemoteFileDesc& fileDesc);
-	void onRenameFailed(const QString& error);
+	void onRenameFailed(const QString&);
 
 private:
 	QString m_newName;

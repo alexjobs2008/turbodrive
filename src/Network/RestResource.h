@@ -46,8 +46,8 @@ public:
 		QString service;
 		QString path;
 		QByteArray data;
-		HeaderList headers;
 		ParamList params;
+		HeaderList headers;
 		bool isCanceled;
 	};
 
@@ -136,7 +136,7 @@ protected:
 private:
 	friend class GeneralRestDispatcher;
 	void init();
-	void requestFinished(const ReplyRef& requestReply, bool& authenticationRequired);
+	void requestFinished(const ReplyRef& requestReply, bool&);
 	void requestCancelled();
 
 	// To be implemented in derived classes

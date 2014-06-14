@@ -33,8 +33,7 @@ signals:
 	void pingError();
 
 private:
-	virtual bool processGetResponse(int status, const QByteArray& data,
-		const HeaderList& headers);
+	virtual bool processGetResponse(int status, const QByteArray&, const HeaderList&);
 };
 
 class GetAncestorsRestResource;
@@ -57,8 +56,7 @@ signals:
 	void failed();
 
 private:
-	virtual bool processGetResponse(int status, const QByteArray& data,
-		const HeaderList& headers);
+	virtual bool processGetResponse(int status, const QByteArray& data, const HeaderList&);
 
 	int fileId;
 };
@@ -109,8 +107,7 @@ signals:
 	void failed(const QString& error);
 
 private:
-	virtual bool processPostResponse(int status, const QByteArray& data,
-		const HeaderList& headers);
+	virtual bool processPostResponse(int status, const QByteArray& data, const HeaderList&);
 
 	int parentId;
 };
@@ -179,8 +176,7 @@ signals:
 	void failed();
 
 private:
-	virtual bool processGetResponse(int status, const QByteArray& data,
-		const HeaderList& headers);
+	virtual bool processGetResponse(int status, const QByteArray& data, const HeaderList&);
 
 	QString parentId;
 	QString fileObjectName;

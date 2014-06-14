@@ -41,7 +41,7 @@ public:
 
 protected:
 	explicit AnimatedSystemTrayIcon(QObject *parent = 0);
-	virtual void timerEvent(QTimerEvent * event);
+	virtual void timerEvent(QTimerEvent*);
 
 private:
 	Q_DISABLE_COPY(AnimatedSystemTrayIcon)

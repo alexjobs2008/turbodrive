@@ -43,7 +43,7 @@ bool RegisterLinkResource::restricted() const
 
 bool RegisterLinkResource::processGetResponse(int status,
 											const QByteArray& data,
-											const HeaderList& headers)
+											const HeaderList&)
 {
 	QString link = getDataFromJson(data);
 	if (status == 200 && !link.isEmpty())
@@ -98,8 +98,8 @@ bool PasswordResetResource::restricted() const
 }
 
 bool PasswordResetResource::processPostResponse(int status,
-												const QByteArray& data,
-												const HeaderList& headers)
+												const QByteArray&,
+												const HeaderList&)
 {
 //	QLOG_INFO() << status;
 //	QLOG_INFO() << data;

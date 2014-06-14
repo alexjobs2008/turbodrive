@@ -43,9 +43,9 @@ bool ProfileRestResource::restricted() const
 	return true;
 }
 
-bool ProfileRestResource::processGetResponse(int status,
+bool ProfileRestResource::processGetResponse(int,
 										const QByteArray& data,
-										const HeaderList& headers)
+										const HeaderList&)
 {
 	QLOG_INFO() << "User data: " << data;
 

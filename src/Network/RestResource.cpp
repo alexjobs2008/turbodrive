@@ -106,7 +106,7 @@ RestResourceRef RestResource::self() const
 	return _self.toStrongRef();
 }
 
-void RestResource::requestFinished(const ReplyRef& requestReply, bool& authenticationRequired)
+void RestResource::requestFinished(const ReplyRef& requestReply, bool&)
 {
 	Q_ASSERT(requestReply->reply);
 

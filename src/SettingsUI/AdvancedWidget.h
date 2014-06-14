@@ -18,8 +18,8 @@ public:
 
 private slots:
 	void on_desktopNotifications_toggled(bool checked);
-	void on_moveFolder_clicked(bool checked);
-	void on_selectiveSync_clicked(bool checked);
+	void on_moveFolder_clicked(bool);
+	void on_selectiveSync_clicked(bool);
 	void on_folderPath_textChanged(const QString &text);
 	void on_autostart_toggled(bool checked);
 	void on_language_currentIndexChanged(int index);

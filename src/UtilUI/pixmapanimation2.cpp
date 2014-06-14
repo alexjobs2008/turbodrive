@@ -1,4 +1,4 @@
-﻿#include "pixmapAnimation.h"
+﻿#include "pixmapanimation2.h"
 
 #include <QtGui/QPixmap>
 
@@ -56,7 +56,7 @@ void PixmapAnimation::stop()
 	currentFrame = 0;
 }
 
-void PixmapAnimation::timerEvent(QTimerEvent *event)
+void PixmapAnimation::timerEvent(QTimerEvent*)
 {
 	if (++currentFrame > frames.size() - 1)
 		currentFrame = 0;

@@ -9,10 +9,10 @@
 namespace Drive
 {
 
-
-class TrayIcon : public AnimatedSystemTrayIcon
+class TrayIcon: public AnimatedSystemTrayIcon
 {
 	Q_OBJECT
+
 public:
 	explicit TrayIcon(QObject *parent);
 
@@ -32,6 +32,5 @@ private:
 };
 
 }
-
 
 #endif

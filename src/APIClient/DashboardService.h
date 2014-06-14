@@ -28,8 +28,7 @@ signals:
 	void linkReceived(const QString& link);
 
 private:
-	virtual bool processGetResponse(int status, const QByteArray& data,
-		const HeaderList& headers);
+	virtual bool processGetResponse(int status, const QByteArray& data, const HeaderList&);
 };
 
 class PasswordResetResource;
@@ -53,8 +52,7 @@ signals:
 	void resetFailed(const QString& error);
 
 private:
-	virtual bool processPostResponse(int status, const QByteArray& data,
-		const HeaderList& headers);
+	virtual bool processPostResponse(int status, const QByteArray&, const HeaderList&);
 
 	QByteArray toByteArray(const QString& email);
 };

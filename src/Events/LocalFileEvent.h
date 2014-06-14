@@ -67,9 +67,9 @@ public:
 	bool matches(const LocalFileEvent &event) const;
 
 private:
-	PathMatchType m_matchType;
 	LocalFileEvent::Type m_eventType;
 	QString m_path;
+	PathMatchType m_matchType;
 };
 
 }

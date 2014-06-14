@@ -97,7 +97,7 @@ void AccountWidget::on_folderLabel_linkActivated(const QString &link)
 	emit openFolder();
 }
 
-void AccountWidget::on_pbLogout_clicked(bool checked)
+void AccountWidget::on_pbLogout_clicked(bool)
 {
 	emit logout();
 }

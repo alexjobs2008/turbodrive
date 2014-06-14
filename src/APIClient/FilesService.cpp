@@ -49,8 +49,8 @@ bool OnlineRestResource::restricted() const
 }
 
 bool OnlineRestResource::processGetResponse(int status,
-										const QByteArray& data,
-										const HeaderList& headers)
+										const QByteArray&,
+										const HeaderList&)
 {
 	QLOG_DEBUG() << "Ping status " << status;
 
@@ -104,7 +104,7 @@ bool GetAncestorsRestResource::restricted() const
 
 bool GetAncestorsRestResource::processGetResponse(int status,
 												const QByteArray& data,
-												const HeaderList& headers)
+												const HeaderList&)
 {
 	QLOG_TRACE() << "getAncestors requested finished: " << status;
 
@@ -234,7 +234,7 @@ bool CreateRestResource::restricted() const
 
 bool CreateRestResource::processPostResponse(int status,
 											const QByteArray& data,
-											const HeaderList& headers)
+											const HeaderList&)
 {
 //		QLOG_TRACE() << "create post: " << status << "."
 //			<< headers << data;
@@ -510,7 +510,7 @@ bool GetChildIdResource::restricted() const
 
 bool GetChildIdResource::processGetResponse(int status,
 											const QByteArray& data,
-											const HeaderList& headers)
+											const HeaderList&)
 {
 //	QLOG_TRACE() << "get child id get: " << status << "."
 //		<< headers << data;

@@ -221,7 +221,7 @@ void ConnectionWidget::on_manualProxy_toggled(bool checked)
 			.set(Settings::proxyUsage, ProxyUsage::CustomProxy);
 }
 
-void ConnectionWidget::on_proxyConfigure_clicked(bool checked)
+void ConnectionWidget::on_proxyConfigure_clicked(bool)
 {
 	static ProxySettingsDialog *d = new ProxySettingsDialog(this);
 

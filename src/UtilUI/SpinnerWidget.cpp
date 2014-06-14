@@ -1,5 +1,5 @@
 ﻿#include "SpinnerWidget.h"
-#include "PixmapAnimation.h"
+#include "pixmapanimation2.h"
 
 #include <QtWidgets/QBoxLayout>
 #include <QtWidgets/QLabel>

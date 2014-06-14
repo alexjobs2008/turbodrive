@@ -13,8 +13,8 @@ public:
 	FirstSettingsWidget(QWidget *parent = 0);
 
 private slots:
-	void on_typicalSettings_toggled(bool checked);
-	void on_advancedSettings_toggled(bool checked);
+	void on_typicalSettings_toggled(bool);
+	void on_advancedSettings_toggled(bool);
 
 
 private:

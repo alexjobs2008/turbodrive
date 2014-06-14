@@ -150,7 +150,7 @@ void AdvancedWidget::on_desktopNotifications_toggled(bool checked)
 	Settings::instance().set(Settings::desktopNotifications, checked);
 }
 
-void AdvancedWidget::on_moveFolder_clicked(bool checked)
+void AdvancedWidget::on_moveFolder_clicked(bool)
 {
 	QString path = QFileDialog::getExistingDirectory(this
 		, QString(tr("Choose Folder to Move %1 Into"))
@@ -180,7 +180,7 @@ void AdvancedWidget::on_language_currentIndexChanged(int index)
 		set(Settings::language, cbLanguage->itemData(index).toInt());
 }
 
-void AdvancedWidget::on_selectiveSync_clicked(bool checked)
+void AdvancedWidget::on_selectiveSync_clicked(bool)
 {
 	SelectiveSyncDialog d;
 	d.exec();

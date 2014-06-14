@@ -71,13 +71,10 @@ public:
 	Delegate(QObject *parent = 0);
 	virtual ~Delegate();
 
-	virtual QSize sizeHint(const QStyleOptionViewItem & option,
-						const QModelIndex & index) const;
+	virtual QSize sizeHint(const QStyleOptionViewItem&, const QModelIndex&) const;
 
 	virtual void paint(QPainter * painter, const QStyleOptionViewItem & option,
 					const QModelIndex & index) const;
-private:
-	static void printStyleOptionStates(const QStyleOptionViewItem & option, int i);
 
 	QModelIndex helperIndex;
 	QLabel *label;

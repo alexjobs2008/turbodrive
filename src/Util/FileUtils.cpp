@@ -26,12 +26,10 @@ FileSystemHelper::FileSystemHelper(QObject *parent)
 {
 }
 
-void FileSystemHelper::setWindowsFolderIcon(const QString& folderPath,
-											int iconNumber)
+void FileSystemHelper::setWindowsFolderIcon(
+		const QString& folderPath, int iconNumber)
 {
-
 #ifdef Q_OS_WIN
-
 	QFileInfo fileInfo(folderPath);
 
 	if (!fileInfo.exists())

@@ -27,7 +27,7 @@ signals:
 
 private slots:
 	void on_folderLabel_linkActivated(const QString &);
-	void on_pbLogout_clicked(bool checked);
+	void on_pbLogout_clicked(bool);
 	void on_m_resetPasswordPushButton_clicked(bool);
 
 private:

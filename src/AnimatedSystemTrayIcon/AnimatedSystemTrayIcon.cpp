@@ -64,7 +64,7 @@ bool AnimatedSystemTrayIcon::setState(const QString &stateName)
 	return true;
 }
 
-void AnimatedSystemTrayIcon::timerEvent(QTimerEvent *event)
+void AnimatedSystemTrayIcon::timerEvent(QTimerEvent*)
 {
 	if (!currentState)
 	{

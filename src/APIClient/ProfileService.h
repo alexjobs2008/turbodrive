@@ -31,7 +31,7 @@ signals:
 	void profileDataError();
 
 private:
-	virtual bool processGetResponse(int status, const QByteArray& data,
+	virtual bool processGetResponse(int, const QByteArray& data,
 		const HeaderList& headers);
 
 

@@ -23,7 +23,7 @@ signals:
 	void nextPixmap(const QPixmap& pixmap);
 
 protected:
-	virtual void timerEvent(QTimerEvent * event);
+	virtual void timerEvent(QTimerEvent*);
 
 private:
 	QVector<QPixmap> frames;

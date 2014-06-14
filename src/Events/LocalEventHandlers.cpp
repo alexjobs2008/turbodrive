@@ -225,7 +225,7 @@ void LocalFileOrFolderAddedEventHandler::onTrashSucceeded()
 			RemoteFileEventExclusion(RemoteFileEvent::Trashed, m_remoteFileDesc.id));
 }
 
-void LocalFileOrFolderAddedEventHandler::onTrashFailed(const QString& error)
+void LocalFileOrFolderAddedEventHandler::onTrashFailed(const QString&)
 {
 	processEventsAndQuit();
 }
@@ -235,7 +235,7 @@ void LocalFileOrFolderAddedEventHandler::onRemoveSucceeded()
 	onGetFileObjectIdFailed();
 }
 
-void LocalFileOrFolderAddedEventHandler::onRemoveFailed(const QString& error)
+void LocalFileOrFolderAddedEventHandler::onRemoveFailed(const QString&)
 {
 	processEventsAndQuit();
 }
@@ -402,7 +402,7 @@ void LocalFileOrFolderRenamedEventHandler::onRenameSucceeded(const Drive::Remote
 	processEventsAndQuit();
 }
 
-void LocalFileOrFolderRenamedEventHandler::onRenameFailed(const QString& error)
+void LocalFileOrFolderRenamedEventHandler::onRenameFailed(const QString&)
 {
 	processEventsAndQuit();
 }

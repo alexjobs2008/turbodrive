@@ -24,10 +24,10 @@ FirstSettingsWidget::FirstSettingsWidget(QWidget *parent)
 	QMetaObject::connectSlotsByName(this);
 }
 
-void FirstSettingsWidget::on_typicalSettings_toggled(bool checked)
+void FirstSettingsWidget::on_typicalSettings_toggled(bool)
 {
 }
 
-void FirstSettingsWidget::on_advancedSettings_toggled(bool checked)
+void FirstSettingsWidget::on_advancedSettings_toggled(bool)
 {
 }

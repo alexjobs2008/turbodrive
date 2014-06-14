@@ -181,8 +181,8 @@ void SettingsWidget::setupListView()
 
 }
 
-void SettingsWidget::on_tabs_currentItemChanged(QListWidgetItem *current,
-												QListWidgetItem *previous)
+void SettingsWidget::on_tabs_currentItemChanged(QListWidgetItem* current,
+												QListWidgetItem*)
 {
 	stackedWidget->setCurrentIndex(current->type() - 1);
 }
@@ -240,8 +240,8 @@ Delegate::~Delegate()
 	delete label;
 }
 
-QSize Delegate::sizeHint(const QStyleOptionViewItem & option,
-						const QModelIndex & index) const
+QSize Delegate::sizeHint(const QStyleOptionViewItem&,
+						const QModelIndex&) const
 {
 	return QSize(128, 48);
 }
@@ -255,7 +255,7 @@ void Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
 	QStyleOptionViewItem optionCopy = option;
 
 	// no need to draw focus rect and don't draw grayed out
-	optionCopy.state = optionCopy.state & ~QStyle::State_HasFocus | QStyle::State_Active;
+	optionCopy.state = optionCopy.state & (~QStyle::State_HasFocus | QStyle::State_Active);
 
 #ifdef Q_OS_MACX
 	QStyledItemDelegate::paint(painter, optionCopy, helperIndex);
@@ -277,87 +277,6 @@ void Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
 #ifdef Q_OS_WIN
 	QStyledItemDelegate::paint(painter, optionCopy, helperIndex);
 #endif
-}
-
-void Delegate::printStyleOptionStates(const QStyleOptionViewItem & option, int i)
-{
-	QLOG_INFO() << "=== " << i << " ========================================";
-
-	if (option.state & QStyle::State_None)
-		QLOG_INFO() << "QStyle::State_None";
-
-	if (option.state & QStyle::State_Active)
-		QLOG_INFO() << "QStyle::State_Active";
-
-	if (option.state & QStyle::State_AutoRaise)
-		QLOG_INFO() << "QStyle::State_AutoRaise";
-
-	if (option.state & QStyle::State_Children)
-		QLOG_INFO() << "QStyle::State_Children";
-
-	if (option.state & QStyle::State_DownArrow)
-		QLOG_INFO() << "QStyle::State_DownArrow";
-
-	if (option.state & QStyle::State_Editing)
-		QLOG_INFO() << "QStyle::State_Editing";
-
-	if (option.state & QStyle::State_Enabled)
-		QLOG_INFO() << "QStyle::State_Enabled";
-
-	if (option.state & QStyle::State_MouseOver)
-		QLOG_INFO() << "QStyle::State_MouseOver";
-
-	if (option.state & QStyle::State_HasFocus)
-		QLOG_INFO() << "QStyle::State_HasFocus";
-
-	if (option.state & QStyle::State_Horizontal)
-		QLOG_INFO() << "QStyle::State_Horizontal";
-
-	if (option.state & QStyle::State_KeyboardFocusChange)
-		QLOG_INFO() << "QStyle::State_KeyboardFocusChange";
-
-	if (option.state & QStyle::State_NoChange)
-		QLOG_INFO() << "QStyle::State_NoChange";
-
-	if (option.state & QStyle::State_Off)
-		QLOG_INFO() << "QStyle::State_Off";
-
-	if (option.state & QStyle::State_On)
-		QLOG_INFO() << "QStyle::State_On";
-
-	if (option.state & QStyle::State_Raised)
-		QLOG_INFO() << "QStyle::State_Raised";
-
-	if (option.state & QStyle::State_ReadOnly)
-		QLOG_INFO() << "QStyle::State_ReadOnly";
-
-	if (option.state & QStyle::State_Selected)
-		QLOG_INFO() << "QStyle::State_Selected";
-
-	if (option.state & QStyle::State_Item)
-		QLOG_INFO() << "QStyle::State_Item";
-
-	if (option.state & QStyle::State_Open)
-		QLOG_INFO() << "QStyle::State_Open";
-
-	if (option.state & QStyle::State_Sibling)
-		QLOG_INFO() << "QStyle::State_Sibling";
-
-	if (option.state & QStyle::State_Sunken)
-		QLOG_INFO() << "QStyle::State_Sunken";
-
-	if (option.state & QStyle::State_UpArrow)
-		QLOG_INFO() << "QStyle::State_UpArrow";
-
-	if (option.state & QStyle::State_Mini)
-		QLOG_INFO() << "QStyle::State_Mini";
-
-	if (option.state & QStyle::State_Small)
-		QLOG_INFO() << "QStyle::State_Small";
-
-	QLOG_INFO() << "--------------------------------------------------------";
-
-
 }
 
 }
