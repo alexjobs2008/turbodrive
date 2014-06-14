@@ -89,14 +89,14 @@ void FileDownloader::limitSpeed(int kbPerSecond)
 	speedLimit = kbPerSecond;
 }
 
-void FileDownloader::timerEvent(QTimerEvent * event)
+void FileDownloader::timerEvent(QTimerEvent*)
 {
 //	int speed = totalSize * 1000 / elapsedTimer.elapsed() / 1024;
 	//QLOG_TRACE() << "Download speed: " << speed << "Kb/s";
 //	emit downloadSpeed(speed);
 }
 
-void FileDownloader::onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal)
+void FileDownloader::onDownloadProgress(qint64, qint64)
 {
 //	QLOG_TRACE() << "Downloaded" << bytesReceived
 //		<< "bytes of " << bytesTotal;
@@ -138,7 +138,7 @@ void FileDownloader::onReadyRead()
 	file->write(data);
 }
 
-void FileDownloader::onSslErrors(QNetworkReply *reply, const QList<QSslError> & errors)
+void FileDownloader::onSslErrors(QNetworkReply* reply, const QList<QSslError>& errors)
 {
 	for (int i = 0; i < errors.size(); i++)
 	{
@@ -147,7 +147,9 @@ void FileDownloader::onSslErrors(QNetworkReply *reply, const QList<QSslError> & 
 	}
 
 	if (errors.size())
+	{
 		QLOG_INFO() << "Ignoring SSL errors.";
+	}
 
 	reply->ignoreSslErrors();
 }

@@ -35,7 +35,7 @@ private slots:
 	void onLoginFailed(const QString& error);
 
 	void onPasswordResetSucceeded();
-	void onPasswordResetFailed(const QString& error);
+	void onPasswordResetFailed(const QString&);
 	void onProfileDataReceived(const QJsonObject& data);
 	void onProfileDataError();
 	void onAvatarDownloaded(const QPixmap& pixmap);

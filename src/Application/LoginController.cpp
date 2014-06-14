@@ -249,7 +249,7 @@ void LoginController::onPasswordResetSucceeded()
 	}
 }
 
-void LoginController::onPasswordResetFailed(const QString& error)
+void LoginController::onPasswordResetFailed(const QString&)
 {
 	if (loginWidget)
 	{

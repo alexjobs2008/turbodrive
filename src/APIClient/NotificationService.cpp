@@ -52,7 +52,7 @@ bool NotificationResource::restricted() const
 
 bool NotificationResource::processGetResponse(int status,
 											const QByteArray& data,
-											const HeaderList& headers)
+											const HeaderList&)
 {
 	if (status != 200)
 	{

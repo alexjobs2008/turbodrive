@@ -30,8 +30,8 @@ signals:
 	void newRemoteFileEvent(const RemoteFileEvent& event);
 
 private:
-	virtual bool processGetResponse(int status, const QByteArray& data,
-		const HeaderList& headers);
+	virtual bool processGetResponse(
+			int status, const QByteArray& data, const HeaderList&);
 
 	QString lastEventTimestamp;
 };

@@ -60,9 +60,9 @@ ChunkUploader::ChunkUploader(const QString& uuid,
 	, m_file(file)
 	, m_offset(offset)
 	, m_size(size)
+	, m_folderId(folderId)
 	, m_chunkIndex(chunkIndex)
 	, m_chunksTotal(totalChunks)
-	, m_folderId(folderId)
 	, m_networkReply(nullptr)
 {
 	Q_ASSERT(m_file.isOpen());

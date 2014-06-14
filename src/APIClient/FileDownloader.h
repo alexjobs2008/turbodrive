@@ -36,18 +36,19 @@ signals:
 	void downloadSpeed(int kbPerSecond);
 
 protected:
-	void timerEvent(QTimerEvent * event);
+	void timerEvent(QTimerEvent*);
 
 private slots:
-	void onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal);
+	void onDownloadProgress(qint64, qint64);
 	void onError(QNetworkReply::NetworkError error);
 	void onReplyFinished();
 	void onReadyRead();
-	void onSslErrors(QNetworkReply *reply, const QList<QSslError> & errors);
+	void onSslErrors(QNetworkReply* reply, const QList<QSslError>& errors);
 
 private:
 	QNetworkAccessManager *nam;
 	QNetworkReply *reply;
+	int fileId;
 	QString localPath;
 	uint modifiedAt;
 	int fileId;
