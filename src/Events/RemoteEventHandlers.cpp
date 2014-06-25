@@ -312,6 +312,8 @@ void RemoteFileUploadedEventHandler::onGetAncestorsSucceeded(
 			LocalFileEvent::Added, m_localFilePath));
 	Q_EMIT newLocalFileEventExclusion(LocalFileEventExclusion(
 			LocalFileEvent::Modified, m_localFilePath));
+	Q_EMIT newLocalFileEventExclusion(LocalFileEventExclusion(
+			LocalFileEvent::Modified, m_localFilePath));
 
 	m_downloader->limitSpeed(50);
 	m_downloader->download();
