@@ -10,7 +10,8 @@ namespace Drive
 
 struct RemoteFileEvent;
 class RemoteFileEventExclusion;
-struct LocalFileEvent;
+class LocalFileEvent;
+
 class LocalFileEventExclusion;
 
 class EventHandlerBase : public QObject
@@ -46,7 +47,7 @@ protected:
 	void exec() {}
 
 private:
-	virtual void beforeStart() const {}
+	virtual void beforeStart() {}
 
 public slots:
 	virtual void cancel()

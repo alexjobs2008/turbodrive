@@ -9,9 +9,8 @@
 namespace Drive
 {
 
-struct LocalFileEvent;
+class LocalFileEvent;
 class LocalListener;
-
 
 class LocalFileEventNotifier: public QObject
 {

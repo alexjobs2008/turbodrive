@@ -16,7 +16,7 @@ public:
 	RemoteEventHandlerBase(RemoteFileEvent remoteEvent, QObject* parent);
 
 private:
-	virtual void beforeStart()
+	virtual void beforeStart() override
 	{
 		LocalCache::instance().addFile(m_remoteEvent.fileDesc);
 	}

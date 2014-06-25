@@ -70,15 +70,10 @@ void FileSystemHelper::setWindowsFolderIcon(const QString& folderPath,
 		(LPCWSTR)QDir::toNativeSeparators(desktopIni.fileName()).utf16()
 		, FILE_ATTRIBUTE_HIDDEN);
 
-	QFile::Permissions perm;
-	//perm = QFile::permissions(folderPath);
-	perm = QFile::ReadOwner | QFile::WriteOwner;
-
-	bool isOK = QFile::setPermissions(folderPath, perm);
-
-	perm = QFile::ReadOwner;
-	isOK = QFile::setPermissions(folderPath, perm);
-
+	QFile::setPermissions(folderPath, QFile::ReadOwner);
+#else
+	(void)folderPath;
+	(void)iconNumber;
 #endif // Q_OS_WIN
 }
 
@@ -95,6 +90,10 @@ bool FileSystemHelper::setFileModificationTimestamp(const QString& localPath, ui
 	QLOG_TRACE() << "File modification time set:" << result;
 	CloseHandle(hFile);
 	return result;
+#else
+	(void)localPath;
+	(void)modifiedAt;
+	return true;
 #endif
 }
 
