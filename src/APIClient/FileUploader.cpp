@@ -8,6 +8,8 @@
 #include <QtCore/QJsonObject>
 #include <QtCore/QUuid>
 
+#include <cmath>
+
 namespace Drive
 {
 

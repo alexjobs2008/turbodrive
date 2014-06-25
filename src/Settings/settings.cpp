@@ -57,7 +57,7 @@ Settings::Settings(QObject *parent)
 	}
 
 #ifdef Q_OS_MAC
-	applyImmediately = true
+	applyImmediately = true;
 #else
 	applyImmediately = false;
 #endif
@@ -313,6 +313,6 @@ void WindowsAutoexec::set(bool autoexec)
 	settings.endGroup();
 }
 
-}
-
 #endif // Q_OS_WIN
+
+}

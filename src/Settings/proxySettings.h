@@ -1,8 +1,8 @@
 ﻿#ifndef PROXY_SETTINGS_H
 #define PROXY_SETTINGS_H
 
-#include <QtCore\QMetaType>
-#include <QtCore\QDataStream>
+#include <QtCore/QMetaType>
+#include <QtCore/QDataStream>
 
 namespace Drive
 {
