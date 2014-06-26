@@ -61,9 +61,6 @@ set(LINK_LIBRARIES ${LINK_LIBRARIES}
 	Util
 	efsw
 	Events
-	filesystem
-	implfactory
-	localcache
 )
 target_link_libraries(${PROJECT_NAME} ${LINK_LIBRARIES})
 

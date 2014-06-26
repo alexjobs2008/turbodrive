@@ -1,4 +1,4 @@
-#include "types.h"
+﻿#include "types.h"
 
 namespace Drive
 {
@@ -15,6 +15,6 @@ QString stateToString(State state)
 	case Error: return QObject::tr("Error");
 	default: return QString();
 	}
-};
+}
 
 }

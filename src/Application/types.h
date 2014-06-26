@@ -19,4 +19,4 @@ QString stateToString(State state);
 
 }
 
-#endif
+#endif // TYPES_H

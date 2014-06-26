@@ -28,7 +28,7 @@ MainWindow::~MainWindow()
 {
 }
 
-void MainWindow::timerEvent(QTimerEvent * event)
+void MainWindow::timerEvent(QTimerEvent*)
 {
 	if (++counter == 1)
 	{

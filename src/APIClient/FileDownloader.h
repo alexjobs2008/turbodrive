@@ -51,7 +51,6 @@ private:
 	int fileId;
 	QString localPath;
 	uint modifiedAt;
-	int fileId;
 	QFile* file;
 	uint totalSize;
 	QElapsedTimer elapsedTimer;

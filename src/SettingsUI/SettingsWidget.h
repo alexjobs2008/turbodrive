@@ -75,7 +75,7 @@ public:
 
 	virtual void paint(QPainter * painter, const QStyleOptionViewItem & option,
 					const QModelIndex & index) const;
-
+private:
 	QModelIndex helperIndex;
 	QLabel *label;
 };

@@ -14,7 +14,7 @@ public:
 	~MainWindow();
 
 protected:
-	void timerEvent(QTimerEvent * event);
+	void timerEvent(QTimerEvent*);
 
 private:
 	AnimatedSystemTrayIcon *trayIcon;
