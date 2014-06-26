@@ -1,56 +1,11 @@
 project(efsw)
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.8.11)
 
 add_definitions(-DEFSW_EXPORTS)
 
-include_directories("../../include" "../")
+include_directories("../../include")
+include_directories("../")
 
-set(SOURCE_FILES
-	"Debug.cpp"
-	"DirWatcherGeneric.cpp"
-	"DirectorySnapshot.cpp"
-	"DirectorySnapshotDiff.cpp"
-	"FileInfo.cpp"
-	"FileSystem.cpp"
-	"FileWatcher.cpp"
-	"FileWatcherCWrapper.cpp"
-	"FileWatcherFSEvents.cpp"
-	"FileWatcherGeneric.cpp"
-	"FileWatcherImpl.cpp"
-	"FileWatcherInotify.cpp"
-	"FileWatcherKqueue.cpp"
-	"FileWatcherWin32.cpp"
-	"Log.cpp"
-	"Mutex.cpp"
-	"String.cpp"
-	"System.cpp"
-	"Thread.cpp"
-	"Watcher.cpp"
-	"WatcherFSEvents.cpp"
-	"WatcherGeneric.cpp"
-	"WatcherInotify.cpp"
-	"WatcherKqueue.cpp"
-	"WatcherWin32.cpp"
-
-#if(APPLE)
-	"platform/posix/FileSystemImpl.cpp"
-	"platform/posix/MutexImpl.cpp"
-	"platform/posix/SystemImpl.cpp"
-	"platform/posix/ThreadImpl.cpp"
-#endif(apple)
-
-#if(WIN32)
-	"platform/win/FileSystemImpl.cpp"
-	"platform/win/MutexImpl.cpp"
-	"platform/win/SystemImpl.cpp"
-	"platform/win/ThreadImpl.cpp"
-#endif(WIN32)
-)
-                 
-add_library(efsw ${SOURCE_FILES})
-
+file(GLOB_RECURSE SOURCES *.cpp)
+add_library(efsw ${SOURCES})
 set_target_properties(efsw PROPERTIES OUTPUT_NAME "efsw")
-
-IF(UNIX)
-	set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS -fPIC)
-ENDIF(UNIX)

@@ -1,6 +1,5 @@
 project(AssistentDrive)
 cmake_minimum_required(VERSION 2.8.11)
-message("Generating project ${PROJECT_NAME} in ${CMAKE_CURRENT_BINARY_DIR}")
 
 INCLUDE_DIRECTORIES(".")
 INCLUDE_DIRECTORIES("./3rdParty")
@@ -15,41 +14,59 @@ else ()
 	message (FATAL_ERROR "ERROR: Environment variable QTDIR is not set.")
 endif ()
 
-if (${BUILD_SYSTEM} STREQUAL "mingw")
-	set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11")
+# Compiler configuration
+if(MSVC)
+	if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
+		string(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+	else()
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
+	endif()
+else()
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 endif()
 
-# Application version
+if(NOT CMAKE_BUILD_TYPE)
+	set(CMAKE_BUILD_TYPE Debug)
+endif()
+
 add_definitions(-DVERSION="1.0.0.0")
-
-# Force asserts in debug and release modes
+add_definitions(-DLOCAL_SERVER_NAME="AssistentDriveSA")
 add_definitions(-DQT_FORCE_ASSERTS)
-
-# Show filename and line number in logs
 add_definitions(-DQS_LOG_LINE_NUMBERS)
 
-# 3rd-party libs
+include_directories("3rdParty/QsLog")
+include_directories("3rdParty/efsw/include/efsw")
+include_directories("AnimatedSystemTrayIcon")
+include_directories("SingleApp")
+include_directories("Util")
+include_directories("UtilUI")
+include_directories("rtCSS")
+include_directories("Settings")
+include_directories("SettingsUI")
+include_directories("LoginUI")
+include_directories("Network")
+include_directories("APIClient")
+include_directories("Events")
+include_directories("filesystem")
+include_directories("implfactory")
+include_directories("localcache")
+include_directories("Application")
+
 add_subdirectory("3rdParty")
-
-# QSystemTrayIcon that supports states & animations
 add_subdirectory("AnimatedSystemTrayIcon")
-
-# Single app lib and its local server name definition
-add_definitions(-DLOCAL_SERVER_NAME="AssistentDriveSA")
-
 add_subdirectory("SingleApp")
-
 add_subdirectory("Util")
 add_subdirectory("UtilUI")
-
 add_subdirectory("rtCSS")
-
 add_subdirectory("Settings")
 add_subdirectory("SettingsUI")
 add_subdirectory("LoginUI")
 add_subdirectory("Network")
 add_subdirectory("APIClient")
 add_subdirectory("Events")
-
-# The desktop app
+add_subdirectory("filesystem")
+add_subdirectory("implfactory")
+add_subdirectory("localcache")
 add_subdirectory("Application")
+add_subdirectory("tests")

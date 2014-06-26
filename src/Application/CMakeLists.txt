@@ -1,47 +1,16 @@
 project(drive)
 cmake_minimum_required(VERSION 2.8.11)
-message("Generating project ${PROJECT_NAME} in ${CMAKE_CURRENT_BINARY_DIR}")
 
-# Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
 set(CMAKE_AUTOMOC ON)
 
-find_package(Qt5Widgets)
-
-set(HEADERS
-	types.h
-	AppController.h
-	LoginController.h
-	TrayIcon.h
-	remoteconfig.h
-	ifactory.h
-	isingletonfactory.h
-	factoriesstorage.h
-	ifilesystem.h
-	filesystem.h
-	ifilesystemfactory.h
-	filesystemfactory.h
-)
-
-set(SOURCES
-	main.cpp
-	AppController.cpp
-	LoginController.cpp
-	TrayIcon.cpp
-	remoteconfig.cpp
-	factoriesstorage.cpp
-	filesystem.cpp
-	filesystemfactory.cpp
-)
-
-set(QRC_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/res/res.qrc)
+file(GLOB_RECURSE HEADERS *.h)
+file(GLOB_RECURSE SOURCES *.cpp)
+file(GLOB_RECURSE QRC_RESOURCES *.qrc)
 
 if(WIN32)
-	set(RC_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/res/res.rc)
+	file(GLOB_RECURSE RC_RESOURCES *.rc)
 endif()
-
-qt5_add_resources(MOCED_RESOURCES ${QRC_RESOURCES})
 
 source_group(_h FILES ${HEADERS})
 source_group(_cpp FILES ${SOURCES})
@@ -49,11 +18,22 @@ source_group(_res FILES ${QRC_RESOURCES} ${RC_RESOURCES})
 
 if(WIN32)
 	set(GUI_TYPE WIN32)
-endif(WIN32)
+endif()
 
 if(APPLE)
 	set(GUI_TYPE MACOSX_BUNDLE)
-endif(APPLE)
+
+	find_library(COREFOUNDATION_FRAMEWORK CoreFoundation)
+	find_library(CORESERVICES_FRAMEWORK CoreServices)
+	set(LINK_LIBRARIES ${LINK_LIBRARIES}
+		${COREFOUNDATION_FRAMEWORK}
+		${CORESERVICES_FRAMEWORK}
+	)
+endif()
+
+find_package(Qt5Core)
+find_package(Qt5Widgets)
+qt5_add_resources(MOCED_RESOURCES ${QRC_RESOURCES})
 
 add_executable(${PROJECT_NAME}
 	${GUI_TYPE}
@@ -68,7 +48,7 @@ qt5_use_modules(${PROJECT_NAME}
 	Widgets
 )
 
-target_link_libraries(${PROJECT_NAME}
+set(LINK_LIBRARIES ${LINK_LIBRARIES}
 	SingleApp
 	AnimatedSystemTrayIcon
 	Settings
@@ -81,26 +61,28 @@ target_link_libraries(${PROJECT_NAME}
 	Util
 	efsw
 	Events
+	filesystem
+	implfactory
+	localcache
 )
+target_link_libraries(${PROJECT_NAME} ${LINK_LIBRARIES})
 
 if(WIN32)
 	install(TARGETS ${PROJECT_NAME}
 		DESTINATION bin
 	)
-endif(WIN32)
+endif()
 
-if (${BUILD_SYSTEM} STREQUAL "mingw")
+if(MINGW)
 	install(FILES
-		# MinGW libs
 		${CMAKE_CURRENT_SOURCE_DIR}/inst/libgcc_s_dw2-1.dll
 		${CMAKE_CURRENT_SOURCE_DIR}/inst/libstdc++-6.dll
 		${CMAKE_CURRENT_SOURCE_DIR}/inst/libwinpthread-1.dll
 
 		DESTINATION bin
 	)
-else()
+elseif(MSVC)
 	install(FILES
-		# MSVC libs
 		${CMAKE_CURRENT_SOURCE_DIR}/inst/libEGL.dll
 		${CMAKE_CURRENT_SOURCE_DIR}/inst/libGLESv2.dll
 
@@ -144,12 +126,14 @@ macro(today RESULT)
 	elseif(UNIX)
 		execute_process(COMMAND "date" "+%d/%m/%Y" OUTPUT_VARIABLE ${RESULT})
 		string(REGEX REPLACE "(..)/(..)/..(..).*" "\\3\\2\\1" ${RESULT} ${${RESULT}})
-	else(WIN32)
+	else()
 		message(SEND_ERROR "date not implemented")
 		set(${RESULT} 000000)
-	endif(WIN32)
+	endif()
 endmacro(today)
 today(CURRENT_DATE)
+
+file(TO_NATIVE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/res/license.txt" LICENSE_FILE)
 
 set(TARGET_PLATFORM "x86")
 
@@ -174,7 +158,7 @@ set(CPACK_PACKAGE_EXECUTABLES ${PROJECT_NAME} "${SPACED_NAME}")
 set(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${PROJECT_NAME}")
 set(CPACK_PACKAGE_ICON "${CMAKE_CURRENT_SOURCE_DIR}\\\\res\\\\150x57.bmp")
 
-set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}\\\\res\\\\license.txt")
+set(CPACK_RESOURCE_FILE_LICENSE ${LICENSE_FILE})
 
 # this doesn't work wittout set(CPACK_NSIS_MODIFY_PATH ON)
 set(CPACK_CREATE_DESKTOP_LINKS "${PROJECT_NAME}")
