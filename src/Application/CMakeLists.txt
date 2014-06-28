@@ -73,6 +73,12 @@ elseif(APPLE)
 	install(TARGETS ${PROJECT_NAME}
 		DESTINATION .
 	)
+
+	set(APPS ${CMAKE_BINARY_DIR}/Application/${PROJECT_NAME}.app)
+	install(CODE "
+		include(BundleUtilities)
+		fixup_bundle(\"${APPS}\" \"\" \"\")
+	")
 endif()
 
 if(MINGW)
