@@ -23,9 +23,12 @@ elseif(APPLE)
 
 	find_library(COREFOUNDATION_FRAMEWORK CoreFoundation)
 	find_library(CORESERVICES_FRAMEWORK CoreServices)
+	find_library(SSL_LIBRARY ssl)
+
 	set(LINK_LIBRARIES ${LINK_LIBRARIES}
 		${COREFOUNDATION_FRAMEWORK}
 		${CORESERVICES_FRAMEWORK}
+		${SSL_LIBRARY}
 	)
 endif()
 
@@ -90,7 +93,8 @@ elseif(MSVC)
 
 endif()
 
-install(FILES
+if(WIN32)
+	install(FILES
 		# OpenSSL libs
 		# http://slproweb.com/download/Win32OpenSSL_Light-1_0_1f.exe
 		${CMAKE_CURRENT_SOURCE_DIR}/inst/libeay32.dll
@@ -109,10 +113,11 @@ install(FILES
 		DESTINATION bin
 	)
 
-install(FILES
-	${CMAKE_CURRENT_SOURCE_DIR}/inst/platforms/qwindows.dll
-	DESTINATION bin/platforms
-)
+	install(FILES
+		${CMAKE_CURRENT_SOURCE_DIR}/inst/platforms/qwindows.dll
+		DESTINATION bin/platforms
+	)
+endif()
 
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/res/license.txt DESTINATION .)
 
