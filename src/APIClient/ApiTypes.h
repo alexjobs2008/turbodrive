@@ -98,6 +98,8 @@ struct RemoteFileDesc
 		Dir = 1
 	};
 
+	RemoteFileDesc();
+
 	static RemoteFileDesc fromJson(const QJsonObject& jsonObject);
 	bool isValid() const;
 	QString typeName() const;

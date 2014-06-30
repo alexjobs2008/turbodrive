@@ -18,10 +18,10 @@ QDataStream &operator>>(QDataStream& in, Drive::ProxyUsage& proxyUsage)
 QDataStream &operator<<(QDataStream& out,
 						const Drive::ProxySettings& proxySettings)
 {
-	out << (quint32&)proxySettings.kind
+	out << proxySettings.kind
 		<< proxySettings.server
 		<< proxySettings.port
-		<< (quint32&)proxySettings.loginRequired
+		<< proxySettings.loginRequired
 		<< proxySettings.username
 		<< proxySettings.password;
 
@@ -30,12 +30,15 @@ QDataStream &operator<<(QDataStream& out,
 
 QDataStream &operator>>(QDataStream& in, Drive::ProxySettings& proxySettings)
 {
-	in >> (quint32&)proxySettings.kind
+	int k = 0;
+	in >> k
 	>> proxySettings.server
 	>> proxySettings.port
-	>> (quint32&)proxySettings.loginRequired
+	>> proxySettings.loginRequired
 	>> proxySettings.username
 	>> proxySettings.password;
+
+	proxySettings.kind = static_cast<Drive::ProxySettings::Kind>(k);
 
 	return in;
 }

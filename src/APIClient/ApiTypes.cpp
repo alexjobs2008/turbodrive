@@ -289,6 +289,21 @@ void ProfileData::log()
 // 	\"link_id\":null,
 // 	\"parent_id\":421
 // 	}
+RemoteFileDesc::RemoteFileDesc()
+	: id(0)
+	, parentId(0)
+	, type(File)
+	, size(0)
+	, createdAt(0)
+	, modifiedAt(0)
+	, deletedAt(0)
+	, isFavourite(false)
+	, hasChildren(false)
+	, hasSubfolders(false)
+	, isUploaded(false)
+{
+}
+
 RemoteFileDesc RemoteFileDesc::fromJson(const QJsonObject& jsonObject)
 {
 	RemoteFileDesc desc;
