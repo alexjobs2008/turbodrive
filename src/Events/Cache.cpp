@@ -154,12 +154,13 @@ RemoteFileDesc LocalCache::fileByParentId(const int id) const
 
 bool LocalCache::removeById(const int id)
 {
-	LOCK_MUTEX;
 	return removeByIdImpl(id);
 }
 
 bool LocalCache::removeByIdImpl(int id)
 {
+	auto result = false;
+
 	for (;;)
 	{
 		const auto desc = fileByParentId(id);
@@ -170,14 +171,16 @@ bool LocalCache::removeByIdImpl(int id)
 		Q_ASSERT(removeByIdImpl(desc.id));
 	}
 
-	auto result = false;
-	for (auto it = m_files.begin(); it != m_files.end(); ++it)
 	{
-		if (it->second.id == id)
+		LOCK_MUTEX;
+		for (auto it = m_files.begin(); it != m_files.end(); ++it)
 		{
-			m_files.erase(it);
-			result = true;
-			break;
+			if (it->second.id == id)
+			{
+				m_files.erase(it);
+				result = true;
+				break;
+			}
 		}
 	}
 	return result;
