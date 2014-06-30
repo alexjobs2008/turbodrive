@@ -10,10 +10,50 @@
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDateTime>
 
+#include <list>
+
 #define DISK_ROOT_PATH QLatin1String("#root/#disk")
+
+using namespace std;
 
 namespace Drive
 {
+
+namespace
+{
+
+void readDirEntriesRecursively(const std::string& dir, list<QFileInfo>& entries)
+{
+	QDir qDir(QString::fromStdString(dir));
+	if (qDir.exists())
+	{
+		for(QFileInfo info:
+			qDir.entryInfoList(
+				QDir::NoDotAndDotDot
+				| QDir::System
+				| QDir::AllDirs
+				| QDir::Files, QDir::DirsFirst))
+		{
+			if (info.isDir())
+			{
+				if (QDir::cleanPath(info.absoluteFilePath())
+					!= QDir::cleanPath(Settings::instance().get(Settings::folderPath).toString()))
+				{
+					entries.push_back(info);
+					readDirEntriesRecursively(info.absoluteFilePath().toStdString(), entries);
+				}
+			}
+			else
+			{
+				entries.push_back(info);
+			}
+
+		}
+	}
+}
+
+
+}
 
 FileSystemHelper& FileSystemHelper::instance()
 {
@@ -131,6 +171,29 @@ bool FileSystemHelper::removeDirWithSubdirs(const QString &dirName,
 		result = dir.rmdir(dirName);
 	}
 
+	return result;
+}
+
+list<QFileInfo> FileSystemHelper::entries(const string& dir)
+{
+	list<QFileInfo> result;
+	QDir qDir(QString::fromStdString(dir));
+	Q_ASSERT(qDir.exists());
+	for(const auto info: qDir.entryInfoList(
+			QDir::NoDotAndDotDot
+			| QDir::System
+			| QDir::AllDirs
+			| QDir::Files, QDir::DirsFirst))
+	{
+		result.push_back(info);
+	}
+	return result;
+}
+
+list<QFileInfo> FileSystemHelper::entriesRecursive(const string& dir)
+{
+	list<QFileInfo> result;
+	readDirEntriesRecursively(dir, result);
 	return result;
 }
 

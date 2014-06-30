@@ -2,6 +2,7 @@
 #define FILE_UTILS_H
 
 #include <QtCore/QObject>
+#include <QtCore/QFileInfo>
 
 #ifdef Q_OS_WIN
 	#include "Windows.h"
@@ -24,6 +25,9 @@ public:
 
 	static bool removeDirWithSubdirs(const QString &dirName,
 									bool notifyLocalWatcher = true);
+
+	static std::list<QFileInfo> entries(const std::string& dir);
+	static std::list<QFileInfo> entriesRecursive(const std::string& dir);
 
 #ifdef Q_OS_WIN
 	static FILETIME toWinFileTime(const QDateTime &dateTime);

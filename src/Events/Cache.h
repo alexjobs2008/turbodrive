@@ -33,8 +33,10 @@ private:
 	LocalCache() {}
 
 	RemoteFileDesc fileById(int id) const;
+	RemoteFileDesc fileByParentId(int id) const;
 
 	bool removeById(int id);
+	bool removeByIdImpl(int id);
 
 	QString toString() const;
 

@@ -10,6 +10,10 @@
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
 
+#include <list>
+
+using namespace std;
+
 namespace Drive
 {
 
@@ -177,8 +181,16 @@ void LocalFileOrFolderAddedEventHandler
 {
 	LocalCache::instance().addFile(fileDesc);
 
-	emit newRemoteFileEventExclusion(
+	Q_EMIT newRemoteFileEventExclusion(
 			RemoteFileEventExclusion(RemoteFileEvent::Created, fileDesc.id));
+
+	for(const auto entry: FileSystemHelper::entries(localEvent.localPath().toStdString()))
+	{
+		Q_EMIT newLocalFileEvent(
+				LocalFileEvent(LocalFileEvent::Added,
+				QDir::cleanPath(entry.absolutePath()),
+				entry.fileName()));
+	}
 
 	processEventsAndQuit();
 }

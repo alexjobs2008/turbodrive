@@ -132,9 +132,44 @@ RemoteFileDesc LocalCache::fileById(const int id) const
 	return invalidDesc;
 }
 
+RemoteFileDesc LocalCache::fileByParentId(const int id) const
+{
+	{
+		LOCK_MUTEX;
+		for (auto it = m_files.begin(); it != m_files.end(); ++it)
+		{
+			if (it->second.parentId == id)
+			{
+				return it->second;
+			}
+		}
+	}
+
+	RemoteFileDesc invalidDesc;
+	invalidDesc.id = 0;
+	invalidDesc.parentId = 0;
+	invalidDesc.name = QString::null;
+	return invalidDesc;
+}
+
 bool LocalCache::removeById(const int id)
 {
 	LOCK_MUTEX;
+	return removeByIdImpl(id);
+}
+
+bool LocalCache::removeByIdImpl(int id)
+{
+	for (;;)
+	{
+		const auto desc = fileByParentId(id);
+		if (!desc.isValid())
+		{
+			break;
+		}
+		Q_ASSERT(removeByIdImpl(desc.id));
+	}
+
 	auto result = false;
 	for (auto it = m_files.begin(); it != m_files.end(); ++it)
 	{
