@@ -19,42 +19,6 @@ using namespace std;
 namespace Drive
 {
 
-namespace
-{
-
-void readDirEntriesRecursively(const std::string& dir, list<QFileInfo>& entries)
-{
-	QDir qDir(QString::fromStdString(dir));
-	if (qDir.exists())
-	{
-		for(QFileInfo info:
-			qDir.entryInfoList(
-				QDir::NoDotAndDotDot
-				| QDir::System
-				| QDir::AllDirs
-				| QDir::Files, QDir::DirsFirst))
-		{
-			if (info.isDir())
-			{
-				if (QDir::cleanPath(info.absoluteFilePath())
-					!= QDir::cleanPath(Settings::instance().get(Settings::folderPath).toString()))
-				{
-					entries.push_back(info);
-					readDirEntriesRecursively(info.absoluteFilePath().toStdString(), entries);
-				}
-			}
-			else
-			{
-				entries.push_back(info);
-			}
-
-		}
-	}
-}
-
-
-}
-
 FileSystemHelper& FileSystemHelper::instance()
 {
 	static FileSystemHelper myself;
@@ -187,13 +151,6 @@ list<QFileInfo> FileSystemHelper::entries(const string& dir)
 	{
 		result.push_back(info);
 	}
-	return result;
-}
-
-list<QFileInfo> FileSystemHelper::entriesRecursive(const string& dir)
-{
-	list<QFileInfo> result;
-	readDirEntriesRecursively(dir, result);
 	return result;
 }
 

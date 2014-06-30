@@ -27,7 +27,6 @@ public:
 									bool notifyLocalWatcher = true);
 
 	static std::list<QFileInfo> entries(const std::string& dir);
-	static std::list<QFileInfo> entriesRecursive(const std::string& dir);
 
 #ifdef Q_OS_WIN
 	static FILETIME toWinFileTime(const QDateTime &dateTime);
