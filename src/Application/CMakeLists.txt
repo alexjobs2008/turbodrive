@@ -144,7 +144,11 @@ endmacro(today)
 today(CURRENT_DATE)
 
 file(TO_NATIVE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/res/license.txt" LICENSE_FILE)
-file(TO_NATIVE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/res/150x57.bmp" ICON_FILE)
+if(WIN32)
+	set(ICON_FILE "${CMAKE_CURRENT_SOURCE_DIR}\\\\res\\\\150x57.bmp")
+else()
+	file(TO_NATIVE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/res/150x57.bmp" ICON_FILE)
+endif()
 
 set(TARGET_PLATFORM "x86")
 
