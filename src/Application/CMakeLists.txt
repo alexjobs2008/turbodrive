@@ -18,16 +18,17 @@ source_group(_res FILES ${QRC_RESOURCES} ${RC_RESOURCES})
 
 if(WIN32)
 	set(GUI_TYPE WIN32)
-endif()
-
-if(APPLE)
+elseif(APPLE)
 	set(GUI_TYPE MACOSX_BUNDLE)
 
 	find_library(COREFOUNDATION_FRAMEWORK CoreFoundation)
 	find_library(CORESERVICES_FRAMEWORK CoreServices)
+	find_library(SSL_LIBRARY ssl)
+
 	set(LINK_LIBRARIES ${LINK_LIBRARIES}
 		${COREFOUNDATION_FRAMEWORK}
 		${CORESERVICES_FRAMEWORK}
+		${SSL_LIBRARY}
 	)
 endif()
 
@@ -68,6 +69,16 @@ if(WIN32)
 	install(TARGETS ${PROJECT_NAME}
 		DESTINATION bin
 	)
+elseif(APPLE)
+	install(TARGETS ${PROJECT_NAME}
+		DESTINATION .
+	)
+
+	set(APPS ${CMAKE_BINARY_DIR}/Application/${PROJECT_NAME}.app)
+	install(CODE "
+		include(BundleUtilities)
+		fixup_bundle(\"${APPS}\" \"\" \"\")
+	")
 endif()
 
 if(MINGW)
@@ -88,7 +99,8 @@ elseif(MSVC)
 
 endif()
 
-install(FILES
+if(WIN32)
+	install(FILES
 		# OpenSSL libs
 		# http://slproweb.com/download/Win32OpenSSL_Light-1_0_1f.exe
 		${CMAKE_CURRENT_SOURCE_DIR}/inst/libeay32.dll
@@ -107,10 +119,11 @@ install(FILES
 		DESTINATION bin
 	)
 
-install(FILES
-	${CMAKE_CURRENT_SOURCE_DIR}/inst/platforms/qwindows.dll
-	DESTINATION bin/platforms
-)
+	install(FILES
+		${CMAKE_CURRENT_SOURCE_DIR}/inst/platforms/qwindows.dll
+		DESTINATION bin/platforms
+	)
+endif()
 
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/res/license.txt DESTINATION .)
 
@@ -131,6 +144,7 @@ endmacro(today)
 today(CURRENT_DATE)
 
 file(TO_NATIVE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/res/license.txt" LICENSE_FILE)
+file(TO_NATIVE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/res/150x57.bmp" ICON_FILE)
 
 set(TARGET_PLATFORM "x86")
 
@@ -139,7 +153,11 @@ set(SPACED_NAME "МТС Диск")
 set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION "bin")
 include(InstallRequiredSystemLibraries)
 
-set(CPACK_GENERATOR NSIS)
+if(WIN32)
+	set(CPACK_GENERATOR NSIS)
+elseif(APPLE)
+	set(CPACK_GENERATOR DragNDrop)
+endif()
 
 set(CPACK_PACKAGE_NAME "${SPACED_NAME}")
 set(CPACK_PACKAGE_FILE_NAME "drive_${TARGET_PLATFORM}_${BUILD_SYSTEM}_${CURRENT_DATE}")
@@ -153,9 +171,11 @@ set(CPACK_PACKAGE_VERSION_PATCH "0")
 set(CPACK_PACKAGE_INSTALL_DIRECTORY "${SPACED_NAME}")
 set(CPACK_PACKAGE_EXECUTABLES ${PROJECT_NAME} "${SPACED_NAME}")
 set(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${PROJECT_NAME}")
-set(CPACK_PACKAGE_ICON "${CMAKE_CURRENT_SOURCE_DIR}\\\\res\\\\150x57.bmp")
+set(CPACK_PACKAGE_ICON ${ICON_FILE})
 
-set(CPACK_RESOURCE_FILE_LICENSE ${LICENSE_FILE})
+if(WIN32)
+	set(CPACK_RESOURCE_FILE_LICENSE ${LICENSE_FILE})
+endif()
 
 # this doesn't work wittout set(CPACK_NSIS_MODIFY_PATH ON)
 set(CPACK_CREATE_DESKTOP_LINKS "${PROJECT_NAME}")

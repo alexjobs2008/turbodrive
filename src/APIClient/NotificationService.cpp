@@ -9,6 +9,8 @@
 #include <QtCore/QJsonArray>
 #include <QtCore/QJsonObject>
 
+using namespace std;
+
 namespace Drive
 {
 
@@ -22,17 +24,17 @@ NotificationResourceRef NotificationResource::create()
 
 void NotificationResource::listenRemoteFileEvents()
 {
-	HeaderList headers;
-	ParamList params;
-	QByteArray idValue = AppController::instance().serviceChannel().toLatin1();
-
-	if (!lastEventTimestamp.isEmpty())
+	// BEWARE: for some really strange reasons Qt-oriented version of this code
+	// crashes on call QString::toLatin1 and other string-related methods.
+	string idValue = AppController::instance().serviceChannel().toStdString();
+	if (!lastEventTimestamp.toStdString().empty())
 	{
-		idValue.prepend(':').prepend(lastEventTimestamp.toLatin1());
+		idValue = lastEventTimestamp.toStdString() + ":" + idValue;
 	}
 
-	params.append(ParamPair("identifier", idValue));
-	doOperation(QNetworkAccessManager::GetOperation, params, headers);
+	ParamList params;
+	params.append(ParamPair("identifier", QByteArray(idValue.c_str(), idValue.size())));
+	doOperation(QNetworkAccessManager::GetOperation, params, HeaderList());
 }
 
 QString NotificationResource::path() const
