@@ -118,13 +118,14 @@ void initFactories()
 
 int main(int argc, char *argv[])
 {
+	initApplicationInfo();
+	initLogging();
+	logStartInfo();
+
 	SingleApplication app(argc, argv);
 
 	initMetaTypes();
 	initTranslator(app);
-	initApplicationInfo();
-	initLogging();
-	logStartInfo();
 	initFactories();
 	Settings::instance().log();
 
