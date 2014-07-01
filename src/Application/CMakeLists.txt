@@ -32,7 +32,6 @@ elseif(APPLE)
 	)
 endif()
 
-find_package(Qt5Core)
 find_package(Qt5Widgets)
 qt5_add_resources(MOCED_RESOURCES ${QRC_RESOURCES})
 
@@ -45,7 +44,6 @@ add_executable(${PROJECT_NAME}
 )
 
 qt5_use_modules(${PROJECT_NAME}
-	Core
 	Widgets
 )
 
@@ -73,12 +71,6 @@ elseif(APPLE)
 	install(TARGETS ${PROJECT_NAME}
 		DESTINATION .
 	)
-
-	set(APPS ${CMAKE_BINARY_DIR}/Application/${PROJECT_NAME}.app)
-	install(CODE "
-		include(BundleUtilities)
-		fixup_bundle(\"${APPS}\" \"\" \"\")
-	")
 endif()
 
 if(MINGW)
