@@ -4,6 +4,7 @@
 
 #include "RemoteEventHandlers.h"
 #include "LocalEventHandlers.h"
+#include "AppController.h"
 
 #include "QsLog/QsLog.h"
 
@@ -431,8 +432,10 @@ void FileEventDispatcher::onEventHandlerFailed(const QString& error)
 {
 	QThread *thread = static_cast<QThread*>(sender());
 
-	QLOG_TRACE() << "Thread" << thread
+	QLOG_ERROR() << "Thread" << thread
 		<< "failed to handle event:" << error;
+
+	AppController::instance().restart();
 }
 
 void FileEventDispatcher::onFinishProcessingEvent()

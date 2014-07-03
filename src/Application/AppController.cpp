@@ -97,7 +97,7 @@ void AppController::setProfileData(const ProfileData& data)
 	emit profileDataUpdated(currentProfileData);
 }
 
-const QString& AppController::serviceChannel() const
+const QString AppController::serviceChannel() const
 {
 	return profileData().defaultWorkspace().serviceNotificationChannel();
 }

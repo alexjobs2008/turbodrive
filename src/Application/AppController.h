@@ -40,7 +40,7 @@ public:
 	ProfileData profileData() const;
 	void setProfileData(const ProfileData& data);
 
-	const QString& serviceChannel() const;
+	const QString serviceChannel() const;
 
 	void setTrayIcon(const QPointer<TrayIcon>& trayIcon);
 

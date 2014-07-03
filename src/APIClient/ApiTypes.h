@@ -36,7 +36,7 @@ struct Workspace
 	static const QString paramGroups;
 
 	static Workspace fromJson(const QJsonObject& jsonObject);
-	const QString& serviceNotificationChannel() const { return serviceChannel; };
+	const QString serviceNotificationChannel() const { return serviceChannel; };
 	bool isValid() const;
 
 	int id;

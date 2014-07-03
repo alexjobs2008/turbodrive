@@ -14,6 +14,13 @@
 namespace Drive
 {
 
+namespace
+{
+
+static const int s_watchdogInterval = 10000;
+
+}
+
 FileDownloader::FileDownloader(int fileId, const QString& localPath, uint modifiedAt, QObject *parent)
 	: QObject(parent)
 	, fileId(fileId)
@@ -69,10 +76,14 @@ void FileDownloader::download()
 	Q_ASSERT(connect(reply, &QNetworkReply::readyRead,
 			this, &FileDownloader::onReadyRead));
 
-//	if (timerId)
-//		killTimer(timerId);
-//
-//	timerId = startTimer(500);
+	if (timerId != 0)
+	{
+		killTimer(timerId);
+		timerId = 0;
+	}
+
+	timerId = startTimer(s_watchdogInterval);
+	Q_ASSERT(timerId != 0);
 }
 
 void FileDownloader::limitSpeed(int kbPerSecond)
@@ -82,27 +93,25 @@ void FileDownloader::limitSpeed(int kbPerSecond)
 
 void FileDownloader::timerEvent(QTimerEvent*)
 {
-//	int speed = totalSize * 1000 / elapsedTimer.elapsed() / 1024;
-	//QLOG_TRACE() << "Download speed: " << speed << "Kb/s";
-//	emit downloadSpeed(speed);
-}
+	QLOG_ERROR() << "Connection has been lost.";
+
+	Q_ASSERT(timerId != 0);
+	killTimer(timerId);
+
+	reply->abort();}
 
 void FileDownloader::onDownloadProgress(qint64, qint64)
 {
-//	QLOG_TRACE() << "Downloaded" << bytesReceived
-//		<< "bytes of " << bytesTotal;
+	Q_ASSERT(timerId != 0);
+	killTimer(timerId);
+
+	timerId = startTimer(s_watchdogInterval);
+	Q_ASSERT(timerId != 0);
 }
 
 void FileDownloader::onReplyFinished()
 {
-//	int speed = totalSize * 1000 / elapsedTimer.elapsed() / 1024;
-
-//	QLOG_TRACE() << "Download finished (" << totalSize <<
-//		"bytes at " << speed << "Kb/s" << "):" << localPath;
-//
-//	emit downloadSpeed(speed);
-
-	float elapsed = elapsedTimer.elapsed();
+	const auto elapsed = elapsedTimer.elapsed();
 
 	QLOG_TRACE() << "DOWNLOAD FINISHED in " << elapsed << "ms"
 		<< ". File:" << localPath << ", size:" << totalSize
