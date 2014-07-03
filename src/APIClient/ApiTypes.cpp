@@ -21,7 +21,7 @@ QVariant objectValue(const QJsonObject& dataObject,
 {
 	if (dataObject.contains(paramName))
 	{
-		QJsonValue value = dataObject.value(paramName);
+		const QJsonValue value = dataObject.value(paramName);
 		switch (value.type())
 		{
 		case QJsonValue::Null:

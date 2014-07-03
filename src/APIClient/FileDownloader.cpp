@@ -57,26 +57,17 @@ void FileDownloader::download()
 	elapsedTimer.start();
 	totalSize = 0;
 
-	bool b = connect(reply, &QNetworkReply::finished,
-			this, &FileDownloader::onReplyFinished);
+	Q_ASSERT(connect(reply, &QNetworkReply::finished,
+			this, &FileDownloader::onReplyFinished));
 
-	QLOG_TRACE() << b;
+	Q_ASSERT(connect(reply, static_cast<void (QNetworkReply::*)(QNetworkReply::NetworkError)>(&QNetworkReply::error),
+			this, &FileDownloader::onError));
 
-	b = connect(reply, static_cast<void (QNetworkReply::*)(QNetworkReply::NetworkError)>(&QNetworkReply::error),
-			this, &FileDownloader::onError);
+	Q_ASSERT(connect(reply, &QNetworkReply::downloadProgress,
+			this, &FileDownloader::onDownloadProgress));
 
-	QLOG_TRACE() << b;
-
-	b = connect(reply, &QNetworkReply::downloadProgress,
-			this, &FileDownloader::onDownloadProgress);
-
-	QLOG_TRACE() << b;
-
-	b = connect(reply, &QNetworkReply::readyRead,
-			this, &FileDownloader::onReadyRead);
-
-	QLOG_TRACE() <<
-		reply->isRunning() << reply->isFinished() << reply->errorString();
+	Q_ASSERT(connect(reply, &QNetworkReply::readyRead,
+			this, &FileDownloader::onReadyRead));
 
 //	if (timerId)
 //		killTimer(timerId);
