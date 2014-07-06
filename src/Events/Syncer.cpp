@@ -15,6 +15,7 @@ Syncer::Syncer()
 	: QObject(nullptr)
 	, m_currentLocalPathPrefix(QString())
 	, m_folderCounter(0)
+	, m_watchDog([this] { QLOG_ERROR() << "Connection has been lost."; onGetFailed(); })
 {
 }
 
@@ -84,16 +85,21 @@ void Syncer::onGetChildrenSucceeded(const QList<RemoteFileDesc>& list)
 				GetChildrenResourceRef getChildrenRes =
 					GetChildrenResource::create();
 
-				connect(getChildrenRes.data(),
-					&GetChildrenResource::succeeded,
-					this,
-					&Syncer::onGetChildrenSucceeded);
+				connect(getChildrenRes.data(), &GetChildrenResource::succeeded,
+					this, &Syncer::onGetChildrenSucceeded);
 
 				connect(getChildrenRes.data(), &GetChildrenResource::failed,
 					this, &Syncer::onGetFailed);
 
+				connect(getChildrenRes.data(), &GetChildrenResource::succeeded,
+						&m_watchDog, &WatchDog::stop);
+
+				connect(getChildrenRes.data(), &GetChildrenResource::failed,
+						&m_watchDog, &WatchDog::stop);
+
 				++m_folderCounter;
 				getChildrenRes->getChildren(fileDesc.id);
+				m_watchDog.restart();
 			}
 	}
 
@@ -114,7 +120,14 @@ void Syncer::getRoots()
 	connect(getChildrenRes.data(), &GetChildrenResource::failed,
 		this, &Syncer::onGetFailed);
 
+	connect(getChildrenRes.data(), &GetChildrenResource::succeeded,
+			&m_watchDog, &WatchDog::stop);
+
+	connect(getChildrenRes.data(), &GetChildrenResource::failed,
+			&m_watchDog, &WatchDog::stop);
+
 	getChildrenRes->getChildren(0);
+	m_watchDog.restart();
 }
 
 void Syncer::getChildren()
@@ -128,10 +141,17 @@ void Syncer::getChildren()
 	connect(getChildrenRes.data(), &GetChildrenResource::failed,
 		this, &Syncer::onGetFailed);
 
+	connect(getChildrenRes.data(), &GetChildrenResource::succeeded,
+			&m_watchDog, &WatchDog::stop);
+
+	connect(getChildrenRes.data(), &GetChildrenResource::failed,
+			&m_watchDog, &WatchDog::stop);
+
 	++m_folderCounter;
 
 	const int diskId = -2;
 	getChildrenRes->getChildren(diskId);
+	m_watchDog.restart();
 
 	syncLocalFolder(
 		Settings::instance().get(Settings::folderPath).toString());
@@ -149,8 +169,8 @@ void Syncer::onGetRootsSucceeded(const QList<RemoteFileDesc>& roots)
 
 void Syncer::onGetFailed() const
 {
-	Q_ASSERT(false);
-	QLOG_ERROR() << "Sync failed";
+	QLOG_ERROR() << "Sync failed, restarting...";
+	AppController::instance().restartRemotesOnly();
 }
 
 void Syncer::syncLocalFolder(const QString& localFolderPath)

@@ -292,6 +292,11 @@ void AppController::on_settingsWidget_logout()
 
 void AppController::onLoginFinished()
 {
+	onLoginFinishedImpl(true);
+}
+
+void AppController::onLoginFinishedImpl(const bool restartFSWatcher)
+{
 	setState(Drive::Synced);
 
 	FileSystemHelper::setWindowsFolderIcon(
@@ -335,7 +340,10 @@ void AppController::onLoginFinished()
 
 	m_syncer->fullSync();
 
-	localNotifier.resetFolder();
+	if (restartFSWatcher)
+	{
+		localNotifier.resetFolder();
+	}
 	remoteNotifier->listenRemoteFileEvents();
 }
 
@@ -397,6 +405,14 @@ void AppController::restart()
 	LocalCache::instance().clear();
 	GeneralRestDispatcher::instance().cancelAll();
 	onLoginFinished();
+}
+
+void AppController::restartRemotesOnly()
+{
+	FileEventDispatcher::instance().cancelAll();
+	LocalCache::instance().clear();
+	GeneralRestDispatcher::instance().cancelAll();
+	onLoginFinishedImpl(false);
 }
 
 }

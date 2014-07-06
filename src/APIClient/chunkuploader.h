@@ -2,6 +2,7 @@
 #define CHUNK_UPLOADER_H
 
 #include "APIClient/ApiTypes.h"
+#include "watchdog.h"
 
 #include <QtCore/QFile>
 #include <QtNetwork/QNetworkReply>
@@ -46,6 +47,8 @@ private:
 
 	QNetworkAccessManager m_network;
 	QNetworkReply* m_networkReply;
+
+	WatchDog m_watchDog;
 };
 
 }

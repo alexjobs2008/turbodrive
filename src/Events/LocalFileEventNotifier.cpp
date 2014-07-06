@@ -22,27 +22,30 @@ LocalFileEventNotifier& LocalFileEventNotifier::instance()
 
 LocalFileEventNotifier::LocalFileEventNotifier(QObject *parent)
 	: QObject(parent)
-	, m_listener(nullptr)
+	, m_listener(new LocalListener(this))
+	, m_watchID(0)
 {
+	connect(m_listener.get(), &LocalListener::newLocalFileEvent,
+		this, &LocalFileEventNotifier::newLocalFileEvent);
 }
 
 void LocalFileEventNotifier::resetFolder()
 {
-	m_listener.reset(new LocalListener(this));
-	connect(m_listener.get(), &LocalListener::newLocalFileEvent,
-		this, &LocalFileEventNotifier::newLocalFileEvent);
+	const std::string stdDirPath = Settings::instance().get(Settings::folderPath).toString().toStdString();
 
-	const QString dirPath = Settings::instance().get(Settings::folderPath).toString();
-	const std::string stdDirPath = dirPath.toStdString();
-
+	Q_ASSERT(m_watchID == 0);
 	m_watchID = m_fileWatcher.addWatch(stdDirPath, m_listener.get(), true);
-	QLOG_DEBUG() << "Directory watcher initialized (" << m_watchID << ").";
+
+	static const auto s_message = QString::fromUtf8("Directory watcher initialized (%1).");
+	QLOG_DEBUG() << s_message.arg(m_watchID);
+
 	Q_ASSERT(m_watchID > 0);
 }
 
 void LocalFileEventNotifier::stop()
 {
 	m_fileWatcher.removeWatch(m_watchID);
+	m_watchID = 0;
 }
 
 // ============================================================================

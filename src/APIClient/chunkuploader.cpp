@@ -64,6 +64,7 @@ ChunkUploader::ChunkUploader(const QString& uuid,
 	, m_chunkIndex(chunkIndex)
 	, m_chunksTotal(totalChunks)
 	, m_networkReply(nullptr)
+	, m_watchDog([this] { QLOG_ERROR() << "Connection has been lost."; m_networkReply->abort(); })
 {
 	Q_ASSERT(m_file.isOpen());
 }
@@ -88,6 +89,13 @@ void ChunkUploader::start()
 
 	connect(m_networkReply, static_cast<void (QNetworkReply::*)(QNetworkReply::NetworkError)>(&QNetworkReply::error),
 			this, &ChunkUploader::onError);
+
+	connect(m_networkReply, &QNetworkReply::finished,
+			&m_watchDog, &WatchDog::stop);
+	connect(m_networkReply, static_cast<void (QNetworkReply::*)(QNetworkReply::NetworkError)>(&QNetworkReply::error),
+			&m_watchDog, &WatchDog::stop);
+
+	m_watchDog.restart();
 }
 
 void ChunkUploader::onFinished()

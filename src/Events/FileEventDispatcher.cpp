@@ -435,7 +435,7 @@ void FileEventDispatcher::onEventHandlerFailed(const QString& error)
 	QLOG_ERROR() << "Thread" << thread
 		<< "failed to handle event:" << error;
 
-	AppController::instance().restart();
+	AppController::instance().restartRemotesOnly();
 }
 
 void FileEventDispatcher::onFinishProcessingEvent()

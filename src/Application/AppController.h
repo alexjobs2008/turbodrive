@@ -49,6 +49,7 @@ public:
 	void onSettingChanged(const QString& settingName, QVariant, QVariant);
 
 	void restart();
+	void restartRemotesOnly();
 
 public slots:
 	void setState(State newState);
@@ -87,6 +88,8 @@ private:
 	void createSettingsWidget();
 
 	void downloadUpdate();
+
+	void onLoginFinishedImpl(bool restartFSWatcher);
 
 	QPointer<TrayIcon> m_trayIcon;
 

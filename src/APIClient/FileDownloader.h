@@ -1,6 +1,8 @@
 ﻿#ifndef FILE_DOWNLOADER_H
 #define FILE_DOWNLOADER_H
 
+#include "watchdog.h"
+
 #include <QtNetwork/QNetworkReply>
 #include <QtCore/QElapsedTimer>
 #include <QtCore/QTime>
@@ -35,11 +37,7 @@ signals:
 	void failed(const QString& error);
 	void downloadSpeed(int kbPerSecond);
 
-protected:
-	void timerEvent(QTimerEvent*);
-
 private slots:
-	void onDownloadProgress(qint64, qint64);
 	void onError(QNetworkReply::NetworkError error);
 	void onReplyFinished();
 	void onReadyRead();
@@ -54,8 +52,8 @@ private:
 	QFile* file;
 	uint totalSize;
 	QElapsedTimer elapsedTimer;
-	int timerId;
 	int speedLimit;
+	WatchDog m_watchDog;
 };
 
 //
