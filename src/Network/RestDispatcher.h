@@ -2,6 +2,7 @@
 #define REST_DISPATCHER_H
 
 #include "RestResource.h"
+#include "watchdog.h"
 
 #include <QtCore/QObject>
 #include <QtCore/QDateTime>
@@ -59,9 +60,6 @@ signals:
 	void proxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*);
 	void cookiesReceived(const QList<QNetworkCookie> &cookies);
 
-protected:
-	void initServices();
-
 private:
 	void replyFinished(QNetworkReply* networkReply);
 	void onSslErrors(QNetworkReply *reply, const QList<QSslError> & errors);
@@ -96,6 +94,8 @@ private:
 	QMutex requestMutex;
 	QMutex nextMutex;
 	QMutex cancelMutex;
+
+	Drive::WatchDog m_watchDog;
 };
 
 #endif // REST_DISPATCHER_H

@@ -3,7 +3,6 @@
 
 #include "APIClient/ApiTypes.h"
 #include "Events/LocalFileEvent.h"
-#include "watchdog.h"
 
 #include <QtCore/QObject>
 
@@ -44,8 +43,6 @@ private:
 
 	QList<LocalFileEvent> m_localEvents;
 	QList<RemoteFileEvent> m_remoteEvents;
-
-	WatchDog m_watchDog;
 };
 
 }

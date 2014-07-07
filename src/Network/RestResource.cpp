@@ -93,12 +93,10 @@ RestResource::Reply::Reply(const RestResourceRef& restResource
 RestResource::RestResource(QObject *parent)
 	: QObject(parent)
 {
-	QLOG_TRACE() << "resource created" << this;
 }
 
 RestResource::~RestResource()
 {
-	QLOG_TRACE() << "resource destroyed" << this;
 }
 
 RestResourceRef RestResource::self() const
@@ -115,13 +113,7 @@ void RestResource::requestFinished(const ReplyRef& requestReply, bool&)
 		return;
 	}
 
-	int status = requestReply->reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-
-	if (status == 0 || status >= 300) // log everything related to client/server errors and redirections
-	{
-		QLOG_ERROR() << requestReply->reply->request().url().toString()
-			<< status << requestReply->reply->errorString();
-	}
+	const int status = requestReply->reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
 
 	if (status == 301)
 	{
@@ -191,7 +183,6 @@ void RestResource::requestFinished(const ReplyRef& requestReply, bool&)
 
 void RestResource::requestCancelled()
 {
-	QLOG_TRACE() << "requestCancelled() " << service() << " " << path();
 	emit restOperationCancelled(self());
 }
 

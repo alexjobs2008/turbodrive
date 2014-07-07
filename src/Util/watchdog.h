@@ -15,7 +15,7 @@ public:
 	explicit WatchDog(std::function<void ()> callback, int intervalMSec = 10000);
 
 	void restart();
-	void stop();
+	Q_SLOT void stop();
 
 protected:
 	virtual void timerEvent(QTimerEvent*) override;

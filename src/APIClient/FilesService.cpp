@@ -268,12 +268,7 @@ bool CreateRestResource::processPostResponse(int status,
 
 GetChildrenResourceRef GetChildrenResource::create()
 {
-	GetChildrenResourceRef resource =
-		RestResource::create<GetChildrenResource>();
-
-	QLOG_TRACE() << "GetChildrenResource created:" << resource.data();
-
-	return resource;
+	return RestResource::create<GetChildrenResource>();
 }
 
 
@@ -344,15 +339,10 @@ bool GetChildrenResource::restricted() const
 
 bool GetChildrenResource::processGetResponse(int status,
 											const QByteArray& data,
-											const HeaderList& headers)
+											const HeaderList&)
 {
-	QLOG_TRACE() << "get children 0: " << data;
-
 	if (status != 200)
 	{
-		QLOG_TRACE() << "get children get: " << status << "."
-			<< headers << data;
-
 		emit failed();
 		return true;
 	}

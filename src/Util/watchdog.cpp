@@ -22,7 +22,6 @@ void WatchDog::restart()
 	}
 	m_timerId = startTimer(m_intervalMSec);
 	Q_ASSERT(m_timerId != 0);
-	QLOG_DEBUG() << "Watchdog started.";
 }
 
 void WatchDog::stop()
@@ -32,14 +31,12 @@ void WatchDog::stop()
 	{
 		killTimer(m_timerId);
 		m_timerId = 0;
-		QLOG_DEBUG() << "Watchdog stopped.";
 	}
 }
 
 void WatchDog::timerEvent(QTimerEvent*)
 {
 	m_callback();
-	QLOG_DEBUG() << "Watchdog event, callback called.";
 	stop();
 }
 

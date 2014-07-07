@@ -53,7 +53,10 @@ void RemoteFolderCreatedEventHandler::run()
 		GetAncestorsRestResource::create();
 
 	connect(getAncestorsRes.data(), &GetAncestorsRestResource::succeeded,
-		this, &RemoteFolderCreatedEventHandler::onGetAncestorsSucceeded);
+			this, &RemoteFolderCreatedEventHandler::onGetAncestorsSucceeded);
+
+	connect(getAncestorsRes.data(), &GetAncestorsRestResource::failed,
+			this, &RemoteFolderCreatedEventHandler::onGetAncestorsFailed);
 
 	getAncestorsRes->getAncestors(m_remoteEvent.fileDesc.id);
 

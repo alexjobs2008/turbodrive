@@ -1,4 +1,5 @@
 ﻿#include "RestDispatcher.h"
+#include "AppController.h"
 #include "RestNetworkAccessManager.h"
 #include "RestService.h"
 #include "Settings/settings.h"
@@ -28,6 +29,7 @@ GeneralRestDispatcher::GeneralRestDispatcher(QObject *parent)
 	, mode(Mode::Unauthorized)
 	, networkAccessManager(new RestNetworkAccessManager(this))
 	, authToken(QString())
+	, m_watchDog([this] { QLOG_ERROR() << "Connection has been lost."; AppController::instance().restartRemotesOnly(); })
 {
 	qRegisterMetaType<RestResource::RequestRef>("RequestRef");
 
@@ -35,15 +37,6 @@ GeneralRestDispatcher::GeneralRestDispatcher(QObject *parent)
 			this, &GeneralRestDispatcher::replyFinished);
 	connect(networkAccessManager, &QNetworkAccessManager::sslErrors,
 			this, &GeneralRestDispatcher::onSslErrors);
-
-	initServices();
-}
-
-void GeneralRestDispatcher::initServices()
-{
-	cancelAll();
-	qDeleteAll(m_services);
-	m_services.clear();
 }
 
 void GeneralRestDispatcher::onServices(const QHash<QString, RestService*>& services)
@@ -88,8 +81,6 @@ void GeneralRestDispatcher::cancelCurrent(RestService *service,
 	if (!service->m_currentRequest.isNull())
 		if (!restResource || service->m_currentRequest->resource == *restResource)
 		{
-			QLOG_INFO() << "Current resource request canceled";
-
 			if (restResource)
 				restResource->data()->requestCancelled();
 			else
@@ -386,10 +377,12 @@ void GeneralRestDispatcher::doOperation(RestResource::Operation operation,
 		if (operation == QNetworkAccessManager::PostOperation)
 		{
 			networkAccessManager->post(createRequest(service), bodyData);
+			m_watchDog.restart();
 		}
 		else if (operation == QNetworkAccessManager::PutOperation)
 		{
 			networkAccessManager->put(createRequest(service), bodyData);
+			m_watchDog.restart();
 		}
 		else if (operation == QNetworkAccessManager::DeleteOperation)
 		{
@@ -403,20 +396,24 @@ void GeneralRestDispatcher::doOperation(RestResource::Operation operation,
 			networkAccessManager->sendCustomRequest(request
 				, QString("DELETE").toLatin1()
 				, buffer);
+			m_watchDog.restart();
 		}
 
 	}
 	else if (operation == QNetworkAccessManager::GetOperation)
 	{
 		networkAccessManager->get(createRequest(service));
+		m_watchDog.restart();
 	}
 	else if (operation == QNetworkAccessManager::DeleteOperation)
 	{
 		networkAccessManager->deleteResource(createRequest(service));
+		m_watchDog.restart();
 	}
 	else if (operation == QNetworkAccessManager::HeadOperation)
 	{
 		networkAccessManager->head(createRequest(service));
+		m_watchDog.restart();
 	}
 	else if (operation == QNetworkAccessManager::CustomOperation)
 	{
@@ -426,10 +423,7 @@ void GeneralRestDispatcher::doOperation(RestResource::Operation operation,
 
 void GeneralRestDispatcher::replyFinished(QNetworkReply* networkReply)
 {
-	if (networkReply->error() != QNetworkReply::NoError)
-	{
-		QLOG_ERROR() << "Error: " << networkReply->error();
-	}
+	m_watchDog.stop();
 
 	QObject* originatingObject = networkReply->request().originatingObject();
 
