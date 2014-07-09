@@ -1,5 +1,6 @@
 ﻿#include "watchdog.h"
 
+#include <QtNetwork/QTcpSocket>
 #include <QsLog/QsLog.h>
 
 using namespace std;
@@ -36,8 +37,13 @@ void WatchDog::stop()
 
 void WatchDog::timerEvent(QTimerEvent*)
 {
-	m_callback();
-	stop();
+	QTcpSocket messenger;
+	messenger.connectToHost("www.google.com", 80);
+	if(!messenger.waitForConnected(3000))
+	{
+		m_callback();
+		stop();
+	}
 }
 
 }
