@@ -17,10 +17,7 @@ WatchDog::WatchDog(std::function<void ()> callback, int intervalMSec)
 
 void WatchDog::restart()
 {
-	if (m_timerId != 0)
-	{
-		stop();
-	}
+	stop();
 	m_timerId = startTimer(m_intervalMSec);
 	Q_ASSERT(m_timerId != 0);
 }
