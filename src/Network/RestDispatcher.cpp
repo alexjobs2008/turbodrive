@@ -29,7 +29,7 @@ GeneralRestDispatcher::GeneralRestDispatcher(QObject *parent)
 	, mode(Mode::Unauthorized)
 	, networkAccessManager(new RestNetworkAccessManager(this))
 	, authToken(QString())
-	, m_watchDog([this] { QLOG_ERROR() << "Connection has been lost."; AppController::instance().restartRemotesOnly(); })
+	, m_watchDog([this] { QLOG_ERROR() << "Connection has been lost."; cancelAll(); })
 {
 	qRegisterMetaType<RestResource::RequestRef>("RequestRef");
 

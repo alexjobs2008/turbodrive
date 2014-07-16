@@ -24,21 +24,29 @@ public:
 	EventHandlerBase(QObject*)
 		: QObject(nullptr)
 	{
-		auto thread = new QThread();
-
-		connect(thread, &QThread::started, this, &EventHandlerBase::run);
-		connect(thread, &QThread::finished, this, &EventHandlerBase::finished);
-
-		connect(this, &EventHandlerBase::quitThread, thread, &QThread::quit);
-
-		moveToThread(thread);
-
-		m_thread = thread;
 	};
 
 	virtual ~EventHandlerBase() {};
 
-	void start() { beforeStart(); m_thread->start(); }
+	void start()
+	{
+		if (m_thread)
+		{
+			m_thread->disconnect();
+			m_thread->deleteLater();
+		}
+		m_thread = new QThread();
+
+		connect(m_thread.data(), &QThread::started, this, &EventHandlerBase::run);
+		connect(m_thread.data(), &QThread::finished, this, &EventHandlerBase::finished);
+
+		connect(this, &EventHandlerBase::quitThread, m_thread.data(), &QThread::quit);
+
+		moveToThread(m_thread.data());
+
+		beforeStart();
+		m_thread->start();
+	}
 
 protected:
 	virtual void run() = 0;

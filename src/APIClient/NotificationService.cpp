@@ -24,8 +24,6 @@ NotificationResourceRef NotificationResource::create()
 
 void NotificationResource::listenRemoteFileEvents()
 {
-	// BEWARE: for some really strange reasons Qt-oriented version of this code
-	// crashes on call QString::toLatin1 and other string-related methods.
 	string idValue = AppController::instance().serviceChannel().toStdString();
 	if (!lastEventTimestamp.toStdString().empty())
 	{

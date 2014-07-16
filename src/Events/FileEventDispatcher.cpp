@@ -424,18 +424,19 @@ void FileEventDispatcher::cancelAll()
 
 void FileEventDispatcher::onEventHandlerSucceeded()
 {
-	QThread *thread = static_cast<QThread*>(sender());
-	QLOG_TRACE() << "Thread" << thread << "successfully handled event.";
 }
 
 void FileEventDispatcher::onEventHandlerFailed(const QString& error)
 {
-	QThread *thread = static_cast<QThread*>(sender());
+	EventHandlerBase* handler = dynamic_cast<EventHandlerBase*>(sender());
+	Q_ASSERT(handler);
 
-	QLOG_ERROR() << "Thread" << thread
-		<< "failed to handle event:" << error;
+	QLOG_ERROR() << "Handler" << handler << "failed to handle event:" << error;
 
-	AppController::instance().restartRemotesOnly();
+	eventHandlers.removeOne(handler);
+
+	handler->deleteLater();
+	next();
 }
 
 void FileEventDispatcher::onFinishProcessingEvent()
