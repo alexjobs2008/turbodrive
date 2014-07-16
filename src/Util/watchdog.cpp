@@ -38,8 +38,8 @@ void WatchDog::timerEvent(QTimerEvent*)
 	messenger.connectToHost("www.google.com", 80);
 	if(!messenger.waitForConnected(3000))
 	{
-		m_callback();
 		stop();
+		m_callback();
 	}
 }
 
