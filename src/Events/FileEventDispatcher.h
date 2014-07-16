@@ -58,7 +58,6 @@ signals:
 	void progress(int position, int totalEvents) const;
 
 private slots:
-	void onEventHandlerSucceeded();
 	void onEventHandlerFailed(const QString& error);
 
 	void onFinishProcessingEvent();

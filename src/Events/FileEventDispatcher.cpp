@@ -358,9 +358,6 @@ void FileEventDispatcher::startHandlerThreadOrProcessNext(
 		connect(handlerThread, &EventHandlerBase::finished,
 				this, &FileEventDispatcher::onFinishProcessingEvent);
 
-		connect(handlerThread, &EventHandlerBase::succeeded,
-				this, &FileEventDispatcher::onEventHandlerSucceeded);
-
 		connect(handlerThread, &EventHandlerBase::failed,
 				this, &FileEventDispatcher::onEventHandlerFailed);
 
@@ -422,32 +419,19 @@ void FileEventDispatcher::cancelAll()
 	finish();
 }
 
-void FileEventDispatcher::onEventHandlerSucceeded()
-{
-}
-
-void FileEventDispatcher::onEventHandlerFailed(const QString& error)
+void FileEventDispatcher::onEventHandlerFailed(const QString&)
 {
 	EventHandlerBase* handler = dynamic_cast<EventHandlerBase*>(sender());
 	Q_ASSERT(handler);
-
-	QLOG_ERROR() << "Handler" << handler << "failed to handle event:" << error;
-
-	eventHandlers.removeOne(handler);
-
-	handler->deleteLater();
-	next();
+	handler->start();
 }
 
 void FileEventDispatcher::onFinishProcessingEvent()
 {
-	EventHandlerBase *thread = static_cast<EventHandlerBase*>(sender());
-
-	QLOG_TRACE() << "Thread" << thread << "is finished processing.";
-
-	eventHandlers.removeOne(thread);
-
-	thread->deleteLater();
+	EventHandlerBase* handler = dynamic_cast<EventHandlerBase*>(sender());
+	Q_ASSERT(handler);
+	eventHandlers.removeOne(handler);
+	handler->deleteLater();
 	next();
 }
 
