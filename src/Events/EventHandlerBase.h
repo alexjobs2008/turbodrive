@@ -5,8 +5,6 @@
 #include <QtCore/QThread>
 #include <QtCore/QCoreApplication>
 
-#include "watchdog.h"
-
 namespace Drive
 {
 
@@ -25,19 +23,7 @@ public:
 	// see also QObject::moveToThread docs.
 	EventHandlerBase(QObject*)
 		: QObject(nullptr)
-		, m_watchDog([this] { Q_EMIT failed(QString::fromUtf8("Connection lost.")); processEventsAndQuit(); })
 	{
-	};
-
-	virtual ~EventHandlerBase() {};
-
-	void start()
-	{
-		if (m_thread)
-		{
-			m_thread->disconnect();
-			m_thread->deleteLater();
-		}
 		m_thread = new QThread();
 
 		connect(m_thread.data(), &QThread::started, this, &EventHandlerBase::run);
@@ -46,7 +32,12 @@ public:
 		connect(this, &EventHandlerBase::quitThread, m_thread.data(), &QThread::quit);
 
 		moveToThread(m_thread.data());
+	};
 
+	virtual ~EventHandlerBase() {};
+
+	void start()
+	{
 		beforeStart();
 		m_thread->start();
 	}
@@ -90,7 +81,6 @@ protected:
 
 private:
 	QPointer<QThread> m_thread;
-	WatchDog m_watchDog;
 };
 
 }

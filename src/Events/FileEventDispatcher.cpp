@@ -423,7 +423,9 @@ void FileEventDispatcher::onEventHandlerFailed(const QString&)
 {
 	EventHandlerBase* handler = dynamic_cast<EventHandlerBase*>(sender());
 	Q_ASSERT(handler);
-	handler->start();
+	eventHandlers.removeOne(handler);
+	handler->deleteLater();
+	next();
 }
 
 void FileEventDispatcher::onFinishProcessingEvent()

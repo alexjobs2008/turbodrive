@@ -2,7 +2,6 @@
 #define NOTIFICATION_SERVICE
 
 #include "Network/RestResource.h"
-#include "watchdog.h"
 
 #define NOTIFICATION_SERVICE_NAME "NotificationService"
 
@@ -21,8 +20,6 @@ public:
 
 	static NotificationResourceRef create();
 
-	NotificationResource();
-
 	void listenRemoteFileEvents();
 
 	virtual QString path() const;
@@ -37,7 +34,6 @@ private:
 			int status, const QByteArray& data, const HeaderList&);
 
 	QString lastEventTimestamp;
-	WatchDog m_watchDog;
 };
 
 }

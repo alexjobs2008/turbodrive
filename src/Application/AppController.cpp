@@ -407,4 +407,12 @@ void AppController::restart()
 	onLoginFinished();
 }
 
+void AppController::restartRemotesOnly()
+{
+	FileEventDispatcher::instance().cancelAll();
+	LocalCache::instance().clear();
+	GeneralRestDispatcher::instance().cancelAll();
+	onLoginFinishedImpl(false);
+}
+
 }

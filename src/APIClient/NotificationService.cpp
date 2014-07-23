@@ -22,12 +22,6 @@ NotificationResourceRef NotificationResource::create()
 	return resource;
 }
 
-NotificationResource::NotificationResource()
-	: RestResource()
-	, m_watchDog([this] { listenRemoteFileEvents(); })
-{
-}
-
 void NotificationResource::listenRemoteFileEvents()
 {
 	string idValue = AppController::instance().serviceChannel().toStdString();
@@ -39,7 +33,6 @@ void NotificationResource::listenRemoteFileEvents()
 	ParamList params;
 	params.append(ParamPair("identifier", QByteArray(idValue.c_str(), idValue.size())));
 	doOperation(QNetworkAccessManager::GetOperation, params, HeaderList());
-	m_watchDog.restart();
 }
 
 QString NotificationResource::path() const

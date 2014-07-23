@@ -147,6 +147,8 @@ void Syncer::onGetRootsSucceeded(const QList<RemoteFileDesc>& roots)
 
 void Syncer::onGetFailed() const
 {
+	QLOG_ERROR() << "Sync failed, restarting...";
+	AppController::instance().restartRemotesOnly();
 }
 
 void Syncer::syncLocalFolder(const QString& localFolderPath)
