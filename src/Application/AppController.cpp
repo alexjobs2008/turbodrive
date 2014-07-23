@@ -261,8 +261,13 @@ void AppController::on_actionUpdate_triggered()
 void AppController::on_actionExit_triggered()
 {
 	QLOG_TRACE() << "Exiting";
+	FileEventDispatcher::instance().cancelAll();
+	LocalFileEventNotifier::instance().stop();
+	LocalCache::instance().clear();
+	GeneralRestDispatcher::instance().cancelAll();
 	LoginController::instance().closeAll();
 	close();
+	qInstallMessageHandler(nullptr);
 }
 
 void AppController::on_trayIcon_activated(QSystemTrayIcon::ActivationReason reason)
