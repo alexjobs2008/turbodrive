@@ -98,6 +98,7 @@ void AppController::setProfileData(const ProfileData& data)
 
 	actionUsername->setText(currentProfileData.username);
 	actionUsername->setVisible(!currentProfileData.username.isEmpty());
+	actionLogout->setEnabled(!currentProfileData.username.isEmpty());
 
 	emit profileDataUpdated(currentProfileData);
 }
@@ -134,6 +135,10 @@ void AppController::createActions()
 	actionUsername->setEnabled(false);
 	actionUsername->setVisible(false);
 
+	actionLogout = new QAction(tr("Logout"), this);
+	actionLogout->setObjectName("actionLogout");
+	actionLogout->setEnabled(false);
+
 	actionPause = new QAction(tr("Pause Sync"), this);
 	actionPause->setObjectName("actionPause");
 	actionPause->setVisible(false);
@@ -167,6 +172,7 @@ void AppController::createTrayIcon()
 	trayMenu->addAction(actionPreferences);
 	trayMenu->addSeparator();
 	trayMenu->addAction(actionUsername);
+	trayMenu->addAction(actionLogout);
 	trayMenu->addSeparator();
 	trayMenu->addAction(actionPause);
 	trayMenu->addSeparator();
@@ -245,6 +251,11 @@ void AppController::on_actionOpenWebSite_triggered()
 {
 	QDesktopServices::openUrl(
 		QUrl(Strings::getAppString(Strings::WebSiteText), QUrl::TolerantMode));
+}
+
+void AppController::on_actionLogout_triggered()
+{
+	on_settingsWidget_logout();
 }
 
 void AppController::on_actionPause_triggered()

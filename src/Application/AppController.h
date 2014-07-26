@@ -62,6 +62,7 @@ signals:
 private slots:
 	void on_actionOpenFolder_triggered();
 	void on_actionOpenWebSite_triggered();
+	void on_actionLogout_triggered();
 	void on_actionPause_triggered();
 	void on_actionResume_triggered();
 	void on_actionPreferences_triggered();
@@ -100,6 +101,7 @@ private:
 	QAction *actionOpenFolder;
 	QAction *actionOpenWebSite;
 	QAction *actionUsername;
+	QAction *actionLogout;
 	QAction *actionPause;
 	QAction *actionResume;
 	QAction *actionPreferences;
