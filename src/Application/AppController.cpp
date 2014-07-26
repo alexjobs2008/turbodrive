@@ -116,20 +116,16 @@ void AppController::createActions()
 {
 	actionOpenFolder = new QAction(tr("Open Folder"), this);
 	actionOpenFolder->setObjectName("actionOpenFolder");
-	actionOpenFolder->setIcon(QIcon(":/icons/open.png"));
 
 	actionPause = new QAction(tr("Pause Sync"), this);
 	actionPause->setObjectName("actionPause");
-	actionPause->setIcon(QIcon(":/icons/pause.png"));
 	actionPause->setVisible(false);
 
 	actionResume = new QAction(tr("Resume Sync"), this);
 	actionResume->setObjectName("actionResume");
-	actionResume->setIcon(QIcon(":/icons/resume.png"));
 
 	actionPreferences = new QAction(tr("Preferences..."), this);
 	actionPreferences->setObjectName("actionPreferences");
-	actionPreferences->setIcon(QIcon(":/icons/preferences.png"));
 
 	actionDownloadUpdate = new QAction(tr("Download update"), this);
 	actionDownloadUpdate->setObjectName("actionUpdate");
@@ -178,8 +174,6 @@ void AppController::createSettingsWidget()
 		QString("%1 %2")
 		.arg(Strings::getAppString(Strings::AppFullName))
 		.arg(tr("Preferences")));
-
-	settingsWidget.setWindowIcon(QIcon(":/icons/preferences.png"));
 
 	connect(&settingsWidget, &SettingsWidget::openFolder,
 		actionOpenFolder, &QAction::trigger);
