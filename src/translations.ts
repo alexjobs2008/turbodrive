@@ -84,47 +84,67 @@
 <context>
     <name>Drive::AppController</name>
     <message>
-        <location filename="Application/AppController.cpp" line="117"/>
+        <location filename="Application/AppController.cpp" line="129"/>
         <source>Open Folder</source>
         <translation>Открыть папку</translation>
     </message>
     <message>
-        <location filename="Application/AppController.cpp" line="121"/>
+        <location filename="Application/AppController.cpp" line="132"/>
+        <source>Open Web Site</source>
+        <translation>Открыть в браузере</translation>
+    </message>
+    <message>
+        <location filename="Application/AppController.cpp" line="140"/>
+        <source>Logout</source>
+        <translation>Выйти</translation>
+    </message>
+    <message>
+        <location filename="Application/AppController.cpp" line="144"/>
         <source>Pause Sync</source>
         <translation>Приостановить синхронизацию</translation>
     </message>
     <message>
-        <location filename="Application/AppController.cpp" line="126"/>
+        <location filename="Application/AppController.cpp" line="148"/>
         <source>Resume Sync</source>
         <translation>Возобновить синхронизацию</translation>
     </message>
     <message>
-        <location filename="Application/AppController.cpp" line="130"/>
+        <location filename="Application/AppController.cpp" line="151"/>
         <source>Preferences...</source>
         <translation>Настройки...</translation>
     </message>
     <message>
-        <location filename="Application/AppController.cpp" line="134"/>
+        <location filename="Application/AppController.cpp" line="155"/>
         <source>Download update</source>
         <translation>Загрузить обновление</translation>
     </message>
     <message>
-        <location filename="Application/AppController.cpp" line="138"/>
+        <location filename="Application/AppController.cpp" line="159"/>
+        <source>Help</source>
+        <translation>Помощь</translation>
+    </message>
+    <message>
+        <location filename="Application/AppController.cpp" line="162"/>
+        <source>About</source>
+        <translation>О программе</translation>
+    </message>
+    <message>
+        <location filename="Application/AppController.cpp" line="165"/>
         <source>Exit</source>
         <translation>Выход</translation>
     </message>
     <message>
-        <location filename="Application/AppController.cpp" line="183"/>
+        <location filename="Application/AppController.cpp" line="215"/>
         <source>Preferences</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="Application/AppController.cpp" line="367"/>
+        <location filename="Application/AppController.cpp" line="435"/>
         <source>New version is available for download!</source>
         <translation>Новая версия доступна для загрузки!</translation>
     </message>
     <message>
-        <location filename="Application/AppController.cpp" line="369"/>
+        <location filename="Application/AppController.cpp" line="437"/>
         <source>Click this message to download new version.</source>
         <translation>Нажмите на это сообщение для загрузки новой версии.</translation>
     </message>
@@ -206,7 +226,7 @@
         <translation>Ошибка записи в файл: %1</translation>
     </message>
     <message>
-        <location filename="APIClient/FileDownloader.cpp" line="131"/>
+        <location filename="APIClient/FileDownloader.cpp" line="111"/>
         <source>Network error: %1</source>
         <translation>Сетевая ошибка: %1</translation>
     </message>
@@ -214,14 +234,14 @@
 <context>
     <name>Drive::FileSystemHelper</name>
     <message>
-        <location filename="Util/FileUtils.cpp" line="56"/>
+        <location filename="Util/FileUtils.cpp" line="58"/>
         <source>[.ShellClassInfo]InfoTip=%1
 IconFile=%2
 IconIndex=%3</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="Util/FileUtils.cpp" line="61"/>
+        <location filename="Util/FileUtils.cpp" line="63"/>
         <source>%1 Folder</source>
         <translation>Папка %1</translation>
     </message>
@@ -269,6 +289,11 @@ IconIndex=%3</source>
         <translation>Пожалуйста, подождите...</translation>
     </message>
     <message>
+        <location filename="LoginUI/LoginWidget.cpp" line="216"/>
+        <source>+375 ХХ ХХХХХХХ</source>
+        <translation></translation>
+    </message>
+    <message>
         <source>&amp;Phone:</source>
         <translation type="vanished">&amp;Телефон:</translation>
     </message>
@@ -281,12 +306,12 @@ IconIndex=%3</source>
         <translation type="vanished">&amp;Пароль:</translation>
     </message>
     <message>
-        <location filename="LoginUI/LoginWidget.cpp" line="247"/>
+        <location filename="LoginUI/LoginWidget.cpp" line="245"/>
         <source>Forgot?</source>
         <translation>Не можете войти в аккаунт?</translation>
     </message>
     <message>
-        <location filename="LoginUI/LoginWidget.cpp" line="235"/>
+        <location filename="LoginUI/LoginWidget.cpp" line="233"/>
         <source>&amp;Sign me in when %1 starts</source>
         <translation>Автом. авторизация при запуске</translation>
     </message>
@@ -300,12 +325,12 @@ IconIndex=%3</source>
         <translation type="vanished">Телефон</translation>
     </message>
     <message>
-        <location filename="LoginUI/LoginWidget.cpp" line="232"/>
+        <location filename="LoginUI/LoginWidget.cpp" line="230"/>
         <source>Password</source>
         <translation>Пароль</translation>
     </message>
     <message>
-        <location filename="LoginUI/LoginWidget.cpp" line="242"/>
+        <location filename="LoginUI/LoginWidget.cpp" line="240"/>
         <source>Sign in</source>
         <translation>Войти</translation>
     </message>
@@ -379,8 +404,7 @@ IconIndex=%3</source>
 <context>
     <name>Drive::RemoteFileUploadedEventHandler</name>
     <message>
-        <location filename="Events/EventHandlers.cpp" line="360"/>
-        <location filename="Events/RemoteEventHandlers.cpp" line="337"/>
+        <location filename="Events/RemoteEventHandlers.cpp" line="342"/>
         <source>File uploaded event handler failed: %1</source>
         <translation>При отправке файла возникла ошибка: %1</translation>
     </message>
@@ -443,7 +467,7 @@ IconIndex=%3</source>
 <context>
     <name>Drive::TrayIcon</name>
     <message>
-        <location filename="Application/TrayIcon.cpp" line="30"/>
+        <location filename="Application/TrayIcon.cpp" line="29"/>
         <source>%1 (%2 of %3)</source>
         <translation>%1 (%2 из %3)</translation>
     </message>
@@ -466,32 +490,32 @@ Choose Drive folder location and which folders and files to sync.</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="Application/types.h" line="22"/>
+        <location filename="Application/types.cpp" line="10"/>
         <source>Not authorized</source>
         <translation>Не авторизован</translation>
     </message>
     <message>
-        <location filename="Application/types.h" line="23"/>
+        <location filename="Application/types.cpp" line="11"/>
         <source>Signing in...</source>
         <translation>Авторизация...</translation>
     </message>
     <message>
-        <location filename="Application/types.h" line="24"/>
+        <location filename="Application/types.cpp" line="12"/>
         <source>Syncing...</source>
         <translation>Синхронизация...</translation>
     </message>
     <message>
-        <location filename="Application/types.h" line="25"/>
+        <location filename="Application/types.cpp" line="13"/>
         <source>Up to date</source>
         <translation>Синхронизировано</translation>
     </message>
     <message>
-        <location filename="Application/types.h" line="26"/>
+        <location filename="Application/types.cpp" line="14"/>
         <source>Syncing paused</source>
         <translation>Синхронизация приостановлена</translation>
     </message>
     <message>
-        <location filename="Application/types.h" line="27"/>
+        <location filename="Application/types.cpp" line="15"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
