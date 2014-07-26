@@ -93,7 +93,12 @@ ProfileData AppController::profileData() const
 void AppController::setProfileData(const ProfileData& data)
 {
 	currentProfileData = data;
+
 	GeneralRestDispatcher::instance().setWorkspaceId(data.defaultWorkspace().id);
+
+	actionLogin->setText(currentProfileData.username);
+	actionLogin->setVisible(!currentProfileData.username.isEmpty());
+
 	emit profileDataUpdated(currentProfileData);
 }
 
@@ -124,6 +129,11 @@ void AppController::createActions()
 	actionOpenWebSite = new QAction(tr("Open Web Site"), this);
 	actionOpenWebSite->setObjectName("actionOpenWebSite");
 
+	actionLogin = new QAction(this);
+	actionLogin->setObjectName("actionLogin");
+	actionLogin->setEnabled(false);
+	actionLogin->setVisible(false);
+
 	actionPause = new QAction(tr("Pause Sync"), this);
 	actionPause->setObjectName("actionPause");
 	actionPause->setVisible(false);
@@ -133,6 +143,7 @@ void AppController::createActions()
 
 	actionPreferences = new QAction(tr("Preferences..."), this);
 	actionPreferences->setObjectName("actionPreferences");
+	actionPreferences->setVisible(false);
 
 	actionDownloadUpdate = new QAction(tr("Download update"), this);
 	actionDownloadUpdate->setObjectName("actionUpdate");
@@ -147,9 +158,12 @@ void AppController::createTrayIcon()
 	trayMenu = new QMenu(this);
 
 	trayMenu->addAction(actionStatus);
+	trayMenu->addSeparator();
 	trayMenu->addAction(actionOpenFolder);
 	trayMenu->addAction(actionOpenWebSite);
 	trayMenu->addAction(actionPreferences);
+	trayMenu->addSeparator();
+	trayMenu->addAction(actionLogin);
 	trayMenu->addSeparator();
 	trayMenu->addAction(actionPause);
 	trayMenu->addSeparator();
