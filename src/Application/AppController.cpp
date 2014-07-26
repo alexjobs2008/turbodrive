@@ -121,6 +121,9 @@ void AppController::createActions()
 	actionOpenFolder = new QAction(tr("Open Folder"), this);
 	actionOpenFolder->setObjectName("actionOpenFolder");
 
+	actionOpenWebSite = new QAction(tr("Open Web Site"), this);
+	actionOpenWebSite->setObjectName("actionOpenWebSite");
+
 	actionPause = new QAction(tr("Pause Sync"), this);
 	actionPause->setObjectName("actionPause");
 	actionPause->setVisible(false);
@@ -145,6 +148,7 @@ void AppController::createTrayIcon()
 
 	trayMenu->addAction(actionStatus);
 	trayMenu->addAction(actionOpenFolder);
+	trayMenu->addAction(actionOpenWebSite);
 	trayMenu->addAction(actionPreferences);
 	trayMenu->addSeparator();
 	trayMenu->addAction(actionPause);
@@ -217,6 +221,13 @@ void AppController::on_actionOpenFolder_triggered()
 		QUrl(QString("file:///%1").arg(
 			Settings::instance().get(Settings::folderPath).toString())
 		, QUrl::TolerantMode));
+}
+
+
+void AppController::on_actionOpenWebSite_triggered()
+{
+	QDesktopServices::openUrl(
+		QUrl(Strings::getAppString(Strings::WebSiteText), QUrl::TolerantMode));
 }
 
 void AppController::on_actionPause_triggered()
