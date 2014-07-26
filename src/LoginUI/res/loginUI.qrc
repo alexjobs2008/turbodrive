@@ -21,5 +21,6 @@
         <file>chekbox-unchecked-disabled.png</file>
         <file>chekbox-checked-disabled.png</file>
         <file>LoginWidget/style-win.css</file>
+        <file>LoginWidget/style-mac.css</file>
     </qresource>
 </RCC>
