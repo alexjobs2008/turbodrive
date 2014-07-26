@@ -465,6 +465,14 @@ IconIndex=%3</source>
     </message>
 </context>
 <context>
+    <name>Drive::StandaloneAboutWidget</name>
+    <message>
+        <location filename="SettingsUI/standaloneaboutwidget.cpp" line="68"/>
+        <source>Version %1</source>
+        <translation>Версия %1</translation>
+    </message>
+</context>
+<context>
     <name>Drive::TrayIcon</name>
     <message>
         <location filename="Application/TrayIcon.cpp" line="29"/>

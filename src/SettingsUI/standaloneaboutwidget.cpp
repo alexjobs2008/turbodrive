@@ -65,7 +65,7 @@ void StandaloneAboutWidget::createHeader(QLayout* layout)
 		vLayout->addWidget(appNameLabel);
 
 		auto appVersionLabel = new QLabel(header);
-		appVersionLabel->setText(QString::fromUtf8("Version %1").arg(QCoreApplication::applicationVersion()));
+		appVersionLabel->setText(trUtf8("Version %1").arg(QCoreApplication::applicationVersion()));
 		vLayout->addWidget(appVersionLabel);
 
 		vLayout->addStretch();
