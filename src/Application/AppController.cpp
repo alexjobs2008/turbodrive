@@ -124,6 +124,7 @@ void AppController::createActions()
 	actionStatus = new QAction(this);
 	actionStatus->setObjectName("actionStatus");
 	actionStatus->setEnabled(false);
+	actionStatus->setVisible(false);
 
 	actionOpenFolder = new QAction(tr("Open Folder"), this);
 	actionOpenFolder->setObjectName("actionOpenFolder");
@@ -241,6 +242,7 @@ void AppController::setState(State newState)
 		currentState = newState;
 		emit stateChanged(currentState);
 		actionStatus->setText(m_trayIcon->toolTip());
+		actionStatus->setVisible(!m_trayIcon->toolTip().isEmpty());
 	}
 }
 
