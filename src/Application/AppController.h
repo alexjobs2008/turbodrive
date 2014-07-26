@@ -66,6 +66,7 @@ private slots:
 	void on_actionResume_triggered();
 	void on_actionPreferences_triggered();
 	void on_actionUpdate_triggered();
+	void on_actionHelp_triggered();
 	void on_actionExit_triggered();
 
 	void on_trayIcon_messageClicked();
@@ -103,6 +104,7 @@ private:
 	QAction *actionResume;
 	QAction *actionPreferences;
 	QAction *actionDownloadUpdate;
+	QAction *actionHelp;
 	QAction *actionExit;
 
 	State currentState;

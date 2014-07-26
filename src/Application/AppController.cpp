@@ -149,6 +149,9 @@ void AppController::createActions()
 	actionDownloadUpdate->setObjectName("actionUpdate");
 	actionDownloadUpdate->setVisible(false);
 
+	actionHelp = new QAction(tr("Help"), this);
+	actionHelp->setObjectName("actionHelp");
+
 	actionExit = new QAction(tr("Exit"), this);
 	actionExit->setObjectName("actionExit");
 }
@@ -168,6 +171,7 @@ void AppController::createTrayIcon()
 	trayMenu->addAction(actionPause);
 	trayMenu->addSeparator();
 	trayMenu->addAction(actionDownloadUpdate);
+	trayMenu->addAction(actionHelp);
 	trayMenu->addSeparator();
 	trayMenu->addAction(actionExit);
 
@@ -237,7 +241,6 @@ void AppController::on_actionOpenFolder_triggered()
 		, QUrl::TolerantMode));
 }
 
-
 void AppController::on_actionOpenWebSite_triggered()
 {
 	QDesktopServices::openUrl(
@@ -278,6 +281,12 @@ void AppController::on_actionPreferences_triggered()
 void AppController::on_actionUpdate_triggered()
 {
 	downloadUpdate();
+}
+
+void AppController::on_actionHelp_triggered()
+{
+	QDesktopServices::openUrl(
+		QUrl(Strings::getAppString(Strings::WebSiteText), QUrl::TolerantMode));
 }
 
 void AppController::on_actionExit_triggered()
