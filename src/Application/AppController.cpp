@@ -114,6 +114,10 @@ void AppController::setTrayIcon(const QPointer<TrayIcon>& trayIcon)
 
 void AppController::createActions()
 {
+	actionStatus = new QAction(this);
+	actionStatus->setObjectName("actionStatus");
+	actionStatus->setEnabled(false);
+
 	actionOpenFolder = new QAction(tr("Open Folder"), this);
 	actionOpenFolder->setObjectName("actionOpenFolder");
 
@@ -139,6 +143,7 @@ void AppController::createTrayIcon()
 {
 	trayMenu = new QMenu(this);
 
+	trayMenu->addAction(actionStatus);
 	trayMenu->addAction(actionOpenFolder);
 	trayMenu->addAction(actionPreferences);
 	trayMenu->addSeparator();
@@ -202,6 +207,7 @@ void AppController::setState(State newState)
 	{
 		currentState = newState;
 		emit stateChanged(currentState);
+		actionStatus->setText(m_trayIcon->toolTip());
 	}
 }
 

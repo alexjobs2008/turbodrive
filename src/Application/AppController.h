@@ -94,6 +94,7 @@ private:
 
 	QMenu *trayMenu;
 
+	QAction *actionStatus;
 	QAction *actionOpenFolder;
 	QAction *actionPause;
 	QAction *actionResume;

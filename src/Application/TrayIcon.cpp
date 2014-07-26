@@ -15,8 +15,7 @@ void TrayIcon::setState(Drive::State state)
 		_state = state;
 		AnimatedSystemTrayIcon::setState(statesMap.value(state)->name);
 
-		baseToolTip = QString("%1 - %2")
-			.arg(Strings::getAppString(Strings::AppFullName))
+		baseToolTip = QString("%1")
 			.arg(stateToString(state));
 
 		setToolTip(baseToolTip);
