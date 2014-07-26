@@ -67,7 +67,6 @@ private slots:
 	void on_actionUpdate_triggered();
 	void on_actionExit_triggered();
 
-	void on_trayIcon_activated(QSystemTrayIcon::ActivationReason reason);
 	void on_trayIcon_messageClicked();
 	void on_settingsWidget_logout();
 

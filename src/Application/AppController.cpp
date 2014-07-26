@@ -162,9 +162,6 @@ void AppController::createTrayIcon()
 	connect(this, &AppController::processingProgress,
 			m_trayIcon.data(), &TrayIcon::onProcessingProgress);
 
-	connect(m_trayIcon.data(), &TrayIcon::activated,
-			this, &AppController::on_trayIcon_activated);
-
 	connect(m_trayIcon.data(), &TrayIcon::messageClicked,
 			this, &AppController::on_trayIcon_messageClicked);
 
@@ -268,14 +265,6 @@ void AppController::on_actionExit_triggered()
 	LoginController::instance().closeAll();
 	close();
 	qInstallMessageHandler(nullptr);
-}
-
-void AppController::on_trayIcon_activated(QSystemTrayIcon::ActivationReason reason)
-{
-	if (reason == QSystemTrayIcon::Trigger)
-	{
-		actionOpenFolder->trigger();
-	}
 }
 
 void AppController::on_trayIcon_messageClicked()
