@@ -7,6 +7,7 @@
 
 #include "Settings/settings.h"
 #include "SettingsUI/SettingsWidget.h"
+#include "SettingsUI/standaloneaboutwidget.h"
 
 #include "QsLog/QsLog.h"
 
@@ -157,6 +158,9 @@ void AppController::createActions()
 	actionHelp = new QAction(tr("Help"), this);
 	actionHelp->setObjectName("actionHelp");
 
+	actionAbout = new QAction(tr("About"), this);
+	actionAbout->setObjectName("actionAbout");
+
 	actionExit = new QAction(tr("Exit"), this);
 	actionExit->setObjectName("actionExit");
 }
@@ -178,6 +182,7 @@ void AppController::createTrayIcon()
 	trayMenu->addSeparator();
 	trayMenu->addAction(actionDownloadUpdate);
 	trayMenu->addAction(actionHelp);
+	trayMenu->addAction(actionAbout);
 	trayMenu->addSeparator();
 	trayMenu->addAction(actionExit);
 
@@ -298,6 +303,20 @@ void AppController::on_actionHelp_triggered()
 {
 	QDesktopServices::openUrl(
 		QUrl(Strings::getAppString(Strings::WebSiteText), QUrl::TolerantMode));
+}
+
+void AppController::on_actionAbout_triggered()
+{
+	StandaloneAboutWidget &widget = StandaloneAboutWidget::instance();
+
+	widget.show();
+
+	widget.setWindowState(
+		(widget.windowState() & ~Qt::WindowMinimized)
+		| Qt::WindowActive);
+
+	widget.raise();  // for MacOS
+	widget.activateWindow(); // for Windows
 }
 
 void AppController::on_actionExit_triggered()
