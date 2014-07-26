@@ -96,8 +96,8 @@ void AppController::setProfileData(const ProfileData& data)
 
 	GeneralRestDispatcher::instance().setWorkspaceId(data.defaultWorkspace().id);
 
-	actionLogin->setText(currentProfileData.username);
-	actionLogin->setVisible(!currentProfileData.username.isEmpty());
+	actionUsername->setText(currentProfileData.username);
+	actionUsername->setVisible(!currentProfileData.username.isEmpty());
 
 	emit profileDataUpdated(currentProfileData);
 }
@@ -129,10 +129,10 @@ void AppController::createActions()
 	actionOpenWebSite = new QAction(tr("Open Web Site"), this);
 	actionOpenWebSite->setObjectName("actionOpenWebSite");
 
-	actionLogin = new QAction(this);
-	actionLogin->setObjectName("actionLogin");
-	actionLogin->setEnabled(false);
-	actionLogin->setVisible(false);
+	actionUsername = new QAction(this);
+	actionUsername->setObjectName("actionUsername");
+	actionUsername->setEnabled(false);
+	actionUsername->setVisible(false);
 
 	actionPause = new QAction(tr("Pause Sync"), this);
 	actionPause->setObjectName("actionPause");
@@ -166,7 +166,7 @@ void AppController::createTrayIcon()
 	trayMenu->addAction(actionOpenWebSite);
 	trayMenu->addAction(actionPreferences);
 	trayMenu->addSeparator();
-	trayMenu->addAction(actionLogin);
+	trayMenu->addAction(actionUsername);
 	trayMenu->addSeparator();
 	trayMenu->addAction(actionPause);
 	trayMenu->addSeparator();

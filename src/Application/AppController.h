@@ -99,7 +99,7 @@ private:
 	QAction *actionStatus;
 	QAction *actionOpenFolder;
 	QAction *actionOpenWebSite;
-	QAction *actionLogin;
+	QAction *actionUsername;
 	QAction *actionPause;
 	QAction *actionResume;
 	QAction *actionPreferences;
