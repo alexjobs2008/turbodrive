@@ -23,12 +23,11 @@ public:
 		Type m_type = Pixmap, QObject* parent = nullptr);
 
 	Q_SIGNAL void finished(const QByteArray& data);
+	Q_SIGNAL void error(QNetworkReply::NetworkError e);
 
 	Q_SIGNAL void pixmapDownloaded(const QPixmap& pixmap);
 
 private slots:
-	void onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal);
-	void onError(QNetworkReply::NetworkError error);
 	void onReplyFinished();
 
 private:

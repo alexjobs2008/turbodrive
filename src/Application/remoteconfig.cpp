@@ -10,10 +10,13 @@ namespace Drive
 
 RemoteConfig::RemoteConfig(const QString& url, QObject* parent)
 	: QObject(parent)
-	, m_downloader(new SimpleDownloader(url, SimpleDownloader::Data, this))
+	, m_configUrl(url)
 {
-	connect(m_downloader.get(), &SimpleDownloader::finished,
-			this, &RemoteConfig::onDownloadFinished);
+	m_timer.setInterval(3000);
+	m_timer.setSingleShot(true);
+	connect(&m_timer, &QTimer::timeout, this, &RemoteConfig::start);
+
+	start();
 }
 
 QString RemoteConfig::updateUrl() const
@@ -21,17 +24,30 @@ QString RemoteConfig::updateUrl() const
 	return m_updateUrl;
 }
 
+void RemoteConfig::start()
+{
+	m_downloader.reset(new SimpleDownloader(m_configUrl, SimpleDownloader::Data, this));
+	connect(m_downloader.get(), &SimpleDownloader::finished,
+			this, &RemoteConfig::onDownloadFinished);
+	connect(m_downloader.get(), &SimpleDownloader::error,
+			[this] { m_timer.start(); });
+}
+
 void RemoteConfig::onDownloadFinished(const QByteArray& data)
 {
 	m_downloader.reset();
 
 	QJsonParseError error;
-
 	auto doc = QJsonDocument::fromJson(data, &error);
-	Q_ASSERT(error.error == QJsonParseError::NoError);
-
-	parseServices(doc);
-	parseUpdate(doc);
+	if (error.error == QJsonParseError::NoError)
+	{
+		parseServices(doc);
+		parseUpdate(doc);
+	}
+	else
+	{
+		m_timer.start();
+	}
 }
 
 void RemoteConfig::parseServices(const QJsonDocument& doc)

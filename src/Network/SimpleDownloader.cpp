@@ -19,22 +19,7 @@ SimpleDownloader::SimpleDownloader(QUrl url, Type type, QObject* parent)
 			this, &SimpleDownloader::onReplyFinished);
 
 	connect(m_networkReply, static_cast<void (QNetworkReply::*)(QNetworkReply::NetworkError)>(&QNetworkReply::error),
-		this, &SimpleDownloader::onError);
-
-	connect(m_networkReply, &QNetworkReply::downloadProgress,
-		this, &SimpleDownloader::onDownloadProgress);
-}
-
-void SimpleDownloader::onDownloadProgress(
-		const qint64 bytesReceived, const qint64 bytesTotal)
-{
-	QLOG_TRACE() << "received" << bytesReceived << "bytes of " << bytesTotal
-		<< "from" << m_url;
-}
-
-void SimpleDownloader::onError(const QNetworkReply::NetworkError error)
-{
-	QLOG_ERROR() << "Error downloading" << m_url << ": " << error;
+		this, &SimpleDownloader::error);
 }
 
 void SimpleDownloader::onReplyFinished()

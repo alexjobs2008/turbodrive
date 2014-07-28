@@ -24,6 +24,8 @@ public:
 	QString updateUrl() const;
 
 private:
+	void start();
+
 	void onDownloadFinished(const QByteArray& data);
 
 	void parseServices(const QJsonDocument& doc);
@@ -31,6 +33,8 @@ private:
 
 private:
 	std::unique_ptr<SimpleDownloader> m_downloader;
+	QTimer m_timer;
+	QString m_configUrl;
 	QString m_updateUrl;
 };
 
