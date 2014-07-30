@@ -424,7 +424,6 @@ void FileEventDispatcher::onEventHandlerFailed(const QString&)
 	EventHandlerBase* handler = dynamic_cast<EventHandlerBase*>(sender());
 	Q_ASSERT(handler);
 	eventHandlers.removeOne(handler);
-	handler->deleteLater();
 	next();
 }
 
@@ -433,7 +432,6 @@ void FileEventDispatcher::onFinishProcessingEvent()
 	EventHandlerBase* handler = dynamic_cast<EventHandlerBase*>(sender());
 	Q_ASSERT(handler);
 	eventHandlers.removeOne(handler);
-	handler->deleteLater();
 	next();
 }
 

@@ -29,7 +29,7 @@ public:
 		connect(m_thread.data(), &QThread::started, this, &EventHandlerBase::run);
 		connect(m_thread.data(), &QThread::finished, this, &EventHandlerBase::finished);
 
-		connect(this, &EventHandlerBase::quitThread, m_thread.data(), &QThread::quit);
+		connect(this, &EventHandlerBase::quitThread, m_thread.data(), &QThread::quit, Qt::QueuedConnection);
 
 		moveToThread(m_thread.data());
 	};

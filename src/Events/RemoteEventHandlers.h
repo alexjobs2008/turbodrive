@@ -35,6 +35,9 @@ public:
 protected:
 	void run();
 
+private:
+	virtual void beforeStart() override { }
+
 private slots:
 	void onGetAncestorsSucceeded(const QString& fullPath);
 	void onGetAncestorsFailed();

@@ -75,7 +75,10 @@ void RemoteFolderCreatedEventHandler::onGetAncestorsSucceeded(const QString& ful
 		emit newLocalFileEventExclusion(exclusion);
 
 		if (dir.mkpath("."))
+		{
+			LocalCache::instance().addFile(m_remoteEvent.fileDesc);
 			QLOG_INFO() << "Local folder created:" << localFolder;
+		}
 		else
 		{
 			QString errorMsg =
@@ -290,8 +293,8 @@ void RemoteFileUploadedEventHandler::onGetAncestorsSucceeded(
 			Q_EMIT newLocalFileEvent(LocalFileEvent(LocalFileEvent::Modified,
 					QDir::cleanPath(fileInfo.absolutePath()),
 					fileInfo.fileName()));
-			processEventsAndQuit();
 			Q_EMIT succeeded();
+			processEventsAndQuit();
 			return;
 		}
 		else if (localModified == m_remoteEvent.fileDesc.modifiedAt)
@@ -340,7 +343,6 @@ void RemoteFileUploadedEventHandler::onDownloadFailed(const QString& error)
 	QLOG_ERROR() << "Download failed";
 	emit failed(
 		QString(tr("File uploaded event handler failed: %1")).arg(error));
-
 	processEventsAndQuit();
 }
 
