@@ -61,8 +61,6 @@ void TrayIcon::loadStates()
 		QPixmap(":/tray_icons/auth_0001.png"));
 
 	state->frames
-		<< QPixmap(":/tray_icons/auth_0002.png")
-		<< QPixmap(":/tray_icons/auth_0003.png")
 		<< QPixmap(":/tray_icons/auth_0002.png");
 
 	state->delay = 333;
@@ -77,7 +75,7 @@ void TrayIcon::loadStates()
 	state->frames
 		<< QPixmap(":/tray_icons/syncing_0002.png")
 		<< QPixmap(":/tray_icons/syncing_0003.png")
-		<< QPixmap(":/tray_icons/syncing_0002.png");
+		<< QPixmap(":/tray_icons/syncing_0004.png");
 
 	state->delay = 333;
 

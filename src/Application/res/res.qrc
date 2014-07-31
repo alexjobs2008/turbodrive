@@ -12,10 +12,10 @@
         <file>tray_icons/error.png</file>
         <file>tray_icons/auth_0001.png</file>
         <file>tray_icons/auth_0002.png</file>
-        <file>tray_icons/auth_0003.png</file>
         <file>tray_icons/syncing_0001.png</file>
         <file>tray_icons/syncing_0002.png</file>
         <file>tray_icons/syncing_0003.png</file>
         <file>drive_ru.qm</file>
+        <file>tray_icons/syncing_0004.png</file>
     </qresource>
 </RCC>
