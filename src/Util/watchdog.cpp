@@ -39,7 +39,7 @@ void WatchDog::timerEvent(QTimerEvent*)
 	if(!messenger.waitForConnected(3000))
 	{
 		stop();
-		m_callback();
+		//m_callback(); temporary disabled
 	}
 }
 

@@ -161,13 +161,20 @@ void LocalFileOrFolderAddedEventHandler::onGetFileObjectParentIdSucceeded(int id
 	}
 	else
 	{
-		FileUploader *uploader = new FileUploader(id, localEvent.localPath(), this);
+		if (QFileInfo::exists(localEvent.localPath()))
+		{
+			FileUploader *uploader = new FileUploader(id, localEvent.localPath(), this);
 
-		connect(uploader, &FileUploader::succeeded,
-			this, &LocalFileOrFolderAddedEventHandler::onUploadSucceeded);
+			connect(uploader, &FileUploader::succeeded,
+				this, &LocalFileOrFolderAddedEventHandler::onUploadSucceeded);
 
-		connect(uploader, &FileUploader::failed,
-			this, &LocalFileOrFolderAddedEventHandler::onUploadFailed);
+			connect(uploader, &FileUploader::failed,
+				this, &LocalFileOrFolderAddedEventHandler::onUploadFailed);
+		}
+		else
+		{
+			processEventsAndQuit();
+		}
 	}
 }
 
