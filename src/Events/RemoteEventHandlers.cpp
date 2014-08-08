@@ -65,6 +65,13 @@ void RemoteFolderCreatedEventHandler::run()
 
 void RemoteFolderCreatedEventHandler::onGetAncestorsSucceeded(const QString& fullPath)
 {
+	if (!fullPath.startsWith(QLatin1String("#root/#disk")))
+	{
+		QLOG_INFO() << "Change not in disk folder: " << fullPath;
+		processEventsAndQuit();
+		return;
+	}
+
 	const QString localFolder = Utils::toLocalPath(fullPath);
 
 	QDir dir(localFolder);
@@ -139,6 +146,13 @@ void RemoteFileRenamedEventHandler::run()
 
 void RemoteFileRenamedEventHandler::onGetAncestorsSucceeded(const QString& fullPath)
 {
+	if (!fullPath.startsWith(QLatin1String("#root/#disk")))
+	{
+		QLOG_INFO() << "Change not in disk folder: " << fullPath;
+		processEventsAndQuit();
+		return;
+	}
+
 	const QString newLocalPath = Utils::toLocalPath(fullPath);
 
 	LocalCache& cache = LocalCache::instance();
@@ -195,6 +209,13 @@ void RemoteFileTrashedEventHandler::run()
 void RemoteFileTrashedEventHandler::onGetAncestorsSucceeded(
 	const QString& fullPath)
 {
+	if (!fullPath.startsWith(QLatin1String("#root/#disk")))
+	{
+		QLOG_INFO() << "Change not in disk folder: " << fullPath;
+		processEventsAndQuit();
+		return;
+	}
+
 	m_localPath = Utils::toLocalPath(fullPath);
 	m_localPath.append(Utils::separator());
 	m_localPath.append(m_remoteEvent.fileDesc.name);
@@ -282,6 +303,13 @@ void RemoteFileUploadedEventHandler::run()
 void RemoteFileUploadedEventHandler::onGetAncestorsSucceeded(
 	const QString& fullPath)
 {
+	if (!fullPath.startsWith(QLatin1String("#root/#disk")))
+	{
+		QLOG_INFO() << "Change not in disk folder: " << fullPath;
+		processEventsAndQuit();
+		return;
+	}
+
 	m_localFilePath = Utils::toLocalPath(fullPath);
 
 	QFileInfo fileInfo(m_localFilePath);
