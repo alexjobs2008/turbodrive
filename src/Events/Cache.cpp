@@ -77,26 +77,36 @@ void LocalCache::addRoot(const RemoteFileDesc& file)
 	addFile(rootDescriptor);
 }
 
-void LocalCache::addFile(const RemoteFileDesc& file)
+bool LocalCache::addFile(const RemoteFileDesc& file)
 {
 	removeById(file.id);
 	const QString path = fullPath(file);
 
+    if (!path.isNull())
 	{
-		LOCK_MUTEX;
-		m_files[path] = file;
+        {
+            LOCK_MUTEX;
+            m_files[path] = file;
+        }
+        return true;
 	}
+    else
+    {
+        QLOG_ERROR() << "LocalCache::addFile() did not add file " << file.name
+                       << " (LocalCache::fullPath() returned null path string)";
+        return false;
+    }
 }
 
 void LocalCache::removeFile(const RemoteFileDesc& file)
 {
-	Q_ASSERT(file.parentId != -1);
+    // Q_ASSERT(file.parentId != -1); ?
 	Q_ASSERT(removeById(file.id));
 }
 
 QString LocalCache::fullPath(const RemoteFileDesc& d) const
 {
-	QString result;
+    QString result = QString::null;
 	RemoteFileDesc currentFile = d;
 	for (;;)
 	{
@@ -108,6 +118,14 @@ QString LocalCache::fullPath(const RemoteFileDesc& d) const
 			break;
 		}
 		currentFile = fileById(currentFile.parentId);
+
+        if (currentFile.id == 0 && currentFile.parentId ==0 &&
+                currentFile.name == QString::null)
+        {
+            QLOG_ERROR() << "LocalCache::fullPath() did not find parent file for path "
+                       << result;
+            return QString::null;
+        }
 	}
 	return result;
 }
@@ -116,13 +134,25 @@ RemoteFileDesc LocalCache::fileById(const int id) const
 {
 	{
 		LOCK_MUTEX;
-		for (auto it = m_files.begin(); it != m_files.end(); ++it)
+
+        /* for (auto it = m_files.begin(); it != m_files.end(); ++it)
 		{
 			if (it->second.id == id)
 			{
 				return it->second;
 			}
-		}
+        } */
+
+		std::map<QString, RemoteFileDesc>::const_iterator end = m_files.cend();
+        for (std::map<QString, RemoteFileDesc>::const_iterator it = m_files.cbegin();
+             it != end;
+             it++)
+        {
+            if (it->second.id == id)
+            {
+                return it->second;
+            }
+        }
 	}
 
 	RemoteFileDesc invalidDesc;

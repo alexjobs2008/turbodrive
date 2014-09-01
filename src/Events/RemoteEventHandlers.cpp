@@ -28,7 +28,7 @@ RemoteFolderCreatedEventHandler::RemoteFolderCreatedEventHandler(
 {
 }
 
-void RemoteFolderCreatedEventHandler::run()
+void RemoteFolderCreatedEventHandler::runEventHandling()
 {
 	if (!m_remoteEvent.isValid())
 	{
@@ -59,8 +59,6 @@ void RemoteFolderCreatedEventHandler::run()
 			this, &RemoteFolderCreatedEventHandler::onGetAncestorsFailed);
 
 	getAncestorsRes->getAncestors(m_remoteEvent.fileDesc.id);
-
-	exec();
 }
 
 void RemoteFolderCreatedEventHandler::onGetAncestorsSucceeded(const QString& fullPath)
@@ -91,7 +89,7 @@ void RemoteFolderCreatedEventHandler::onGetAncestorsSucceeded(const QString& ful
 			QString errorMsg =
 				QString("Local folder creation failed: %1").arg(localFolder);
 
-			emit failed(errorMsg);
+            emit failed((EventHandlerBase*) this, errorMsg);
 			QLOG_ERROR() << errorMsg;
 		}
 	}
@@ -105,7 +103,7 @@ void RemoteFolderCreatedEventHandler::onGetAncestorsSucceeded(const QString& ful
 
 void RemoteFolderCreatedEventHandler::onGetAncestorsFailed()
 {
-	emit failed("Failed to get the remote folder path");
+    emit failed((EventHandlerBase*) this, "Failed to get the remote folder path");
 	processEventsAndQuit();
 }
 
@@ -117,7 +115,7 @@ RemoteFileRenamedEventHandler::RemoteFileRenamedEventHandler(
 {
 }
 
-void RemoteFileRenamedEventHandler::run()
+void RemoteFileRenamedEventHandler::runEventHandling()
 {
 	if (!m_remoteEvent.isValid())
 	{
@@ -140,8 +138,6 @@ void RemoteFileRenamedEventHandler::run()
 			this, &RemoteFileRenamedEventHandler::onGetAncestorsFailed);
 
 	getAncestorsRes->getAncestors(m_remoteEvent.fileDesc.id);
-
-	exec();
 }
 
 void RemoteFileRenamedEventHandler::onGetAncestorsSucceeded(const QString& fullPath)
@@ -160,7 +156,18 @@ void RemoteFileRenamedEventHandler::onGetAncestorsSucceeded(const QString& fullP
 	const RemoteFileDesc file = cache.file(m_remoteEvent.fileDesc.id);
 	Q_ASSERT(file.isValid());
 
-	const QString oldLocalPath = Utils::toLocalPath(cache.fullPath(file));
+    const QString oldLocalPathStr = cache.fullPath(file);
+
+    if (oldLocalPathStr.isNull())
+    {
+        QLOG_INFO() << "RemoteFileRenamedEventHandler::onGetAncestorsSucceeded() did not find full path for "
+                    << fullPath << " (LocalCache::fullPath() returned null path string)";
+        processEventsAndQuit();
+        return;
+    }
+
+    const QString oldLocalPath = Utils::toLocalPath(oldLocalPathStr);
+
 	if (oldLocalPath != newLocalPath)
 	{
 		Q_EMIT newLocalFileEventExclusion(
@@ -183,7 +190,7 @@ void RemoteFileRenamedEventHandler::onGetAncestorsSucceeded(const QString& fullP
 
 void RemoteFileRenamedEventHandler::onGetAncestorsFailed()
 {
-	emit failed("Failed to get the remote folder path");
+    emit failed((EventHandlerBase*) this, "Failed to get the remote folder path");
 	processEventsAndQuit();
 }
 
@@ -195,7 +202,7 @@ RemoteFileTrashedEventHandler::RemoteFileTrashedEventHandler(
 {
 }
 
-void RemoteFileTrashedEventHandler::run()
+void RemoteFileTrashedEventHandler::runEventHandling()
 {
 	if (!m_remoteEvent.isValid())
 		return;
@@ -249,7 +256,7 @@ void RemoteFileTrashedEventHandler::onGetAncestorsSucceeded(
 
 void RemoteFileTrashedEventHandler::onGetAncestorsFailed()
 {
-	emit failed("Failed to get the remote file object path");
+    emit failed((EventHandlerBase*) this, "Failed to get the remote file object path");
 	Q_EMIT quitThread();
 }
 
@@ -262,9 +269,9 @@ RemoteFileUploadedEventHandler::RemoteFileUploadedEventHandler(
 {
 }
 
-void RemoteFileUploadedEventHandler::run()
+void RemoteFileUploadedEventHandler::runEventHandling()
 {
-	QLOG_INFO() << "RemoteFileUploadedEventHandler::run(): "
+    QLOG_INFO() << "RemoteFileUploadedEventHandler::runEventHandling(): "
 		<< this;
 
 	m_remoteEvent.logCompact();
@@ -296,8 +303,6 @@ void RemoteFileUploadedEventHandler::run()
 			this, &RemoteFileUploadedEventHandler::onGetAncestorsFailed);
 
 	getAncestorsRes->getAncestors(m_remoteEvent.fileDesc.id);
-
-	exec();
 }
 
 void RemoteFileUploadedEventHandler::onGetAncestorsSucceeded(
@@ -356,7 +361,7 @@ void RemoteFileUploadedEventHandler::onGetAncestorsSucceeded(
 
 void RemoteFileUploadedEventHandler::onGetAncestorsFailed()
 {
-	emit failed("Failed to get the remote file path");
+    emit failed((EventHandlerBase*) this, "Failed to get the remote file path");
 	processEventsAndQuit();
 }
 
@@ -369,7 +374,7 @@ void RemoteFileUploadedEventHandler::onDownloadSucceeded()
 void RemoteFileUploadedEventHandler::onDownloadFailed(const QString& error)
 {
 	QLOG_ERROR() << "Download failed";
-	emit failed(
+    emit failed((EventHandlerBase*) this,
 		QString(tr("File uploaded event handler failed: %1")).arg(error));
 	processEventsAndQuit();
 }
@@ -383,9 +388,9 @@ RemoteFileOrFolderRestoredEventHandler::RemoteFileOrFolderRestoredEventHandler(
 {
 }
 
-void RemoteFileOrFolderRestoredEventHandler::run()
+void RemoteFileOrFolderRestoredEventHandler::runEventHandling()
 {
-	QLOG_INFO() << "RemoteFileRestoredEventHandler::run(): "
+    QLOG_INFO() << "RemoteFileRestoredEventHandler::runEventHandling(): "
 		<< this;
 
 	m_remoteEvent.logCompact();
@@ -421,8 +426,6 @@ void RemoteFileOrFolderRestoredEventHandler::run()
 					this, &RemoteFileOrFolderRestoredEventHandler::onGetChildrenFailed);
 
 			getChildrenRes->getChildren(m_remoteEvent.fileDesc.id);
-
-			exec();
 		}
 	}
 	else if (m_remoteEvent.fileDesc.type == RemoteFileDesc::File)
@@ -467,7 +470,7 @@ void RemoteFileOrFolderRestoredEventHandler::onGetChildrenSucceeded(
 void RemoteFileOrFolderRestoredEventHandler::onGetChildrenFailed()
 {
 	QLOG_ERROR() << this << "Failed to get children.";
-	emit failed("Failed to get children.");
+    emit failed((EventHandlerBase*) this, "Failed to get children.");
 	processEventsAndQuit();
 }
 
@@ -479,9 +482,9 @@ RemoteFileCopiedEventHandler::RemoteFileCopiedEventHandler(
 {
 }
 
-void RemoteFileCopiedEventHandler::run()
+void RemoteFileCopiedEventHandler::runEventHandling()
 {
-	QLOG_INFO() << "RemoteFileCopiedEventHandler::run(): "
+    QLOG_INFO() << "RemoteFileCopiedEventHandler::runEventHandling(): "
 		<< this;
 
 	m_remoteEvent.logCompact();
@@ -522,8 +525,6 @@ void RemoteFileCopiedEventHandler::run()
 //			this, &RemoteFileCopiedEventHandler::onGetFileObjectFailed);
 
 	filesRestResource->getFileObject(m_remoteEvent.targetId);
-
-	exec();
 }
 
 void RemoteFileCopiedEventHandler::onGetAncestorsSucceeded(QString)

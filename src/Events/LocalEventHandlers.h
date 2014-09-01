@@ -29,7 +29,7 @@ public:
 		QObject *parent = 0);
 
 protected:
-	void run();
+    void runEventHandling();
 
 private slots:
 	void onGetFileObjectIdSucceeded(int id);
@@ -68,7 +68,7 @@ public:
 		QObject *parent = 0);
 
 protected:
-	virtual void run() override;
+    virtual void runEventHandling() override;
 
 private slots:
 	void onGetFileObjectIdSucceeded(int id);
@@ -89,7 +89,7 @@ public:
 		QObject *parent = 0);
 
 protected:
-	void run();
+    void runEventHandling();
 
 private slots:
 	void onGetFileObjectIdSucceeded(int id);

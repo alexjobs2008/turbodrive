@@ -21,8 +21,8 @@ protected:
 	virtual void timerEvent(QTimerEvent*) override;
 
 private:
-	WatchDog(const WatchDog&) = delete;
-	WatchDog& operator=(const WatchDog&) = delete;
+    WatchDog(const WatchDog&) = delete;
+    WatchDog& operator=(const WatchDog&) = delete;
 
 private:
 	std::function<void ()> m_callback;

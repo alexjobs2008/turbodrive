@@ -14,52 +14,60 @@ class LocalFileEvent;
 
 class LocalFileEventExclusion;
 
-class EventHandlerBase : public QObject
+class EventHandlerBase : public QThread
 {
-	Q_OBJECT
+    Q_OBJECT
+
 public:
 	// TODO: remove parent param
 	// The object cannot be moved to thread if it has a parent.
 	// see also QObject::moveToThread docs.
 	EventHandlerBase(QObject*)
-		: QObject(nullptr)
+        : QThread(nullptr)
 	{
-		m_thread = new QThread();
+        connect(this, &QThread::started, this, &EventHandlerBase::runEventHandlingPrivate, Qt::QueuedConnection);
+        connect(this, &EventHandlerBase::quitThread, this, &QThread::quit, Qt::QueuedConnection);
 
-		connect(m_thread.data(), &QThread::started, this, &EventHandlerBase::run);
-		connect(m_thread.data(), &QThread::finished, this, &EventHandlerBase::finished);
+        // moveToThread(this);
+    }
 
-		connect(this, &EventHandlerBase::quitThread, m_thread.data(), &QThread::quit, Qt::QueuedConnection);
+    virtual ~EventHandlerBase() { }
 
-		moveToThread(m_thread.data());
-	};
-
-	virtual ~EventHandlerBase() {};
-
-	void start()
+    void startThread()
 	{
 		beforeStart();
-		m_thread->start();
+        connect(this, &QThread::finished, this, &EventHandlerBase::sendFinished, Qt::QueuedConnection);
+        connect(this, &QThread::finished, this, &QObject::deleteLater, Qt::QueuedConnection);
+        connect(this, &EventHandlerBase::cancel, this, &EventHandlerBase::processEventsAndQuit, Qt::QueuedConnection);
+        start();
 	}
 
 protected:
-	virtual void run() = 0;
-	void exec() {}
+    virtual void runEventHandling() = 0;
+    virtual void beforeStart() {}
 
-private:
-	virtual void beforeStart() {}
+    virtual void processEventsAndQuit()
+    {
+        Q_EMIT quitThread();
+        QCoreApplication::processEvents();
+    }
 
-public slots:
-	virtual void cancel()
-	{
-		processEventsAndQuit();
-	};
+private slots:
+    void runEventHandlingPrivate()
+    {
+        runEventHandling();
+    }
+
+    void sendFinished()
+    {
+        emit finished(this);
+    }
 
 signals:
-	void finished();
+    void finished(EventHandlerBase *handler);
 
 	void succeeded();
-	void failed(const QString& error);
+    void failed(EventHandlerBase *handler, const QString& error);
 
 	void newRemoteFileEvent(const RemoteFileEvent& event);
 	void newLocalFileEvent(const LocalFileEvent& event);
@@ -70,17 +78,9 @@ signals:
 	void newLocalFileEventExclusion(const LocalFileEventExclusion& localExclusion);
 	void newRemoteFileEventExclusion(const RemoteFileEventExclusion& remoteExclusion);
 
-	void quitThread();
+    void cancel();
+    void quitThread();
 
-protected:
-	virtual void processEventsAndQuit()
-	{
-		QCoreApplication::processEvents();
-		Q_EMIT quitThread();
-	}
-
-private:
-	QPointer<QThread> m_thread;
 };
 
 }

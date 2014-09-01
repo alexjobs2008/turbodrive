@@ -58,9 +58,9 @@ signals:
 	void progress(int position, int totalEvents) const;
 
 private slots:
-	void onEventHandlerFailed(const QString& error);
+    void onEventHandlerFailed(EventHandlerBase *handler, const QString& error);
 
-	void onFinishProcessingEvent();
+    void onFinishProcessingEvent(EventHandlerBase *handler);
 
 	void onNewLocalFileEventExclusion(const LocalFileEventExclusion &localExclusion);
 	void onNewRemoteFileEventExclusion(const RemoteFileEventExclusion &remoteExclusion);

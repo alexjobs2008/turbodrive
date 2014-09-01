@@ -72,7 +72,8 @@ private slots:
 	void on_actionExit_triggered();
 
 	void on_trayIcon_messageClicked();
-	void on_settingsWidget_logout();
+    void on_trayIcon_activated(QSystemTrayIcon::ActivationReason reason);
+    void on_settingsWidget_logout();
 
 	void onLoginFinished();
 	void onQueueProcessing();
@@ -93,6 +94,7 @@ private:
 	void downloadUpdate();
 
 	void onLoginFinishedImpl(bool restartFSWatcher);
+
 
 	QPointer<TrayIcon> m_trayIcon;
 

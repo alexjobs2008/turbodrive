@@ -82,7 +82,10 @@ void FileSystemHelper::setWindowsFolderIcon(
 bool FileSystemHelper::setFileModificationTimestamp(const QString& localPath, uint modifiedAt)
 {
 #ifdef Q_OS_WIN
-	LPCWSTR filePath = (LPCWSTR) QDir::toNativeSeparators(localPath).utf16();
+    std::wstring filePathWStr = localPath.toStdWString();
+    LPCWSTR filePath = (LPCWSTR)
+            // QDir::toNativeSeparators(localPath).utf16();
+            filePathWStr.c_str();
 
 	HANDLE hFile = CreateFile(filePath, GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 

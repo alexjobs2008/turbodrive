@@ -135,7 +135,8 @@ macro(today RESULT)
 endmacro(today)
 today(CURRENT_DATE)
 
-file(TO_NATIVE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/res/license.txt" LICENSE_FILE)
+# TO_NATIVE_PATH
+file(TO_CMAKE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/res/license.txt" LICENSE_FILE)
 if(WIN32)
 	set(ICON_FILE "${CMAKE_CURRENT_SOURCE_DIR}\\\\res\\\\150x57.bmp")
 else()

@@ -356,38 +356,40 @@ void FileEventDispatcher::startHandlerThreadOrProcessNext(
 	if (handlerThread)
 	{
 		connect(handlerThread, &EventHandlerBase::finished,
-				this, &FileEventDispatcher::onFinishProcessingEvent);
+                this, &FileEventDispatcher::onFinishProcessingEvent,
+                Qt::QueuedConnection);
 
 		connect(handlerThread, &EventHandlerBase::failed,
-				this, &FileEventDispatcher::onEventHandlerFailed);
+                this, &FileEventDispatcher::onEventHandlerFailed,
+                Qt::QueuedConnection);
 
 		connect(handlerThread, &EventHandlerBase::newLocalFileEventExclusion,
 				this, &FileEventDispatcher::onNewLocalFileEventExclusion,
-				Qt::BlockingQueuedConnection);
+                Qt::QueuedConnection);
 
 		connect(handlerThread, &EventHandlerBase::newRemoteFileEventExclusion,
 				this, &FileEventDispatcher::onNewRemoteFileEventExclusion,
-				Qt::BlockingQueuedConnection);
+                Qt::QueuedConnection);
 
 		connect(handlerThread, &EventHandlerBase::newRemoteFileEvent,
 				this, &FileEventDispatcher::addRemoteFileEvent,
-				Qt::BlockingQueuedConnection);
+                Qt::QueuedConnection);
 
 		connect(handlerThread, &EventHandlerBase::newLocalFileEvent,
 				this, &FileEventDispatcher::addLocalFileEvent,
-				Qt::BlockingQueuedConnection);
+                Qt::QueuedConnection);
 
 		connect(handlerThread, &EventHandlerBase::newPriorityRemoteFileEvent,
 				this, &FileEventDispatcher::addPriorityRemoteFileEvent,
-				Qt::BlockingQueuedConnection);
+                Qt::QueuedConnection);
 
 		connect(handlerThread, &EventHandlerBase::newPriorityLocalFileEvent,
 				this, &FileEventDispatcher::addPriorityLocalFileEvent,
-				Qt::BlockingQueuedConnection);
+                Qt::QueuedConnection);
 
 		eventHandlers << handlerThread;
 
-		handlerThread->start();
+        handlerThread->startThread();
 	}
 	else
 	{
@@ -412,27 +414,27 @@ void FileEventDispatcher::cancelAll()
 	QListIterator<EventHandlerBase*> i(eventHandlers);
 	while (i.hasNext())
 	{
-		EventHandlerBase* eventHandler = i.next();
-		eventHandler->cancel();
+        EventHandlerBase* eventHandler = i.next();
+        emit eventHandler->cancel();
 	}
 
 	finish();
 }
 
-void FileEventDispatcher::onEventHandlerFailed(const QString&)
+void FileEventDispatcher::onEventHandlerFailed(EventHandlerBase *handler, const QString& error)
 {
-	EventHandlerBase* handler = dynamic_cast<EventHandlerBase*>(sender());
-	Q_ASSERT(handler);
-	eventHandlers.removeOne(handler);
-	next();
+    QLOG_ERROR() << "Event handler " << handler << " failed with error: " << error;
+    Q_ASSERT(handler);
+    eventHandlers.removeOne(handler);
+    next();
 }
 
-void FileEventDispatcher::onFinishProcessingEvent()
+void FileEventDispatcher::onFinishProcessingEvent(EventHandlerBase *handler)
 {
-	EventHandlerBase* handler = dynamic_cast<EventHandlerBase*>(sender());
-	Q_ASSERT(handler);
-	eventHandlers.removeOne(handler);
-	next();
+    QLOG_INFO() << "Event handler " << handler << " finished processing event";
+    Q_ASSERT(handler);
+    eventHandlers.removeOne(handler);
+    next();
 }
 
 void FileEventDispatcher::onNewLocalFileEventExclusion(const LocalFileEventExclusion &localExclusion)

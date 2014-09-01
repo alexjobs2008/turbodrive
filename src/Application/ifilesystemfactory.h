@@ -12,7 +12,7 @@ namespace Drive
 class IFileSystemFactory: public ISingletonFactory<IFileSystem>
 {
 public:
-	virtual ~IFileSystemFactory() = default;
+	virtual ~IFileSystemFactory() {} // = default;
 };
 
 typedef std::unique_ptr<IFileSystemFactory> IFileSystemFactoryPtr;

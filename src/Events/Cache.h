@@ -22,7 +22,7 @@ public:
 	void clear();
 
 	void addRoot(const RemoteFileDesc&);
-	void addFile(const RemoteFileDesc&);
+    bool addFile(const RemoteFileDesc&);
 
 	void removeFile(const RemoteFileDesc&);
 

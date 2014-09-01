@@ -33,7 +33,7 @@ public:
 		QObject *parent = 0);
 
 protected:
-	void run();
+    void runEventHandling();
 
 private:
 	virtual void beforeStart() override { }
@@ -51,7 +51,7 @@ public:
 		QObject *parent = 0);
 
 protected:
-	void run();
+    void runEventHandling();
 
 private:
 	virtual void beforeStart() { }
@@ -69,7 +69,7 @@ public:
 		QObject *parent = 0);
 
 protected:
-	void run();
+    void runEventHandling();
 
 private slots:
 	void onGetAncestorsSucceeded(const QString& fullPath);
@@ -90,7 +90,7 @@ public:
 		QObject *parent = 0);
 
 protected:
-	void run();
+    void runEventHandling();
 
 private slots:
 	void onGetAncestorsSucceeded(const QString& fullPath);
@@ -111,7 +111,7 @@ public:
 		QObject *parent = 0);
 
 protected:
-	void run();
+    void runEventHandling();
 
 private slots:
 	void onGetChildrenSucceeded(QList<Drive::RemoteFileDesc>);
@@ -130,7 +130,7 @@ public:
 		QObject *parent = 0);
 
 protected:
-	void run();
+    void runEventHandling();
 
 private slots:
 	void onGetAncestorsSucceeded(QString);

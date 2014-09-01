@@ -16,8 +16,8 @@ public:
 	static StandaloneAboutWidget& instance();
 
 private:
-	StandaloneAboutWidget(const StandaloneAboutWidget&) = delete;
-	StandaloneAboutWidget& operator=(const StandaloneAboutWidget&) = delete;
+    StandaloneAboutWidget(const StandaloneAboutWidget&) = delete;
+    StandaloneAboutWidget& operator=(const StandaloneAboutWidget&) = delete;
 
 	StandaloneAboutWidget(QWidget *parent = 0);
 

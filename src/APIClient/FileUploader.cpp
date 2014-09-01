@@ -86,10 +86,10 @@ void FileUploader::onError(QNetworkReply::NetworkError code)
 	QLOG_ERROR() << "Uploader error:" << code;
 	Q_EMIT failed(QString::number(code));
 
-	if (m_file)
+    /* if (m_file)
 	{
 		m_file->close();
-	}
+    } */
 }
 
 }

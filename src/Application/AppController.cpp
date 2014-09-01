@@ -200,7 +200,10 @@ void AppController::createTrayIcon()
 	connect(m_trayIcon.data(), &TrayIcon::messageClicked,
 			this, &AppController::on_trayIcon_messageClicked);
 
-	m_trayIcon->show();
+    connect(m_trayIcon.data(), &TrayIcon::activated,
+            this, &AppController::on_trayIcon_activated);
+
+    m_trayIcon->show();
 }
 
 void AppController::createSettingsWidget()
@@ -336,6 +339,14 @@ void AppController::on_actionExit_triggered()
 void AppController::on_trayIcon_messageClicked()
 {
 	downloadUpdate();
+}
+
+void AppController::on_trayIcon_activated(QSystemTrayIcon::ActivationReason reason)
+{
+    if (reason == QSystemTrayIcon::Trigger)
+    {
+        actionOpenFolder->trigger();
+    }
 }
 
 void AppController::on_settingsWidget_logout()

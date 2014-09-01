@@ -15,11 +15,11 @@ public:
 	ISingletonFactory<IFileSystem>& fileSystem() const;
 
 private:
-	FactoriesStorage() = default;
-	~FactoriesStorage() = default;
+    FactoriesStorage() = default;
+    ~FactoriesStorage() = default;
 
-	FactoriesStorage(const FactoriesStorage&) = delete;
-	FactoriesStorage& operator=(const FactoriesStorage&) = delete;
+    FactoriesStorage(const FactoriesStorage&) = delete;
+    FactoriesStorage& operator=(const FactoriesStorage&) = delete;
 
 private:
 	IFileSystemFactoryPtr m_fileSystem;

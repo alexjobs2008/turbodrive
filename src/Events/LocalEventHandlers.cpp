@@ -37,7 +37,7 @@ LocalFileOrFolderAddedEventHandler::LocalFileOrFolderAddedEventHandler(
 {
 }
 
-void LocalFileOrFolderAddedEventHandler::run()
+void LocalFileOrFolderAddedEventHandler::runEventHandling()
 {
 	Q_ASSERT(localEvent.type() == LocalFileEvent::Added
 			|| localEvent.type() == LocalFileEvent::Modified);
@@ -60,11 +60,18 @@ void LocalFileOrFolderAddedEventHandler::run()
 	if (!fd.isValid())
 	{
 		m_parentId = localCache.file(m_remotePath, true).id;
-		Q_ASSERT(m_parentId != 0);
-
-		onGetFileObjectParentIdSucceeded(m_parentId);
-		exec();
-		return;
+        if (m_parentId != 0)
+        {
+            onGetFileObjectParentIdSucceeded(m_parentId);
+            return;
+        }
+        else
+        {
+            QLOG_ERROR() << "LocalFileOrFolderAddedEventHandler::run(): m_parentId == 0 for m_remotePath "
+                            << m_remotePath;
+            processEventsAndQuit();
+            return;
+        }
 	}
 	else
 	{
@@ -76,7 +83,6 @@ void LocalFileOrFolderAddedEventHandler::run()
 		else
 		{
 			onGetFileObjectSucceeded(fd);
-			exec();
 			return;
 		}
 	}
@@ -186,18 +192,19 @@ void LocalFileOrFolderAddedEventHandler::onGetFileObjectParentIdFailed()
 void LocalFileOrFolderAddedEventHandler
 	::onCreateFolderSucceeded(Drive::RemoteFileDesc fileDesc)
 {
-	LocalCache::instance().addFile(fileDesc);
+    if (LocalCache::instance().addFile(fileDesc))
+    {
+        Q_EMIT newRemoteFileEventExclusion(
+                RemoteFileEventExclusion(RemoteFileEvent::Created, fileDesc.id));
 
-	Q_EMIT newRemoteFileEventExclusion(
-			RemoteFileEventExclusion(RemoteFileEvent::Created, fileDesc.id));
-
-	for(const auto entry: FileSystemHelper::entries(localEvent.localPath().toStdString()))
-	{
-		Q_EMIT newLocalFileEvent(
-				LocalFileEvent(LocalFileEvent::Added,
-				QDir::cleanPath(entry.absolutePath()),
-				entry.fileName()));
-	}
+        for(const auto entry: FileSystemHelper::entries(localEvent.localPath().toStdString()))
+        {
+            Q_EMIT newLocalFileEvent(
+                    LocalFileEvent(LocalFileEvent::Added,
+                    QDir::cleanPath(entry.absolutePath()),
+                    entry.fileName()));
+        }
+    }
 
 	processEventsAndQuit();
 }
@@ -205,7 +212,7 @@ void LocalFileOrFolderAddedEventHandler
 void LocalFileOrFolderAddedEventHandler::onCreateFolderFailed(
 	const QString& error)
 {
-	Q_EMIT failed(error);
+    Q_EMIT failed((EventHandlerBase*) this, error);
 	processEventsAndQuit();
 }
 
@@ -214,17 +221,18 @@ void LocalFileOrFolderAddedEventHandler::
 {
 	Q_ASSERT(fileDesc.isValid());
 
-	LocalCache::instance().addFile(fileDesc);
-
-	emit newRemoteFileEventExclusion(
-			RemoteFileEventExclusion(RemoteFileEvent::Uploaded, fileDesc.id));
+    if (LocalCache::instance().addFile(fileDesc))
+    {
+        emit newRemoteFileEventExclusion(
+                RemoteFileEventExclusion(RemoteFileEvent::Uploaded, fileDesc.id));
+    }
 
 	processEventsAndQuit();
 }
 
 void LocalFileOrFolderAddedEventHandler::onUploadFailed(const QString& error)
 {
-	Q_EMIT failed(error);
+    Q_EMIT failed((EventHandlerBase*) this, error);
 	processEventsAndQuit();
 }
 
@@ -268,7 +276,7 @@ LocalFileOrFolderDeletedEventHandler::LocalFileOrFolderDeletedEventHandler(
 {
 }
 
-void LocalFileOrFolderDeletedEventHandler::run()
+void LocalFileOrFolderDeletedEventHandler::runEventHandling()
 {
 	Q_ASSERT(localEvent.type() == LocalFileEvent::Deleted);
 
@@ -283,7 +291,6 @@ void LocalFileOrFolderDeletedEventHandler::run()
 		{
 			cache.removeFile(file);
 			onGetFileObjectIdSucceeded(file.id);
-			exec();
 			return;
 		}
 	}
@@ -302,8 +309,6 @@ void LocalFileOrFolderDeletedEventHandler::run()
 		getChildrenResource->getFileObjectId(remotePath);
 
 		m_currentResource = getChildrenResource;
-
-		exec();
 	}
 }
 
@@ -346,7 +351,7 @@ void LocalFileOrFolderDeletedEventHandler::onTrashSucceeded()
 void LocalFileOrFolderDeletedEventHandler::onTrashFailed(const QString& error)
 {
 	QLOG_TRACE() << "Failed to trash a remote file object";
-	emit failed(error);
+    emit failed((EventHandlerBase*) this, error);
 	processEventsAndQuit();
 }
 
@@ -358,7 +363,7 @@ LocalFileOrFolderRenamedEventHandler::LocalFileOrFolderRenamedEventHandler(
 {
 }
 
-void LocalFileOrFolderRenamedEventHandler::run()
+void LocalFileOrFolderRenamedEventHandler::runEventHandling()
 {
 	Q_ASSERT(localEvent.type() == LocalFileEvent::Moved);
 
@@ -387,8 +392,6 @@ void LocalFileOrFolderRenamedEventHandler::run()
 		this, &LocalFileOrFolderRenamedEventHandler::onGetFileObjectIdFailed);
 
 	m_currentResource->getFileObjectId(oldRemotePath);
-
-	exec();
 }
 
 void LocalFileOrFolderRenamedEventHandler::onGetFileObjectIdSucceeded(int id)
@@ -414,9 +417,11 @@ void LocalFileOrFolderRenamedEventHandler::onRenameSucceeded(const Drive::Remote
 {
 	Q_ASSERT(fileDesc.isValid());
 
-	LocalCache::instance().addFile(fileDesc);
-	Q_EMIT newRemoteFileEventExclusion(RemoteFileEventExclusion(
-			RemoteFileEvent::Renamed, fileDesc.id));
+    if (LocalCache::instance().addFile(fileDesc))
+    {
+        Q_EMIT newRemoteFileEventExclusion(RemoteFileEventExclusion(
+                RemoteFileEvent::Renamed, fileDesc.id));
+    }
 
 	processEventsAndQuit();
 }
