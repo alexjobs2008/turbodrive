@@ -1,6 +1,6 @@
 language: cpp
+os: osx
 compiler:
-  - gcc
   - clang
 # Change this to your needs
 script: ./build_mac_bundle.sh
