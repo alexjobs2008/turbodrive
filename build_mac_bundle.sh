@@ -3,9 +3,12 @@
 mkdir src-build
 cd src-build
 
-QTDIR=~/Qt/5.3/clang_64 cmake -DCMAKE_BUILD_TYPE=Release ../src
+# QTDIR=~/Qt/5.3/clang_64 
+echo $QTDIR
+
+cmake -DCMAKE_BUILD_TYPE=Release ../src -D "Unix Makefiles"
 make install
 
-~/Qt/5.3/clang_64/bin/macdeployqt ./Application/drive.app
+$QTDIR/bin/macdeployqt ./Application/drive.app
 make package
 
