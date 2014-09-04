@@ -154,7 +154,14 @@ void RemoteFileRenamedEventHandler::onGetAncestorsSucceeded(const QString& fullP
 	LocalCache& cache = LocalCache::instance();
 
 	const RemoteFileDesc file = cache.file(m_remoteEvent.fileDesc.id);
-	Q_ASSERT(file.isValid());
+    // Q_ASSERT(file.isValid());
+    if (!file.isValid())
+    {
+        QLOG_INFO() << "RemoteFileRenamedEventHandler::onGetAncestorsSucceeded file.isValid(), fullPath: "
+                    << fullPath;
+        processEventsAndQuit();
+        return;
+    }
 
     const QString oldLocalPathStr = cache.fullPath(file);
 

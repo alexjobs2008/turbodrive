@@ -1,4 +1,4 @@
-project(drive)
+﻿project(drive)
 cmake_minimum_required(VERSION 2.8.11)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -75,16 +75,16 @@ endif()
 
 if(MINGW)
 	install(FILES
-		${CMAKE_CURRENT_SOURCE_DIR}/inst/libgcc_s_dw2-1.dll
-		${CMAKE_CURRENT_SOURCE_DIR}/inst/libstdc++-6.dll
-		${CMAKE_CURRENT_SOURCE_DIR}/inst/libwinpthread-1.dll
+		${CMAKE_CURRENT_BINARY_DIR}/inst/libgcc_s_dw2-1.dll
+		${CMAKE_CURRENT_BINARY_DIR}/inst/libstdc++-6.dll
+		${CMAKE_CURRENT_BINARY_DIR}/inst/libwinpthread-1.dll
 
 		DESTINATION bin
 	)
 elseif(MSVC)
 	install(FILES
-		${CMAKE_CURRENT_SOURCE_DIR}/inst/libEGL.dll
-		${CMAKE_CURRENT_SOURCE_DIR}/inst/libGLESv2.dll
+		${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/libEGL.dll
+		${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/libGLESv2.dll
 
 		DESTINATION bin
 	)
@@ -95,24 +95,24 @@ if(WIN32)
 	install(FILES
 		# OpenSSL libs
 		# http://slproweb.com/download/Win32OpenSSL_Light-1_0_1f.exe
-		${CMAKE_CURRENT_SOURCE_DIR}/inst/libeay32.dll
-		${CMAKE_CURRENT_SOURCE_DIR}/inst/ssleay32.dll
+		${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/libeay32.dll
+		${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/ssleay32.dll
 
 		# Qt libs
-		${CMAKE_CURRENT_SOURCE_DIR}/inst/Qt5Core.dll
-		${CMAKE_CURRENT_SOURCE_DIR}/inst/Qt5Gui.dll
-		${CMAKE_CURRENT_SOURCE_DIR}/inst/Qt5Network.dll
-		${CMAKE_CURRENT_SOURCE_DIR}/inst/Qt5Widgets.dll
+		${CMAKE_CURRENT_BINARY_DIR}/inst/Qt5Core.dll
+		${CMAKE_CURRENT_BINARY_DIR}/inst/Qt5Gui.dll
+		${CMAKE_CURRENT_BINARY_DIR}/inst/Qt5Network.dll
+		${CMAKE_CURRENT_BINARY_DIR}/inst/Qt5Widgets.dll
 
-		${CMAKE_CURRENT_SOURCE_DIR}/inst/icudt51.dll
-		${CMAKE_CURRENT_SOURCE_DIR}/inst/icuin51.dll
-		${CMAKE_CURRENT_SOURCE_DIR}/inst/icuuc51.dll
+		${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/icudt51.dll
+		${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/icuin51.dll
+		${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/icuuc51.dll
 
 		DESTINATION bin
 	)
 
 	install(FILES
-		${CMAKE_CURRENT_SOURCE_DIR}/inst/platforms/qwindows.dll
+		${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/platforms/qwindows.dll
 		DESTINATION bin/platforms
 	)
 endif()
@@ -145,7 +145,11 @@ endif()
 
 set(TARGET_PLATFORM "x86")
 
-set(SPACED_NAME "МТС Диск")
+if(WIN32)
+	set(SPACED_NAME "MTS Disk")
+else()
+	set(SPACED_NAME "МТС Диск")
+endif()
 
 set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION "bin")
 include(InstallRequiredSystemLibraries)
@@ -158,6 +162,7 @@ endif()
 
 set(CPACK_PACKAGE_NAME "${SPACED_NAME}")
 set(CPACK_PACKAGE_FILE_NAME "drive_${TARGET_PLATFORM}_${BUILD_SYSTEM}_${CURRENT_DATE}")
+STRING(REGEX REPLACE "[ \n]" "" CPACK_PACKAGE_FILE_NAME ${CPACK_PACKAGE_FILE_NAME})
 set(CPACK_PACKAGE_VENDOR "МТС")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${SPACED_NAME}")
 set(CPACK_PACKAGE_VERSION "1.0.0")
@@ -180,8 +185,8 @@ set(CPACK_CREATE_DESKTOP_LINKS "${PROJECT_NAME}")
 set(CPACK_NSIS_PACKAGE_NAME "${SPACED_NAME}")
 
 set(CPACK_NSIS_DISPLAY_NAME "${SPACED_NAME}")
-set(CPACK_NSIS_HELP_LINK "http:\\\\\\\\disk.mts.by\\\\")
-set(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\disk.mts.by\\\\")
+set(CPACK_NSIS_HELP_LINK "http://disk.mts.by/")
+set(CPACK_NSIS_URL_INFO_ABOUT "http://disk.mts.by/")
 
 set(CPACK_NSIS_INSTALLED_ICON_NAME "${PROJECT_NAME}.exe")
 

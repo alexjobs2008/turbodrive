@@ -1,5 +1,5 @@
 project(QsLog)
-cmake_minimum_required(VERSION 2.8.7) #11)
+cmake_minimum_required(VERSION 2.8.11)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)

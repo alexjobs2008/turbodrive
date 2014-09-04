@@ -343,10 +343,12 @@ void AppController::on_trayIcon_messageClicked()
 
 void AppController::on_trayIcon_activated(QSystemTrayIcon::ActivationReason reason)
 {
+#if defined(Q_OS_WIN32) || defined(Q_OS_WIN)
     if (reason == QSystemTrayIcon::Trigger)
     {
         actionOpenFolder->trigger();
     }
+#endif
 }
 
 void AppController::on_settingsWidget_logout()
