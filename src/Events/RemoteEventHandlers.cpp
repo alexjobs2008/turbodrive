@@ -182,11 +182,10 @@ void RemoteFileRenamedEventHandler::onGetAncestorsSucceeded(const QString& fullP
 		Q_EMIT newLocalFileEventExclusion(
 				LocalFileEventExclusion(LocalFileEvent::Deleted, oldLocalPath));
 
-		if(!QFile::rename(oldLocalPath, newLocalPath))
+        if(!QFile::rename(oldLocalPath, newLocalPath))
 		{
-			QLOG_DEBUG() << oldLocalPath;
-			QLOG_DEBUG() << newLocalPath;
-			Q_ASSERT(!"Failed to rename the file.");
+            QLOG_ERROR() << "Failed to rename the file: [" << oldLocalPath
+                            << "] to [" << newLocalPath << "]";
 		}
 	}
 
