@@ -280,7 +280,16 @@ void LocalFileOrFolderDeletedEventHandler::runEventHandling()
 {
 	Q_ASSERT(localEvent.type() == LocalFileEvent::Deleted);
 
-	const QString remotePath = Utils::toRemotePath(localEvent.localPath());
+    const QString localPathString = localEvent.localPath();
+    const QString remotePath = Utils::toRemotePath(localPathString);
+
+    // Handle error in path detection
+    if (remotePath.isNull())
+    {
+        QLOG_ERROR() << "LocalFileOrFolderDeletedEventHandler::runEventHandling(): "
+                        << "remotePath is null for local path [" << localPathString << "]";
+        return;
+    }
 
 	// Cached:
 

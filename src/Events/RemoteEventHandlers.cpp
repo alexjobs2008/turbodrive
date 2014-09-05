@@ -89,8 +89,8 @@ void RemoteFolderCreatedEventHandler::onGetAncestorsSucceeded(const QString& ful
 			QString errorMsg =
 				QString("Local folder creation failed: %1").arg(localFolder);
 
+            QLOG_ERROR() << errorMsg;
             emit failed((EventHandlerBase*) this, errorMsg);
-			QLOG_ERROR() << errorMsg;
 		}
 	}
 	else

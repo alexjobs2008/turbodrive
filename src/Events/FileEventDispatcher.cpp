@@ -425,8 +425,8 @@ void FileEventDispatcher::onEventHandlerFailed(EventHandlerBase *handler, const 
 {
     QLOG_ERROR() << "Event handler " << handler << " failed with error: " << error;
     Q_ASSERT(handler);
-    eventHandlers.removeOne(handler);
-    next();
+    // eventHandlers.removeOne(handler);
+    // next();
 }
 
 void FileEventDispatcher::onFinishProcessingEvent(EventHandlerBase *handler)

@@ -341,7 +341,11 @@ void AppController::on_trayIcon_messageClicked()
 	downloadUpdate();
 }
 
-void AppController::on_trayIcon_activated(QSystemTrayIcon::ActivationReason reason)
+void AppController::on_trayIcon_activated(QSystemTrayIcon::ActivationReason
+#if defined(Q_OS_WIN32) || defined(Q_OS_WIN)
+ reason
+#endif
+)
 {
 #if defined(Q_OS_WIN32) || defined(Q_OS_WIN)
     if (reason == QSystemTrayIcon::Trigger)
