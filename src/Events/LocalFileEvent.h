@@ -25,7 +25,8 @@ public:
 			const QString& oldFileName = QString::null);
 
 	Type type() const;
-	uint timeStamp() const;
+    QString typeString() const;
+    uint timeStamp() const;
 
 	QString fileName() const;
 	QString localPath() const;

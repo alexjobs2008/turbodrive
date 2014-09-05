@@ -587,7 +587,7 @@ void FileEventDispatcher::logEvent(const LocalFileEvent &event, const QString &p
 
 	line
 		.append(prefix)
-		.append(event.type())
+        .append(event.typeString())
 		.append(" \"")
 		.append(event.localPath())
 		.append("\"");

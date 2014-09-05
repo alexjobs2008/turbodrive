@@ -31,6 +31,29 @@ LocalFileEvent::Type LocalFileEvent::type() const
 	return m_type;
 }
 
+QString LocalFileEvent::typeString() const
+{
+    switch (m_type)
+    {
+    case Added:
+        return QString("Added");
+        break;
+    case Modified:
+        return QString("Modified");
+        break;
+    case Deleted:
+        return QString("Deleted");
+        break;
+    case Moved:
+        return QString("Moved");
+        break;
+    default:
+        break;
+    }
+
+    return QString("unknown type: ").append(QString::number(m_type));
+}
+
 uint LocalFileEvent::timeStamp() const
 {
 	return m_timeStamp;
