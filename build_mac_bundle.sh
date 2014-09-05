@@ -7,7 +7,7 @@ cd src-build
 echo $QTDIR
 
 cmake -DCMAKE_BUILD_TYPE=Release ../src -G "CodeBlocks - Unix Makefiles"
-make install
+make clean install
 
 $QTDIR/bin/macdeployqt ./Application/drive.app
 make package
