@@ -6,7 +6,7 @@ cd src-build
 # QTDIR=~/Qt/5.3/clang_64 
 echo $QTDIR
 
-cmake -DCMAKE_BUILD_TYPE=Release ../src -G "Unix Makefiles"
+cmake -DCMAKE_BUILD_TYPE=Release ../src -G "CodeBlocks - Unix Makefiles"
 make install
 
 $QTDIR/bin/macdeployqt ./Application/drive.app

@@ -203,7 +203,15 @@ QString Utils::toRemotePath(const QString& localPath)
 
 	QString cleanedLocalPath = QDir::cleanPath(localPath);
 
-	Q_ASSERT(cleanedLocalPath.startsWith(folderPath));
+    // Q_ASSERT(cleanedLocalPath.startsWith(folderPath));
+    bool startsWithFolderPath = cleanedLocalPath.startsWith(folderPath);
+    if (!startsWithFolderPath)
+    {
+        QLOG_ERROR() << "Utils::toRemotePath() cleanedLocalPath.startsWith(folderPath) == false, "
+                        << "cleanedLocalPath = [" << cleanedLocalPath << "], "
+                           << "= [" << folderPath << "]";
+        return QString();
+    }
 
 	return cleanedLocalPath.replace(folderPath, DISK_ROOT_PATH);
 }
