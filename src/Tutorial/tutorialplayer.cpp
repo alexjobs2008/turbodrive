@@ -21,9 +21,9 @@ TutorialPlayer& TutorialPlayer::instance()
 {
     static TutorialPlayer& self =
 #if defined(Q_OS_WIN32) || defined(Q_OS_WIN)
-        GetMacTutorial();
+            GetWinTutorial();
 #else
-        GetWinTutorial();
+            GetMacTutorial();
 #endif
     return self;
 }
