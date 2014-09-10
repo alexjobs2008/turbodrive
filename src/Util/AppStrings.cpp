@@ -17,7 +17,9 @@ const QString getAppString(AppStringType type)
 		QObject::tr("Disk", stringsContext),
 		QObject::tr("MTS Disk", stringsContext),
 		QObject::tr("http://disk.mts.by/", stringsContext),
-		QObject::tr("Copyrights (c) MTS\nAll rights reserved.", stringsContext)
+        QObject::tr("https://play.google.com/", stringsContext),
+        QObject::tr("http://store.apple.com/ru", stringsContext),
+        QObject::tr("Copyrights (c) MTS\nAll rights reserved.", stringsContext)
 	};
 	return s_appStrings[type];
 }

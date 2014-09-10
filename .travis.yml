@@ -1,5 +1,0 @@
-language: cpp
-os: osx
-compiler: clang
-# Change this to your needs
-script: ./build_mac_bundle.sh

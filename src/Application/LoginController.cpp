@@ -159,6 +159,7 @@ void LoginController::login(const QString& username, const QString& password)
 	inputData.password = password;
 
 	authResource->login(inputData);
+    QCoreApplication::processEvents();
 }
 
 void LoginController::passwordReset(const QString& username)

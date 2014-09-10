@@ -15,6 +15,8 @@ enum AppStringType
 	AppName,
 	AppFullName,
 	WebSiteText,
+    GooglePlayURL,
+    AppleAppStoreURL,
 	Copyright
 };
 

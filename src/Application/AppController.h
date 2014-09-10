@@ -58,6 +58,8 @@ signals:
 	void stateChanged(Drive::State state);
 	void processingProgress(int, int);
 	void profileDataUpdated(const ProfileData& data);
+    void tutorial();
+    void login();
 
 private slots:
 	void on_actionOpenFolder_triggered();
@@ -75,6 +77,8 @@ private slots:
     void on_trayIcon_activated(QSystemTrayIcon::ActivationReason reason);
     void on_settingsWidget_logout();
 
+    void onTutorial();
+    void onShowLogin();
 	void onLoginFinished();
 	void onQueueProcessing();
 	void onQueueFinished();

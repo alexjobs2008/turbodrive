@@ -4,7 +4,7 @@ cd src-build
 rem QTDIR=~/Qt/5.3/clang_64 
 
 cmake -DCMAKE_BUILD_TYPE=Release ../src -G"CodeBlocks - MinGW Makefiles"
-mingw32-make clean install
+mingw32-make  install
 
 %QTDIR%/bin/windeployqt --release --libdir Application/inst Application/drive.exe
 mingw32-make package

@@ -60,6 +60,7 @@ set(LINK_LIBRARIES ${LINK_LIBRARIES}
 	Util
 	efsw
 	Events
+        Tutorial
 )
 target_link_libraries(${PROJECT_NAME} ${LINK_LIBRARIES})
 
@@ -104,9 +105,9 @@ if(WIN32)
 		${CMAKE_CURRENT_BINARY_DIR}/inst/Qt5Network.dll
 		${CMAKE_CURRENT_BINARY_DIR}/inst/Qt5Widgets.dll
 
-		${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/icudt51.dll
-		${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/icuin51.dll
-		${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/icuuc51.dll
+		${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/icudt52.dll
+		${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/icuin52.dll
+		${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/icuuc52.dll
 
 		DESTINATION bin
 	)
@@ -157,7 +158,11 @@ include(InstallRequiredSystemLibraries)
 if(WIN32)
 	set(CPACK_GENERATOR NSIS)
 elseif(APPLE)
-	set(CPACK_GENERATOR DragNDrop)
+        set(CPACK_GENERATOR Bundle)
+        set(CPACK_BUNDLE_NAME "${SPACED_NAME}")
+        set(CPACK_BUNDLE_ICON ${ICON_FILE})
+        set(CPACK_BUNDLE_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/../../res/mac/Info.plist)
+        set(CPACK_BUNDLE_STARTUP_COMMAND "Contents/MacOS/${PROJECT_NAME}")
 endif()
 
 set(CPACK_PACKAGE_NAME "${SPACED_NAME}")

@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>TutorialWinStep2</class>
+ <widget class="QDialog" name="TutorialWinStep2">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>640</width>
+    <height>480</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Добро пожаловать (шаг 2 из 4)</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../Application/res/res.qrc">
+    <normaloff>:/appicon/256.png</normaloff>:/appicon/256.png</iconset>
+  </property>
+  <property name="autoFillBackground">
+   <bool>false</bool>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(255, 255, 255);</string>
+  </property>
+  <widget class="QPushButton" name="cancelButton">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>450</y>
+     <width>0</width>
+     <height>0</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Пропустить</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="backButton">
+   <property name="geometry">
+    <rect>
+     <x>400</x>
+     <y>450</y>
+     <width>0</width>
+     <height>0</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Назад</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="nextButton">
+   <property name="geometry">
+    <rect>
+     <x>520</x>
+     <y>450</y>
+     <width>111</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Далее</string>
+   </property>
+   <property name="flat">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>80</y>
+     <width>561</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>11</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Все ваши файлы всегда под рукой. Установите приложение на телефон, планшет или на другой компьютер и работайте с ними где угодно.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+   </property>
+   <property name="wordWrap">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>170</y>
+     <width>381</width>
+     <height>271</height>
+    </rect>
+   </property>
+   <property name="textFormat">
+    <enum>Qt::PlainText</enum>
+   </property>
+   <property name="pixmap">
+    <pixmap resource="../Application/res/res.qrc">:/tutorial_win/tutorial_win_step2_0.png</pixmap>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>40</y>
+     <width>561</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>14</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;На любых устройствах&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="googlePlayButton">
+   <property name="geometry">
+    <rect>
+     <x>440</x>
+     <y>240</y>
+     <width>171</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(255, 255, 255);</string>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>res/tutorial_win/tutorial_win_step2_1.png</normaloff>
+     <normalon>:/tutorial_win/tutorial_win_step2_1.png</normalon>
+     <disabledoff>:/tutorial_win/tutorial_win_step2_1.png</disabledoff>
+     <disabledon>:/tutorial_win/tutorial_win_step2_1.png</disabledon>
+     <activeoff>:/tutorial_win/tutorial_win_step2_1.png</activeoff>
+     <activeon>:/tutorial_win/tutorial_win_step2_1.png</activeon>
+     <selectedoff>:/tutorial_win/tutorial_win_step2_1.png</selectedoff>
+     <selectedon>:/tutorial_win/tutorial_win_step2_1.png</selectedon>res/tutorial_win/tutorial_win_step2_1.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>170</width>
+     <height>49</height>
+    </size>
+   </property>
+   <property name="flat">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="appStoreButton">
+   <property name="geometry">
+    <rect>
+     <x>440</x>
+     <y>310</y>
+     <width>171</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(255, 255, 255);</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>res/tutorial_win/tutorial_win_step2_2.png</normaloff>
+     <normalon>:/tutorial_win/tutorial_win_step2_2.png</normalon>
+     <disabledoff>:/tutorial_win/tutorial_win_step2_2.png</disabledoff>
+     <disabledon>:/tutorial_win/tutorial_win_step2_2.png</disabledon>
+     <activeoff>:/tutorial_win/tutorial_win_step2_2.png</activeoff>
+     <activeon>:/tutorial_win/tutorial_win_step2_2.png</activeon>
+     <selectedoff>:/tutorial_win/tutorial_win_step2_2.png</selectedoff>
+     <selectedon>:/tutorial_win/tutorial_win_step2_2.png</selectedon>res/tutorial_win/tutorial_win_step2_2.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>170</width>
+     <height>49</height>
+    </size>
+   </property>
+   <property name="flat">
+    <bool>true</bool>
+   </property>
+  </widget>
+ </widget>
+ <resources>
+  <include location="../Application/res/res.qrc"/>
+ </resources>
+ <connections/>
+</ui>

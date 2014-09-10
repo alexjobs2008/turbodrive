@@ -28,6 +28,8 @@
 #include "APIClient/NotificationService.h"
 #include "APIClient/FilesService.h"
 
+#include "Tutorial/tutorialplayer.h"
+
 #include <QtCore/QFile>
 #include <QtCore/QDir>
 #include <QtCore/QFileInfo>
@@ -59,7 +61,13 @@ AppController::AppController(QWidget *parent)
 
 	QMetaObject::connectSlotsByName(this);
 
-	LoginController& loginController = LoginController::instance();
+    connect(this, &AppController::tutorial,
+            this, &AppController::onTutorial);
+
+    connect(this, &AppController::login,
+            this, &AppController::onShowLogin);
+
+    LoginController& loginController = LoginController::instance();
 	connect(&loginController, &LoginController::loginFinished,
 			this, &AppController::onLoginFinished);
 
@@ -364,7 +372,20 @@ void AppController::on_settingsWidget_logout()
 	LocalCache::instance().clear();
 
 	Settings::instance().set(Settings::forceRelogin, true, Settings::RealSetting);
-	on_actionExit_triggered();
+    on_actionExit_triggered();
+}
+
+void AppController::onTutorial()
+{
+    TutorialPlayer& tutorial = TutorialPlayer::instance();
+    connect(&tutorial, &TutorialPlayer::finished,
+            this, &AppController::onShowLogin);
+    tutorial.start();
+}
+
+void AppController::onShowLogin()
+{
+    Drive::LoginController::instance().showLoginFormOrLogin();
 }
 
 void AppController::onLoginFinished()

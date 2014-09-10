@@ -9,6 +9,9 @@
 #include <QtCore/QFileInfo>
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDateTime>
+#include <QStandardPaths>
+#include <QFile>
+#include <QDir>
 
 #include <list>
 
@@ -26,8 +29,30 @@ FileSystemHelper& FileSystemHelper::instance()
 }
 
 FileSystemHelper::FileSystemHelper(QObject *parent)
-	: QObject(parent)
+    : QObject(parent),
+      m_isFirstLaunch(true)
 {
+    trackLaunches();
+}
+
+void FileSystemHelper::trackLaunches()
+{
+    QString logDirPath = QStandardPaths::writableLocation(
+                QStandardPaths::DataLocation);
+
+    QString fileName(QDir::cleanPath(logDirPath).append("/").append(".MTSDrive.launchTracker"));
+
+    if (QFile::exists(fileName))
+    {
+        m_isFirstLaunch = false;
+    }
+    else
+    {
+        QFile file(fileName);
+        file.open(QIODevice::Append);
+        file.write("");
+        file.close();
+    }
 }
 
 void FileSystemHelper::setWindowsFolderIcon(
@@ -170,9 +195,14 @@ FILETIME FileSystemHelper::toWinFileTime(const QDateTime &dateTime)
 	FILETIME fileTime;
 	fileTime.dwLowDateTime = _100nanosecs;
 	fileTime.dwHighDateTime = (_100nanosecs >> 32);
-	return fileTime;
+    return fileTime;
 }
 #endif // Q_OS_WIN
+
+bool FileSystemHelper::isFirstLaunch()
+{
+    return m_isFirstLaunch;
+}
 
 QString Utils::separator()
 {

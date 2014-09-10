@@ -2,12 +2,14 @@
 #include "filesystemfactory.h"
 #include "AppController.h"
 #include "LoginController.h"
+#include "Util/FileUtils.h"
 
 #include "APIClient/ApiTypes.h"
 #include "Events/LocalFileEvent.h"
 #include "SingleApp/SingleApp.h"
 #include "Settings/settings.h"
 #include "Util/AppStrings.h"
+#include "Tutorial/tutorialplayer.h"
 
 #include "QsLog/QsLog.h"
 #include "QsLog/QsLogDest.h"
@@ -132,8 +134,19 @@ int main(int argc, char *argv[])
 	if(app.shouldContinue())
 	{
 		Drive::AppController::instance().setTrayIcon(app.trayIcon());
-		Drive::LoginController::instance().showLoginFormOrLogin();
-		return app.exec();
+
+        if (FileSystemHelper::instance().isFirstLaunch())
+        {
+            Drive::AppController::instance().tutorial();
+        }
+        else
+        {
+            Drive::AppController::instance().login();
+        }
+
+        int retCode = app.exec();
+        retCode = app.exec();
+        return retCode;
 	}
 
 	static const auto s_message = QString::fromLatin1(

@@ -32,10 +32,14 @@ public:
 	static FILETIME toWinFileTime(const QDateTime &dateTime);
 #endif
 
+    bool isFirstLaunch();
+
 private:
 	Q_DISABLE_COPY(FileSystemHelper)
 	explicit FileSystemHelper(QObject *parent = 0);
+    void trackLaunches();
 
+    bool m_isFirstLaunch;
 };
 
 class Utils

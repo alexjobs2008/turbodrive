@@ -17,5 +17,17 @@
         <file>tray_icons/syncing_0003.png</file>
         <file>drive_ru.qm</file>
         <file>tray_icons/syncing_0004.png</file>
+        <file>tutorial_win/tutorial_win_step1.png</file>
+        <file>tutorial_win/tutorial_win_step2_0.png</file>
+        <file>tutorial_win/tutorial_win_step2_1.png</file>
+        <file>tutorial_win/tutorial_win_step2_2.png</file>
+        <file>tutorial_win/tutorial_win_step3.png</file>
+        <file>tutorial_win/tutorial_win_step4.png</file>
+        <file>tutorial_mac/tutorial_mac_step1.png</file>
+        <file>tutorial_mac/tutorial_mac_step2_0.png</file>
+        <file>tutorial_mac/tutorial_mac_step2_1.png</file>
+        <file>tutorial_mac/tutorial_mac_step2_2.png</file>
+        <file>tutorial_mac/tutorial_mac_step3.png</file>
+        <file>tutorial_mac/tutorial_mac_step4.png</file>
     </qresource>
 </RCC>
