@@ -136,33 +136,35 @@ macro(today RESULT)
 endmacro(today)
 today(CURRENT_DATE)
 
+set(UNICODE true)
 # TO_NATIVE_PATH
 file(TO_CMAKE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/res/license.txt" LICENSE_FILE)
 if(WIN32)
-	set(ICON_FILE "${CMAKE_CURRENT_SOURCE_DIR}\\\\res\\\\150x57.bmp")
+    set(ICON_FILE "${CMAKE_CURRENT_SOURCE_DIR}\\\\res\\\\150x57.bmp")
+    set(ICO_FILE "${CMAKE_CURRENT_SOURCE_DIR}\\\\res\\\\appicon.ico")
 else()
-	file(TO_NATIVE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/res/150x57.bmp" ICON_FILE)
+    file(TO_NATIVE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/res/150x57.bmp" ICON_FILE)
 endif()
 
 set(TARGET_PLATFORM "x86")
 
 if(WIN32)
-	set(SPACED_NAME "MTS Disk")
+    set(SPACED_NAME "МТС Диск")
 else()
-	set(SPACED_NAME "МТС Диск")
+    set(SPACED_NAME "МТС Диск")
 endif()
 
 set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION "bin")
 include(InstallRequiredSystemLibraries)
 
 if(WIN32)
-	set(CPACK_GENERATOR NSIS)
+    set(CPACK_GENERATOR NSIS)
 elseif(APPLE)
-        set(CPACK_GENERATOR Bundle)
-        set(CPACK_BUNDLE_NAME "drive")
-        set(CPACK_BUNDLE_ICON "${ICON_FILE}")
-        set(CPACK_BUNDLE_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/../../res/mac/Info.plist")
-        set(CPACK_BUNDLE_STARTUP_COMMAND "${CMAKE_CURRENT_BINARY_DIR}/drive")
+    set(CPACK_GENERATOR Bundle)
+    set(CPACK_BUNDLE_NAME "drive")
+    set(CPACK_BUNDLE_ICON "${ICON_FILE}")
+    set(CPACK_BUNDLE_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/../../res/mac/Info.plist")
+    set(CPACK_BUNDLE_STARTUP_COMMAND "${CMAKE_CURRENT_BINARY_DIR}/drive")
 endif()
 
 set(CPACK_PACKAGE_NAME "${SPACED_NAME}")
@@ -188,6 +190,9 @@ endif()
 set(CPACK_CREATE_DESKTOP_LINKS "${PROJECT_NAME}")
 
 set(CPACK_NSIS_PACKAGE_NAME "${SPACED_NAME}")
+set(CPACK_NSIS_MUI_ICON "${ICO_FILE}")
+set(CPACK_NSIS_MUI_UNIICON "${ICO_FILE}")
+set(CPACK_PACKAGE_ICON "${ICO_FILE}")
 
 set(CPACK_NSIS_DISPLAY_NAME "${SPACED_NAME}")
 set(CPACK_NSIS_HELP_LINK "http://disk.mts.by/")
@@ -196,6 +201,9 @@ set(CPACK_NSIS_URL_INFO_ABOUT "http://disk.mts.by/")
 set(CPACK_NSIS_INSTALLED_ICON_NAME "${PROJECT_NAME}.exe")
 
 set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS " CreateShortCut '$DESKTOP\\\\${SPACED_NAME}.lnk' '$INSTDIR\\\\bin\\\\${PROJECT_NAME}.exe'  ")
+# set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS " CreateShortCut '$FAVORITES\\\\${SPACED_NAME}.lnk' '$PROFILE\\\\${SPACED_NAME}'  ")
+# '%userprofile%\links\МТС Диск.lnk' "$PROFILE\${SPACED_NAME}"
+set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS " CreateShortCut '$PROFILE\\\\Links\\\\${SPACED_NAME}.lnk' '$PROFILE\\\\${SPACED_NAME}'  ")
 
 set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS " Delete '$DESKTOP\\\\${SPACED_NAME}.lnk' ")
 
