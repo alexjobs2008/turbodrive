@@ -84,6 +84,21 @@ private:
 	QLineEdit *leMax;
 };
 
+#ifdef Q_OS_OSX
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+void setDockIconVisibility(bool);
+
+// Add path to Finder's Favorites bar
+int addPathToSharedItem(char *path, char *displayName);
+#ifdef __cplusplus
+}
+#endif
+
+#endif
+
 }
 
 #endif // AUXWIDGETS_H

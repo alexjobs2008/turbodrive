@@ -17,7 +17,7 @@ public:
             QPushButton* cancelButton,
             QPushButton* backButton,
             QPushButton* nextButton);
-    inline QDialog& dialog() { return (QDialog&) *(this->parent()); }
+    inline QDialog* dialog() { return (QDialog*) this->parent(); }
 
 signals:
     void cancel();

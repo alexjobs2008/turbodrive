@@ -11,6 +11,8 @@
 namespace Drive
 {
 
+const int TutorialDialogClosedFromCode = -111;
+
 TutorialPlayer::TutorialPlayer(QObject *parent) :
     QObject(parent),
     currentStep(-1)
@@ -59,21 +61,21 @@ TutorialPlayer& TutorialPlayer::GetWinTutorial()
 void TutorialPlayer::start()
 {
     currentStep = 0;
-    steps[currentStep]->dialog().open();
+    steps[currentStep]->dialog()->open();
 }
 
 void TutorialPlayer::next()
 {
     if (currentStep == steps.size() - 1)
     {
-        steps[currentStep]->dialog().close();
+        steps[currentStep]->dialog()->done(TutorialDialogClosedFromCode);
         emit finished();
     }
     else if (currentStep >= 0 && currentStep < steps.size() - 1)
     {
-        steps[currentStep]->dialog().close();
+        steps[currentStep]->dialog()->done(TutorialDialogClosedFromCode);
         currentStep++;
-        steps[currentStep]->dialog().open();
+        steps[currentStep]->dialog()->open();
     }
 
 }
@@ -82,9 +84,9 @@ void TutorialPlayer::back()
 {
     if (currentStep > 0 && currentStep < steps.size())
     {
-        steps[currentStep]->dialog().close();
+        steps[currentStep]->dialog()->done(TutorialDialogClosedFromCode);
         currentStep--;
-        steps[currentStep]->dialog().open();
+        steps[currentStep]->dialog()->open();
     }
 
 }
@@ -93,10 +95,18 @@ void TutorialPlayer::finish()
 {
     if (currentStep >= 0 && currentStep < steps.size())
     {
-        steps[currentStep]->dialog().close();
+        steps[currentStep]->dialog()->done(TutorialDialogClosedFromCode);
     }
 
     emit finished();
+}
+
+void TutorialPlayer::dialogFinished(int result)
+{
+    if (result != TutorialDialogClosedFromCode)
+    {
+        emit finished();
+    }
 }
 
 void TutorialPlayer::connectSignals()
@@ -108,6 +118,8 @@ void TutorialPlayer::connectSignals()
         connect(step, &TutorialStepInterface::cancel, this, &TutorialPlayer::finish);
         connect(step, &TutorialStepInterface::back, this, &TutorialPlayer::back);
         connect(step, &TutorialStepInterface::next, this, &TutorialPlayer::next);
+        connect(step->dialog(), &QDialog::finished, this, &TutorialPlayer::dialogFinished);
+        step->dialog()->setWindowFlags(Qt::Popup);
     }
 }
 

@@ -6,8 +6,11 @@
 #include <QLocalSocket>
 #include <QPointer>
 #include <QProcess>
+#include <QStyleFactory>
 
 #include <QsLog/QsLog.h>
+
+SingleApplication* SingleApplication::appInstance;
 
 SingleApplication::SingleApplication(int argc, char *argv[])
 	: QApplication(argc, argv)
@@ -16,7 +19,16 @@ SingleApplication::SingleApplication(int argc, char *argv[])
 	, m_localServer(nullptr)
 	, m_trayIcon(nullptr)
 {
-	QLocalSocket socket;
+#if defined(Q_OS_WIN32) || defined(Q_OS_WIN)
+    // this->setStyle("windows");
+#else
+    QStringList styles = QStyleFactory::keys();
+    QStyle *style = this->setStyle("Fusion");
+
+    QLOG_INFO() << "Style: " << style << ", Styles: " << styles;
+#endif
+
+    QLocalSocket socket;
 	socket.connectToServer(LOCAL_SERVER_NAME);
 	if (!socket.waitForConnected(500))
 	{
@@ -26,6 +38,8 @@ SingleApplication::SingleApplication(int argc, char *argv[])
 				this, &SingleApplication::showUp);
 		m_localServer->listen(LOCAL_SERVER_NAME);
 	}
+
+    appInstance = this;
 }
 
 SingleApplication::~SingleApplication()

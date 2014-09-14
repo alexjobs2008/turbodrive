@@ -12,10 +12,14 @@ class TrayIcon;
 class SingleApplication: public QApplication
 {
 	Q_OBJECT
+private:
+    static SingleApplication* appInstance;
 
 public:
 	SingleApplication(int, char *[]);
 	~SingleApplication();
+
+    static SingleApplication& instance() { return *appInstance; }
 
 	bool shouldContinue();
 	Q_SIGNAL void showUp();

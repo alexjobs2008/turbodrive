@@ -27,6 +27,7 @@ private slots:
     void next();
     void back();
     void finish();
+    void dialogFinished(int result);
 
 private:
     void connectSignals();
