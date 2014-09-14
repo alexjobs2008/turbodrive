@@ -209,7 +209,7 @@ QString MinMaxEdit::maxString() const
 
 QString MinMaxEdit::prepare(QString value) const
 {
-	return value.replace("K", "000").replace("M", "000000");
+    return value.replace("K", "000").replace("M", "000000");
 }
 
 }

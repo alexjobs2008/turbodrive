@@ -1,6 +1,7 @@
 ﻿#include "AppController.h"
 #include "LoginController.h"
 #include "remoteconfig.h"
+#include "SingleApp/singleapp.h"
 
 #include "Util/AppStrings.h"
 #include "Util/FileUtils.h"
@@ -340,8 +341,9 @@ void AppController::on_actionExit_triggered()
 	LocalCache::instance().clear();
 	GeneralRestDispatcher::instance().cancelAll();
 	LoginController::instance().closeAll();
-	close();
+    close();
 	qInstallMessageHandler(nullptr);
+    SingleApplication::instance().exit(-1);
 }
 
 void AppController::on_trayIcon_messageClicked()

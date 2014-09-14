@@ -19,7 +19,7 @@ source_group(_res FILES ${QRC_RESOURCES} ${RC_RESOURCES})
 if(WIN32)
 	set(GUI_TYPE WIN32)
 elseif(APPLE)
-        # set(GUI_TYPE MACOSX_BUNDLE)
+        set(GUI_TYPE MACOSX_BUNDLE)
 
 	find_library(COREFOUNDATION_FRAMEWORK CoreFoundation)
 	find_library(CORESERVICES_FRAMEWORK CoreServices)
@@ -57,7 +57,8 @@ set(LINK_LIBRARIES ${LINK_LIBRARIES}
 	LoginUI
 	QsLog
 	rtCSS
-	Util
+        Util
+        UtilUI
 	efsw
 	Events
         Tutorial
@@ -160,11 +161,23 @@ include(InstallRequiredSystemLibraries)
 if(WIN32)
     set(CPACK_GENERATOR NSIS)
 elseif(APPLE)
+<<<<<<< HEAD
     set(CPACK_GENERATOR Bundle)
     set(CPACK_BUNDLE_NAME "drive")
     set(CPACK_BUNDLE_ICON "${ICON_FILE}")
     set(CPACK_BUNDLE_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/../../res/mac/Info.plist")
     set(CPACK_BUNDLE_STARTUP_COMMAND "${CMAKE_CURRENT_BINARY_DIR}/drive")
+=======
+        set(CPACK_GENERATOR DragNDrop)
+        # set(CPACK_BUNDLE_NAME "drive")
+        # set(CPACK_BUNDLE_ICON "${ICON_FILE}")
+        # set(CPACK_BUNDLE_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/../../res/mac/Info.plist")
+        # set(CPACK_BUNDLE_STARTUP_COMMAND "${CMAKE_CURRENT_BINARY_DIR}/drive")
+        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../../res/mac/Info.plist
+                 ${CMAKE_CURRENT_BINARY_DIR}/Info.plist)
+        set_target_properties(drive PROPERTIES MACOSX_BUNDLE_INFO_PLIST
+                        ${CMAKE_CURRENT_BINARY_DIR}/Info.plist)
+>>>>>>> 89ee3f41f8ccc3266d5c686c249b3e22fb57b77c
 endif()
 
 set(CPACK_PACKAGE_NAME "${SPACED_NAME}")
