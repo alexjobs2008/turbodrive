@@ -66,57 +66,56 @@ set(LINK_LIBRARIES ${LINK_LIBRARIES}
 target_link_libraries(${PROJECT_NAME} ${LINK_LIBRARIES})
 
 if(WIN32)
-	install(TARGETS ${PROJECT_NAME}
-		DESTINATION bin
-	)
+        install(TARGETS ${PROJECT_NAME}
+                DESTINATION bin
+        )
 elseif(APPLE)
-	install(TARGETS ${PROJECT_NAME}
-		DESTINATION .
-	)
+        install(TARGETS ${PROJECT_NAME}
+                DESTINATION .
+        )
 endif()
 
 if(MINGW)
-	install(FILES
-		${CMAKE_CURRENT_BINARY_DIR}/inst/libgcc_s_dw2-1.dll
-		${CMAKE_CURRENT_BINARY_DIR}/inst/libstdc++-6.dll
-		${CMAKE_CURRENT_BINARY_DIR}/inst/libwinpthread-1.dll
+        install(FILES
+                ${CMAKE_CURRENT_BINARY_DIR}/inst/libgcc_s_dw2-1.dll
+                ${CMAKE_CURRENT_BINARY_DIR}/inst/libstdc++-6.dll
+                ${CMAKE_CURRENT_BINARY_DIR}/inst/libwinpthread-1.dll
 
-		DESTINATION bin
-	)
+                DESTINATION bin
+        )
 elseif(MSVC)
-	install(FILES
-		${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/libEGL.dll
-		${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/libGLESv2.dll
+        install(FILES
+                ${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/libEGL.dll
+                ${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/libGLESv2.dll
 
-		DESTINATION bin
-	)
-
+                DESTINATION bin
+        )
 endif()
 
 if(WIN32)
-	install(FILES
-		# OpenSSL libs
-		# http://slproweb.com/download/Win32OpenSSL_Light-1_0_1f.exe
-		${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/libeay32.dll
-		${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/ssleay32.dll
+        install(FILES
+                # OpenSSL libs
+                # http://slproweb.com/download/Win32OpenSSL_Light-1_0_1f.exe
+                ${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/libeay32.dll
+                ${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/ssleay32.dll
 
-		# Qt libs
-		${CMAKE_CURRENT_BINARY_DIR}/inst/Qt5Core.dll
-		${CMAKE_CURRENT_BINARY_DIR}/inst/Qt5Gui.dll
-		${CMAKE_CURRENT_BINARY_DIR}/inst/Qt5Network.dll
-		${CMAKE_CURRENT_BINARY_DIR}/inst/Qt5Widgets.dll
+                # Qt libs
+                ${CMAKE_CURRENT_BINARY_DIR}/../../res/inst/inst/Qt5Core.dll
+                ${CMAKE_CURRENT_BINARY_DIR}/../../res/inst/inst/Qt5Gui.dll
+                ${CMAKE_CURRENT_BINARY_DIR}/../../res/inst/inst/Qt5Network.dll
+                ${CMAKE_CURRENT_BINARY_DIR}/../../res/inst/inst/Qt5Widgets.dll
 
-		${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/icudt52.dll
-		${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/icuin52.dll
-		${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/icuuc52.dll
+                ${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/icudt52.dll
+                ${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/icuin52.dll
+                ${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/icuuc52.dll
 
-		DESTINATION bin
-	)
+                DESTINATION bin
+        )
 
-	install(FILES
-		${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/platforms/qwindows.dll
-		DESTINATION bin/platforms
-	)
+        install(FILES
+                ${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/platforms/qwindows.dll
+                DESTINATION bin/platforms
+        )
 endif()
 
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/res/license.txt DESTINATION .)
@@ -207,12 +206,13 @@ set(CPACK_NSIS_URL_INFO_ABOUT "http://disk.mts.by/")
 
 set(CPACK_NSIS_INSTALLED_ICON_NAME "${PROJECT_NAME}.exe")
 
-set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS " CreateShortCut '$DESKTOP\\\\${SPACED_NAME}.lnk' '$INSTDIR\\\\bin\\\\${PROJECT_NAME}.exe'  ")
-# set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS " CreateShortCut '$FAVORITES\\\\${SPACED_NAME}.lnk' '$PROFILE\\\\${SPACED_NAME}'  ")
-# '%userprofile%\links\МТС Диск.lnk' "$PROFILE\${SPACED_NAME}"
-set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS " CreateShortCut '$PROFILE\\\\Links\\\\${SPACED_NAME}.lnk' '$PROFILE\\\\${SPACED_NAME}'  ")
+set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS
+    " CreateShortCut '$DESKTOP\\\\${SPACED_NAME}.lnk' '$INSTDIR\\\\bin\\\\${PROJECT_NAME}.exe'
+      CreateShortCut '$PROFILE\\\\Links\\\\${SPACED_NAME}.lnk' '$PROFILE\\\\${SPACED_NAME}'  ")
 
-set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS " Delete '$DESKTOP\\\\${SPACED_NAME}.lnk' ")
+set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS
+    " Delete '$PROFILE\\\\Links\\\\${SPACED_NAME}.lnk'
+      Delete '$DESKTOP\\\\${SPACED_NAME}.lnk' ")
 
 set(CPACK_NSIS_MUI_FINISHPAGE_RUN "${PROJECT_NAME}.exe")
 
