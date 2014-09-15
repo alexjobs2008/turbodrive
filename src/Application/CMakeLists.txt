@@ -105,9 +105,12 @@ if(WIN32)
                 ${CMAKE_CURRENT_BINARY_DIR}/../../res/inst/inst/Qt5Network.dll
                 ${CMAKE_CURRENT_BINARY_DIR}/../../res/inst/inst/Qt5Widgets.dll
 
-                ${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/icudt52.dll
-                ${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/icuin52.dll
-                ${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/icuuc52.dll
+                ${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/icudt51.dll
+                ${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/icuin51.dll
+                ${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/icuuc51.dll
+                # ${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/icudt52.dll
+                # ${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/icuin52.dll
+                # ${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/icuuc52.dll
 
                 DESTINATION bin
         )
