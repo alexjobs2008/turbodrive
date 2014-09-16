@@ -1,5 +1,5 @@
-mkdir src-build
-cd src-build
+mkdir src-build-debug
+cd src-build-debug
 
 rem QTDIR=~/Qt/5.3/clang_64 
 
