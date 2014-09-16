@@ -7,17 +7,13 @@ set(CMAKE_AUTOMOC ON)
 file(GLOB_RECURSE HEADERS *.h)
 file(GLOB_RECURSE SOURCES *.cpp)
 
-if(APPLE)
-    file(GLOB_RECURSE OBJECTIVE_SOURCES *.mm)
-endif()
-
 source_group(_h FILES ${HEADERS})
 source_group(_cpp FILES ${SOURCES})
 
 find_package(Qt5Widgets)
 
 if(APPLE)
-    add_library(${PROJECT_NAME} ${SOURCES} ${OBJECTIVE_SOURCES} ${HEADERS})
+    add_library(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 else()
     add_library(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 endif()

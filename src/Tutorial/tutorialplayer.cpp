@@ -119,7 +119,6 @@ void TutorialPlayer::connectSignals()
         connect(step, &TutorialStepInterface::back, this, &TutorialPlayer::back);
         connect(step, &TutorialStepInterface::next, this, &TutorialPlayer::next);
         connect(step->dialog(), &QDialog::finished, this, &TutorialPlayer::dialogFinished);
-        step->dialog()->setWindowFlags(Qt::Popup);
     }
 }
 

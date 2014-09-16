@@ -132,24 +132,12 @@ int main(int argc, char *argv[])
 	initFactories();
 	Settings::instance().log();
 
-    // QLOG_INFO() << "Application started from: " << argv[0];
-
     if(app.shouldContinue())
 	{
-#ifdef Q_OS_OSX
-        // CommonUI::setDockIconVisibility(false);
-#endif
         Drive::AppController::instance().setTrayIcon(app.trayIcon());
 
         if (FileSystemHelper::instance().isFirstLaunch())
         {
-#ifdef Q_OS_OSX
-            /*QString path = Settings::instance().get(Settings::folderPath).toString();
-            QString displayName("МТС Диск");
-            int addResult = CommonUI::addPathToSharedItem((char*) path.toStdString().c_str(),
-                                          (char*) displayName.toStdString().c_str());
-            QLOG_INFO() << "addPathToSharedItem() returned " << addResult;*/
-#endif
             Drive::AppController::instance().tutorial();
         }
         else

@@ -196,7 +196,7 @@ void AppController::createTrayIcon()
 	trayMenu->addSeparator();
 	trayMenu->addAction(actionExit);
 
-	trayMenu->setDefaultAction(actionOpenFolder);
+    trayMenu->setDefaultAction(actionOpenFolder);
 
 	m_trayIcon->setContextMenu(trayMenu);
 
