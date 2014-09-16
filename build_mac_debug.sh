@@ -8,6 +8,6 @@ cd src-build-debug
 cmake -DCMAKE_BUILD_TYPE=Debug ../src -G "CodeBlocks - Unix Makefiles"
 make install
 
-$QTDIR/bin/macdeployqt -use-debug-libs ./Application/drive.app
+$QTDIR/bin/macdeployqt ./Application/drive.app -use-debug-libs
 make package
 
