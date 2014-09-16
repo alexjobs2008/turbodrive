@@ -150,16 +150,16 @@ int main(int argc, char *argv[])
                                           (char*) displayName.toStdString().c_str());
             QLOG_INFO() << "addPathToSharedItem() returned " << addResult;*/
 #endif
-            Drive::AppController::instance().tutorial();
+            emit Drive::AppController::instance().tutorial();
         }
         else
         {
-            Drive::AppController::instance().login();
+            emit Drive::AppController::instance().login();
         }
 
         int retCode = app.exec();
-        if (retCode != -1)
-            retCode = app.exec();
+        /*if (retCode != -1)
+            retCode = app.exec();*/
         return retCode;
 	}
 

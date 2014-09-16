@@ -17,6 +17,9 @@ public:
 
 	~LoginController();
 
+    void setLoggedIn(bool isLoggedIn);
+    bool isLoggedIn();
+
 public slots:
 	void showLoginFormOrLogin();
 	void showLoginForm();
@@ -44,6 +47,8 @@ private slots:
 private:
 	Q_DISABLE_COPY(LoginController)
 	explicit LoginController(QObject *parent = 0);
+
+    bool loggedIn;
 
 	static LoginWidget *loginWidget;
 };

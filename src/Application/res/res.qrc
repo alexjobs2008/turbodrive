@@ -29,5 +29,27 @@
         <file>tutorial_mac/tutorial_mac_step2_2.png</file>
         <file>tutorial_mac/tutorial_mac_step3.png</file>
         <file>tutorial_mac/tutorial_mac_step4.png</file>
+        <file>appicon/512.png</file>
+        <file>appicon/1024.png</file>
+        <file>tray_icons/16/auth_0001.png</file>
+        <file>tray_icons/16/auth_0002.png</file>
+        <file>tray_icons/16/error.png</file>
+        <file>tray_icons/16/no_auth.png</file>
+        <file>tray_icons/16/paused.png</file>
+        <file>tray_icons/16/synced.png</file>
+        <file>tray_icons/16/syncing_0001.png</file>
+        <file>tray_icons/16/syncing_0002.png</file>
+        <file>tray_icons/16/syncing_0003.png</file>
+        <file>tray_icons/16/syncing_0004.png</file>
+        <file>tray_icons/32/auth_0001.png</file>
+        <file>tray_icons/32/auth_0002.png</file>
+        <file>tray_icons/32/error.png</file>
+        <file>tray_icons/32/no_auth.png</file>
+        <file>tray_icons/32/paused.png</file>
+        <file>tray_icons/32/synced.png</file>
+        <file>tray_icons/32/syncing_0001.png</file>
+        <file>tray_icons/32/syncing_0002.png</file>
+        <file>tray_icons/32/syncing_0003.png</file>
+        <file>tray_icons/32/syncing_0004.png</file>
     </qresource>
 </RCC>

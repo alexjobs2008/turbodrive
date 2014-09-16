@@ -71,6 +71,8 @@ public slots:
 	*/
 	void setRegisterLink(const QString& link);
 
+    void doClose();
+
 signals:
 	/**
 	* @brief Emitted when Sign In button gets clicked or Enter pressed
@@ -90,6 +92,7 @@ private slots:
 	void on_signIn_clicked(bool checked);
 	void on_signUp_linkActivated(const QString&);
 	void on_forgot_linkActivated(const QString&);
+    void on_rememberPassword_stateChanged(int);
 
 private:
 	void initControls();
@@ -107,6 +110,7 @@ private:
 	CommonUI::LinkLabel *m_register;
 
 	QString m_registerLink;
+    bool closeFlag;
 };
 
 }

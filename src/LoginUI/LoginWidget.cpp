@@ -34,11 +34,12 @@ namespace Drive
 LoginWidget::LoginWidget(QWidget *parent)
 	: QFrame(parent)
 	, m_registerLink(QLatin1String("http://disk.mts.by/login.html"))
+    , closeFlag(false)
 {
 	initResources();
 
-	setAttribute(Qt::WA_DeleteOnClose, false);
-	setAttribute(Qt::WA_QuitOnClose, false);
+    setAttribute(Qt::WA_DeleteOnClose, true);
+    setAttribute(Qt::WA_QuitOnClose, false);
 
 	setWindowTitle(QString(tr("%1 Sign In"))
 		.arg(Strings::getAppString(Strings::AppName)));
@@ -48,7 +49,7 @@ LoginWidget::LoginWidget(QWidget *parent)
 	icon.addPixmap(QPixmap(":/appicon/24.png"));
 	icon.addPixmap(QPixmap(":/appicon/32.png"));
 	icon.addPixmap(QPixmap(":/appicon/48.png"));
-	icon.addPixmap(QPixmap(":/appicon/256.png"));
+    icon.addPixmap(QPixmap(":/appicon/256.png"));
 
 	QList<QSize> list = icon.availableSizes();
 	QListIterator<QSize> i(list);
@@ -100,8 +101,11 @@ bool LoginWidget::eventFilter(QObject *watched, QEvent *event)
 
 void LoginWidget::closeEvent(QCloseEvent *event)
 {
-	this->showMinimized();
-	event->ignore();
+    if (!closeFlag)
+    {
+        this->showMinimized();
+        event->ignore();
+    }
 }
 
 void LoginWidget::on_signIn_clicked(bool checked)
@@ -160,7 +164,13 @@ void LoginWidget::setError(const QString& text)
 void LoginWidget::setRegisterLink(const QString& link)
 {
 	m_registerLink = link;
-	m_register->setEnabled(!m_registerLink.isEmpty() && m_username->isEnabled());
+    m_register->setEnabled(!m_registerLink.isEmpty() && m_username->isEnabled());
+}
+
+void LoginWidget::doClose()
+{
+    closeFlag = true;
+    close();
 }
 
 void LoginWidget::on_signUp_linkActivated(const QString&)
@@ -170,7 +180,19 @@ void LoginWidget::on_signUp_linkActivated(const QString&)
 
 void LoginWidget::on_forgot_linkActivated(const QString&)
 {
-	emit passwordResetRequest(cleanedUsername());
+    emit passwordResetRequest(cleanedUsername());
+}
+
+void LoginWidget::on_rememberPassword_stateChanged(int)
+{
+    bool rememberPasswordChecked = m_autoLogin->isChecked();
+    Settings::instance().set(Settings::autoLogin,
+        rememberPasswordChecked, Settings::RealSetting);
+
+    if (!rememberPasswordChecked)
+    {
+        Settings::instance().set(Settings::password, QString(), Settings::RealSetting);
+    }
 }
 
 void LoginWidget::initControls()
@@ -179,9 +201,6 @@ void LoginWidget::initControls()
 	logoLabel->setObjectName("logo");
 	logoLabel->setPixmap(QPixmap(":/logo.png"));
 	logoLabel->setScaledContents(true);
-
-	m_spinner = new CommonUI::SpinnerWidget(tr("Please wait..."),
-		":/spinner/24-", 80, this);
 
 	QLabel* loginLabel = new QLabel(this);
 	loginLabel->setObjectName("login");
@@ -205,7 +224,7 @@ void LoginWidget::initControls()
 		, CommonUI::LabeledEdit::Text
 		, QString()
 		, 0
-		, "\\+?375\\d+"
+        , "\\+?375\\d+"
 		, 100
 		, this);
 	m_username->setName("username");
@@ -213,7 +232,7 @@ void LoginWidget::initControls()
 	m_username->setText(Settings::instance().get(Settings::email).toString());
 
 	m_username->lineEdit()->installEventFilter(this);
-	m_username->lineEdit()->setPlaceholderText(tr("+375 ХХ ХХХХХХХ"));
+    m_username->lineEdit()->setPlaceholderText(tr("Телефон")); // +375 ХХ ХХХХХХХ
 
 	m_password = new CommonUI::LabeledEdit(
 		QString::null
@@ -227,7 +246,7 @@ void LoginWidget::initControls()
 	m_password->lineEdit()->setEchoMode(QLineEdit::Password);
 	m_password->installEventFilter(this);
 	m_password->setText(Settings::instance().get(Settings::password).toString());
-	m_password->lineEdit()->setPlaceholderText(tr("Password"));
+    m_password->lineEdit()->setPlaceholderText(tr("Password"));
 
 	m_autoLogin = new QCheckBox(
 		QString(tr("&Sign me in when %1 starts"))
@@ -242,18 +261,21 @@ void LoginWidget::initControls()
 	m_login->setAutoDefault(true);
 	m_login->setMouseTracking(true);
 
+    m_spinner = new CommonUI::SpinnerWidget(tr("Please wait..."),
+        ":/spinner/24-", 80, this);
+
 	m_resetPassword = new CommonUI::LinkLabel(tr("Forgot?"), "forgot", this);
 	m_resetPassword->setObjectName("forgot");
 
 	QVBoxLayout *layout = new QVBoxLayout(this);
 	layout->addWidget(logoLabel, 0, Qt::AlignCenter);
-	layout->addWidget(m_spinner);
-	layout->addWidget(labels, 0, Qt::AlignCenter);
+    layout->addWidget(labels, 0, Qt::AlignCenter);
 	layout->addWidget(m_username, 0, Qt::AlignCenter);
 	layout->addWidget(m_password, 0, Qt::AlignCenter);
 	layout->addWidget(m_autoLogin, 0, Qt::AlignCenter);
 	layout->addWidget(m_login, 0, Qt::AlignCenter);
-	layout->addStretch(1);
+    layout->addWidget(m_spinner, 0, Qt::AlignCenter);
+    layout->addStretch(1);
 	layout->addWidget(m_resetPassword, 0, Qt::AlignCenter);
 
 	QMetaObject::connectSlotsByName(this);
