@@ -4,6 +4,8 @@
 #include "QsLog/QsLog.h"
 
 #include <QtCore/QCoreApplication>
+#include <QScreen>
+#include <QGuiApplication>
 
 namespace Drive
 {
@@ -46,22 +48,37 @@ TrayIcon::TrayIcon(QObject *parent)
 
 void TrayIcon::loadStates()
 {
+    QScreen *screen = QGuiApplication::primaryScreen();
+    qreal dotsPerInch = screen->physicalDotsPerInch();
+    bool isRetinaDisplay = dotsPerInch > 200;
+
+    const char *no_auth_img = isRetinaDisplay ? ":/tray_icons/32/no_auth.png" : ":/tray_icons/16/no_auth.png";
+    const char *auth_0001_img = isRetinaDisplay ? ":/tray_icons/32/auth_0001.png" : ":/tray_icons/16/auth_0001.png";
+    const char *auth_0002_img = isRetinaDisplay ? ":/tray_icons/32/auth_0002.png" : ":/tray_icons/16/auth_0002.png";
+    const char *syncing_0001_img = isRetinaDisplay ? ":/tray_icons/32/syncing_0001.png" : ":/tray_icons/16/syncing_0001.png";
+    const char *syncing_0002_img = isRetinaDisplay ? ":/tray_icons/32/syncing_0002.png" : ":/tray_icons/16/syncing_0002.png";
+    const char *syncing_0003_img = isRetinaDisplay ? ":/tray_icons/32/syncing_0003.png" : ":/tray_icons/16/syncing_0003.png";
+    const char *syncing_0004_img = isRetinaDisplay ? ":/tray_icons/32/syncing_0004.png" : ":/tray_icons/16/syncing_0004.png";
+    const char *synced_img = isRetinaDisplay ? ":/tray_icons/32/synced.png" : ":/tray_icons/16/synced.png";
+    const char *paused_img = isRetinaDisplay ? ":/tray_icons/32/paused.png" : ":/tray_icons/16/paused.png";
+    const char *error_img = isRetinaDisplay ? ":/tray_icons/32/error.png" : ":/tray_icons/16/error.png";
+
 	AnimatedSystemTrayIcon::State *state;
 
 	// NotAuthorized
 
 	state = new AnimatedSystemTrayIcon::State(stateToString(NotAuthorized),
-		QPixmap(":/tray_icons/no_auth.png"));
+        QPixmap(no_auth_img));
 
 	statesMap.insert(NotAuthorized, state);
 
 	// Authorizing
 
 	state = new AnimatedSystemTrayIcon::State(stateToString(Authorizing),
-		QPixmap(":/tray_icons/auth_0001.png"));
+        QPixmap(auth_0001_img));
 
 	state->frames
-		<< QPixmap(":/tray_icons/auth_0002.png");
+        << QPixmap(auth_0002_img);
 
 	state->delay = 333;
 
@@ -70,12 +87,12 @@ void TrayIcon::loadStates()
 	// Syncing
 
 	state = new AnimatedSystemTrayIcon::State(stateToString(Syncing),
-		QPixmap(":/tray_icons/syncing_0001.png"));
+        QPixmap(syncing_0001_img));
 
 	state->frames
-		<< QPixmap(":/tray_icons/syncing_0002.png")
-		<< QPixmap(":/tray_icons/syncing_0003.png")
-		<< QPixmap(":/tray_icons/syncing_0004.png");
+        << QPixmap(syncing_0002_img)
+        << QPixmap(syncing_0003_img)
+        << QPixmap(syncing_0004_img);
 
 	state->delay = 333;
 
@@ -84,21 +101,21 @@ void TrayIcon::loadStates()
 	// Synced
 
 	state = new AnimatedSystemTrayIcon::State(stateToString(Synced),
-		QPixmap(":/tray_icons/synced.png"));
+        QPixmap(synced_img));
 
 	statesMap.insert(Synced, state);
 
 	// Paused
 
 	state = new AnimatedSystemTrayIcon::State(stateToString(Paused),
-		QPixmap(":/tray_icons/paused.png"));
+        QPixmap(paused_img));
 
 	statesMap.insert(Paused, state);
 
 	// Error
 
 	state = new AnimatedSystemTrayIcon::State(stateToString(Error),
-		QPixmap(":/tray_icons/error.png"));
+        QPixmap(error_img));
 
 	statesMap.insert(Error, state);
 

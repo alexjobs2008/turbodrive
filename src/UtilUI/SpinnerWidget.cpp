@@ -33,11 +33,11 @@ SpinnerWidget::SpinnerWidget(const QString& text, const QString& imgPath,
 	connect(spinnerAnimation, &PixmapAnimation::nextPixmap,
 			spinner, &QLabel::setPixmap);
 
-	layout->addStretch(1);
+    layout->addStretch(1);
 	layout->addWidget(spinner);
 	layout->addWidget(wait);
 	layout->addWidget(substText);
-	layout->addStretch(1);
+    layout->addStretch(1);
 
 	setOn(false);
 }

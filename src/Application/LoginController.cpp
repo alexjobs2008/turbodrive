@@ -84,7 +84,8 @@ LoginController& LoginController::instance()
 }
 
 LoginController::LoginController(QObject *parent)
-	: QObject(parent)
+    : QObject(parent),
+      loggedIn(false)
 {
 	connect(this, &LoginController::loginFinished,
 			this, &LoginController::onLoginFinished);
@@ -92,8 +93,17 @@ LoginController::LoginController(QObject *parent)
 
 LoginController::~LoginController()
 {
-	if (loginWidget)
-		delete loginWidget;
+    closeAll();
+}
+
+void LoginController::setLoggedIn(bool isLoggedIn)
+{
+    loggedIn = isLoggedIn;
+}
+
+bool LoginController::isLoggedIn()
+{
+    return loggedIn;
 }
 
 void LoginController::showLoginFormOrLogin()
@@ -108,7 +118,6 @@ void LoginController::showLoginFormOrLogin()
 	}
 	else
 	{
-		Settings::instance().set(Settings::forceRelogin, false, Settings::RealSetting);
 		showLoginForm();
 	}
 }
@@ -145,7 +154,7 @@ void LoginController::login(const QString& username, const QString& password)
 	if (loginWidget)
 	{
 		loginWidget->enableControls(false);
-		QCoreApplication::processEvents();
+        // QCoreApplication::processEvents();
 	}
 
 	AuthRestResourceRef authResource = AuthRestResource::create();
@@ -159,7 +168,7 @@ void LoginController::login(const QString& username, const QString& password)
 	inputData.password = password;
 
 	authResource->login(inputData);
-    QCoreApplication::processEvents();
+    // QCoreApplication::processEvents();
 }
 
 void LoginController::passwordReset(const QString& username)
@@ -167,7 +176,7 @@ void LoginController::passwordReset(const QString& username)
 	if (loginWidget)
 	{
 		loginWidget->enableControls(false);
-		QCoreApplication::processEvents();
+        // QCoreApplication::processEvents();
 	}
 
 	PasswordResetResourceRef passwordResetResource =
@@ -186,8 +195,8 @@ void LoginController::closeAll()
 {
 	if (loginWidget)
 	{
-		loginWidget->close();
-		delete loginWidget;
+        loginWidget->doClose();
+        delete loginWidget;
 		loginWidget = 0;
 	}
 }
@@ -227,12 +236,14 @@ void LoginController::onLoginSucceeded(
 	Settings::instance().set(Settings::email, username, Settings::RealSetting);
 	Settings::instance().set(Settings::password, password, Settings::RealSetting);
 
+    loggedIn = true;
 	AppController::instance().setAuthToken(token);
 	requestUserData();
 }
 
 void LoginController::onLoginFailed(const QString& error)
 {
+    loggedIn = false;
 	showLoginForm();
 
 	loginWidget->enableControls();
@@ -321,7 +332,7 @@ void LoginController::onLoginFinished()
 {
 	QLOG_TRACE() << "Login finished ok, closing the window";
 	closeAll();
-	QCoreApplication::processEvents();
+    // QCoreApplication::processEvents();
 }
 
 }

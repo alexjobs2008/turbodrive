@@ -63,17 +63,17 @@ AppController::AppController(QWidget *parent)
 	QMetaObject::connectSlotsByName(this);
 
     connect(this, &AppController::tutorial,
-            this, &AppController::onTutorial);
+            this, &AppController::onTutorial, Qt::QueuedConnection);
 
     connect(this, &AppController::login,
-            this, &AppController::onShowLogin);
+            this, &AppController::onShowLogin, Qt::QueuedConnection);
 
     LoginController& loginController = LoginController::instance();
 	connect(&loginController, &LoginController::loginFinished,
-			this, &AppController::onLoginFinished);
+            this, &AppController::onLoginFinished, Qt::QueuedConnection);
 
 	connect(&Settings::instance(), &Settings::settingChanged,
-			this, &AppController::onSettingChanged);
+            this, &AppController::onSettingChanged, Qt::QueuedConnection);
 
 
 	SettingsWidget::instance().hide();
@@ -369,12 +369,18 @@ void AppController::on_settingsWidget_logout()
 {
 	SettingsWidget::instance().hide();
 
+    // Initiate events procesing stop
 	FileEventDispatcher::instance().cancelAll();
 	LocalFileEventNotifier::instance().stop();
 	LocalCache::instance().clear();
+    GeneralRestDispatcher::instance().cancelAll();
 
+    // Wait for events processing to finish
 	Settings::instance().set(Settings::forceRelogin, true, Settings::RealSetting);
-    on_actionExit_triggered();
+
+    LoginController::instance().setLoggedIn(false);
+    AppController::instance().setState(NotAuthorized);
+    emit login();
 }
 
 void AppController::onTutorial()
@@ -387,6 +393,9 @@ void AppController::onTutorial()
 
 void AppController::onShowLogin()
 {
+    TutorialPlayer& tutorial = TutorialPlayer::instance();
+    disconnect(&tutorial, &TutorialPlayer::finished,
+            this, &AppController::onShowLogin);
     Drive::LoginController::instance().showLoginFormOrLogin();
 }
 
@@ -397,9 +406,17 @@ void AppController::onLoginFinished()
 
 void AppController::onLoginFinishedImpl(const bool restartFSWatcher)
 {
-	setState(Drive::Synced);
+    Settings::instance().set(Settings::forceRelogin, false, Settings::RealSetting);
 
-	FileSystemHelper::setWindowsFolderIcon(
+    if (!Settings::instance().get(Settings::autoLogin).toBool())
+    {
+        Settings::instance().set(Settings::password, QString(), Settings::RealSetting);
+    }
+
+    LoginController::instance().closeAll();
+    setState(Drive::Synced);
+
+    FileSystemHelper::setWindowsFolderIcon(
 		Settings::instance().get(Settings::folderPath).toString(), 1);
 
 	FileEventDispatcher& eventDispatcher = FileEventDispatcher::instance();
@@ -454,7 +471,10 @@ void AppController::onQueueProcessing()
 
 void AppController::onQueueFinished()
 {
-	setState(Drive::Synced);
+    if (LoginController::instance().isLoggedIn())
+    {
+        setState(Drive::Synced);
+    }
 }
 
 void AppController::onProcessingProgress(int currentPos, int totalEvents)

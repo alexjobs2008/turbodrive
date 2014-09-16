@@ -44,10 +44,10 @@ SingleApplication::SingleApplication(int argc, char *argv[])
 
 SingleApplication::~SingleApplication()
 {
-	if(m_shouldContinue)
-	{
-		m_localServer->close();
+    m_localServer->close();
 
+    /* if(m_shouldContinue)
+	{
 		if (Drive::Settings::instance().get(Drive::Settings::forceRelogin).toBool())
 		{
 			qint64 pid = 0;
@@ -65,7 +65,7 @@ SingleApplication::~SingleApplication()
 				QLOG_DEBUG() << "New instance started (" << pid << ").";
 			}
 		}
-	}
+    } */
 
 }
 

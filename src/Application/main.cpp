@@ -132,23 +132,21 @@ int main(int argc, char *argv[])
 	initFactories();
 	Settings::instance().log();
 
-    if(app.shouldContinue())
+	if(app.shouldContinue())
 	{
-        Drive::AppController::instance().setTrayIcon(app.trayIcon());
+        	Drive::AppController::instance().setTrayIcon(app.trayIcon());
 
-        if (FileSystemHelper::instance().isFirstLaunch())
-        {
-            Drive::AppController::instance().tutorial();
-        }
-        else
-        {
-            Drive::AppController::instance().login();
-        }
+        	if (FileSystemHelper::instance().isFirstLaunch())
+        	{
+            		emit Drive::AppController::instance().tutorial();
+        	}
+        	else
+        	{
+        		emit Drive::AppController::instance().login();
+        	}
 
-        int retCode = app.exec();
-        if (retCode != -1)
-            retCode = app.exec();
-        return retCode;
+	        int retCode = app.exec();
+        	return retCode;
 	}
 
 	static const auto s_message = QString::fromLatin1(

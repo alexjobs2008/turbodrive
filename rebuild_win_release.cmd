@@ -1,5 +1,6 @@
-mkdir src-build
-cd src-build
+
+mkdir src-build-release
+cd src-build-release
 
 rem QTDIR=~/Qt/5.3/clang_64 
 
@@ -10,3 +11,4 @@ mingw32-make clean install
 mingw32-make package
 
 cd ..
+pause

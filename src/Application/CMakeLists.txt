@@ -1,6 +1,8 @@
 ﻿project(drive)
 cmake_minimum_required(VERSION 2.8.11)
 
+message("CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}")
+
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 
@@ -99,21 +101,39 @@ if(WIN32)
                 ${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/libeay32.dll
                 ${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/ssleay32.dll
 
-                # Qt libs
-                ${CMAKE_CURRENT_BINARY_DIR}/../../res/inst/inst/Qt5Core.dll
-                ${CMAKE_CURRENT_BINARY_DIR}/../../res/inst/inst/Qt5Gui.dll
-                ${CMAKE_CURRENT_BINARY_DIR}/../../res/inst/inst/Qt5Network.dll
-                ${CMAKE_CURRENT_BINARY_DIR}/../../res/inst/inst/Qt5Widgets.dll
 
-                ${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/icudt51.dll
-                ${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/icuin51.dll
-                ${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/icuuc51.dll
-                # ${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/icudt52.dll
-                # ${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/icuin52.dll
-                # ${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/icuuc52.dll
+                # ${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/icudt51.dll
+                # ${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/icuin51.dll
+                # ${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/icuuc51.dll
+                ${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/icudt52.dll
+                ${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/icuin52.dll
+                ${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/icuuc52.dll
 
                 DESTINATION bin
         )
+
+        # Qt libs
+        if (CMAKE_BUILD_TYPE MATCHES "Debug")
+                install(FILES
+                        ${CMAKE_CURRENT_BINARY_DIR}/../../res/inst/inst/Qt5Cored.dll
+                        ${CMAKE_CURRENT_BINARY_DIR}/../../res/inst/inst/Qt5Guid.dll
+                        ${CMAKE_CURRENT_BINARY_DIR}/../../res/inst/inst/Qt5Svgd.dll
+                        ${CMAKE_CURRENT_BINARY_DIR}/../../res/inst/inst/Qt5Networkd.dll
+                        ${CMAKE_CURRENT_BINARY_DIR}/../../res/inst/inst/Qt5Widgetsd.dll
+
+                        DESTINATION bin
+                )
+        else()
+                install(FILES
+                        ${CMAKE_CURRENT_BINARY_DIR}/../../res/inst/inst/Qt5Core.dll
+                        ${CMAKE_CURRENT_BINARY_DIR}/../../res/inst/inst/Qt5Gui.dll
+                        ${CMAKE_CURRENT_BINARY_DIR}/../../res/inst/inst/Qt5Svg.dll
+                        ${CMAKE_CURRENT_BINARY_DIR}/../../res/inst/inst/Qt5Network.dll
+                        ${CMAKE_CURRENT_BINARY_DIR}/../../res/inst/inst/Qt5Widgets.dll
+
+                        DESTINATION bin
+                )
+        endif()
 
         install(FILES
                 ${CMAKE_CURRENT_SOURCE_DIR}/../../res/inst/inst/platforms/qwindows.dll
