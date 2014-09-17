@@ -211,7 +211,7 @@ void LoginWidget::initControls()
 	m_register->setEnabled(!m_registerLink.isEmpty());
 
 	QHBoxLayout* labelsLayout = new QHBoxLayout();
-	labelsLayout->setContentsMargins(0, 0, 0, 0);
+    labelsLayout->setContentsMargins(0, 0, 0, 2);
 	labelsLayout->addWidget(loginLabel, 0, Qt::AlignLeft | Qt::AlignVCenter);
 	labelsLayout->addWidget(m_register, 0, Qt::AlignRight | Qt::AlignVCenter);
 
@@ -251,31 +251,33 @@ void LoginWidget::initControls()
 	m_autoLogin = new QCheckBox(
 		QString(tr("&Sign me in when %1 starts"))
 		.arg(Strings::getAppString(Strings::AppName))
-		, this);
-	m_autoLogin->setObjectName("rememberPassword");
+        , this);
+    m_autoLogin->setObjectName("rememberPassword");
 	m_autoLogin->installEventFilter(this);
 	m_autoLogin->setChecked(Settings::instance().get(Settings::autoLogin).toBool());
 
 	m_login = new QPushButton(tr("Sign in"), this);
 	m_login->setObjectName("signIn");
 	m_login->setAutoDefault(true);
-	m_login->setMouseTracking(true);
+    m_login->setMouseTracking(true);
 
     m_spinner = new CommonUI::SpinnerWidget(tr("Please wait..."),
         ":/spinner/24-", 80, this);
 
 	m_resetPassword = new CommonUI::LinkLabel(tr("Forgot?"), "forgot", this);
-	m_resetPassword->setObjectName("forgot");
+    m_resetPassword->setObjectName("forgot");
 
-	QVBoxLayout *layout = new QVBoxLayout(this);
-	layout->addWidget(logoLabel, 0, Qt::AlignCenter);
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    layout->addSpacing(28);
+    layout->addWidget(logoLabel, 0, Qt::AlignCenter);
+    layout->addSpacing(28);
     layout->addWidget(labels, 0, Qt::AlignCenter);
 	layout->addWidget(m_username, 0, Qt::AlignCenter);
 	layout->addWidget(m_password, 0, Qt::AlignCenter);
 	layout->addWidget(m_autoLogin, 0, Qt::AlignCenter);
 	layout->addWidget(m_login, 0, Qt::AlignCenter);
     layout->addWidget(m_spinner, 0, Qt::AlignCenter);
-    layout->addStretch(1);
+    layout->addStretch(4);
 	layout->addWidget(m_resetPassword, 0, Qt::AlignCenter);
 
 	QMetaObject::connectSlotsByName(this);

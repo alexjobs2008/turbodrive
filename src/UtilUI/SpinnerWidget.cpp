@@ -43,7 +43,7 @@ SpinnerWidget::SpinnerWidget(const QString& text, const QString& imgPath,
 }
 
 void SpinnerWidget::setOn(bool on)
-{
+{on=true;
 	substText->setVisible(false);
 	spinner->setVisible(on);
 	wait->setVisible(on);

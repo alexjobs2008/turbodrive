@@ -17,9 +17,9 @@ LabeledEdit::LabeledEdit(QString leftCaption,
 	, type(type)
 	, _rightLabel(0)
 {
-	setContentsMargins(0, 0, 0, 0);
+    setContentsMargins(0, 1, 0, 1);
 	_layout = new QHBoxLayout(this);
-	_layout->setContentsMargins(0, 0, 0, 0);
+    _layout->setContentsMargins(0, 1, 0, 1);
 	_layout->setSpacing(0);
 
 	_leftLabel = new QLabel(leftCaption, this);

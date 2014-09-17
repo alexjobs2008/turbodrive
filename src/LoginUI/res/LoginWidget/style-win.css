@@ -13,21 +13,21 @@ QLabel#logo {
 }
 
 CommonUI--SpinnerWidget {
-	margin: 16px 0 0 0;
+        margin: 6px 0 0 0;
 	min-height: 24px;
 	max-height: 24px;
 }
 
 QLabel#wait {
-	color: black;
+        color: gray;
 	margin: 0 0 0 8px;
-	font: 9pt "Segoe UI Semibold";
+        font: 10pt "Segoe UI Semibold";
 }
 
 QLabel#substText {
-	color: black;
+        color: gray;
 	margin: 0 0 0 8px;
-	font: 10pt "Segoe UI Semibold";
+        font: 10pt "Segoe UI Semibold";
 }
 
 QFrame#labels {
@@ -37,7 +37,7 @@ QFrame#labels {
 }
 
 QLabel#login {
-	font: 16pt "Segoe UI Semibold";
+        font: bold 17pt "Segoe UI Semibold";
 }
 
 QLineEdit#usernameEdit, QLineEdit#passwordEdit {
@@ -49,7 +49,7 @@ QLineEdit#usernameEdit, QLineEdit#passwordEdit {
 	min-width: 245px;
 	max-width: 245px;
 	min-height: 24px;
-	font: 10pt "Segoe UI Semibold";
+        font: 10pt "Segoe UI Semibold";
 }
 
 QLineEdit#usernameEdit:disabled, QLineEdit#passwordEdit:disabled {
@@ -60,9 +60,9 @@ QLineEdit#usernameEdit:disabled, QLineEdit#passwordEdit:disabled {
 }
 
 CommonUI--LinkLabel#forgot {
-	font: 9pt "Segoe UI Semibold";
+        font: 10pt "Segoe UI Semibold";
 	text-decoration: none;
-	margin-bottom: 10px;
+        margin-bottom: 11px;
 }
 
 CommonUI--LinkLabel#forgot:disabled {
@@ -70,7 +70,7 @@ CommonUI--LinkLabel#forgot:disabled {
 }
 
 CommonUI--LinkLabel#forgot[state="hover"] {
-	font: 9pt "Segoe UI Semibold";
+        font: 10pt "Segoe UI Semibold";
 	text-decoration: underline;
 	margin-bottom: 10px;
 }
@@ -79,7 +79,7 @@ CommonUI--LinkLabel#forgot[state="hover"] {
 
 QCheckBox#rememberPassword {
 	margin: 0 0 0 0;
-	font: 9pt "Segoe UI Semibold";
+        font: 10pt "Segoe UI Semibold";
 	max-width: 255px;
 	min-width: 255px;
 	margin-left: 5px;
@@ -120,15 +120,16 @@ QPushButton#signIn {
 	border-image: url(":/button-normal.png") 5;
 	border-width: 5px;
 	background: transparent;
-	font: 10pt "Segoe UI";
+        font: 13pt "Segoe UI";
 	font-weight: bold;
 	text-decoration: none;
 	color: white;
 	max-width: 245px;
 	min-width: 245px;
-	max-height: 32px;
-	min-height: 32px;
+        max-height: 30px;
+        min-height: 30px;
 	margin-left: 5px;
+        margin-top: 6px;
 }
 
 QPushButton#signIn:hover {
@@ -148,21 +149,22 @@ QPushButton#signIn:disabled {
 }
 
 CommonUI--LinkLabel#signUp {
-	color: red;
-	font: 10pt "Segoe UI Semibold";
+        color: #C00000;
+        font: 10pt "Segoe UI Semibold";
 	text-decoration: none;
 	margin-top: 10px;
 }
 
 CommonUI--LinkLabel#signUp[state="hover"] {
-	color: red;
-	font: 10pt "Segoe UI Semibold";
+        color: #C00000;
+        font: 10pt "Segoe UI Semibold";
 	text-decoration: underline;
 	margin-top: 10px;
 }
 
 CommonUI--LinkLabel#signUp:disabled {
 	color: gray;
-	font: 10pt "Segoe UI Semibold";
-	margin-top: 10px;
+        font: 10pt "Segoe UI Semibold";
+        text-decoration: none;
+        margin-top: 10px;
 }
