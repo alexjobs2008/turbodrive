@@ -45,6 +45,7 @@ LoginWidget::LoginWidget(QWidget *parent)
 		.arg(Strings::getAppString(Strings::AppName)));
 
 	QIcon icon;
+    QPixmap pm(":/appicon/16.png");
 	icon.addPixmap(QPixmap(":/appicon/16.png"));
 	icon.addPixmap(QPixmap(":/appicon/24.png"));
 	icon.addPixmap(QPixmap(":/appicon/32.png"));

@@ -132,6 +132,29 @@ int main(int argc, char *argv[])
 	initFactories();
 	Settings::instance().log();
 
+    //
+    // Process command line
+    //
+
+    // If launched during uninstall
+    if (argc == 2 && strcmp(argv[1], "-uninstall") == 0)
+    {
+        // Actions on application uninstall
+
+        // 1. Delete authorization data
+        Settings::instance().set(
+                    Settings::email, QVariant(QString()), Settings::RealSetting);
+        Settings::instance().set(
+                    Settings::password, QVariant(QString()), Settings::RealSetting);
+
+        // 2. Prevent force login on next launch
+        Settings::instance().set(
+                    Settings::autoLogin, QVariant(false), Settings::RealSetting);
+
+        // Exit application
+        return 0;
+    }
+
 	if(app.shouldContinue())
 	{
         	Drive::AppController::instance().setTrayIcon(app.trayIcon());
