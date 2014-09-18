@@ -1,7 +1,6 @@
 ﻿project(drive)
 cmake_minimum_required(VERSION 2.8.11)
 
-message("CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
@@ -23,7 +22,7 @@ if(WIN32)
 elseif(APPLE)
         set(GUI_TYPE MACOSX_BUNDLE)
 
-	find_library(COREFOUNDATION_FRAMEWORK CoreFoundation)
+        find_library(COREFOUNDATION_FRAMEWORK CoreFoundation)
 	find_library(CORESERVICES_FRAMEWORK CoreServices)
 	find_library(SSL_LIBRARY ssl)
 
@@ -190,10 +189,17 @@ elseif(APPLE)
     # set(CPACK_BUNDLE_STARTUP_COMMAND "${CMAKE_CURRENT_BINARY_DIR}/drive")
 
     set(CPACK_GENERATOR DragNDrop)
+
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../../res/mac/Info.plist
         ${CMAKE_CURRENT_BINARY_DIR}/Info.plist)
     set_target_properties(drive PROPERTIES MACOSX_BUNDLE_INFO_PLIST
         ${CMAKE_CURRENT_BINARY_DIR}/Info.plist)
+
+set_target_properties(drive PROPERTIES
+        MACOSX_BUNDLE_INFO_PLIST
+        OUTPUT_NAME
+        ${CMAKE_CURRENT_BINARY_DIR}/Info.plist
+        MTS_Drive)
 endif()
 
 set(CPACK_PACKAGE_NAME "${SPACED_NAME}")
