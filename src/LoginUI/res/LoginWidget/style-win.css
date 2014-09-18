@@ -21,13 +21,13 @@ CommonUI--SpinnerWidget {
 QLabel#wait {
         color: gray;
 	margin: 0 0 0 8px;
-        font: 10pt "Segoe UI Semibold";
+        font: 10pt "Segoe UI";
 }
 
 QLabel#substText {
         color: gray;
 	margin: 0 0 0 8px;
-        font: 10pt "Segoe UI Semibold";
+        font: 10pt "Segoe UI";
 }
 
 QFrame#labels {
@@ -37,7 +37,7 @@ QFrame#labels {
 }
 
 QLabel#login {
-        font: bold 17pt "Segoe UI Semibold";
+        font: bold 17pt "Segoe UI";
 }
 
 QLineEdit#usernameEdit, QLineEdit#passwordEdit {
@@ -49,7 +49,7 @@ QLineEdit#usernameEdit, QLineEdit#passwordEdit {
 	min-width: 245px;
 	max-width: 245px;
 	min-height: 24px;
-        font: 10pt "Segoe UI Semibold";
+        font: 10pt "Segoe UI";
 }
 
 QLineEdit#usernameEdit:disabled, QLineEdit#passwordEdit:disabled {
@@ -60,9 +60,9 @@ QLineEdit#usernameEdit:disabled, QLineEdit#passwordEdit:disabled {
 }
 
 CommonUI--LinkLabel#forgot {
-        font: 10pt "Segoe UI Semibold";
+        font: 10pt "Segoe UI";
 	text-decoration: none;
-        margin-bottom: 11px;
+        margin-bottom: 20px;
 }
 
 CommonUI--LinkLabel#forgot:disabled {
@@ -70,16 +70,16 @@ CommonUI--LinkLabel#forgot:disabled {
 }
 
 CommonUI--LinkLabel#forgot[state="hover"] {
-        font: 10pt "Segoe UI Semibold";
+        font: 10pt "Segoe UI";
 	text-decoration: underline;
-	margin-bottom: 10px;
+        margin-bottom: 20px;
 }
 
 /* check box */
 
 QCheckBox#rememberPassword {
 	margin: 0 0 0 0;
-        font: 10pt "Segoe UI Semibold";
+        font: 10pt "Segoe UI";
 	max-width: 255px;
 	min-width: 255px;
 	margin-left: 5px;
@@ -149,22 +149,22 @@ QPushButton#signIn:disabled {
 }
 
 CommonUI--LinkLabel#signUp {
-        color: #C00000;
-        font: 10pt "Segoe UI Semibold";
+        color: red;
+        font: 10pt "Segoe UI";
 	text-decoration: none;
 	margin-top: 10px;
 }
 
 CommonUI--LinkLabel#signUp[state="hover"] {
-        color: #C00000;
-        font: 10pt "Segoe UI Semibold";
+        color: red;
+        font: 10pt "Segoe UI";
 	text-decoration: underline;
 	margin-top: 10px;
 }
 
 CommonUI--LinkLabel#signUp:disabled {
 	color: gray;
-        font: 10pt "Segoe UI Semibold";
+        font: 10pt "Segoe UI";
         text-decoration: none;
         margin-top: 10px;
 }
