@@ -50,12 +50,9 @@ if(WIN32)
         set(EXECUTABLE_NAME drive)
 elseif(APPLE)
         set(GUI_TYPE MACOSX_BUNDLE)
-        set(EXECUTABLE_NAME "${SPACED_NAME}")
+        set(EXECUTABLE_NAME drive)
 endif()
 
-<<<<<<< HEAD
-        find_library(COREFOUNDATION_FRAMEWORK CoreFoundation)
-=======
 add_executable(${PROJECT_NAME}
         ${GUI_TYPE}
         ${HEADERS}
@@ -65,7 +62,7 @@ add_executable(${PROJECT_NAME}
 )
 
 if(APPLE)
-        set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${SPACED_NAME})
+        set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "${SPACED_NAME}")
 endif()
 
 
@@ -75,7 +72,6 @@ endif()
 
 if(APPLE)
 	find_library(COREFOUNDATION_FRAMEWORK CoreFoundation)
->>>>>>> 7bab5852da426fa7271c7f8027d2917d921cd719
 	find_library(CORESERVICES_FRAMEWORK CoreServices)
 	find_library(SSL_LIBRARY ssl)
 
@@ -266,21 +262,10 @@ elseif(APPLE)
 
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../../res/mac/Info.plist
         ${CMAKE_CURRENT_BINARY_DIR}/Info.plist)
-<<<<<<< HEAD
-    set_target_properties(drive PROPERTIES MACOSX_BUNDLE_INFO_PLIST
-        ${CMAKE_CURRENT_BINARY_DIR}/Info.plist)
-
-set_target_properties(drive PROPERTIES
-        MACOSX_BUNDLE_INFO_PLIST
-        OUTPUT_NAME
-        ${CMAKE_CURRENT_BINARY_DIR}/Info.plist
-        MTS_Drive)
-=======
     set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST
         ${CMAKE_CURRENT_BINARY_DIR}/Info.plist
     )
 
->>>>>>> 7bab5852da426fa7271c7f8027d2917d921cd719
 endif()
 
 set(CPACK_PACKAGE_NAME "${SPACED_NAME}")

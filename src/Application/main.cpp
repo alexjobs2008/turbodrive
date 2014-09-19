@@ -157,9 +157,9 @@ int main(int argc, char *argv[])
 
 	if(app.shouldContinue())
 	{
-        	Drive::AppController::instance().setTrayIcon(app.trayIcon());
+            Drive::AppController::instance().setTrayIcon(app.trayIcon());
 
-        	if (FileSystemHelper::instance().isFirstLaunch())
+            if (FileSystemHelper::instance().isFirstLaunch())
         	{
             		emit Drive::AppController::instance().tutorial();
         	}
@@ -168,7 +168,7 @@ int main(int argc, char *argv[])
         		emit Drive::AppController::instance().login();
         	}
 
-	        int retCode = app.exec();
+            int retCode = app.exec();
         	return retCode;
 	}
 
