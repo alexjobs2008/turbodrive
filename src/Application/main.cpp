@@ -183,6 +183,8 @@ void doUninstallActions(char *exeName)
 
 #       endif
 
+	exeName = 0; // dummy
+
         // 1. Delete authorization data
         Settings::instance().set(
                     Settings::email, QVariant(QString()), Settings::RealSetting);

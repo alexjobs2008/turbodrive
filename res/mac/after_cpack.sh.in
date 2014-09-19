@@ -1,0 +1,14 @@
+#!/bin/bash -vx
+
+PACKAGE_NAME=@CPACK_PACKAGE_FILE_NAME@
+PACKAGE_DIR=_CPack_Packages/Darwin/DragNDrop
+
+# Rename application bundle
+mv $PACKAGE_DIR/$PACKAGE_NAME/drive.app $PACKAGE_DIR/$PACKAGE_NAME/МТС\ Диск.app
+
+# delete old DMG created by CPack
+rm -f $PACKAGE_DIR/$PACKAGE_NAME.dmg
+
+# Create new DMG
+hdiutil create -format UDZO -volname "МТС Диск" -srcfolder $PACKAGE_DIR/$PACKAGE_NAME $PACKAGE_DIR/$PACKAGE_NAME.dmg
+

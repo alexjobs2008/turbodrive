@@ -1,4 +1,4 @@
-﻿project(drive)
+project(drive)
 cmake_minimum_required(VERSION 2.8.11)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -33,6 +33,16 @@ endif()
 
 find_package(Qt5Widgets)
 qt5_add_resources(MOCED_RESOURCES ${QRC_RESOURCES})
+
+# For Apple set the icns file containing icons
+IF(APPLE)
+	# set how it shows up in the Info.plist file
+	# SET(MACOSX_BUNDLE_ICON_FILE appicon_mac.icns)
+	# set where in the bundle to put the icns file
+	SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/../../res/icons/appicon_mac.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+	# include the icns file in the target
+	SET(SOURCES ${SOURCES} ${CMAKE_CURRENT_SOURCE_DIR}/../../res/icons/appicon_mac.icns)
+ENDIF(APPLE)
 
 add_executable(${PROJECT_NAME}
 	${GUI_TYPE}
@@ -159,12 +169,6 @@ include(InstallRequiredSystemLibraries)
 if(WIN32)
     set(CPACK_GENERATOR NSIS)
 elseif(APPLE)
-    # set(CPACK_GENERATOR Bundle)
-    # set(CPACK_BUNDLE_NAME "drive")
-    # set(CPACK_BUNDLE_ICON "${ICON_FILE}")
-    # set(CPACK_BUNDLE_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/../../res/mac/Info.plist")
-    # set(CPACK_BUNDLE_STARTUP_COMMAND "${CMAKE_CURRENT_BINARY_DIR}/drive")
-
     set(CPACK_GENERATOR DragNDrop)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../../res/mac/Info.plist
         ${CMAKE_CURRENT_BINARY_DIR}/Info.plist)
@@ -187,8 +191,10 @@ set(CPACK_PACKAGE_EXECUTABLES ${PROJECT_NAME} "${SPACED_NAME}")
 set(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${PROJECT_NAME}")
 set(CPACK_PACKAGE_ICON ${ICON_FILE})
 
-if(WIN32)
-	set(CPACK_RESOURCE_FILE_LICENSE ${LICENSE_FILE})
+if(APPLE)
+    set(CPACK_RESOURCE_FILE_LICENSE ${LICENSE_FILE})
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../../res/mac/after_cpack.sh.in
+        ${CMAKE_CURRENT_BINARY_DIR}/after_cpack.sh)
 endif()
 
 # this doesn't work wittout set(CPACK_NSIS_MODIFY_PATH ON)
