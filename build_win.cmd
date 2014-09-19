@@ -20,7 +20,7 @@ IF "%REBUILD%"=="1" (
 	SET REBUILD_FLAG=clean
 	ECHO  ==== full rebuild
 ) ELSE (
-	SET REBUILD_FLAG= 
+	SET REBUILD_FLAG=
 	ECHO  ==== build changes only
 )
 
@@ -36,13 +36,13 @@ ECHO  ==== Compiling sources
 ECHO.
 
 cmake -Wno-dev -DCMAKE_BUILD_TYPE=%CMAKE_BUILD_TYPE_STR% -DCMAKE_INSTALL_PREFIX=.\build ../src -G"CodeBlocks - MinGW Makefiles"
-REM mingw32-make %REBUILD_FLAG% install
+mingw32-make %REBUILD_FLAG% install
 
 ECHO.
 ECHO  ==== Deploying libraries
 ECHO.
 
-REM %QTDIR%/bin/windeployqt --%BUILD_TYPE_STR% --dir build/bin --libdir build/bin --qmldir %QTDIR%/qml --compiler-runtime Application/drive.exe
+%QTDIR%/bin/windeployqt --%BUILD_TYPE_STR% --dir build/bin --libdir build/bin --qmldir %QTDIR%/qml --compiler-runtime Application/drive.exe
 
 ECHO.
 ECHO  ==== Creating installer

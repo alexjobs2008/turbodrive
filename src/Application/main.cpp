@@ -20,6 +20,14 @@
 #include <QtCore/QDir>
 #include <QtCore/QStandardPaths>
 
+#ifdef Q_OS_WIN
+#include <windows.h>
+#include <process.h>
+#include <Tlhelp32.h>
+#include <winbase.h>
+#include <string.h>
+#endif
+
 #define LOG_FILE_SIZE 1048576
 
 using namespace Drive;
@@ -119,27 +127,61 @@ void initFactories()
 			IFileSystemFactoryPtr(new FileSystemFactory()));
 }
 
-int main(int argc, char *argv[])
+#ifdef Q_OS_WIN
+
+void killProcessByName(const char *filename)
 {
-	initApplicationInfo();
-	initLogging();
-	logStartInfo();
+    // QTextStream log("c:\\tmp\\drive_uninstall.log");
 
-	SingleApplication app(argc, argv);
+    // log << "killProcessByName, file [" << filename << "]" << endl;
 
-	initMetaTypes();
-	initTranslator(app);
-	initFactories();
-	Settings::instance().log();
+    QString filenameStr(strrchr(filename, '\\') + 1);
+    DWORD currentProcessId = GetCurrentProcessId();
 
-    //
-    // Process command line
-    //
+    HANDLE hSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPALL, 0);
+    PROCESSENTRY32 pEntry;
+    pEntry.dwSize = sizeof (pEntry);
+    BOOL hRes = Process32First(hSnapShot, &pEntry);
 
-    // If launched during uninstall
-    if (argc == 2 && strcmp(argv[1], "-uninstall") == 0)
+    while (hRes)
     {
-        // Actions on application uninstall
+        QString szExeFileStr(pEntry.szExeFile);
+
+        // log << "killProcessByName, found process [" << pEntry.th32ProcessID
+        //     << ", szExeFile [" << szExeFileStr << "]" << endl;
+
+        // if (strcmp(pEntry.szExeFile, filename) == 0)
+        if (filenameStr == szExeFileStr &&
+            currentProcessId != pEntry.th32ProcessID)
+        {
+            HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, 0,
+                                          (DWORD) pEntry.th32ProcessID);
+            if (hProcess != NULL)
+            {
+                // log << "Terminating process\n" << endl;
+                TerminateProcess(hProcess, 9);
+                CloseHandle(hProcess);
+            }
+        }
+
+        hRes = Process32Next(hSnapShot, &pEntry);
+    }
+
+    // log << "killProcessByName ended" << endl;
+    CloseHandle(hSnapShot);
+}
+
+#       endif
+
+void doUninstallActions(char *exeName)
+{
+
+#       ifdef Q_OS_WIN
+
+        // 0. Kill all app instances on windows
+        killProcessByName(exeName);
+
+#       endif
 
         // 1. Delete authorization data
         Settings::instance().set(
@@ -151,25 +193,58 @@ int main(int argc, char *argv[])
         Settings::instance().set(
                     Settings::autoLogin, QVariant(false), Settings::RealSetting);
 
+}
+
+int main(int argc, char *argv[])
+{
+    //
+    // Process command line
+    //
+
+   /*  QLOG_DEBUG() << "Command line argc: " << argc << endl;
+    for (int i = 0; i < argc; i++)
+        QLOG_DEBUG() << "argv[" << i << "] = '" << argv[i] << "'" << endl; */
+
+    // If launched during uninstall
+    if (argc == 2 && strcmp(argv[1], "-uninstall") == 0)
+    {
+        // Do actions on application uninstall
+        doUninstallActions(argv[0]);
+
         // Exit application
         return 0;
     }
 
+    //
+    // Run app
+    //
+
+    initApplicationInfo();
+    initLogging();
+    logStartInfo();
+
+    SingleApplication app(argc, argv);
+
+	initMetaTypes();
+	initTranslator(app);
+	initFactories();
+	Settings::instance().log();
+
 	if(app.shouldContinue())
 	{
-        	Drive::AppController::instance().setTrayIcon(app.trayIcon());
+        Drive::AppController::instance().setTrayIcon(app.trayIcon());
 
-        	if (FileSystemHelper::instance().isFirstLaunch())
-        	{
-            		emit Drive::AppController::instance().tutorial();
-        	}
-        	else
-        	{
-        		emit Drive::AppController::instance().login();
-        	}
+        if (FileSystemHelper::instance().isFirstLaunch())
+        {
+            emit Drive::AppController::instance().tutorial();
+        }
+        else
+        {
+            emit Drive::AppController::instance().login();
+        }
 
-	        int retCode = app.exec();
-        	return retCode;
+        int retCode = app.exec();
+        return retCode;
 	}
 
 	static const auto s_message = QString::fromLatin1(
