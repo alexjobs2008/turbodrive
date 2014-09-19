@@ -1,8 +1,6 @@
 ﻿project(drive)
 cmake_minimum_required(VERSION 2.8.11)
 
-message("CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}")
-
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 
@@ -22,7 +20,6 @@ if(WIN32)
 	set(GUI_TYPE WIN32)
 elseif(APPLE)
         set(GUI_TYPE MACOSX_BUNDLE)
-
 	find_library(COREFOUNDATION_FRAMEWORK CoreFoundation)
 	find_library(CORESERVICES_FRAMEWORK CoreServices)
 	find_library(SSL_LIBRARY ssl)
