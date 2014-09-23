@@ -7,6 +7,9 @@
 #include <QScreen>
 #include <QGuiApplication>
 
+#include "FileUtils.h"
+#include "Settings/settings.h"
+
 namespace Drive
 {
 
@@ -21,7 +24,31 @@ void TrayIcon::setState(Drive::State state)
 			.arg(stateToString(state));
 
 		setToolTip(baseToolTip);
-	}
+
+        QString homePath = Settings::instance().get(Settings::folderPath).toString();
+
+        switch (state)
+        {
+        case Drive::NotAuthorized:
+            FileSystemHelper::setFolderIcon(homePath, FOLDER_ICON_SYNC);
+            break;
+        case Drive::Authorizing:
+            FileSystemHelper::setFolderIcon(homePath, FOLDER_ICON_SYNC);
+            break;
+        case Drive::Syncing:
+            FileSystemHelper::setFolderIcon(homePath, FOLDER_ICON_SYNC);
+            break;
+        case Drive::Synced:
+            FileSystemHelper::setFolderIcon(homePath, FOLDER_ICON_OK);
+            break;
+        case Drive::Paused:
+            FileSystemHelper::setFolderIcon(homePath, FOLDER_ICON_SYNC);
+            break;
+        case Drive::Error:
+            FileSystemHelper::setFolderIcon(homePath, FOLDER_ICON_ERROR);
+            break;
+        }
+    }
 }
 
 void TrayIcon::onProcessingProgress(int currentPos, int totalEventCount)

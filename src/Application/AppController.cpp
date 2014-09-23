@@ -416,7 +416,7 @@ void AppController::onLoginFinishedImpl(const bool restartFSWatcher)
     LoginController::instance().closeAll();
     setState(Drive::Synced);
 
-    FileSystemHelper::setWindowsFolderIcon(
+    FileSystemHelper::setFolderIcon(
 		Settings::instance().get(Settings::folderPath).toString(), 1);
 
 	FileEventDispatcher& eventDispatcher = FileEventDispatcher::instance();

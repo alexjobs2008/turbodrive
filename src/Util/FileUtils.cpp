@@ -12,6 +12,7 @@
 #include <QStandardPaths>
 #include <QFile>
 #include <QDir>
+#include <QtGui/QIcon>
 
 #include <list>
 
@@ -55,7 +56,7 @@ void FileSystemHelper::trackLaunches()
     }
 }
 
-void FileSystemHelper::setWindowsFolderIcon(
+void FileSystemHelper::setFolderIcon(
 		const QString& folderPath, int iconNumber)
 {
 #ifdef Q_OS_WIN
@@ -98,6 +99,29 @@ void FileSystemHelper::setWindowsFolderIcon(
 		, FILE_ATTRIBUTE_HIDDEN);
 
 	QFile::setPermissions(folderPath, QFile::ReadOwner);
+
+#elif defined(Q_OS_DARWIN)
+
+    // Default icon
+    const char *macIconResource = "";
+
+    // Select icon
+    if (iconNumber == FOLDER_ICON_OK) macIconResource = ":/folder_icons/mac/128_ok.png";
+    else if (iconNumber == FOLDER_ICON_ERROR) macIconResource = ":/folder_icons/mac/128_error.png";
+    else if (iconNumber == FOLDER_ICON_SYNC) macIconResource = ":/folder_icons/mac/128_sync.png";
+
+    QIcon icon;
+
+    icon.addPixmap(QPixmap(macIconResource));
+    QSize size = icon.actualSize(QSize(128000, 128000));
+    QPixmap pixmap = icon.pixmap(size);
+    QByteArray ba;              // Construct a QByteArray object
+    QBuffer buffer(&ba);        // Construct a QBuffer object using the QbyteArray
+    QImage image = pixmap.toImage();
+    image.save(&buffer, "PNG");
+
+    setFolderIconFromQIcon(folderPath.toStdString().c_str(), ba.data(), ba.size());
+
 #else
 	(void)folderPath;
 	(void)iconNumber;

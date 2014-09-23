@@ -8,8 +8,14 @@
 	#include "Windows.h"
 #endif
 
+#include <QBuffer>
+
 namespace Drive
 {
+
+const int FOLDER_ICON_OK = 1;
+const int FOLDER_ICON_ERROR = 2;
+const int FOLDER_ICON_SYNC = 3;
 
 class FileSystemHelper : public QObject
 {
@@ -17,7 +23,7 @@ class FileSystemHelper : public QObject
 public:
 	static FileSystemHelper& instance();
 
-	static void setWindowsFolderIcon(const QString& folderPath,
+    static void setFolderIcon(const QString& folderPath,
 									int iconNumber);
 
 	static bool setFileModificationTimestamp(const QString& localPath,
@@ -52,6 +58,18 @@ public:
 };
 
 }
+
+#ifdef Q_OS_DARWIN
+
+struct CGImage;
+typedef struct CGImage *CGImageRef;
+
+extern "C" {
+bool setFolderIconFromPath(const char *folderURL, const char *iconPath);
+bool setFolderIconFromQIcon(const char *folderURL, char *imageBytes, int imageSize);
+}
+
+#endif
 
 
 #endif // FILE_UTILS_H
