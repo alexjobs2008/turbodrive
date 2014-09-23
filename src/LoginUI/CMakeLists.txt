@@ -9,6 +9,7 @@ file(GLOB_RECURSE SOURCES *.cpp)
 file(GLOB_RECURSE QRC_RESOURCES *.qrc)
 
 find_package(Qt5Widgets)
+find_package(Qt5Core)
 qt5_add_resources(MOCED_RESOURCES ${QRC_RESOURCES})
 
 source_group(_h FILES ${HEADERS})

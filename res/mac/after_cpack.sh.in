@@ -1,4 +1,4 @@
-#!/bin/bash -vx
+#!/bin/bash
 
 PACKAGE_NAME=@CPACK_PACKAGE_FILE_NAME@
 PACKAGE_DIR=_CPack_Packages/Darwin/DragNDrop
