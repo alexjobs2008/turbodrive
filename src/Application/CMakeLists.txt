@@ -32,7 +32,6 @@ elseif(APPLE)
 endif()
 
 find_package(Qt5Widgets)
-find_package(Qt5MacExtras)
 qt5_add_resources(MOCED_RESOURCES ${QRC_RESOURCES})
 
 # For Apple set the icns file containing icons

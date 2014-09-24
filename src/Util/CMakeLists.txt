@@ -20,7 +20,6 @@ if(APPLE)
     source_group(_mm FILES ${OBJECTIVE_SOURCES})
 endif()
 
-find_package(Qt5MacExtras)
 find_package(Qt5Core)
 
 if(APPLE)
