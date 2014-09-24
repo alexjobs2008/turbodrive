@@ -1,7 +1,7 @@
 IDI_ICON               ICON                    "appicon.ico"
-10                     ICON                    "folder.ico"
-11                     ICON                    "folder.ico"
-12                     ICON                    "folder.ico"
+10                     ICON                    "appicon.ico"
+11                     ICON                    "appicon.ico"
+12                     ICON                    "appicon.ico"
 
 #include <windows.h>
 

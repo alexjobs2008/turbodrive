@@ -54,5 +54,8 @@
         <file>folder_icons/mac/128_error.png</file>
         <file>folder_icons/mac/128_ok.png</file>
         <file>folder_icons/mac/128_sync.png</file>
+        <file>folder_icons/mac/512_error.png</file>
+        <file>folder_icons/mac/512_ok.png</file>
+        <file>folder_icons/mac/512_sync.png</file>
     </qresource>
 </RCC>
