@@ -109,8 +109,8 @@ void FileSystemHelper::setFolderIcon(
     const char *macIconResource = "";
 
     // Select icon
-    if (iconNumber == FOLDER_ICON_OK) macIconResource = ":/folder_icons/mac/128_ok.png";
-    else if (iconNumber == FOLDER_ICON_ERROR) macIconResource = ":/folder_icons/mac/128_error.png";
+    if (iconNumber == FOLDER_ICON_OK) macIconResource = ":/folder_icons/mac/512_ok.png";
+    else if (iconNumber == FOLDER_ICON_ERROR) macIconResource = ":/folder_icons/mac/512_error.png";
     else if (iconNumber == FOLDER_ICON_SYNC) macIconResource = ":/folder_icons/mac/128_sync.png";
 
     QIcon icon;
