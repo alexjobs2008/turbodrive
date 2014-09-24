@@ -43,6 +43,14 @@ IF(APPLE)
 	SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/../../res/icons/appicon_mac.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
 	# include the icns file in the target
 	SET(SOURCES ${SOURCES} ${CMAKE_CURRENT_SOURCE_DIR}/../../res/icons/appicon_mac.icns)
+
+        SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/res/folder_icons/mac/128_ok.png PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+        SET(SOURCES ${SOURCES} ${CMAKE_CURRENT_SOURCE_DIR}/res/folder_icons/mac/128_ok.png)
+        SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/res/folder_icons/mac/128_error.png PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+        SET(SOURCES ${SOURCES} ${CMAKE_CURRENT_SOURCE_DIR}/res/folder_icons/mac/128_error.png)
+        SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/res/folder_icons/mac/128_sync.png PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+        SET(SOURCES ${SOURCES} ${CMAKE_CURRENT_SOURCE_DIR}/res/folder_icons/mac/128_sync.png)
+
 ENDIF(APPLE)
 
 add_executable(${PROJECT_NAME}

@@ -11,6 +11,7 @@
 #include "Util/AppStrings.h"
 #include "Tutorial/tutorialplayer.h"
 #include "UtilUI/AuxWidgets.h"
+#include "FileUtils.h"
 
 #include "QsLog/QsLog.h"
 #include "QsLog/QsLogDest.h"
@@ -221,6 +222,7 @@ int main(int argc, char *argv[])
     // Run app
     //
 
+    Drive::Utils::setApplicationExePath(argv[0]);
     initApplicationInfo();
     initLogging();
     logStartInfo();
@@ -235,6 +237,10 @@ int main(int argc, char *argv[])
 	if(app.shouldContinue())
 	{
         Drive::AppController::instance().setTrayIcon(app.trayIcon());
+
+        /* QString diskPath = Settings::instance().get(Settings::folderPath).toString();
+        std::string str = diskPath.toStdString();
+        addToFinderFavorites(str.c_str()); */
 
         if (FileSystemHelper::instance().isFirstLaunch())
         {
