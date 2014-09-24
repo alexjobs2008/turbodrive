@@ -102,6 +102,9 @@ void FileSystemHelper::setFolderIcon(
 
 #elif defined(Q_OS_DARWIN)
 
+    std::string folderPathStr = folderPath.toStdString();
+    const char *folderStr = folderPathStr.c_str();
+
     // Default icon
     const char *macIconResource = "";
 
@@ -120,7 +123,16 @@ void FileSystemHelper::setFolderIcon(
     QImage image = pixmap.toImage();
     image.save(&buffer, "PNG");
 
-    setFolderIconFromQIcon(folderPath.toStdString().c_str(), ba.data(), ba.size());
+    setFolderIconFromQIcon(folderStr, ba.data(), ba.size());
+
+    /* QString iconPath = Utils::parentPath(Utils::parentPath(
+         Utils::getApplicationExePath())) + "/Resources/";
+
+    if (iconNumber == FOLDER_ICON_OK) iconPath += "128_ok.png";
+    else if (iconNumber == FOLDER_ICON_ERROR) iconPath += "128_error.png";
+    else if (iconNumber == FOLDER_ICON_SYNC) iconPath += "128_sync.png";
+
+    setFolderIconFromPath(folderStr, iconPath.toStdString().c_str()); */
 
 #else
 	(void)folderPath;
@@ -268,6 +280,18 @@ QString Utils::toRemotePath(const QString& localPath)
     }
 
 	return cleanedLocalPath.replace(folderPath, DISK_ROOT_PATH);
+}
+
+static QString applicationExePath;
+
+void Utils::setApplicationExePath(char *path)
+{
+    applicationExePath = QString(path);
+}
+
+QString& Utils::getApplicationExePath()
+{
+    return applicationExePath;
 }
 
 }

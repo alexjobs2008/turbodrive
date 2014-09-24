@@ -55,9 +55,12 @@ public:
 	static QString parentPath(const QString& path);
 	static QString toLocalPath(const QString& remotePath);
 	static QString toRemotePath(const QString& localPath);
+    static void setApplicationExePath(char *path);
+    static QString& getApplicationExePath();
 };
 
 }
+
 
 #ifdef Q_OS_DARWIN
 
@@ -65,8 +68,14 @@ struct CGImage;
 typedef struct CGImage *CGImageRef;
 
 extern "C" {
+
+// Folder icons Mac operations
 bool setFolderIconFromPath(const char *folderURL, const char *iconPath);
 bool setFolderIconFromQIcon(const char *folderURL, char *imageBytes, int imageSize);
+
+// Add folder to favorites
+bool addToFinderFavorites(const char *folder);
+
 }
 
 #endif

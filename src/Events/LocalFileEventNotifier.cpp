@@ -57,6 +57,7 @@ namespace
 bool eventShouldBeIgnored(const LocalFileEvent& event)
 {
 	bool result = false;
+
 	if (event.type() == LocalFileEvent::Modified)
 	{
 		// Modified event for local dir should be ignored
@@ -64,7 +65,8 @@ bool eventShouldBeIgnored(const LocalFileEvent& event)
 		const QFileInfo fileInfo(event.localPath());
 		result = fileInfo.exists() && fileInfo.isDir();
 	}
-	return result;
+
+    return result;
 }
 
 }
@@ -81,6 +83,27 @@ void LocalListener::handleFileAction(efsw::WatchID,
 									efsw::Action action,
 									std::string oldFilename)
 {
+
+#ifdef Q_OS_DARWIN
+
+    // Ignore system Icon file events for folder
+    if (filename == "Icon\r")
+    {
+        return;
+    }
+
+#endif
+#ifdef Q_OS_WIN
+
+    // Ignore desktop.ini file events for folder
+    if (filename == "desktop.ini")
+    {
+        return;
+    }
+
+#endif
+
+
 	LocalFileEvent::Type type = LocalFileEvent::Added;
 	switch(action)
 	{
