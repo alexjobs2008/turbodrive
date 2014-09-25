@@ -15,6 +15,10 @@ TutorialMacStep2::TutorialMacStep2(QWidget *parent) :
     ui->setupUi(this);
     step->init(ui->cancelButton, ui->backButton, ui->nextButton);
 
+    ui->cancelButton->setFocusPolicy(Qt::NoFocus);
+    ui->nextButton->setFocusPolicy(Qt::NoFocus);
+    ui->backButton->setFocusPolicy(Qt::NoFocus);
+
     connect(ui->googlePlayButton, &QPushButton::clicked, this, &TutorialMacStep2::pushedGooglePlay);
     connect(ui->appStoreButton, &QPushButton::clicked, this, &TutorialMacStep2::pushedAppleAppStore);
 }

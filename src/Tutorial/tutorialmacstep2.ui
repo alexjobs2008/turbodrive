@@ -7,27 +7,23 @@
     <x>0</x>
     <y>0</y>
     <width>540</width>
-    <height>450</height>
+    <height>460</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>540</width>
-    <height>450</height>
+    <height>460</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>540</width>
-    <height>450</height>
+    <height>460</height>
    </size>
   </property>
   <property name="windowTitle">
    <string>Настройка МТС Диска</string>
-  </property>
-  <property name="windowIcon">
-   <iconset resource="../Application/res/res.qrc">
-    <normaloff>:/appicon/256.png</normaloff>:/appicon/256.png</iconset>
   </property>
   <property name="autoFillBackground">
    <bool>false</bool>
@@ -72,7 +68,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/tutorial_mac/tutorial_mac_step2_0.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/tutorial_mac_step2_0.tiff&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
@@ -116,14 +112,7 @@
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>res/tutorial_mac/tutorial_mac_step2_1.png</normaloff>
-     <normalon>:/tutorial_mac/tutorial_mac_step2_1.png</normalon>
-     <disabledoff>:/tutorial_mac/tutorial_mac_step2_1.png</disabledoff>
-     <disabledon>:/tutorial_mac/tutorial_mac_step2_1.png</disabledon>
-     <activeoff>:/tutorial_mac/tutorial_mac_step2_1.png</activeoff>
-     <activeon>:/tutorial_mac/tutorial_mac_step2_1.png</activeon>
-     <selectedoff>:/tutorial_mac/tutorial_mac_step2_1.png</selectedoff>
-     <selectedon>:/tutorial_mac/tutorial_mac_step2_1.png</selectedon>res/tutorial_mac/tutorial_mac_step2_1.png</iconset>
+     <normaloff>../Application/res/tutorial_mac_step2_1.tiff</normaloff>../Application/res/tutorial_mac_step2_1.tiff</iconset>
    </property>
    <property name="iconSize">
     <size>
@@ -155,14 +144,7 @@
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>res/tutorial_mac/tutorial_mac_step2_2.png</normaloff>
-     <normalon>:/tutorial_mac/tutorial_mac_step2_2.png</normalon>
-     <disabledoff>:/tutorial_mac/tutorial_mac_step2_2.png</disabledoff>
-     <disabledon>:/tutorial_mac/tutorial_mac_step2_2.png</disabledon>
-     <activeoff>:/tutorial_mac/tutorial_mac_step2_2.png</activeoff>
-     <activeon>:/tutorial_mac/tutorial_mac_step2_2.png</activeon>
-     <selectedoff>:/tutorial_mac/tutorial_mac_step2_2.png</selectedoff>
-     <selectedon>:/tutorial_mac/tutorial_mac_step2_2.png</selectedon>res/tutorial_mac/tutorial_mac_step2_2.png</iconset>
+     <normaloff>../Application/res/tutorial_mac_step2_2.tiff</normaloff>../Application/res/tutorial_mac_step2_2.tiff</iconset>
    </property>
    <property name="iconSize">
     <size>
@@ -190,7 +172,7 @@
     <property name="geometry">
      <rect>
       <x>420</x>
-      <y>10</y>
+      <y>13</y>
       <width>111</width>
       <height>23</height>
      </rect>
@@ -203,7 +185,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>10</y>
+      <y>13</y>
       <width>111</width>
       <height>23</height>
      </rect>
@@ -216,7 +198,7 @@
     <property name="geometry">
      <rect>
       <x>300</x>
-      <y>10</y>
+      <y>13</y>
       <width>111</width>
       <height>23</height>
      </rect>
@@ -227,8 +209,6 @@
    </widget>
   </widget>
  </widget>
- <resources>
-  <include location="../Application/res/res.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

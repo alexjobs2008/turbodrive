@@ -11,6 +11,8 @@ TutorialMacStep1::TutorialMacStep1(QWidget *parent) :
 {
     ui->setupUi(this);
     step->init(ui->cancelButton, 0, ui->nextButton);
+    ui->cancelButton->setFocusPolicy(Qt::NoFocus);
+    ui->nextButton->setFocusPolicy(Qt::NoFocus);
 }
 
 TutorialMacStep1::~TutorialMacStep1()
