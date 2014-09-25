@@ -252,6 +252,12 @@ int main(int argc, char *argv[])
         }
 
         int retCode = app.exec();
+
+        while (retCode == 0)
+        {
+            retCode = app.exec();
+        }
+
         return retCode;
 	}
 

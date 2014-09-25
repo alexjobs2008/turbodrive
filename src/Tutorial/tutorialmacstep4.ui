@@ -25,10 +25,6 @@
   <property name="windowTitle">
    <string>Настройка МТС Диска</string>
   </property>
-  <property name="windowIcon">
-   <iconset resource="../Application/res/res.qrc">
-    <normaloff>:/appicon/256.png</normaloff>:/appicon/256.png</iconset>
-  </property>
   <property name="autoFillBackground">
    <bool>false</bool>
   </property>
@@ -53,7 +49,7 @@
     </font>
    </property>
    <property name="text">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Теперь вы можете приступать к работе. Чтобы открыть папку МТС Диск, нажмите на значок в меню Пуск, на рабочем столе или нижней панели.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Теперь вы можете приступать к работе. Чтобы открыть папку МТС Диск, выберите пункт меню &amp;quot;Открыть папку&amp;quot;, или откройте двойным кликом иконку &amp;quot;МТС Диск&amp;quot; на рабочем столе.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -72,7 +68,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/tutorial_mac/tutorial_mac_step4.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/tutorial_mac_step4.tiff&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
@@ -112,20 +108,20 @@
     <property name="geometry">
      <rect>
       <x>420</x>
-      <y>10</y>
+      <y>13</y>
       <width>111</width>
       <height>23</height>
      </rect>
     </property>
     <property name="text">
-     <string>Далее</string>
+     <string>Готово</string>
     </property>
    </widget>
    <widget class="QPushButton" name="cancelButton">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>10</y>
+      <y>13</y>
       <width>111</width>
       <height>23</height>
      </rect>
@@ -138,7 +134,7 @@
     <property name="geometry">
      <rect>
       <x>300</x>
-      <y>10</y>
+      <y>13</y>
       <width>111</width>
       <height>23</height>
      </rect>
@@ -149,8 +145,6 @@
    </widget>
   </widget>
  </widget>
- <resources>
-  <include location="../Application/res/res.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

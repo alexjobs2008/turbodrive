@@ -57,5 +57,11 @@
         <file>folder_icons/mac/512_error.png</file>
         <file>folder_icons/mac/512_ok.png</file>
         <file>folder_icons/mac/512_sync.png</file>
+        <file>tutorial_mac_step1.tiff</file>
+        <file>tutorial_mac_step2_0.tiff</file>
+        <file>tutorial_mac_step2_1.tiff</file>
+        <file>tutorial_mac_step2_2.tiff</file>
+        <file>tutorial_mac_step3.tiff</file>
+        <file>tutorial_mac_step4.tiff</file>
     </qresource>
 </RCC>

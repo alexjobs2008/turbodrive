@@ -1,3 +1,5 @@
 <RCC>
-    <qresource prefix="/"/>
+    <qresource prefix="/">
+        <file>appicon_mac.icns</file>
+    </qresource>
 </RCC>

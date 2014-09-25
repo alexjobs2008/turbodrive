@@ -39,6 +39,7 @@ SingleApplication::SingleApplication(int argc, char *argv[])
 		m_localServer->listen(LOCAL_SERVER_NAME);
 	}
 
+    this->setAttribute(Qt::AA_UseHighDpiPixmaps);
     appInstance = this;
 }
 

@@ -114,11 +114,13 @@ void TutorialPlayer::connectSignals()
     for (int i = 0; i < steps.size(); i++)
     {
         TutorialStepInterface *step = steps[i];
+        QDialog *dialog = step->dialog();
+        dialog->setFocusPolicy(Qt::NoFocus);
 
         connect(step, &TutorialStepInterface::cancel, this, &TutorialPlayer::finish);
         connect(step, &TutorialStepInterface::back, this, &TutorialPlayer::back);
         connect(step, &TutorialStepInterface::next, this, &TutorialPlayer::next);
-        connect(step->dialog(), &QDialog::finished, this, &TutorialPlayer::dialogFinished);
+        connect(dialog, &QDialog::finished, this, &TutorialPlayer::dialogFinished);
     }
 }
 

@@ -105,7 +105,7 @@ void FileSystemHelper::setFolderIcon(
     std::string folderPathStr = folderPath.toStdString();
     const char *folderStr = folderPathStr.c_str();
 
-    // Default icon
+    /* // Default icon
     const char *macIconResource = "";
 
     // Select icon
@@ -123,16 +123,16 @@ void FileSystemHelper::setFolderIcon(
     QImage image = pixmap.toImage();
     image.save(&buffer, "PNG");
 
-    setFolderIconFromQIcon(folderStr, ba.data(), ba.size());
+    setFolderIconFromQIcon(folderStr, ba.data(), ba.size()); */
 
-    /* QString iconPath = Utils::parentPath(Utils::parentPath(
+    QString iconPath = Utils::parentPath(Utils::parentPath(
          Utils::getApplicationExePath())) + "/Resources/";
 
-    if (iconNumber == FOLDER_ICON_OK) iconPath += "128_ok.png";
-    else if (iconNumber == FOLDER_ICON_ERROR) iconPath += "128_error.png";
-    else if (iconNumber == FOLDER_ICON_SYNC) iconPath += "128_sync.png";
+    if (iconNumber == FOLDER_ICON_OK) iconPath += "ok.icns";
+    else if (iconNumber == FOLDER_ICON_ERROR) iconPath += "error.icns";
+    else if (iconNumber == FOLDER_ICON_SYNC) iconPath += "sync.icns";
 
-    setFolderIconFromPath(folderStr, iconPath.toStdString().c_str()); */
+    setFolderIconFromPath(folderStr, iconPath.toStdString().c_str());
 
 #else
 	(void)folderPath;
