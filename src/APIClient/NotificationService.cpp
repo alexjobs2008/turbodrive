@@ -52,7 +52,7 @@ bool NotificationResource::restricted() const
 
 bool NotificationResource::processGetResponse(int status,
 											const QByteArray& data,
-											const HeaderList&)
+                                            const HeaderList& headers)
 {
 	if (status != 200)
 	{
@@ -77,10 +77,21 @@ bool NotificationResource::processGetResponse(int status,
 
 	QJsonArray array = doc.array();
 
+    QLOG_TRACE() << "NotificationResource::processGetResponse(): BEGIN logging JSON response: data.size = " << data.size();
+
+    for (int i = 0; i < headers.size(); i++)
+    {
+        const HeaderPair& pair = headers.at(i);
+        QLOG_TRACE() << "Header[" << i << "] = { " << pair.first << ", " << pair.second << " }";
+    }
+
 	for (int i = 0; i < array.size(); i++)
 	{
 		QJsonValue value = array.at(i);
-		if (value.type() == QJsonValue::Object)
+
+        QLOG_TRACE() << "[" << i << "] = " << value;
+
+        if (value.type() == QJsonValue::Object)
 		{
 			QJsonObject obj = value.toObject();
 			RemoteFileEvent remoteEvent(RemoteFileEvent::fromJson(obj));
@@ -99,7 +110,9 @@ bool NotificationResource::processGetResponse(int status,
 		}
 	}
 
-	listenRemoteFileEvents();
+    QLOG_TRACE() << "NotificationResource::processGetResponse(): END logging JSON response:";
+
+    listenRemoteFileEvents();
 
 	return true;
 }

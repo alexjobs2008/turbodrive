@@ -54,7 +54,7 @@
     </font>
    </property>
    <property name="text">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Добавляйте файлы в папку МТС диск - они автоматически попадают в облачное пространство и будут доступны вам в любом месте и в любое время.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Добавляйте файлы в папку МТС диск &lt;span style=&quot; font-family:'Calibri,sans-serif';&quot;&gt;–&lt;/span&gt; они автоматически попадают в облачное пространство и будут доступны вам в любом месте и в любое время.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>

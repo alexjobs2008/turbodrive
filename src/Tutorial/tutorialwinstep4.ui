@@ -59,7 +59,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Далее</string>
+    <string>Готово</string>
    </property>
   </widget>
   <widget class="QPushButton" name="settingsButton">
