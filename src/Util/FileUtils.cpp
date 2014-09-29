@@ -23,6 +23,11 @@ using namespace std;
 namespace Drive
 {
 
+
+//
+// FileSystemHelper
+//
+
 FileSystemHelper& FileSystemHelper::instance()
 {
 	static FileSystemHelper myself;
@@ -54,6 +59,16 @@ void FileSystemHelper::trackLaunches()
         file.write("");
         file.close();
     }
+}
+
+void FileSystemHelper::removeLaunchTrackerFile()
+{
+    QString logDirPath = QStandardPaths::writableLocation(
+                QStandardPaths::DataLocation);
+
+    QString fileName(QDir::cleanPath(logDirPath).append("/").append(".MTSDrive.launchTracker"));
+
+    QFile::remove(fileName);
 }
 
 void FileSystemHelper::setFolderIcon(
@@ -240,6 +255,12 @@ bool FileSystemHelper::isFirstLaunch()
     return m_isFirstLaunch;
 }
 
+
+
+//
+// Utils
+//
+
 QString Utils::separator()
 {
 	return QLatin1String("/");
@@ -292,6 +313,177 @@ void Utils::setApplicationExePath(char *path)
 QString& Utils::getApplicationExePath()
 {
     return applicationExePath;
+}
+
+
+//
+// FolderIconController
+//
+
+FolderIconController &FolderIconController::instance()
+{
+    static FolderIconController controller;
+    return controller;
+}
+
+void FolderIconController::registerCOMServer()
+{
+    HMODULE dll = LoadLibrary(L"libCOM.dll");
+    typedef HRESULT(__stdcall *DllRegisterServerProc)();
+    DllRegisterServerProc DllRegisterServer =
+        (DllRegisterServerProc)GetProcAddress(dll, "DllRegisterServer");
+
+    HRESULT res = E_FAIL;
+    if (DllRegisterServer)
+    {
+        res = DllRegisterServer();
+    }
+
+    if (res != S_OK)
+    {
+        printf("DllRegisterServer for libCOM.dll failed with error code: %x",
+                (int) GetLastError());
+        QLOG_ERROR() << "DllRegisterServer for libCOM.dll failed with error code: "
+                        << GetLastError();
+    }
+}
+
+void FolderIconController::unRegisterCOMServer()
+{
+    HMODULE dll = LoadLibrary(L"libCOM.dll");
+    typedef HRESULT(__stdcall *DllUnRegisterServerProc)();
+    DllUnRegisterServerProc DllUnregisterServer =
+        (DllUnRegisterServerProc)GetProcAddress(dll, "DllUnregisterServer");
+
+    HRESULT res = E_FAIL;
+    if (DllUnregisterServer)
+    {
+        res = DllUnregisterServer();
+    }
+
+    if (res != S_OK)
+    {
+        QLOG_ERROR() << "DllRegisterServer for libCOM.dll failed with error code: "
+                        << GetLastError();
+    }
+}
+
+//
+// FolderIconController constructor
+// Connect signals
+//
+FolderIconController::FolderIconController(QObject *parent) :
+    QObject(parent)
+{
+    connect(this, &FolderIconController::setStateSignal,
+            this, &FolderIconController::handleSetState,
+            Qt::QueuedConnection);
+
+    connect(this, &FolderIconController::setDeletedSignal,
+            this, &FolderIconController::handleSetDeleted,
+            Qt::QueuedConnection);
+}
+
+//
+// State actions handlers
+//
+
+void FolderIconController::handleSetState(QString &fileName, int state)
+{
+    statesMap[fileName] = state;
+
+#ifdef Q_OS_DARWIN
+    setBadge(fileName, state);
+#endif
+
+#ifdef Q_OS_WIN
+    setWinStateAttribute(fileName, state);
+#endif
+
+}
+
+void FolderIconController::handleSetDeleted(QString &fileName)
+{
+    statesMap.remove(fileName);
+}
+
+//
+// State actions signal emitters
+//
+
+void FolderIconController::setState(QString &fileName, const int state)
+{
+    emit setStateSignal(fileName, state);
+}
+
+void FolderIconController::setDeleted(QString &fileName)
+{
+    emit setDeletedSignal(fileName);
+}
+
+int FolderIconController::getState(QString &fileName)
+{
+    QHash<QString, int>::iterator iter = statesMap.find(fileName);
+
+    // Found
+    if (iter != statesMap.end())
+    {
+        return iter.value();
+    }
+
+    // Not found
+    else
+    {
+        return FOLDER_STATE_NOT_SET;
+    }
+}
+
+void setWinStateAttribute(QString &fileName, int state)
+{
+    // Stream name
+    QString fileNameStr(fileName);
+    fileNameStr += ":Stream";
+    const wchar_t *fileNameCStr = fileNameStr.toStdWString().c_str();
+
+    // Open stream for exclusive read
+    HANDLE hStream = CreateFile(
+        fileNameCStr,            // Filename
+        GENERIC_WRITE,           // Desired access
+        0,                       // Share flags
+        NULL,                    // Security Attributes
+        CREATE_ALWAYS,           // Creation Disposition
+        0,                       // Flags and Attributes
+        NULL);                   // OVERLAPPED pointer
+
+    // If open error
+    if (hStream == INVALID_HANDLE_VALUE)
+    {
+        QLOG_ERROR() << "Could not open stream for file [" << fileNameCStr <<
+                       "] GetlastError() = " << GetLastError();
+    }
+
+    // If ok rewrite state
+    else
+    {
+        char buf[1] = {0};
+        buf[0] = state;
+
+        BOOL readResult = WriteFile(
+            hStream,            // _In_         HANDLE hFile,
+            buf,                // _In_         LPCVOID lpBuffer,
+            1,                  // _In_         DWORD nNumberOfBytesToWrite,
+            NULL,               // _Out_opt_    LPDWORD lpNumberOfBytesWritten,
+            NULL                // _Inout_opt_  LPOVERLAPPED lpOverlapped
+        );
+
+        if (!readResult)
+        {
+           QLOG_ERROR() << "Could not write to stream for file [" << fileNameCStr <<
+                           "] GetlastError() = " << GetLastError();
+        }
+
+        CloseHandle(hStream);
+    }
 }
 
 }

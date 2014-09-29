@@ -3,19 +3,28 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QFileInfo>
+#include <QHash>
+#include <QString>
+#include <QBuffer>
 
 #ifdef Q_OS_WIN
-	#include "Windows.h"
+#include "Windows.h"
 #endif
 
-#include <QBuffer>
 
 namespace Drive
 {
 
+
+// No state set for file or folder
+const int FOLDER_STATE_NOT_SET = 0;
+
+// Corresponds to folder or file state
 const int FOLDER_ICON_OK = 1;
 const int FOLDER_ICON_ERROR = 2;
 const int FOLDER_ICON_SYNC = 3;
+
+const int FOLDER_STATE_DELETED = 100;
 
 class FileSystemHelper : public QObject
 {
@@ -45,6 +54,10 @@ private:
 	explicit FileSystemHelper(QObject *parent = 0);
     void trackLaunches();
 
+public:
+    void removeLaunchTrackerFile();
+
+private:
     bool m_isFirstLaunch;
 };
 
@@ -59,8 +72,73 @@ public:
     static QString& getApplicationExePath();
 };
 
-}
 
+//
+// This singleton object sets file or folder synchronization state
+//
+class FolderIconController : public QObject
+{
+    Q_OBJECT
+    Q_DISABLE_COPY(FolderIconController)
+
+    // Map file full path to state
+    QHash<QString, int> statesMap;
+
+    // Disable constructor
+    explicit FolderIconController(QObject *parent = 0);
+
+public:
+    static FolderIconController& instance();
+    static void registerCOMServer();
+    static void unRegisterCOMServer();
+
+private slots:
+
+    //
+    // State actions handlers
+    //
+
+    void handleSetState(QString &fileName, int state);
+    void handleSetDeleted(QString &fileName);
+
+signals:
+
+    //
+    // State action signals
+    //
+
+    // Record file state
+    // state is one of: FOLDER_ICON_OK _ERROR _SYNC
+    void setStateSignal(QString& fileName, int state);
+
+    // Mark file deleted and remove it from map
+    void setDeletedSignal(QString& fileName);
+
+public :
+
+    // Record file state
+    // state is one of: FOLDER_ICON_OK _ERROR _SYNC
+    void setState(QString& fileName, const int state);
+
+    // Mark file deleted and remove it from map
+    void setDeleted(QString& fileName);
+
+    // Get recorded file state
+    int getState(QString& fileName);
+
+}; // class FolderIconController
+
+
+#ifdef Q_OS_WIN
+
+void setWinStateAttribute(QString& fileName, int state);
+
+#endif
+
+
+//
+// Mac OS X functions
+//
 
 #ifdef Q_OS_DARWIN
 
@@ -68,6 +146,10 @@ struct CGImage;
 typedef struct CGImage *CGImageRef;
 
 extern "C" {
+
+// Routine for setting file or folder icon badge on Mac OS
+// Second parameter used for not to read it from map
+void setBadge(QString& fileName, int state);
 
 // Folder icons Mac operations
 bool setFolderIconFromPath(const char *folderURL, const char *iconPath);
@@ -78,7 +160,10 @@ bool addToFinderFavorites(const char *folder);
 
 }
 
-#endif
+#endif // Q_OS_DARWIN
+
+
+} // namespace Drive
 
 
 #endif // FILE_UTILS_H

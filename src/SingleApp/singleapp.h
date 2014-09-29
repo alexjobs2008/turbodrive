@@ -16,7 +16,7 @@ private:
     static SingleApplication* appInstance;
 
 public:
-	SingleApplication(int, char *[]);
+    SingleApplication(int argc, char *argv[]);
 	~SingleApplication();
 
     static SingleApplication& instance() { return *appInstance; }

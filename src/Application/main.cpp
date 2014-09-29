@@ -174,6 +174,21 @@ void killProcessByName(const char *filename)
 
 #       endif
 
+void deleteAuthorizationData()
+{
+        // 1. Delete authorization data
+        Settings::instance().set(
+                    Settings::email, QVariant(QString()), Settings::RealSetting);
+        Settings::instance().set(
+                    Settings::password, QVariant(QString()), Settings::RealSetting);
+
+        // 2. Prevent force login on next launch
+        Settings::instance().set(
+                    Settings::autoLogin, QVariant(false), Settings::RealSetting);
+
+        Settings::instance().apply();
+}
+
 void doUninstallActions(char *exeName)
 {
 
@@ -186,38 +201,20 @@ void doUninstallActions(char *exeName)
 
 	exeName = 0; // dummy
 
-        // 1. Delete authorization data
-        Settings::instance().set(
-                    Settings::email, QVariant(QString()), Settings::RealSetting);
-        Settings::instance().set(
-                    Settings::password, QVariant(QString()), Settings::RealSetting);
+    deleteAuthorizationData();
+    FileSystemHelper::instance().removeLaunchTrackerFile();
+    FolderIconController::unRegisterCOMServer();
+}
 
-        // 2. Prevent force login on next launch
-        Settings::instance().set(
-                    Settings::autoLogin, QVariant(false), Settings::RealSetting);
-
+void doInstallActions()
+{
+    deleteAuthorizationData();
+    FileSystemHelper::instance().removeLaunchTrackerFile();
+    FolderIconController::registerCOMServer();
 }
 
 int main(int argc, char *argv[])
 {
-    //
-    // Process command line
-    //
-
-   /*  QLOG_DEBUG() << "Command line argc: " << argc << endl;
-    for (int i = 0; i < argc; i++)
-        QLOG_DEBUG() << "argv[" << i << "] = '" << argv[i] << "'" << endl; */
-
-    // If launched during uninstall
-    if (argc == 2 && strcmp(argv[1], "-uninstall") == 0)
-    {
-        // Do actions on application uninstall
-        doUninstallActions(argv[0]);
-
-        // Exit application
-        return 0;
-    }
-
     //
     // Run app
     //
@@ -233,6 +230,41 @@ int main(int argc, char *argv[])
 	initTranslator(app);
 	initFactories();
 	Settings::instance().log();
+    //
+    // Process command line
+    //
+
+    /*  QLOG_DEBUG() << "Command line argc: " << argc << endl;
+    for (int i = 0; i < argc; i++)
+        QLOG_DEBUG() << "argv[" << i << "] = '" << argv[i] << "'" << endl; */
+
+    // If launched for install or uninstall
+    if (argc == 2)
+    {
+        // On install
+        if (strcmp(argv[1], "-install") == 0)
+        {
+            doInstallActions();
+
+            // Exit application
+            return 0;
+        }
+
+        // On uninstall
+        else if (strcmp(argv[1], "-uninstall") == 0)
+        {
+            // Do actions on application uninstall
+            doUninstallActions(argv[0]);
+
+            // Exit application
+            return 0;
+        }
+    }
+
+
+    //
+    // Continue run app
+    //
 
 	if(app.shouldContinue())
 	{

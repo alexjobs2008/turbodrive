@@ -55,6 +55,10 @@ include_directories("Events")
 include_directories("Application")
 include_directories("Tutorial")
 
+if(WIN32)
+include_directories("COM")
+endif()
+
 add_subdirectory("3rdParty")
 add_subdirectory("AnimatedSystemTrayIcon")
 add_subdirectory("SingleApp")
@@ -69,3 +73,7 @@ add_subdirectory("APIClient")
 add_subdirectory("Events")
 add_subdirectory("Application")
 add_subdirectory("Tutorial")
+
+if(WIN32)
+add_subdirectory("COM")
+endif()
