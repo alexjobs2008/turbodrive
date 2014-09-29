@@ -5,6 +5,9 @@
 #include <QtCore/QThread>
 #include <QtCore/QCoreApplication>
 
+#include "FileUtils.h"
+
+
 namespace Drive
 {
 
@@ -18,12 +21,20 @@ class EventHandlerBase : public QThread
 {
     Q_OBJECT
 
+protected:
+
+    // File or folder name handled by this thread.
+    // Empty by default.
+    QString fileName;
+    int state;
+
 public:
 	// TODO: remove parent param
 	// The object cannot be moved to thread if it has a parent.
 	// see also QObject::moveToThread docs.
-	EventHandlerBase(QObject*)
-        : QThread(nullptr)
+    EventHandlerBase(QObject*) :
+        QThread(nullptr),
+        fileName()
 	{
         connect(this, &QThread::started, this, &EventHandlerBase::runEventHandlingPrivate, Qt::QueuedConnection);
         connect(this, &EventHandlerBase::quitThread, this, &QThread::quit, Qt::QueuedConnection);
@@ -32,6 +43,20 @@ public:
     }
 
     virtual ~EventHandlerBase() { }
+
+    void markSyncing(const QString &fileName);
+    void markOk();
+    void markError();
+    void markDeleted();
+
+signals:
+
+    void setStateSignal(QString& fileName, int state);
+
+    // Mark file deleted and remove it from map
+    void setDeletedSignal(QString& fileName);
+
+public:
 
     void startThread()
 	{

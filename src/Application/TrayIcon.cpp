@@ -31,21 +31,27 @@ void TrayIcon::setState(Drive::State state)
         {
         case Drive::NotAuthorized:
             FileSystemHelper::setFolderIcon(homePath, FOLDER_ICON_SYNC);
+            FolderIconController::instance().setState(homePath, FOLDER_ICON_SYNC);
             break;
         case Drive::Authorizing:
             FileSystemHelper::setFolderIcon(homePath, FOLDER_ICON_SYNC);
+            FolderIconController::instance().setState(homePath, FOLDER_ICON_SYNC);
             break;
         case Drive::Syncing:
             FileSystemHelper::setFolderIcon(homePath, FOLDER_ICON_SYNC);
+            FolderIconController::instance().setState(homePath, FOLDER_ICON_SYNC);
             break;
         case Drive::Synced:
             FileSystemHelper::setFolderIcon(homePath, FOLDER_ICON_OK);
+            FolderIconController::instance().setState(homePath, FOLDER_ICON_OK);
             break;
         case Drive::Paused:
             FileSystemHelper::setFolderIcon(homePath, FOLDER_ICON_SYNC);
+            FolderIconController::instance().setState(homePath, FOLDER_ICON_SYNC);
             break;
         case Drive::Error:
             FileSystemHelper::setFolderIcon(homePath, FOLDER_ICON_ERROR);
+            FolderIconController::instance().setState(homePath, FOLDER_ICON_ERROR);
             break;
         }
     }

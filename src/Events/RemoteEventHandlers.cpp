@@ -72,6 +72,9 @@ void RemoteFolderCreatedEventHandler::onGetAncestorsSucceeded(const QString& ful
 
 	const QString localFolder = Utils::toLocalPath(fullPath);
 
+    // Set file name
+    markSyncing(localFolder);
+
 	QDir dir(localFolder);
 	if (!dir.exists())
 	{
@@ -154,7 +157,7 @@ void RemoteFileRenamedEventHandler::onGetAncestorsSucceeded(const QString& fullP
 	LocalCache& cache = LocalCache::instance();
 
 	const RemoteFileDesc file = cache.file(m_remoteEvent.fileDesc.id);
-    // Q_ASSERT(file.isValid());
+
     if (!file.isValid())
     {
         QLOG_INFO() << "RemoteFileRenamedEventHandler::onGetAncestorsSucceeded file.isValid(), fullPath: "
@@ -175,6 +178,8 @@ void RemoteFileRenamedEventHandler::onGetAncestorsSucceeded(const QString& fullP
 
     const QString oldLocalPath = Utils::toLocalPath(oldLocalPathStr);
 
+    markSyncing(oldLocalPath);
+
 	if (oldLocalPath != newLocalPath)
 	{
 		Q_EMIT newLocalFileEventExclusion(
@@ -184,9 +189,17 @@ void RemoteFileRenamedEventHandler::onGetAncestorsSucceeded(const QString& fullP
 
         if(!QFile::rename(oldLocalPath, newLocalPath))
 		{
-            QLOG_ERROR() << "Failed to rename the file: [" << oldLocalPath
-                            << "] to [" << newLocalPath << "]";
-		}
+            this->markError();
+            QString errorText = QString("Failed to rename the file: [")
+                    + oldLocalPath + "] to [" + newLocalPath +"]";
+            QLOG_ERROR() << errorText;
+            emit failed((EventHandlerBase*) this, errorText);
+        }
+        else
+        {
+            markSyncing(newLocalPath);
+            this->markOk();
+        }
 	}
 
 	cache.addFile(m_remoteEvent.fileDesc);
@@ -239,6 +252,8 @@ void RemoteFileTrashedEventHandler::onGetAncestorsSucceeded(
 		Q_EMIT quitThread();
 	}
 
+    markSyncing(m_localPath);
+
 	if (fileInfo.isFile() || fileInfo.isSymLink())
 	{
 		LocalFileEventExclusion exclusion(LocalFileEvent::Deleted, m_localPath);
@@ -256,6 +271,8 @@ void RemoteFileTrashedEventHandler::onGetAncestorsSucceeded(
 
 		FileSystemHelper::removeDirWithSubdirs(m_localPath);
 	}
+
+    markDeleted();
 
 	Q_EMIT quitThread();
 }
@@ -323,6 +340,8 @@ void RemoteFileUploadedEventHandler::onGetAncestorsSucceeded(
 
 	m_localFilePath = Utils::toLocalPath(fullPath);
 
+    markSyncing(m_localFilePath);
+
 	QFileInfo fileInfo(m_localFilePath);
 	if (fileInfo.exists())
 	{
@@ -333,6 +352,7 @@ void RemoteFileUploadedEventHandler::onGetAncestorsSucceeded(
 					QDir::cleanPath(fileInfo.absolutePath()),
 					fileInfo.fileName()));
 			Q_EMIT succeeded();
+
 			processEventsAndQuit();
 			return;
 		}

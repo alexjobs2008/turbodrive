@@ -13,7 +13,7 @@
 SingleApplication* SingleApplication::appInstance;
 
 SingleApplication::SingleApplication(int argc, char *argv[])
-	: QApplication(argc, argv)
+    : QApplication(argc, argv)
 	, m_arguments(QApplication::arguments())
 	, m_shouldContinue(false)
 	, m_localServer(nullptr)

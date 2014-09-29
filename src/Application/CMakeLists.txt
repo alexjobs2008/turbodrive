@@ -207,10 +207,11 @@ set(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${PROJECT_NAME}")
 set(CPACK_PACKAGE_ICON ${ICON_FILE})
 
 if(APPLE)
-    set(CPACK_RESOURCE_FILE_LICENSE ${LICENSE_FILE})
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../../res/mac/after_cpack.sh.in
         ${CMAKE_CURRENT_BINARY_DIR}/after_cpack.sh)
 endif()
+
+set(CPACK_RESOURCE_FILE_LICENSE ${LICENSE_FILE})
 
 # this doesn't work wittout set(CPACK_NSIS_MODIFY_PATH ON)
 set(CPACK_CREATE_DESKTOP_LINKS "${PROJECT_NAME}")
@@ -229,6 +230,10 @@ set(CPACK_NSIS_INSTALLED_ICON_NAME "${PROJECT_NAME}.exe")
 set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
     CreateShortCut '$DESKTOP\\\\${SPACED_NAME}.lnk' '$INSTDIR\\\\bin\\\\${PROJECT_NAME}.exe'
     CreateShortCut '$PROFILE\\\\Links\\\\${SPACED_NAME}.lnk' '$PROFILE\\\\${SPACED_NAME}'
+    ExecWait '$INSTDIR\\\\bin\\\\${PROJECT_NAME}.exe -install'
+    WriteRegStr HKLM 'Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\ShellIconOverlayIdentifiers' 'OverlayIconHandlerOk' '{b50a71db-c4a7-4551-8d14-49983566afee}'
+    WriteRegStr HKLM 'Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\ShellIconOverlayIdentifiers' 'OverlayIconHandlerSync' '{394f2bb6-af35-4c93-b5dd-b75fa44b1526}'
+    WriteRegStr HKLM 'Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\ShellIconOverlayIdentifiers' 'OverlayIconHandlerError' '{76aa4b36-471f-4de8-8f4d-ddf1f8a77909}'
 ")
 
 set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "

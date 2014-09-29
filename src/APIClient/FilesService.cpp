@@ -104,7 +104,7 @@ bool GetAncestorsRestResource::restricted() const
 
 bool GetAncestorsRestResource::processGetResponse(int status,
 												const QByteArray& data,
-												const HeaderList&)
+                                                const HeaderList& headers)
 {
 	QLOG_TRACE() << "getAncestors requested finished: " << status;
 
@@ -122,10 +122,21 @@ bool GetAncestorsRestResource::processGetResponse(int status,
 	{
 		QJsonArray array = doc.array();
 
-		for (int i = 0; i < array.size(); i++)
+        QLOG_TRACE() << "NotificationResource::processGetResponse(): BEGIN logging JSON response: data.size = " << data.size();
+
+        for (int i = 0; i < headers.size(); i++)
+        {
+            const HeaderPair& pair = headers.at(i);
+            QLOG_TRACE() << "Header[" << i << "] = { " << pair.first << ", " << pair.second << " }";
+        }
+
+        for (int i = 0; i < array.size(); i++)
 		{
 			QJsonValue value = array.at(i);
-			if (value.type() == QJsonValue::Object)
+
+            QLOG_TRACE() << "[" << i << "] = " << value;
+
+            if (value.type() == QJsonValue::Object)
 			{
 				QJsonObject obj = value.toObject();
 				RemoteFileDesc fileDesc = RemoteFileDesc::fromJson(obj);

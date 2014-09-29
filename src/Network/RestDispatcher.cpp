@@ -365,7 +365,7 @@ void GeneralRestDispatcher::doOperation(RestResource::Operation operation,
 				QLOG_ERROR() << "Failed to convert request params.";
 				service->m_currentRequest.clear();
 				return;
-		}
+        }
 		}
 		else
 		{

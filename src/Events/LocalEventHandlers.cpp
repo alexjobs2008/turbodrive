@@ -39,6 +39,9 @@ LocalFileOrFolderAddedEventHandler::LocalFileOrFolderAddedEventHandler(
 
 void LocalFileOrFolderAddedEventHandler::runEventHandling()
 {
+    // Set name of file being handled
+    markSyncing(localEvent.localPath());
+
 	Q_ASSERT(localEvent.type() == LocalFileEvent::Added
 			|| localEvent.type() == LocalFileEvent::Modified);
 
@@ -278,7 +281,10 @@ LocalFileOrFolderDeletedEventHandler::LocalFileOrFolderDeletedEventHandler(
 
 void LocalFileOrFolderDeletedEventHandler::runEventHandling()
 {
-	Q_ASSERT(localEvent.type() == LocalFileEvent::Deleted);
+    // Set name of file being handled
+    markSyncing(localEvent.localPath());
+
+    Q_ASSERT(localEvent.type() == LocalFileEvent::Deleted);
 
     const QString localPathString = localEvent.localPath();
     const QString remotePath = Utils::toRemotePath(localPathString);
@@ -374,7 +380,10 @@ LocalFileOrFolderRenamedEventHandler::LocalFileOrFolderRenamedEventHandler(
 
 void LocalFileOrFolderRenamedEventHandler::runEventHandling()
 {
-	Q_ASSERT(localEvent.type() == LocalFileEvent::Moved);
+    // Set name of file being handled
+    markSyncing(localEvent.localPath());
+
+    Q_ASSERT(localEvent.type() == LocalFileEvent::Moved);
 
 	const QFileInfo oldFileInfo(localEvent.oldLocalPath());
 	const QFileInfo newFileInfo(localEvent.localPath());
