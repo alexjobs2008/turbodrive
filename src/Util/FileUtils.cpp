@@ -438,6 +438,8 @@ int FolderIconController::getState(QString &fileName)
     }
 }
 
+#ifdef Q_OS_WIN
+
 void setWinStateAttribute(QString &fileName, int state)
 {
     // Stream name
@@ -485,5 +487,7 @@ void setWinStateAttribute(QString &fileName, int state)
         CloseHandle(hStream);
     }
 }
+
+#endif
 
 }

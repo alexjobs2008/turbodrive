@@ -23,8 +23,19 @@ source_group(_res FILES ${QRC_RESOURCES} ${RC_RESOURCES})
 find_package(Qt5AxServer)
 
 qt5_add_resources(MOCED_RESOURCES ${QRC_RESOURCES})
+
 add_library(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS} ${MOCED_RESOURCES}
         ${RC_RESOURCES} "libCOM.def")
+
+#add_executable(${PROJECT_NAME}
+#        WIN32
+#        ${HEADERS}
+#        ${SOURCES}
+#        ${MOCED_RESOURCES}
+#        ${RC_RESOURCES}
+#)
+
+
 # qt5_use_modules(${PROJECT_NAME} Core Widgets Designer AxBase AxContainer AxServer)
 qt5_use_modules(${PROJECT_NAME} AxServer)
 
