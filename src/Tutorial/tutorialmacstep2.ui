@@ -102,7 +102,7 @@
     </rect>
    </property>
    <property name="autoFillBackground">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="styleSheet">
     <string notr="true">background-color: rgb(255, 255, 255);</string>
@@ -111,8 +111,8 @@
     <string/>
    </property>
    <property name="icon">
-    <iconset>
-     <normaloff>../Application/res/tutorial_mac_step2_1.tiff</normaloff>../Application/res/tutorial_mac_step2_1.tiff</iconset>
+    <iconset resource="../Application/res/res.qrc">
+     <normaloff>:/tutorial_mac_step2_1.tiff</normaloff>:/tutorial_mac_step2_1.tiff</iconset>
    </property>
    <property name="iconSize">
     <size>
@@ -134,7 +134,7 @@
     </rect>
    </property>
    <property name="autoFillBackground">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="styleSheet">
     <string notr="true">background-color: rgb(255, 255, 255);</string>
@@ -143,8 +143,8 @@
     <string/>
    </property>
    <property name="icon">
-    <iconset>
-     <normaloff>../Application/res/tutorial_mac_step2_2.tiff</normaloff>../Application/res/tutorial_mac_step2_2.tiff</iconset>
+    <iconset resource="../Application/res/res.qrc">
+     <normaloff>:/tutorial_mac_step2_2.tiff</normaloff>:/tutorial_mac_step2_2.tiff</iconset>
    </property>
    <property name="iconSize">
     <size>
@@ -209,6 +209,8 @@
    </widget>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="../Application/res/res.qrc"/>
+ </resources>
  <connections/>
 </ui>

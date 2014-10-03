@@ -21,21 +21,22 @@ class EventHandlerBase : public QThread
 {
     Q_OBJECT
 
-protected:
+    int syncronizationState;
 
     // File or folder name handled by this thread.
     // Empty by default.
     QString fileName;
-    int state;
 
 public:
 	// TODO: remove parent param
 	// The object cannot be moved to thread if it has a parent.
 	// see also QObject::moveToThread docs.
     EventHandlerBase(QObject*) :
-        QThread(nullptr),
-        fileName()
+        QThread(nullptr)
 	{
+        this->syncronizationState = 0;
+        this->syncronizationState = FOLDER_STATE_NOT_SET;
+
         connect(this, &QThread::started, this, &EventHandlerBase::runEventHandlingPrivate, Qt::QueuedConnection);
         connect(this, &EventHandlerBase::quitThread, this, &QThread::quit, Qt::QueuedConnection);
 

@@ -1,38 +1,44 @@
 #include "EventHandlerBase.h"
 #include "FileUtils.h"
-
+#include "Events/LocalFileEvent.h"
 
 void Drive::EventHandlerBase::markSyncing(const QString &fileName)
 {
     this->fileName = fileName;
 
-    if (state == Drive::FOLDER_STATE_NOT_SET)
+    if (syncronizationState != Drive::FOLDER_ICON_OK)
     {
+        syncronizationState = Drive::FOLDER_ICON_SYNC;
         FolderIconController::instance().setState(this->fileName, Drive::FOLDER_ICON_SYNC);
-        state = Drive::FOLDER_ICON_SYNC;
+        /* Q_EMIT newLocalFileEventExclusion(LocalFileEventExclusion(
+                    LocalFileEvent::Modified, this->fileName)); */
     }
 }
 
 void Drive::EventHandlerBase::markOk()
 {
-    if (state == Drive::FOLDER_ICON_SYNC)
+    if (syncronizationState == Drive::FOLDER_ICON_SYNC)
     {
-        FolderIconController::instance().setState(fileName, Drive::FOLDER_ICON_OK);
-        state = Drive::FOLDER_ICON_OK;
+        syncronizationState = Drive::FOLDER_ICON_OK;
+        FolderIconController::instance().setState(this->fileName, Drive::FOLDER_ICON_OK);
+        /* Q_EMIT newLocalFileEventExclusion(LocalFileEventExclusion(
+                    LocalFileEvent::Modified, this->fileName)); */
     }
 }
 
 void Drive::EventHandlerBase::markError()
 {
-    if (state == Drive::FOLDER_ICON_SYNC)
+    if (syncronizationState == Drive::FOLDER_ICON_SYNC)
     {
-        FolderIconController::instance().setState(fileName, Drive::FOLDER_ICON_ERROR);
-        state = Drive::FOLDER_ICON_ERROR;
+        syncronizationState = Drive::FOLDER_ICON_ERROR;
+        FolderIconController::instance().setState(this->fileName, Drive::FOLDER_ICON_ERROR);
+        /* Q_EMIT newLocalFileEventExclusion(LocalFileEventExclusion(
+                    LocalFileEvent::Modified, this->fileName)); */
     }
 }
 
 void Drive::EventHandlerBase::markDeleted()
 {
     FolderIconController::instance().setDeleted(fileName);
-    state = Drive::FOLDER_STATE_NOT_SET;
+    syncronizationState = Drive::FOLDER_STATE_NOT_SET;
 }

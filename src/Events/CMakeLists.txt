@@ -17,4 +17,5 @@ qt5_use_modules(${PROJECT_NAME} Network)
 target_link_libraries(${PROJECT_NAME}
 	Settings
 	efsw
+        Util
 )

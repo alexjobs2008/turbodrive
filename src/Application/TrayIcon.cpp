@@ -30,30 +30,57 @@ void TrayIcon::setState(Drive::State state)
         switch (state)
         {
         case Drive::NotAuthorized:
-            FileSystemHelper::setFolderIcon(homePath, FOLDER_ICON_SYNC);
+            // FileSystemHelper::setFolderIcon(homePath, FOLDER_ICON_SYNC);
             FolderIconController::instance().setState(homePath, FOLDER_ICON_SYNC);
             break;
         case Drive::Authorizing:
-            FileSystemHelper::setFolderIcon(homePath, FOLDER_ICON_SYNC);
+            // FileSystemHelper::setFolderIcon(homePath, FOLDER_ICON_SYNC);
             FolderIconController::instance().setState(homePath, FOLDER_ICON_SYNC);
             break;
         case Drive::Syncing:
-            FileSystemHelper::setFolderIcon(homePath, FOLDER_ICON_SYNC);
+            // FileSystemHelper::setFolderIcon(homePath, FOLDER_ICON_SYNC);
             FolderIconController::instance().setState(homePath, FOLDER_ICON_SYNC);
             break;
         case Drive::Synced:
-            FileSystemHelper::setFolderIcon(homePath, FOLDER_ICON_OK);
+            // FileSystemHelper::setFolderIcon(homePath, FOLDER_ICON_OK);
             FolderIconController::instance().setState(homePath, FOLDER_ICON_OK);
             break;
         case Drive::Paused:
-            FileSystemHelper::setFolderIcon(homePath, FOLDER_ICON_SYNC);
+            // FileSystemHelper::setFolderIcon(homePath, FOLDER_ICON_SYNC);
             FolderIconController::instance().setState(homePath, FOLDER_ICON_SYNC);
             break;
         case Drive::Error:
-            FileSystemHelper::setFolderIcon(homePath, FOLDER_ICON_ERROR);
+            // FileSystemHelper::setFolderIcon(homePath, FOLDER_ICON_ERROR);
             FolderIconController::instance().setState(homePath, FOLDER_ICON_ERROR);
             break;
         }
+
+#ifdef Q_OS_WIN
+
+        switch (state)
+        {
+        case Drive::NotAuthorized:
+            FileSystemHelper::setFolderIcon(homePath, FOLDER_ICON_SYNC);
+            break;
+        case Drive::Authorizing:
+            FileSystemHelper::setFolderIcon(homePath, FOLDER_ICON_SYNC);
+            break;
+        case Drive::Syncing:
+            FileSystemHelper::setFolderIcon(homePath, FOLDER_ICON_SYNC);
+            break;
+        case Drive::Synced:
+            FileSystemHelper::setFolderIcon(homePath, FOLDER_ICON_OK);
+            break;
+        case Drive::Paused:
+            FileSystemHelper::setFolderIcon(homePath, FOLDER_ICON_SYNC);
+            break;
+        case Drive::Error:
+            FileSystemHelper::setFolderIcon(homePath, FOLDER_ICON_ERROR);
+            break;
+        }
+
+#endif
+
     }
 }
 

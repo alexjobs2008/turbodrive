@@ -9,6 +9,7 @@
 #include <QtCore/QFileInfo>
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDateTime>
+#include <QtCore/QThread>
 #include <QStandardPaths>
 #include <QFile>
 #include <QDir>
@@ -117,16 +118,20 @@ void FileSystemHelper::setFolderIcon(
 
 #elif defined(Q_OS_DARWIN)
 
-    std::string folderPathStr = folderPath.toStdString();
+    /* std::string folderPathStr = folderPath.toStdString();
     const char *folderStr = folderPathStr.c_str();
 
-    /* // Default icon
+    // Default icon
     const char *macIconResource = "";
 
     // Select icon
     if (iconNumber == FOLDER_ICON_OK) macIconResource = ":/folder_icons/mac/512_ok.png";
     else if (iconNumber == FOLDER_ICON_ERROR) macIconResource = ":/folder_icons/mac/512_error.png";
     else if (iconNumber == FOLDER_ICON_SYNC) macIconResource = ":/folder_icons/mac/128_sync.png";
+
+    if (iconNumber == Drive::FOLDER_ICON_OK) macIconResource = ":/folder_icons/ok.icns";
+    else if (iconNumber == Drive::FOLDER_ICON_ERROR) macIconResource = ":/folder_icons/error.icns";
+    else if (iconNumber == Drive::FOLDER_ICON_SYNC) macIconResource = ":/folder_icons/sync.icns";
 
     QIcon icon;
 
@@ -136,19 +141,21 @@ void FileSystemHelper::setFolderIcon(
     QByteArray ba;              // Construct a QByteArray object
     QBuffer buffer(&ba);        // Construct a QBuffer object using the QbyteArray
     QImage image = pixmap.toImage();
-    image.save(&buffer, "PNG");
+    image.save(&buffer, "PNG"); */
 
-    setFolderIconFromQIcon(folderStr, ba.data(), ba.size()); */
+    // setFolderIconFromQIcon(folderStr, ba.data(), ba.size());
 
-    QString iconPath = Utils::parentPath(Utils::parentPath(
+    /* QString iconPath = Utils::parentPath(Utils::parentPath(
          Utils::getApplicationExePath())) + "/Resources/";
 
     if (iconNumber == FOLDER_ICON_OK) iconPath += "ok.icns";
     else if (iconNumber == FOLDER_ICON_ERROR) iconPath += "error.icns";
     else if (iconNumber == FOLDER_ICON_SYNC) iconPath += "sync.icns";
 
-    setFolderIconFromPath(folderStr, iconPath.toStdString().c_str());
+    setFolderIconFromPath(folderStr, iconPath.toStdString().c_str()); */
 
+    (void)folderPath;
+    (void)iconNumber;
 #else
 	(void)folderPath;
 	(void)iconNumber;
@@ -326,6 +333,8 @@ FolderIconController &FolderIconController::instance()
     return controller;
 }
 
+#ifdef Q_OS_WIN
+
 void FolderIconController::registerCOMServer()
 {
     HMODULE dll = LoadLibrary(L"libCOM.dll");
@@ -368,6 +377,8 @@ void FolderIconController::unRegisterCOMServer()
     }
 }
 
+#endif
+
 //
 // FolderIconController constructor
 // Connect signals
@@ -390,9 +401,13 @@ FolderIconController::FolderIconController(QObject *parent) :
 
 void FolderIconController::handleSetState(QString &fileName, int state)
 {
-    statesMap[fileName] = state;
+    {
+        QMutexLocker locker(&mutex);
+        statesMap[fileName] = state;
+    }
 
 #ifdef Q_OS_DARWIN
+    // if (state != Drive::FOLDER_ICON_SYNC)
     setBadge(fileName, state);
 #endif
 
@@ -400,6 +415,14 @@ void FolderIconController::handleSetState(QString &fileName, int state)
     setWinStateAttribute(fileName, state);
 #endif
 
+    // Give efsw time to react
+    QThread::msleep(500);
+
+    if (state == FOLDER_ICON_OK || state == FOLDER_ICON_ERROR)
+    {
+        QMutexLocker locker(&mutex);
+        statesMap.remove(fileName);
+    }
 }
 
 void FolderIconController::handleSetDeleted(QString &fileName)
@@ -413,16 +436,25 @@ void FolderIconController::handleSetDeleted(QString &fileName)
 
 void FolderIconController::setState(QString &fileName, const int state)
 {
-    emit setStateSignal(fileName, state);
+    // QMutexLocker locker(&mutex);
+
+    // emit setStateSignal(fileName, state);
+    handleSetState(fileName, state);
+    // FileSystemHelper::setFolderIcon(fileName, state);
 }
 
 void FolderIconController::setDeleted(QString &fileName)
 {
-    emit setDeletedSignal(fileName);
+    QMutexLocker locker(&mutex);
+
+    // emit setDeletedSignal(fileName);
+    handleSetDeleted(fileName);
 }
 
 int FolderIconController::getState(QString &fileName)
 {
+    QMutexLocker locker(&mutex);
+
     QHash<QString, int>::iterator iter = statesMap.find(fileName);
 
     // Found
@@ -436,6 +468,8 @@ int FolderIconController::getState(QString &fileName)
     {
         return FOLDER_STATE_NOT_SET;
     }
+}
+
 }
 
 #ifdef Q_OS_WIN
@@ -490,4 +524,56 @@ void setWinStateAttribute(QString &fileName, int state)
 
 #endif
 
+#ifdef Q_OS_DARWIN
+
+void setBadge(QString& fileName, int state)
+{
+    std::string folderPathStr = fileName.toStdString();
+    const char *folderStr = folderPathStr.c_str();
+
+    // Default icon
+    const char *macIconResource = "";
+
+    // Select icon
+    if (state == Drive::FOLDER_ICON_OK) macIconResource = ":/folder_icons/mac/512_ok.png";
+    else if (state == Drive::FOLDER_ICON_ERROR) macIconResource = ":/folder_icons/mac/512_error.png";
+    else if (state == Drive::FOLDER_ICON_SYNC) macIconResource = ":/folder_icons/mac/512_sync.png";
+
+    /* if (state == Drive::FOLDER_ICON_OK) macIconResource = ":/folder_icons/ok.icns";
+    else if (state == Drive::FOLDER_ICON_ERROR) macIconResource = ":/folder_icons/error.icns";
+    else if (state == Drive::FOLDER_ICON_SYNC) macIconResource = ":/folder_icons/sync.icns"; */
+
+    QIcon icon;
+
+    icon.addPixmap(QPixmap(macIconResource));
+    QSize size = icon.actualSize(QSize(512, 512));
+    QPixmap pixmap = icon.pixmap(size);
+    QByteArray ba;              // Construct a QByteArray object
+    QBuffer buffer(&ba);        // Construct a QBuffer object using the QbyteArray
+    QImage image = pixmap.toImage();
+    image.save(&buffer, "PNG");
+
+    QString homePath = Drive::Settings::instance().get(Drive::Settings::folderPath).toString();
+    char *fImageBytes = 0; int fImageSize = 0;
+
+    QIcon icon2;
+    QByteArray ba2;              // Construct a QByteArray object
+    QBuffer buffer2(&ba2);        // Construct a QBuffer object using the QbyteArray
+
+    if (fileName == homePath)
+    {
+        icon2.addPixmap(QPixmap(":/folder_icons/mac/folder-mac-512.png"));
+        QSize size2 = icon2.actualSize(QSize(512, 512));
+        QPixmap pixmap2 = icon2.pixmap(size2);
+        QImage image2 = pixmap2.toImage();
+        image2.save(&buffer2, "PNG");
+        fImageBytes = ba2.data(); fImageSize = ba2.size();
+    }
+
+    bool didSetIcon = setBadgeIcon2(folderStr, ba.data(), ba.size(), fImageBytes, fImageSize);
+    // bool didSetIcon = setBadgeIcon(folderStr, ba.data(), ba.size());
+    QLOG_TRACE() << "setBadgeIcon2 for file [" << fileName << "] to [" << macIconResource << "] returned [" << didSetIcon <<  "]";
 }
+
+#endif
+
