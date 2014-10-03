@@ -8,6 +8,7 @@
 
 #include "LocalFileEvent.h"
 #include "Settings/settings.h"
+#include "Util/FileUtils.h"
 
 
 namespace Drive
@@ -87,7 +88,7 @@ void LocalListener::handleFileAction(efsw::WatchID,
 #ifdef Q_OS_DARWIN
 
     // Ignore system Icon file events for folder
-    if (filename == "Icon\r")
+    if (filename == "Icon\r" || filename == ".DS_Store")
     {
         return;
     }
@@ -102,6 +103,18 @@ void LocalListener::handleFileAction(efsw::WatchID,
     }
 
 #endif
+
+    // Prevent reaction to icon changed event
+    std::string fullFileName = dir + filename;
+    QString fullFileNameStr(fullFileName.c_str());
+
+    // If event handling is in process
+    if (FolderIconController::instance().getState(fullFileNameStr)
+            != Drive::FOLDER_STATE_NOT_SET)
+    {
+        // Then do not react on modification
+        return;
+    }
 
 
 	LocalFileEvent::Type type = LocalFileEvent::Added;

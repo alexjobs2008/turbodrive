@@ -6,6 +6,7 @@
 #include <QHash>
 #include <QString>
 #include <QBuffer>
+#include <QMutex>
 
 #ifdef Q_OS_WIN
 #include "Windows.h"
@@ -81,6 +82,9 @@ class FolderIconController : public QObject
     Q_OBJECT
     Q_DISABLE_COPY(FolderIconController)
 
+    // Serialize access
+    QMutex mutex;
+
     // Map file full path to state
     QHash<QString, int> statesMap;
 
@@ -89,8 +93,11 @@ class FolderIconController : public QObject
 
 public:
     static FolderIconController& instance();
+
+#ifdef Q_OS_WIN
     static void registerCOMServer();
     static void unRegisterCOMServer();
+#endif
 
 private slots:
 
@@ -128,6 +135,7 @@ public :
 
 }; // class FolderIconController
 
+} // namespace Drive
 
 #ifdef Q_OS_WIN
 
@@ -150,6 +158,8 @@ extern "C" {
 // Routine for setting file or folder icon badge on Mac OS
 // Second parameter used for not to read it from map
 void setBadge(QString& fileName, int state);
+bool setBadgeIcon(const char *path, /* NSData* tag */ char *imageBytes, int imageSize);
+bool setBadgeIcon2(const char *path, char *imageBytes, int imageSize, char *fImageBytes, int fImageSize);
 
 // Folder icons Mac operations
 bool setFolderIconFromPath(const char *folderURL, const char *iconPath);
@@ -161,9 +171,6 @@ bool addToFinderFavorites(const char *folder);
 }
 
 #endif // Q_OS_DARWIN
-
-
-} // namespace Drive
 
 
 #endif // FILE_UTILS_H

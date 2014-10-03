@@ -63,5 +63,10 @@
         <file>tutorial_mac_step2_2.tiff</file>
         <file>tutorial_mac_step3.tiff</file>
         <file>tutorial_mac_step4.tiff</file>
+        <file>folder_icons/ok.icns</file>
+        <file>folder_icons/sync.icns</file>
+        <file>folder_icons/error.icns</file>
+        <file>appicon/app.icns</file>
+        <file>folder_icons/mac/folder-mac-512.png</file>
     </qresource>
 </RCC>

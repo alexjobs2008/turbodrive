@@ -1,6 +1,49 @@
 #include "FileUtils.h"
 #include <MacTypes.h>
 #import <Cocoa/Cocoa.h>
+#import <QuickLook/QuickLook.h>
+
+
+//
+// Utility functions
+//
+
+NSImage *resizeNSImage(NSImage *computerImage)
+{
+    // NSImage *computerImage = [NSImage imageNamed:NSImageNameComputer];
+    NSInteger size = 256;
+
+    NSBitmapImageRep *rep = [[NSBitmapImageRep alloc]
+                             initWithBitmapDataPlanes:NULL
+                             pixelsWide:size
+                             pixelsHigh:size
+                             bitsPerSample:8
+                             samplesPerPixel:4
+                             hasAlpha:YES
+                             isPlanar:NO
+                             colorSpaceName:NSCalibratedRGBColorSpace
+                             bytesPerRow:0
+                             bitsPerPixel:0];
+    [rep setSize:NSMakeSize(size, size)];
+
+    [NSGraphicsContext saveGraphicsState];
+    [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithBitmapImageRep:rep]];
+    [computerImage drawInRect:NSMakeRect(0, 0, size, size) fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
+    [NSGraphicsContext restoreGraphicsState];
+
+    NSData *data = [rep representationUsingType:NSPNGFileType properties:nil];
+    NSImage *img = [[NSImage alloc] initWithData:data];
+
+    return img;
+}
+
+
+
+
+//
+// Header functions
+//
+
 
 bool setFolderIconFromPath(const char *folderURL, const char *iconPath)
 {
@@ -56,22 +99,25 @@ bool addToFinderFavorites(const char *folder)
 {
     // Directory path
     NSString *directoryURLString = [NSString stringWithCString:folder encoding:NSUTF8StringEncoding];
-    NSURL* directoryURL = [NSURL URLWithString:[directoryURLString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-    CFURLRef directoryURLRef =  (CFURLRef)directoryURL;
+    // NSURL* directoryURL = [NSURL URLWithString:directoryURLString]; // stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    // CFURLRef directoryURLRef =  (CFURLRef)directoryURL;
+
+    NSURL *nsurl = [NSURL fileURLWithPath:directoryURLString];
+    CFURLRef url = (CFURLRef) nsurl;
 
     // NSURL* volumeUrl = [NSURL fileURLWithPath:@"/Volumes/MyVolume"];
     // [EBLaunchServices addItemWithURL:directoryURL toList:kLSSharedFileListFavoriteVolumes];
 
     LSSharedFileListRef list = LSSharedFileListCreate(NULL,
-        /* (CFStringRef) */ kLSSharedFileListFavoriteVolumes, NULL);
+        /* (CFStringRef) */ kLSSharedFileListFavoriteItems, NULL);
     if (!list) return NO;
 
-    NSLog(@"login_items are %@, url is %@, props are %s", list, directoryURL, "");
+    NSLog(@"login_items are %@, url is %@, props are %s", list, url, "");
 
     LSSharedFileListItemRef item = LSSharedFileListInsertItemURL(list,
                                                                  kLSSharedFileListItemLast,
-                                                                 NULL, NULL,
-                                                                 directoryURLRef,
+                                                                 (CFStringRef) @"МТС Диск", NULL,
+                                                                 url, // directoryURLRef,
                                                                  NULL, NULL);
     NSLog(@"item is %@", item);
 
@@ -80,13 +126,16 @@ bool addToFinderFavorites(const char *folder)
 
 }
 
-BOOL setBadge(NSString* path, /* NSData* tag */ char *imageBytes, int imageSize)
-
+bool setBadgeIcon(const char *pathURL, /* NSData* tag */ char *imageBytes, int imageSize)
 {
     FSCatalogInfo info;
     FSRef par;
     FSRef ref;
     Boolean dir = false;
+
+    // Directory path
+    NSString *path = [NSString stringWithCString:pathURL encoding:NSUTF8StringEncoding];
+    // NSURL* directoryURL = [NSURL URLWithString:[directoryURLString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 
     if (imageBytes && imageSize > 0 && (FSPathMakeRef((const unsigned char *)[path fileSystemRepresentation], &par, &dir) == noErr))
     {
@@ -111,7 +160,8 @@ BOOL setBadge(NSString* path, /* NSData* tag */ char *imageBytes, int imageSize)
             {
                 // file already exists; prepare to try to open it
                 const char *iconFileSystemPath =
-                        [[path stringByAppendingPathComponent:@"\000I\000c\000o\000n\000\r"] fileSystemRepresentation];
+//                        [[path stringByAppendingPathComponent:@"\000I\000c\000o\000n\000\r"] fileSystemRepresentation];
+                        [[path stringByAppendingPathComponent:@"Icon\r"] fileSystemRepresentation];
 
                 OSStatus status = FSPathMakeRef((const UInt8 *) iconFileSystemPath, &ref, NULL);
                 if (status != noErr)
@@ -206,5 +256,91 @@ BOOL setBadge(NSString* path, /* NSData* tag */ char *imageBytes, int imageSize)
     }
 
     return NO;
+}
+
+bool setBadgeIcon2(const char *path, char *imageBytes, int imageSize, char *fImageBytes, int fImageSize)
+{
+    bool didSetIcon = NO;
+    NSWorkspace *ws = [NSWorkspace sharedWorkspace];
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSSize size = NSMakeSize(256, 256);
+
+    // Directory path
+    NSString *directoryURLString = [NSString stringWithCString:path encoding:NSUTF8StringEncoding];
+    NSURL* directoryURL = [NSURL URLWithString:[directoryURLString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    CFURLRef directoryURLRef =  (CFURLRef)directoryURL;
+
+    // Badge image
+    NSData *imageData = [NSData dataWithBytes:imageBytes length:imageSize];
+    NSImage *badgeImage = resizeNSImage([[NSImage alloc] initWithData:imageData]);
+    // [badgeImage setSize:size];
+
+    NSData *fImageData = NULL;
+    NSImage *fileIcon = NULL;
+
+    if (fImageBytes != 0)
+    {
+        fImageData = [NSData dataWithBytes:fImageBytes length:fImageSize];
+        fileIcon = [[NSImage alloc] initWithData:fImageData];
+    }
+    else
+    {
+        // Try to get file thumbnail image
+        NSDictionary *options =
+                [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO]
+                forKey:(NSString *)kQLThumbnailOptionIconModeKey];
+
+        CGImageRef fileCGImage = QLThumbnailImageCreate(
+                    kCFAllocatorDefault, directoryURLRef, CGSizeMake(256, 256), (CFDictionaryRef) options);
+
+        // If found
+        if (NO) // fileCGImage != NULL)
+        {
+            fileIcon = [[NSImage alloc] initWithCGImage:fileCGImage size:size];
+        }
+
+        // If not found
+        else
+        {
+            // get default icon
+            fileIcon = [ws iconForFiles:[NSArray arrayWithObjects:directoryURLString, nil]];
+        }
+
+        // get default icon
+        // fileIcon = [ws iconForFiles:[NSArray arrayWithObjects:directoryURLString, nil]];
+    }
+
+    if (fileIcon != NULL)
+    {
+        NSError *error = NULL;
+        NSDictionary *fileAttributes = [fm attributesOfItemAtPath:directoryURLString error:&error];
+        NSDate *date = [fileAttributes fileModificationDate];
+
+        // Resize fileIcon
+        /* [fileIcon setScalesWhenResized:YES];
+        [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
+        [fileIcon setSize:size]; */
+
+        NSImage* iconImg = resizeNSImage(fileIcon);
+
+        // Combine thumbnail with badge
+        NSPoint aPoint = {0, 0};
+        NSImage* resultImage = [[NSImage alloc] initWithSize:size];
+        [resultImage lockFocus];
+
+        [iconImg drawAtPoint:aPoint fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+        [badgeImage drawAtPoint:aPoint fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+        // Or any of the other about 6 options; see Apple's guide to pick.
+
+        [resultImage unlockFocus];
+
+        didSetIcon = [ws setIcon:resultImage forFile:[directoryURL path] options:0];
+
+        // Restore modification date
+        NSDictionary* attr = [NSDictionary dictionaryWithObjectsAndKeys: date, NSFileModificationDate, NULL];
+        [[NSFileManager defaultManager] setAttributes: attr ofItemAtPath: directoryURLString error: &error];
+    }
+
+    return didSetIcon;
 }
 

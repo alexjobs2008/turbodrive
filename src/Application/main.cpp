@@ -20,6 +20,7 @@
 #include <QtCore/QTranslator>
 #include <QtCore/QDir>
 #include <QtCore/QStandardPaths>
+#include <QException>
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -203,14 +204,20 @@ void doUninstallActions(char *exeName)
 
     deleteAuthorizationData();
     FileSystemHelper::instance().removeLaunchTrackerFile();
+
+#ifdef Q_OS_WIN
     FolderIconController::unRegisterCOMServer();
+#endif
 }
 
 void doInstallActions()
 {
     deleteAuthorizationData();
     FileSystemHelper::instance().removeLaunchTrackerFile();
+
+#ifdef Q_OS_WIN
     FolderIconController::registerCOMServer();
+#endif
 }
 
 int main(int argc, char *argv[])
@@ -230,56 +237,95 @@ int main(int argc, char *argv[])
 	initTranslator(app);
 	initFactories();
 	Settings::instance().log();
+
+
+#ifdef Q_OS_WIN
     //
     // Process command line
     //
 
-    /*  QLOG_DEBUG() << "Command line argc: " << argc << endl;
-    for (int i = 0; i < argc; i++)
-        QLOG_DEBUG() << "argv[" << i << "] = '" << argv[i] << "'" << endl; */
+    try {
+
+
+    QLOG_DEBUG() << "Begin dump command line arguments" << endl;
+
+    // Command line arguments
+    QStringList arguments = app.arguments();
+    int argCount = arguments.count();
+
+    // Trace command line arguments
+    QLOG_DEBUG() << "Command line arguments count: " << argCount << endl;
+
+    for (int i = 0; i < argCount; i++)
+    {
+        QLOG_DEBUG() << "argument[" << i << "] = '" << arguments.at(i) << "'" << endl;
+    }
+
+    QLOG_DEBUG() << "End dump command line arguments" << endl;
 
     // If launched for install or uninstall
-    if (argc == 2)
+    if (argCount == 2)
     {
+        QString firstArg = arguments.at(1);
+
         // On install
-        if (strcmp(argv[1], "-install") == 0)
+        if (firstArg == "-install")
         {
+            QLOG_TRACE() << "Doing install actions";
             doInstallActions();
 
             // Exit application
+            QLOG_TRACE() << "Exiting application after install actions";
             return 0;
         }
 
         // On uninstall
-        else if (strcmp(argv[1], "-uninstall") == 0)
+        else if (firstArg == "-uninstall")
         {
             // Do actions on application uninstall
+            QLOG_TRACE() << "Doing uninstall actions";
             doUninstallActions(argv[0]);
 
             // Exit application
+            QLOG_TRACE() << "Exiting application after uninstall actions";
             return 0;
         }
     }
 
+    } catch (std::exception& ex) {
 
+        QLOG_ERROR() << "Error while accessing command line arguments: [" << ex.what() << "]" << endl;
+
+    } catch (...) {
+        QLOG_ERROR() << "Error while accessing command line arguments: " << endl;
+    }
+
+#endif // Q_OS_WIN
     //
     // Continue run app
     //
 
-	if(app.shouldContinue())
+    QLOG_TRACE() << "Main.Continue run app, going to tutorial or login";
+
+    if (app.shouldContinue())
 	{
         Drive::AppController::instance().setTrayIcon(app.trayIcon());
 
-        /* QString diskPath = Settings::instance().get(Settings::folderPath).toString();
+        QString diskPath = Settings::instance().get(Settings::folderPath).toString();
         std::string str = diskPath.toStdString();
-        addToFinderFavorites(str.c_str()); */
+        QLOG_TRACE() << "Adding folder " << str.c_str() << " to finder favourites";
+        addToFinderFavorites(str.c_str());
+
+        QLOG_TRACE() << "Launching...";
 
         if (FileSystemHelper::instance().isFirstLaunch())
         {
+            QLOG_TRACE() << "Launching tutorial";
             emit Drive::AppController::instance().tutorial();
         }
         else
         {
+            QLOG_TRACE() << "Launching login";
             emit Drive::AppController::instance().login();
         }
 
@@ -290,11 +336,15 @@ int main(int argc, char *argv[])
             retCode = app.exec();
         }
 
+        QLOG_TRACE() << "Exiting event loop, retCode = " << retCode;
+
         return retCode;
 	}
 
 	static const auto s_message = QString::fromLatin1(
 			"Duplicate instance detected - exiting.");
+
 	QLOG_INFO() << s_message;
+
 	return 0;
 }
