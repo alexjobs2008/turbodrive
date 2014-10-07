@@ -1,7 +1,7 @@
 #!/bin/bash
 
-DEBUG=0
-REBUILD=1
+DEBUG=1
+REBUILD=0
 
 echo 
 echo 

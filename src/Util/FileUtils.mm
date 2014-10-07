@@ -344,3 +344,25 @@ bool setBadgeIcon2(const char *path, char *imageBytes, int imageSize, char *fIma
     return didSetIcon;
 }
 
+void showDockIcon(bool show)
+{
+    NSApplicationPresentationOptions options;
+
+    if (show)
+    {
+        options = NSApplicationPresentationDefault;
+    }
+    else
+    {
+        options = NSApplicationPresentationHideDock + NSApplicationPresentationHideMenuBar;
+    }
+
+    @try
+    {
+        [NSApp setPresentationOptions:options];
+    }
+    @catch(NSException *exception)
+    {
+        NSLog(@"Error.  Make sure you have a valid combination of options.");
+    }
+}

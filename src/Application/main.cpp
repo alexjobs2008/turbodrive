@@ -226,6 +226,10 @@ int main(int argc, char *argv[])
     // Run app
     //
 
+#ifdef Q_OS_DARWIN
+    showDockIcon(false);
+#endif
+
     Drive::Utils::setApplicationExePath(argv[0]);
     initApplicationInfo();
     initLogging();

@@ -5,6 +5,7 @@
 #include "SettingsUI/SettingsWidget.h"
 #include "QsLog/QsLog.h"
 #include "Settings/settings.h"
+#include "Util/FileUtils.h"
 
 #include "APIClient/ApiTypes.h"
 #include "APIClient/AuthenticationService.h"
@@ -143,6 +144,7 @@ void LoginController::showLoginForm()
 	}
 
 	loginWidget->show();
+    showDockIcon(true);
 }
 
 void LoginController::login(const QString& username, const QString& password)
@@ -196,6 +198,7 @@ void LoginController::closeAll()
 	if (loginWidget)
 	{
         loginWidget->doClose();
+        showDockIcon(false);
         delete loginWidget;
 		loginWidget = 0;
 	}

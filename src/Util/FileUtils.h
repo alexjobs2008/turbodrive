@@ -168,6 +168,8 @@ bool setFolderIconFromQIcon(const char *folderURL, char *imageBytes, int imageSi
 // Add folder to favorites
 bool addToFinderFavorites(const char *folder);
 
+void showDockIcon(bool show);
+
 }
 
 #endif // Q_OS_DARWIN
