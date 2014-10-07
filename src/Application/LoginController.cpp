@@ -76,6 +76,7 @@ namespace Drive
 {
 
 LoginWidget* LoginController::loginWidget = 0;
+PasswordResetWidget* LoginController::passwordResetWidget(0);
 
 LoginController& LoginController::instance()
 {
@@ -179,7 +180,9 @@ void LoginController::passwordReset(const QString& username)
         // QCoreApplication::processEvents();
 	}
 
-	PasswordResetResourceRef passwordResetResource =
+    this->showPasswordResetWidget(username);
+
+    /* PasswordResetResourceRef passwordResetResource =
 		PasswordResetResource::create();
 
 	connect(passwordResetResource.data(), &PasswordResetResource::resetSuccessfully,
@@ -188,7 +191,7 @@ void LoginController::passwordReset(const QString& username)
 	connect(passwordResetResource.data(), &PasswordResetResource::resetFailed,
 			this, &LoginController::onPasswordResetFailed);
 
-	passwordResetResource->resetPassword(username);
+    passwordResetResource->resetPassword(username); */
 }
 
 void LoginController::closeAll()
@@ -213,7 +216,28 @@ void LoginController::requestUserData()
 	connect(userResource.data(), &ProfileRestResource::profileDataError,
 			this, &LoginController::onProfileDataError);
 
-	userResource->requestProfileData();
+    userResource->requestProfileData();
+}
+
+void LoginController::showPasswordResetWidget(const QString& username)
+{
+    if (passwordResetWidget != 0)
+    {
+        closePasswordResetWidget();
+    }
+
+    passwordResetWidget = new PasswordResetWidget(username);
+    loginWidget->hide();
+    passwordResetWidget->show();
+}
+
+void LoginController::closePasswordResetWidget()
+{
+    if (passwordResetWidget != 0)
+    {
+        passwordResetWidget->close();
+        passwordResetWidget = 0;
+    }
 }
 
 void LoginController::onLoginSucceeded(
@@ -255,17 +279,23 @@ void LoginController::onLoginFailed(const QString& error)
 
 void LoginController::onPasswordResetSucceeded()
 {
-	if (loginWidget)
+    closePasswordResetWidget();
+
+    if (loginWidget)
 	{
+        loginWidget->show();
 		loginWidget->enableControls(true);
 	}
 }
 
 void LoginController::onPasswordResetFailed(const QString&)
 {
+    closePasswordResetWidget();
+
 	if (loginWidget)
 	{
-		loginWidget->enableControls(true);
+        loginWidget->show();
+        loginWidget->enableControls(true);
 	}
 }
 

@@ -1,0 +1,50 @@
+HKCR
+{
+	OverlayIcon.MTSDiskSyncOverlayIcon.1 = s 'MTSDiskSyncOverlayIcon Class'
+	{
+		CLSID = s '{5A00C1BA-A961-4CF3-9487-1732B4F3D138}'
+	}
+	OverlayIcon.MTSDiskSyncOverlayIcon = s 'MTSDiskSyncOverlayIcon Class'
+	{
+		CLSID = s '{5A00C1BA-A961-4CF3-9487-1732B4F3D138}'
+		CurVer = s 'OverlayIcon.MTSDiskSyncOverlayIcon.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {5A00C1BA-A961-4CF3-9487-1732B4F3D138} = s 'MTSDiskSyncOverlayIcon Class'
+		{
+			ForceRemove Programmable
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			TypeLib = s '{ADF1FA2A-6EAA-4A97-A55F-3C8B92843EF5}'
+			Version = s '1.0'
+		}
+	}
+}
+
+HKLM
+{
+  NoRemove SOFTWARE
+  {
+    NoRemove Microsoft
+    {
+      NoRemove Windows
+      {
+        NoRemove CurrentVersion
+        {
+          NoRemove Explorer
+          {
+            NoRemove ShellIconOverlayIdentifiers
+            {
+              ForceRemove MTSDiskSyncOverlayIcon = s '{5A00C1BA-A961-4CF3-9487-1732B4F3D138}'
+              {
+              }           
+            }
+          }
+        }
+      }
+    }
+  }
+}

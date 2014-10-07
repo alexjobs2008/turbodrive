@@ -1,0 +1,50 @@
+HKCR
+{
+	OverlayIcon.MTSDiskErrorOverlayIcon.1 = s 'MTSDiskErrorOverlayIcon Class'
+	{
+		CLSID = s '{28304A9F-005B-433D-BC48-6E97DB04968D}'
+	}
+	OverlayIcon.MTSDiskErrorOverlayIcon = s 'MTSDiskErrorOverlayIcon Class'
+	{
+		CLSID = s '{28304A9F-005B-433D-BC48-6E97DB04968D}'
+		CurVer = s 'OverlayIcon.MTSDiskErrorOverlayIcon.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {28304A9F-005B-433D-BC48-6E97DB04968D} = s 'MTSDiskErrorOverlayIcon Class'
+		{
+			ForceRemove Programmable
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			TypeLib = s '{ADF1FA2A-6EAA-4A97-A55F-3C8B92843EF5}'
+			Version = s '1.0'
+		}
+	}
+}
+
+HKLM
+{
+  NoRemove SOFTWARE
+  {
+    NoRemove Microsoft
+    {
+      NoRemove Windows
+      {
+        NoRemove CurrentVersion
+        {
+          NoRemove Explorer
+          {
+            NoRemove ShellIconOverlayIdentifiers
+            {
+              ForceRemove MTSDiskErrorOverlayIcon = s '{28304A9F-005B-433D-BC48-6E97DB04968D}'
+              {
+              }           
+            }
+          }
+        }
+      }
+    }
+  }
+}

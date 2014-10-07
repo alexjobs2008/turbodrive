@@ -206,7 +206,7 @@ void doUninstallActions(char *exeName)
     FileSystemHelper::instance().removeLaunchTrackerFile();
 
 #ifdef Q_OS_WIN
-    FolderIconController::unRegisterCOMServer();
+    // FolderIconController::unRegisterCOMServer();
 #endif
 }
 
@@ -216,12 +216,13 @@ void doInstallActions()
     FileSystemHelper::instance().removeLaunchTrackerFile();
 
 #ifdef Q_OS_WIN
-    FolderIconController::registerCOMServer();
+    // FolderIconController::registerCOMServer();
 #endif
 }
 
 int main(int argc, char *argv[])
 {
+
     //
     // Run app
     //
@@ -230,6 +231,10 @@ int main(int argc, char *argv[])
     initApplicationInfo();
     initLogging();
     logStartInfo();
+
+    setWinStateAttribute(QString("c:\\tmp\\p111.ada"), 1);
+    setWinStateAttribute(QString("c:\\tmp\\p112.ada"), 2);
+    setWinStateAttribute(QString("c:\\tmp\\p113.ada"), 3);
 
     SingleApplication app(argc, argv);
 

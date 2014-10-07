@@ -401,33 +401,56 @@ FolderIconController::FolderIconController(QObject *parent) :
 
 void FolderIconController::handleSetState(QString &fileName, int state)
 {
+    //
+    // 1 Serialize
+    //
+    QMutexLocker locker(&mutex);
+
+    //
+    // Set state
+    //
+    stateMap[fileName] = state;
+
+    //
+    // Set syncronization events counter for one folder/file
+    //
+    QHash<QString, int>::iterator counterIter = stateCounter.find(fileName);
+
+    if (counterIter != stateCounter.end())
     {
-        QMutexLocker locker(&mutex);
-        statesMap[fileName] = state;
+        counterIter.value()++;
+    }
+    else
+    {
+        stateCounter[fileName] = 1;
     }
 
+
+    //
+    // Set file/folder mark (icon)
+    //
 #ifdef Q_OS_DARWIN
-    // if (state != Drive::FOLDER_ICON_SYNC)
     setBadge(fileName, state);
 #endif
-
 #ifdef Q_OS_WIN
-    setWinStateAttribute(fileName, state);
-#endif
+    QFileInfo fileInfo(fileName);
 
-    // Give efsw time to react
-    QThread::msleep(500);
-
-    if (state == FOLDER_ICON_OK || state == FOLDER_ICON_ERROR)
+    if (fileInfo.isDir())
     {
-        QMutexLocker locker(&mutex);
-        statesMap.remove(fileName);
+        // FileSystemHelper::setFolderIcon(fileName, state);
+        setWinStateAttribute(fileName, state);
     }
+    else
+    {
+        setWinStateAttribute(fileName, state);
+    }
+#endif
 }
 
 void FolderIconController::handleSetDeleted(QString &fileName)
 {
-    statesMap.remove(fileName);
+    QMutexLocker locker(&mutex);
+    stateMap.remove(fileName);
 }
 
 //
@@ -436,8 +459,6 @@ void FolderIconController::handleSetDeleted(QString &fileName)
 
 void FolderIconController::setState(QString &fileName, const int state)
 {
-    // QMutexLocker locker(&mutex);
-
     // emit setStateSignal(fileName, state);
     handleSetState(fileName, state);
     // FileSystemHelper::setFolderIcon(fileName, state);
@@ -445,8 +466,6 @@ void FolderIconController::setState(QString &fileName, const int state)
 
 void FolderIconController::setDeleted(QString &fileName)
 {
-    QMutexLocker locker(&mutex);
-
     // emit setDeletedSignal(fileName);
     handleSetDeleted(fileName);
 }
@@ -455,12 +474,20 @@ int FolderIconController::getState(QString &fileName)
 {
     QMutexLocker locker(&mutex);
 
-    QHash<QString, int>::iterator iter = statesMap.find(fileName);
+    QHash<QString, int>::iterator iter = stateMap.find(fileName);
 
     // Found
-    if (iter != statesMap.end())
+    if (iter != stateMap.end())
     {
-        return iter.value();
+        // Get current state
+        int state = iter.value();
+
+        if (state == FOLDER_STATE_FINISHED)
+        {
+            stateMap[fileName] = FOLDER_STATE_NOT_SET;
+        }
+
+        return state;
     }
 
     // Not found
@@ -468,33 +495,84 @@ int FolderIconController::getState(QString &fileName)
     {
         return FOLDER_STATE_NOT_SET;
     }
+
+    return FOLDER_STATE_NOT_SET;
 }
 
+// Return true if all 4 sync events occured, false otherwise
+bool FolderIconController::getCounter(QString &fileName)
+{
+    QMutexLocker locker(&mutex);
+
+    QHash<QString, int>::iterator counterIter = stateCounter.find(fileName);
+
+    if (counterIter != stateCounter.end())
+    {
+        counterIter.value()++;
+
+        // If all sync events occured, reset counter
+        if (counterIter.value() > 4)
+        {
+            counterIter.value() = 0;
+            return true;
+        }
+    }
+    else
+    {
+        return false;
+    }
+
+    return false;
+}
+
+void FolderIconController::resetAllCounters()
+{
+    QMutexLocker locker(&mutex);
+    stateCounter.clear();
 }
 
 #ifdef Q_OS_WIN
 
-void setWinStateAttribute(QString &fileName, int state)
+void setWinStateAttribute(QString fileName, int state)
 {
+    // If file was deleted then do not set attributes
+    if (!QFile::exists(fileName)) return;
+
     // Stream name
     QString fileNameStr(fileName);
-    fileNameStr += ":Stream";
-    const wchar_t *fileNameCStr = fileNameStr.toStdWString().c_str();
+    std::wstring orgFileNameW = fileNameStr.toStdWString();
+
+    // Read file times
+    HANDLE fileHandle = CreateFile(orgFileNameW.c_str(),
+        GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+
+    FILETIME lpCreationTime = {0, 0};
+    FILETIME lpLastAccessTime = {0, 0};
+    FILETIME lpLastWriteTime = {0, 0};
+
+    BOOL fileResult = GetFileTime(fileHandle, &lpCreationTime,
+      &lpLastAccessTime, &lpLastWriteTime);
+
+    CloseHandle(fileHandle);
+
+    // Create file stream name
+    fileNameStr += ":Stream:$DATA";
+    std::wstring fileNameW = fileNameStr.toStdWString();
 
     // Open stream for exclusive read
     HANDLE hStream = CreateFile(
-        fileNameCStr,            // Filename
+        fileNameW.c_str(),            // Filename
         GENERIC_WRITE,           // Desired access
-        0,                       // Share flags
+        0,        // Share flags
         NULL,                    // Security Attributes
         CREATE_ALWAYS,           // Creation Disposition
-        0,                       // Flags and Attributes
+        FILE_ATTRIBUTE_NORMAL,                        // Flags and Attributes
         NULL);                   // OVERLAPPED pointer
 
     // If open error
     if (hStream == INVALID_HANDLE_VALUE)
     {
-        QLOG_ERROR() << "Could not open stream for file [" << fileNameCStr <<
+        QLOG_ERROR() << "Could not open stream for file [" << fileNameStr <<
                        "] GetlastError() = " << GetLastError();
     }
 
@@ -503,26 +581,40 @@ void setWinStateAttribute(QString &fileName, int state)
     {
         char buf[1] = {0};
         buf[0] = state;
+        DWORD numberOfBytesWritten = 0;
 
-        BOOL readResult = WriteFile(
+        BOOL writeResult = WriteFile(
             hStream,            // _In_         HANDLE hFile,
             buf,                // _In_         LPCVOID lpBuffer,
             1,                  // _In_         DWORD nNumberOfBytesToWrite,
-            NULL,               // _Out_opt_    LPDWORD lpNumberOfBytesWritten,
+            &numberOfBytesWritten,               // _Out_opt_    LPDWORD lpNumberOfBytesWritten,
             NULL                // _Inout_opt_  LPOVERLAPPED lpOverlapped
         );
 
-        if (!readResult)
+        if (!writeResult)
         {
-           QLOG_ERROR() << "Could not write to stream for file [" << fileNameCStr <<
+           QLOG_ERROR() << "Could not write to stream for file [" << fileNameStr <<
                            "] GetlastError() = " << GetLastError();
         }
 
         CloseHandle(hStream);
+
+        // Restore file times
+        HANDLE fileHandle = CreateFile(orgFileNameW.c_str(),
+            GENERIC_READ | FILE_WRITE_ATTRIBUTES, FILE_SHARE_READ, NULL,
+            OPEN_EXISTING, 0, NULL);
+
+        fileResult = SetFileTime(fileHandle, &lpCreationTime,
+          &lpLastAccessTime, &lpLastWriteTime);
+
+        (void) fileResult;
+        CloseHandle(fileHandle);
     }
 }
 
 #endif
+
+} // namespace Drive
 
 #ifdef Q_OS_DARWIN
 

@@ -42,19 +42,19 @@ QLabel#login {
 
 QLineEdit#usernameEdit, QLineEdit#passwordEdit {
 	border-image: url(":/input.png") 5;
-	border-width: 5px;
+        border-width: 2px;
 	background: transparent;
 
 	color: #444444;
 	min-width: 245px;
 	max-width: 245px;
-	min-height: 24px;
+        min-height: 30px;
         font: 10pt "Segoe UI";
 }
 
 QLineEdit#usernameEdit:disabled, QLineEdit#passwordEdit:disabled {
 	border-image: url(":/input-disabled.png") 5;
-	border-width: 5px;
+        border-width: 2px;
 	background: transparent;
 	color: gray;
 }
@@ -118,7 +118,7 @@ QCheckBox#rememberPassword:disabled {
 
 QPushButton#signIn {
 	border-image: url(":/button-normal.png") 5;
-	border-width: 5px;
+        border-width: 3px;
 	background: transparent;
         font: 13pt "Segoe UI";
 	font-weight: bold;
@@ -126,26 +126,26 @@ QPushButton#signIn {
 	color: white;
 	max-width: 245px;
 	min-width: 245px;
-        max-height: 30px;
-        min-height: 30px;
+        max-height: 34px;
+        min-height: 34px;
 	margin-left: 5px;
         margin-top: 6px;
 }
 
 QPushButton#signIn:hover {
 	border-image: url(":/button-hover.png") 5;
-	border-width: 5px;
+        border-width: 3px;
 	color: white;
 }
 
 QPushButton#signIn:pressed {
 	border-image: url(":/button-pressed.png") 5;
-	border-width: 5px;
+        border-width: 3px;
 }
 
 QPushButton#signIn:disabled {
 	border-image: url(":/button-disabled.png") 5;
-	border-width: 5px;
+        border-width: 3px;
 }
 
 CommonUI--LinkLabel#signUp {
