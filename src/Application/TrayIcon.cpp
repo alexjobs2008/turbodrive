@@ -2,6 +2,7 @@
 
 #include "Util/AppStrings.h"
 #include "QsLog/QsLog.h"
+#include "AppController.h"
 
 #include <QtCore/QCoreApplication>
 #include <QScreen>
@@ -88,10 +89,14 @@ void TrayIcon::onProcessingProgress(int currentPos, int totalEventCount)
 {
 	if (_state == Drive::Syncing)
 	{
-		setToolTip(QString(tr("%1 (%2 of %3)"))
-			.arg(baseToolTip)
-			.arg(currentPos)
-			.arg(totalEventCount));
+        QString tooltip = QString(tr("%1 (%2 of %3)"))
+                .arg(baseToolTip)
+                .arg(currentPos)
+                .arg(totalEventCount);
+
+        setToolTip(tooltip);
+
+        AppController::instance().setStateText();
 	}
 }
 

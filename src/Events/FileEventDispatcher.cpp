@@ -419,6 +419,7 @@ void FileEventDispatcher::cancelAll()
 	}
 
 	finish();
+    FolderIconController::instance().resetAllCounters();
 }
 
 void FileEventDispatcher::onEventHandlerFailed(EventHandlerBase *handler, const QString& error)

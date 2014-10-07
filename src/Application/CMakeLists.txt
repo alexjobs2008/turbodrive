@@ -134,6 +134,12 @@ if(WIN32)
                 DESTINATION bin
         )
 
+        # Windows Explorer shell overlay icons handler
+        install(FILES
+                ${CMAKE_CURRENT_SOURCE_DIR}/../../src/OverlayIcons/x64/${CMAKE_BUILD_TYPE}/MTSDriveOverlayIcon.dll
+
+                DESTINATION bin)
+
 endif()
 
 # License file
@@ -231,14 +237,25 @@ set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
     CreateShortCut '$DESKTOP\\\\${SPACED_NAME}.lnk' '$INSTDIR\\\\bin\\\\${PROJECT_NAME}.exe'
     CreateShortCut '$PROFILE\\\\Links\\\\${SPACED_NAME}.lnk' '$PROFILE\\\\${SPACED_NAME}'
     ExecWait '$INSTDIR\\\\bin\\\\${PROJECT_NAME}.exe -install'
-    WriteRegStr HKLM 'Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\ShellIconOverlayIdentifiers' 'OverlayIconHandlerOk' '{b50a71db-c4a7-4551-8d14-49983566afee}'
-    WriteRegStr HKLM 'Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\ShellIconOverlayIdentifiers' 'OverlayIconHandlerSync' '{394f2bb6-af35-4c93-b5dd-b75fa44b1526}'
-    WriteRegStr HKLM 'Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\ShellIconOverlayIdentifiers' 'OverlayIconHandlerError' '{76aa4b36-471f-4de8-8f4d-ddf1f8a77909}'
+    ExecWait 'regsvr32 /s \\\"$INSTDIR\\\\bin\\\\MTSDriveOverlayIcon.dll\\\" '
+    WriteRegStr HKLM 'Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\ShellIconOverlayIdentifiers\\\\MTSDiskOkOverlayIcon' '' '{912067E3-6243-4A8D-ADF8-57DABEA10BDC}'
+    WriteRegStr HKLM 'Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\ShellIconOverlayIdentifiers\\\\MTSDiskSyncOverlayIcon' '' '{5A00C1BA-A961-4CF3-9487-1732B4F3D138}'
+    WriteRegStr HKLM 'Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\ShellIconOverlayIdentifiers\\\\MTSDiskErrorOverlayIcon' '' '{28304A9F-005B-433D-BC48-6E97DB04968D}'
+
 ")
+
+#    WriteRegStr HKLM 'Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\ShellIconOverlayIdentifiers' 'OverlayIconHandlerOk' '{b50a71db-c4a7-4551-8d14-49983566afee}'
+#    WriteRegStr HKLM 'Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\ShellIconOverlayIdentifiers' 'OverlayIconHandlerSync' '{394f2bb6-af35-4c93-b5dd-b75fa44b1526}'
+#    WriteRegStr HKLM 'Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\ShellIconOverlayIdentifiers' 'OverlayIconHandlerError' '{76aa4b36-471f-4de8-8f4d-ddf1f8a77909}'
+
 
 set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "
     Delete '$PROFILE\\\\Links\\\\${SPACED_NAME}.lnk'
     Delete '$DESKTOP\\\\${SPACED_NAME}.lnk'
+    DeleteRegValue HKLM 'Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\ShellIconOverlayIdentifiers' 'MTSDiskOkOverlayIcon'
+    DeleteRegValue HKLM 'Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\ShellIconOverlayIdentifiers' 'MTSDiskSyncOverlayIcon'
+    DeleteRegValue HKLM 'Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\ShellIconOverlayIdentifiers' 'MTSDiskErrorOverlayIcon'
+    ExecWait 'regsvr32 /u /s \\\"$INSTDIR\\\\bin\\\\MTSDriveOverlayIcon.dll\\\" '
     ExecWait '$INSTDIR\\\\bin\\\\${PROJECT_NAME}.exe -uninstall'
 ")
 

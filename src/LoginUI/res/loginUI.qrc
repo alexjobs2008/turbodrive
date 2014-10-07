@@ -22,5 +22,9 @@
         <file>chekbox-checked-disabled.png</file>
         <file>LoginWidget/style-win.css</file>
         <file>LoginWidget/style-mac.css</file>
+        <file>PasswordResetWidget/Header.png</file>
+        <file>PasswordResetWidget/ResetPasswordButton.png</file>
+        <file>PasswordResetWidget/style-mac.css</file>
+        <file>PasswordResetWidget/style-win.css</file>
     </qresource>
 </RCC>

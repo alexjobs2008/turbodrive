@@ -1,0 +1,91 @@
+// OverlayIcon.idl : IDL source for OverlayIcon
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (OverlayIcon.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	object,
+	uuid(7BCA6879-A9F8-47DE-AE05-F5CE7EA3A474),
+	dual,
+	nonextensible,
+	helpstring("IMyOverlayIcon Interface"),
+	pointer_default(unique)
+]
+interface IMyOverlayIcon : IDispatch{
+};
+[
+	object,
+	uuid(7D1CE49D-72E9-43F8-89BA-D778E0F3B198),
+	dual,
+	nonextensible,
+	helpstring("IMTSDiskOkOverlayIcon Interface"),
+	pointer_default(unique)
+]
+interface IMTSDiskOkOverlayIcon : IDispatch{
+};
+[
+	object,
+	uuid(E1E82EB1-4C0B-48FE-A381-1A68261B0C12),
+	dual,
+	nonextensible,
+	helpstring("IMTSDiskSyncOverlayIcon Interface"),
+	pointer_default(unique)
+]
+interface IMTSDiskSyncOverlayIcon : IDispatch{
+};
+[
+	object,
+	uuid(F899450B-2343-4131-A898-4E1881942FF4),
+	dual,
+	nonextensible,
+	helpstring("IMTSDiskErrorOverlayIcon Interface"),
+	pointer_default(unique)
+]
+interface IMTSDiskErrorOverlayIcon : IDispatch{
+};
+[
+	uuid(ADF1FA2A-6EAA-4A97-A55F-3C8B92843EF5),
+	version(1.0),
+	helpstring("MTS OverlayIcon 1.0 Type Library")
+]
+library OverlayIconLib
+{
+	importlib("stdole2.tlb");
+	[
+		uuid(81539FE6-33C7-4CE7-90C7-1C7B8F2F2D40),
+		helpstring("MyOverlayIcon Class")
+	]
+	coclass MyOverlayIcon
+	{
+		[default] interface IMyOverlayIcon;
+	};
+	[
+		uuid(912067E3-6243-4A8D-ADF8-57DABEA10BDC),
+		helpstring("MTSDiskOkOverlayIcon Class")
+	]
+	coclass MTSDiskOkOverlayIcon
+	{
+		[default] interface IMTSDiskOkOverlayIcon;
+	};
+	[
+		uuid(5A00C1BA-A961-4CF3-9487-1732B4F3D138),
+		helpstring("MTSDiskSyncOverlayIcon Class")
+	]
+	coclass MTSDiskSyncOverlayIcon
+	{
+		[default] interface IMTSDiskSyncOverlayIcon;
+	};
+	[
+		uuid(28304A9F-005B-433D-BC48-6E97DB04968D),
+		helpstring("MTSDiskErrorOverlayIcon Class")
+	]
+	coclass MTSDiskErrorOverlayIcon
+	{
+		[default] interface IMTSDiskErrorOverlayIcon;
+	};
+};
+import "shobjidl.idl";

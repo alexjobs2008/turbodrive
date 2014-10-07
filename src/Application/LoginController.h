@@ -3,6 +3,8 @@
 
 #include <QtCore/QSharedPointer>
 #include <QtCore/QVariantMap>
+#include "LoginWidget.h"
+#include "passwordresetwidget.h"
 
 namespace Drive
 {
@@ -24,12 +26,18 @@ public slots:
 	void showLoginFormOrLogin();
 	void showLoginForm();
 	void login(const QString& username, const QString& password);
-	void passwordReset(const QString& username);
+    void passwordReset(const QString &username);
 	void closeAll();
 	void requestUserData();
+    void showPasswordResetWidget(const QString& username);
+    void closePasswordResetWidget();
 
 signals:
 	void loginFinished();
+
+public slots:
+    void onPasswordResetSucceeded();
+    void onPasswordResetFailed(const QString&);
 
 private slots:
 	void onLoginSucceeded(
@@ -37,8 +45,6 @@ private slots:
 
 	void onLoginFailed(const QString& error);
 
-	void onPasswordResetSucceeded();
-	void onPasswordResetFailed(const QString&);
 	void onProfileDataReceived(const QJsonObject& data);
 	void onProfileDataError();
 	void onAvatarDownloaded(const QPixmap& pixmap);
@@ -51,6 +57,7 @@ private:
     bool loggedIn;
 
 	static LoginWidget *loginWidget;
+    static PasswordResetWidget *passwordResetWidget;
 };
 
 }

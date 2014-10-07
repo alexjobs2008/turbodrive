@@ -25,6 +25,9 @@ const int FOLDER_ICON_OK = 1;
 const int FOLDER_ICON_ERROR = 2;
 const int FOLDER_ICON_SYNC = 3;
 
+// State after OK or ERROR
+const int FOLDER_STATE_FINISHED = 10;
+
 const int FOLDER_STATE_DELETED = 100;
 
 class FileSystemHelper : public QObject
@@ -86,7 +89,8 @@ class FolderIconController : public QObject
     QMutex mutex;
 
     // Map file full path to state
-    QHash<QString, int> statesMap;
+    QHash<QString, int> stateMap;
+    QHash<QString, int> stateCounter;
 
     // Disable constructor
     explicit FolderIconController(QObject *parent = 0);
@@ -132,16 +136,18 @@ public :
 
     // Get recorded file state
     int getState(QString& fileName);
+    bool getCounter(QString &fileName);
+    void resetAllCounters();
 
 }; // class FolderIconController
 
-} // namespace Drive
-
 #ifdef Q_OS_WIN
 
-void setWinStateAttribute(QString& fileName, int state);
+void setWinStateAttribute(QString fileName, int state);
 
 #endif
+
+} // namespace Drive
 
 
 //

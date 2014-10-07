@@ -253,9 +253,14 @@ void AppController::setState(State newState)
 	{
 		currentState = newState;
 		emit stateChanged(currentState);
-		actionStatus->setText(m_trayIcon->toolTip());
-		actionStatus->setVisible(!m_trayIcon->toolTip().isEmpty());
-	}
+        setStateText();
+    }
+}
+
+void AppController::setStateText()
+{
+    actionStatus->setText(m_trayIcon->toolTip());
+    actionStatus->setVisible(!m_trayIcon->toolTip().isEmpty());
 }
 
 void AppController::on_actionOpenFolder_triggered()

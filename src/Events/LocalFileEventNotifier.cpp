@@ -104,18 +104,20 @@ void LocalListener::handleFileAction(efsw::WatchID,
 
 #endif
 
-    // Prevent reaction to icon changed event
-    std::string fullFileName = dir + filename;
-    QString fullFileNameStr(fullFileName.c_str());
-
-    // If event handling is in process
-    if (FolderIconController::instance().getState(fullFileNameStr)
-            != Drive::FOLDER_STATE_NOT_SET)
+    if (action == efsw::Actions::Modified)
     {
-        // Then do not react on modification
-        return;
-    }
+        // Prevent reaction to icon changed event
+        std::string fullFileName = dir + filename;
+        QString fullFileNameStr(fullFileName.c_str());
 
+        // Check if event handling for modified file is in process
+        // No event handling while syncing (drop event)
+        bool isLastCount = FolderIconController::instance().getCounter(fullFileNameStr);
+        if (!isLastCount)
+        {
+            return;
+        }
+    }
 
 	LocalFileEvent::Type type = LocalFileEvent::Added;
 	switch(action)
