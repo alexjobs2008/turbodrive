@@ -87,9 +87,14 @@ LoginController& LoginController::instance()
 
 LoginController::LoginController(QObject *parent)
     : QObject(parent),
-      loggedIn(false)
+      loggedIn(false),
+      messageBox(new QMessageBox(loginWidget))
 {
-	connect(this, &LoginController::loginFinished,
+    messageBox->setMinimumWidth(350);
+    messageBox->setWindowTitle(trUtf8("Восстановление пароля"));
+    messageBoxButton = messageBox->addButton(trUtf8("Готово"), QMessageBox::YesRole);
+
+    connect(this, &LoginController::loginFinished,
 			this, &LoginController::onLoginFinished);
 }
 
@@ -129,6 +134,7 @@ void LoginController::showLoginForm()
 	if (!loginWidget)
 	{
 		loginWidget = new LoginWidget();
+        messageBox->setWindowIcon(loginWidget->windowIcon());
 
 		connect(loginWidget, &LoginWidget::loginRequest,
 			this, &LoginController::login);
@@ -229,8 +235,9 @@ void LoginController::showPasswordResetWidget(const QString& username)
         closePasswordResetWidget();
     }
 
+    // loginWidget->hide();
     passwordResetWidget = new PasswordResetWidget(username);
-    loginWidget->hide();
+    passwordResetWidget->setWindowIcon(loginWidget->windowIcon());
     passwordResetWidget->show();
 }
 
@@ -280,25 +287,49 @@ void LoginController::onLoginFailed(const QString& error)
 	AppController::instance().setState(NotAuthorized);
 }
 
-void LoginController::onPasswordResetSucceeded()
+void LoginController::onPasswordResetFinished()
 {
     closePasswordResetWidget();
 
     if (loginWidget)
 	{
+        // Return to login widget
         loginWidget->show();
 		loginWidget->enableControls(true);
 	}
 }
 
-void LoginController::onPasswordResetFailed(const QString&)
+void LoginController::onPasswordResetSucceeded()
+{
+    closePasswordResetWidget();
+
+    if (loginWidget)
+    {
+        messageBox->setText(trUtf8("Новый пароль был выслан на ваш номер телефона"));
+        messageBoxButton->setText(trUtf8("Готово"));
+        messageBox->exec();
+
+        // Return to login widget
+        loginWidget->show();
+        loginWidget->enableControls(true);
+    }
+}
+
+void LoginController::onPasswordResetFailed(const QString& message)
 {
     closePasswordResetWidget();
 
 	if (loginWidget)
 	{
-        loginWidget->show();
-        loginWidget->enableControls(true);
+        messageBox->setText(message);
+        messageBoxButton->setText(trUtf8("Закрыть"));
+        messageBox->exec();
+
+        // Return to reset password window
+        loginWidget->on_forgot_linkActivated("");
+
+        // loginWidget->show();
+        // loginWidget->enableControls(true);
 	}
 }
 

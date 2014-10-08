@@ -212,4 +212,27 @@ QString MinMaxEdit::prepare(QString value) const
     return value.replace("K", "000").replace("M", "000000");
 }
 
+MessageWindow::MessageWindow(QWidget *parent) :
+    QWidget(parent, Qt::ToolTip /*| Qt::CustomizeWindowHint | Qt::FramelessWindowHint*/)
+{
+    setStyleSheet("color: red; background-color: white");
+
+    textLabel = new QLabel("", this);
+    textLabel->adjustSize();
+    textLabel->setStyleSheet("color: white; background-color: red; font-weight: bold");
+
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    layout->addWidget(textLabel);
+    resize(textLabel->size());
+    setStyleSheet("color: white; background-color: red; font-weight: bold");
+}
+
+void MessageWindow::showText(QString text)
+{
+    textLabel->setText(text);
+    textLabel->adjustSize();
+    resize(textLabel->size());
+    show();
+}
+
 }

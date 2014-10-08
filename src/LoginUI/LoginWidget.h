@@ -72,6 +72,7 @@ public slots:
 	void setRegisterLink(const QString& link);
 
     void doClose();
+    void on_forgot_linkActivated(const QString&);
 
 signals:
 	/**
@@ -91,7 +92,6 @@ protected:
 private slots:
 	void on_signIn_clicked(bool checked);
 	void on_signUp_linkActivated(const QString&);
-	void on_forgot_linkActivated(const QString&);
     void on_rememberPassword_stateChanged(int);
 
 private:

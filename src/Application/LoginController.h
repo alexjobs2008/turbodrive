@@ -3,6 +3,8 @@
 
 #include <QtCore/QSharedPointer>
 #include <QtCore/QVariantMap>
+#include <QtWidgets/QMessageBox>
+#include "AuxWidgets.h"
 #include "LoginWidget.h"
 #include "passwordresetwidget.h"
 
@@ -36,8 +38,9 @@ signals:
 	void loginFinished();
 
 public slots:
+    void onPasswordResetFinished();
     void onPasswordResetSucceeded();
-    void onPasswordResetFailed(const QString&);
+    void onPasswordResetFailed(const QString& message);
 
 private slots:
 	void onLoginSucceeded(
@@ -58,6 +61,8 @@ private:
 
 	static LoginWidget *loginWidget;
     static PasswordResetWidget *passwordResetWidget;
+    QMessageBox *messageBox;
+    QAbstractButton *messageBoxButton;
 };
 
 }

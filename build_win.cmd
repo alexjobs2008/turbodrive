@@ -1,7 +1,7 @@
 @echo off
 
 SET DEBUG=0
-SET REBUILD=1
+SET REBUILD=0
 
 ECHO.
 ECHO.
