@@ -84,6 +84,15 @@ private:
 	QLineEdit *leMax;
 };
 
+class MessageWindow : public QWidget
+{
+    Q_OBJECT
+    QLabel *textLabel;
+public:
+    MessageWindow(QWidget *parent);
+    void showText(QString text);
+};
+
 }
 
 #endif // AUXWIDGETS_H

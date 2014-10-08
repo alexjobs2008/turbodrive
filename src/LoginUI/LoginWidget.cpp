@@ -181,6 +181,7 @@ void LoginWidget::on_signUp_linkActivated(const QString&)
 
 void LoginWidget::on_forgot_linkActivated(const QString&)
 {
+    hide();
     emit passwordResetRequest(cleanedUsername());
 }
 
@@ -225,7 +226,7 @@ void LoginWidget::initControls()
 		, CommonUI::LabeledEdit::Text
 		, QString()
 		, 0
-        , "\\+?375\\d+"
+        , "\\+?375\\d+" // "\\+?375\\d+"
 		, 100
 		, this);
 	m_username->setName("username");
@@ -234,6 +235,7 @@ void LoginWidget::initControls()
 
 	m_username->lineEdit()->installEventFilter(this);
     m_username->lineEdit()->setPlaceholderText(tr("Телефон")); // +375 ХХ ХХХХХХХ
+    // m_username->lineEdit()->setInputMask("+375 99 9999999");
 
 	m_password = new CommonUI::LabeledEdit(
 		QString::null
