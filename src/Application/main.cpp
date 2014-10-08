@@ -236,9 +236,9 @@ int main(int argc, char *argv[])
     initLogging();
     logStartInfo();
 
-    setWinStateAttribute(QString("c:\\tmp\\p111.ada"), 1);
-    setWinStateAttribute(QString("c:\\tmp\\p112.ada"), 2);
-    setWinStateAttribute(QString("c:\\tmp\\p113.ada"), 3);
+    // setWinStateAttribute(QString("c:\\tmp\\p111.ada"), 1);
+    // setWinStateAttribute(QString("c:\\tmp\\p112.ada"), 2);
+    // setWinStateAttribute(QString("c:\\tmp\\p113.ada"), 3);
 
     SingleApplication app(argc, argv);
 
