@@ -141,6 +141,9 @@ void LoginController::showLoginForm()
 		connect(loginWidget, &LoginWidget::passwordResetRequest,
 			this, &LoginController::passwordReset);
 
+        connect(loginWidget, &LoginWidget::exitApplication,
+            &AppController::instance(), &AppController::exitApplication);
+
 
 		RegisterLinkResourceRef regLink = RegisterLinkResource::create();
 		connect(regLink.data(), &RegisterLinkResource::linkReceived,

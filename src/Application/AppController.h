@@ -54,6 +54,7 @@ public:
 public slots:
 	void setState(State newState);
     void setStateText();
+    void exitApplication();
 
 signals:
 	void stateChanged(Drive::State state);

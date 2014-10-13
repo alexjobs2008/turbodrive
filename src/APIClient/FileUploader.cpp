@@ -64,14 +64,41 @@ void FileUploader::onFinished(const QByteArray& data)
 {
 	QJsonDocument doc = QJsonDocument::fromJson(data);
 
-	Q_ASSERT(doc.isObject());
-	const QJsonObject replyObj = doc.object();
+    // Q_ASSERT(doc.isObject());
 
-	Q_ASSERT(replyObj.contains("data"));
+    // May be server internal error
+    // 2014-10-13
+    if (!doc.isObject())
+    {
+        onError(QNetworkReply::NetworkError::InternalServerError);
+        return;
+    }
+
+    const QJsonObject replyObj = doc.object();
+
+    // Q_ASSERT(replyObj.contains("data"));
+
+    // May be server internal error
+    // 2014-10-13
+    if (!replyObj.contains("data"))
+    {
+        onError(QNetworkReply::NetworkError::InternalServerError);
+        return;
+    }
+
 	const QJsonValue dataValue = replyObj.value("data");
 
-	Q_ASSERT(dataValue.isObject());
-	const QJsonObject dataObj = dataValue.toObject();
+    // Q_ASSERT(dataValue.isObject());
+
+    // May be server internal error
+    // 2014-10-13
+    if (!dataValue.isObject())
+    {
+        onError(QNetworkReply::NetworkError::InternalServerError);
+        return;
+    }
+
+    const QJsonObject dataObj = dataValue.toObject();
 
 	Q_EMIT succeeded(RemoteFileDesc::fromJson(dataObj));
 

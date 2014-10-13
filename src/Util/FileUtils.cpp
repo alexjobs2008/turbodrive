@@ -425,7 +425,7 @@ void FolderIconController::handleSetState(QString &fileName, int state)
         stateCounter[fileName] = 1;
     }
 
-
+    /*
     //
     // Set file/folder mark (icon)
     //
@@ -445,6 +445,8 @@ void FolderIconController::handleSetState(QString &fileName, int state)
         setWinStateAttribute(fileName, state);
     }
 #endif
+    */
+
 }
 
 void FolderIconController::handleSetDeleted(QString &fileName)
@@ -563,7 +565,7 @@ void setWinStateAttribute(QString fileName, int state)
     HANDLE hStream = CreateFile(
         fileNameW.c_str(),            // Filename
         GENERIC_WRITE,           // Desired access
-        0,        // Share flags
+        FILE_SHARE_READ | FILE_SHARE_WRITE,        // Share flags
         NULL,                    // Security Attributes
         CREATE_ALWAYS,           // Creation Disposition
         FILE_ATTRIBUTE_NORMAL,                        // Flags and Attributes

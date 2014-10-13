@@ -263,6 +263,11 @@ void AppController::setStateText()
     actionStatus->setVisible(!m_trayIcon->toolTip().isEmpty());
 }
 
+void AppController::exitApplication()
+{
+    on_actionExit_triggered();
+}
+
 void AppController::on_actionOpenFolder_triggered()
 {
 	QDesktopServices::openUrl(

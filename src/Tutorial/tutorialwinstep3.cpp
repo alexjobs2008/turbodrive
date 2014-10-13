@@ -5,7 +5,7 @@ namespace Drive
 {
 
 TutorialWinStep3::TutorialWinStep3(QWidget *parent) :
-    QDialog(parent),
+    QWidget(parent),
     ui(new Ui::TutorialWinStep3),
     step(new TutorialStepInterface(this))
 {

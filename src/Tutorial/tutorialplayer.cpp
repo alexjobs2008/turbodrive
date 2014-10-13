@@ -11,12 +11,30 @@
 namespace Drive
 {
 
-const int TutorialDialogClosedFromCode = -111;
-
 TutorialPlayer::TutorialPlayer(QObject *parent) :
     QObject(parent),
-    currentStep(-1)
+    currentStep(-1),
+    dialog(new QDialog()),
+    layout(new QVBoxLayout(dialog)),
+    currentWidget(0)
 {
+    layout->setSizeConstraint(QLayout::SetNoConstraint);
+    dialog->setFocusPolicy(Qt::NoFocus);
+    dialog->setStyleSheet("background-color: rgb(255, 255, 255);");
+    dialog->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    QIcon icon;
+    icon.addPixmap(QPixmap(":/appicon/16.png"));
+    icon.addPixmap(QPixmap(":/appicon/24.png"));
+    icon.addPixmap(QPixmap(":/appicon/32.png"));
+    icon.addPixmap(QPixmap(":/appicon/48.png"));
+    icon.addPixmap(QPixmap(":/appicon/256.png"));
+    dialog->setWindowIcon(icon);
+
+    dialog->setWindowTitle("МТС Диск");
+
+    // Dialog window closed event
+    connect(dialog, &QDialog::finished, this, &TutorialPlayer::dialogFinished);
 }
 
 TutorialPlayer& TutorialPlayer::instance()
@@ -58,24 +76,46 @@ TutorialPlayer& TutorialPlayer::GetWinTutorial()
     return player;
 }
 
+// Show step widget
+void TutorialPlayer::showStep()
+{
+    // Remove widget that is shown
+    if (currentWidget != 0)
+    {
+        // dialog->layout()->removeWidget(currentWidget);
+        currentWidget->hide();
+    }
+
+    // Show current widget
+    currentWidget = steps[currentStep]->widget();
+    currentWidget->show();
+    // dialog->layout()->addWidget(currentWidget);
+}
+
 void TutorialPlayer::start()
 {
     currentStep = 0;
-    steps[currentStep]->dialog()->open();
+    showStep();
+    QSize size = currentWidget->size();
+    // size +=
+    dialog->resize(size);
+    dialog->adjustSize();
+    dialog->open();
 }
 
 void TutorialPlayer::next()
 {
+    // Next step after last - close dialog
     if (currentStep == steps.size() - 1)
     {
-        steps[currentStep]->dialog()->done(TutorialDialogClosedFromCode);
-        emit finished();
+        finish();
     }
+
+    // Show next step
     else if (currentStep >= 0 && currentStep < steps.size() - 1)
     {
-        steps[currentStep]->dialog()->done(TutorialDialogClosedFromCode);
         currentStep++;
-        steps[currentStep]->dialog()->open();
+        showStep();
     }
 
 }
@@ -84,29 +124,33 @@ void TutorialPlayer::back()
 {
     if (currentStep > 0 && currentStep < steps.size())
     {
-        steps[currentStep]->dialog()->done(TutorialDialogClosedFromCode);
         currentStep--;
-        steps[currentStep]->dialog()->open();
+        showStep();
     }
-
 }
 
 void TutorialPlayer::finish()
 {
     if (currentStep >= 0 && currentStep < steps.size())
     {
-        steps[currentStep]->dialog()->done(TutorialDialogClosedFromCode);
+        if (currentWidget != 0)
+        {
+            currentWidget->hide();
+            currentWidget = 0;
+        }
+
+        disconnectSignals();
+
+        dialog->close();
+        // dialog->done(0);
     }
 
     emit finished();
 }
 
-void TutorialPlayer::dialogFinished(int result)
+void TutorialPlayer::dialogFinished(int)
 {
-    if (result != TutorialDialogClosedFromCode)
-    {
-        emit finished();
-    }
+    finish();
 }
 
 void TutorialPlayer::connectSignals()
@@ -114,14 +158,33 @@ void TutorialPlayer::connectSignals()
     for (int i = 0; i < steps.size(); i++)
     {
         TutorialStepInterface *step = steps[i];
-        QDialog *dialog = step->dialog();
-        dialog->setFocusPolicy(Qt::NoFocus);
+        QWidget *widget = step->widget();
 
+        // Connect button events
         connect(step, &TutorialStepInterface::cancel, this, &TutorialPlayer::finish);
         connect(step, &TutorialStepInterface::back, this, &TutorialPlayer::back);
         connect(step, &TutorialStepInterface::next, this, &TutorialPlayer::next);
-        connect(dialog, &QDialog::finished, this, &TutorialPlayer::dialogFinished);
+
+        layout->addWidget(widget);
+        widget->hide();
     }
 }
+
+void TutorialPlayer::disconnectSignals()
+{
+    for (int i = 0; i < steps.size(); i++)
+    {
+        TutorialStepInterface *step = steps[i];
+        QWidget *widget = step->widget();
+
+        // Connect button events
+        /* disconnect(step, &TutorialStepInterface::cancel, this, &TutorialPlayer::finish);
+        disconnect(step, &TutorialStepInterface::back, this, &TutorialPlayer::back);
+        disconnect(step, &TutorialStepInterface::next, this, &TutorialPlayer::next); */
+
+        layout->removeWidget(widget);
+    }
+}
+
 
 }

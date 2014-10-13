@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>TutorialWinStep1</class>
- <widget class="QDialog" name="TutorialWinStep1">
-  <property name="windowModality">
-   <enum>Qt::ApplicationModal</enum>
-  </property>
+ <widget class="QWidget" name="TutorialWinStep1">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -22,9 +19,6 @@
   </property>
   <property name="styleSheet">
    <string notr="true">background-color: rgb(255, 255, 255);</string>
-  </property>
-  <property name="modal">
-   <bool>false</bool>
   </property>
   <widget class="QPushButton" name="nextButton">
    <property name="geometry">

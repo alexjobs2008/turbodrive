@@ -232,10 +232,6 @@ int main(int argc, char *argv[])
     initLogging();
     logStartInfo();
 
-    setWinStateAttribute(QString("c:\\tmp\\p111.ada"), 1);
-    setWinStateAttribute(QString("c:\\tmp\\p112.ada"), 2);
-    setWinStateAttribute(QString("c:\\tmp\\p113.ada"), 3);
-
     SingleApplication app(argc, argv);
 
 	initMetaTypes();
@@ -245,6 +241,7 @@ int main(int argc, char *argv[])
 
 
 #ifdef Q_OS_WIN
+
     //
     // Process command line
     //
@@ -298,14 +295,13 @@ int main(int argc, char *argv[])
     }
 
     } catch (std::exception& ex) {
-
         QLOG_ERROR() << "Error while accessing command line arguments: [" << ex.what() << "]" << endl;
-
     } catch (...) {
         QLOG_ERROR() << "Error while accessing command line arguments: " << endl;
     }
 
 #endif // Q_OS_WIN
+
     //
     // Continue run app
     //

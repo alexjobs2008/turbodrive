@@ -4,6 +4,8 @@
 #include <QList>
 #include <QObject>
 #include <QPointer>
+#include <QDialog>
+#include <QVBoxLayout>
 #include "tutorialstepinterface.h"
 
 namespace Drive
@@ -27,16 +29,21 @@ private slots:
     void next();
     void back();
     void finish();
-    void dialogFinished(int result);
+    void dialogFinished(int);
 
 private:
     void connectSignals();
+    void disconnectSignals();
+    void showStep();
     static TutorialPlayer& GetMacTutorial();
     static TutorialPlayer& GetWinTutorial();
 
 private:
     QList<TutorialStepInterface*> steps;
     int currentStep;
+    QDialog *dialog;
+    QVBoxLayout *layout;
+    QWidget *currentWidget;
 };
 
 }

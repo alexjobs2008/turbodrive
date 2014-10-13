@@ -3,13 +3,14 @@
 namespace Drive
 {
 
-TutorialStepInterface::TutorialStepInterface(QDialog *parent) :
+TutorialStepInterface::TutorialStepInterface(QWidget *parent) :
     QObject(parent)
 {
 }
 
 
-void TutorialStepInterface::init(QPushButton *cancelButton, QPushButton *backButton, QPushButton *nextButton)
+void TutorialStepInterface::init(
+        QPushButton *cancelButton, QPushButton *backButton, QPushButton *nextButton)
 {
     if (cancelButton != 0)
         connect(cancelButton, &QPushButton::clicked, this, &TutorialStepInterface::cancel);

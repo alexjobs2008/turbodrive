@@ -11,7 +11,7 @@ class TutorialMacStep3;
 namespace Drive
 {
 
-class TutorialMacStep3 : public QDialog
+class TutorialMacStep3 : public QWidget
 {
     Q_OBJECT
 

@@ -5,7 +5,7 @@ namespace Drive
 {
 
 TutorialMacStep4::TutorialMacStep4(QWidget *parent) :
-    QDialog(parent),
+    QWidget(parent),
     ui(new Ui::TutorialMacStep4),
     step(new TutorialStepInterface(this))
 {

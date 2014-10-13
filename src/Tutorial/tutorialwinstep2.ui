@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>TutorialWinStep2</class>
- <widget class="QDialog" name="TutorialWinStep2">
+ <widget class="QWidget" name="TutorialWinStep2">
   <property name="geometry">
    <rect>
     <x>0</x>
