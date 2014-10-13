@@ -425,10 +425,6 @@ void FolderIconController::handleSetState(QString &fileName, int state)
         stateCounter[fileName] = 1;
     }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 9c0f8a61f13ccc0f9b57bfe683a4fd3ae3cd7ef3
     /*
     //
     // Set file/folder mark (icon)
