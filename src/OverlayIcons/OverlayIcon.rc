@@ -103,9 +103,9 @@ IDR_MTSDISKERROROVERLAYICON REGISTRY                "MTSDiskErrorOverlayIcon.rgs
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDI_ICON1               ICON                    "my.ico"
-IDI_ICON2               ICON                    "256_e.ico"
-IDI_ICON3               ICON                    "256_o.ico"
-IDI_ICON4               ICON                    "256_s.ico"
+IDI_ICON2               ICON                    "error.ico"
+IDI_ICON3               ICON                    "ok.ico"
+IDI_ICON4               ICON                    "sync.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //

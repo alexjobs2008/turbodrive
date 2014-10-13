@@ -102,10 +102,14 @@ bool LoginWidget::eventFilter(QObject *watched, QEvent *event)
 
 void LoginWidget::closeEvent(QCloseEvent *event)
 {
+    (void)event;
+
     if (!closeFlag)
     {
-        this->showMinimized();
-        event->ignore();
+        emit exitApplication();
+
+        /* this->showMinimized();
+        event->ignore(); */
     }
 }
 

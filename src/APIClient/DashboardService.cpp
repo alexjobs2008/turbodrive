@@ -108,6 +108,7 @@ bool PasswordResetResource::processPostResponse(int status,
 	switch (status)
 	{
 	case 200:
+    case 204:
 		emit resetSuccessfully();
 		break;
 	case 403:

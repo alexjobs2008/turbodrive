@@ -11,7 +11,7 @@ class TutorialWinStep1;
 namespace Drive
 {
 
-class TutorialWinStep1 : public QDialog
+class TutorialWinStep1 : public QWidget
 {
     Q_OBJECT
 

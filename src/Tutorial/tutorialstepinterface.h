@@ -12,12 +12,10 @@ class TutorialStepInterface : public QObject
 {
     Q_OBJECT
 public:
-    explicit TutorialStepInterface(QDialog *parent);
-    void init(
-            QPushButton* cancelButton,
-            QPushButton* backButton,
+    explicit TutorialStepInterface(QWidget *parent);
+    void init(QPushButton* cancelButton, QPushButton* backButton,
             QPushButton* nextButton);
-    inline QDialog* dialog() { return (QDialog*) this->parent(); }
+    inline QWidget* widget() { return (QWidget*) this->parent(); }
 
 signals:
     void cancel();

@@ -85,6 +85,8 @@ signals:
 	*/
 	void passwordResetRequest(const QString& email);
 
+    void exitApplication();
+
 protected:
 	bool eventFilter(QObject *watched, QEvent *event);
 	void closeEvent(QCloseEvent *event);

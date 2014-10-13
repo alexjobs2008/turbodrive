@@ -22,11 +22,10 @@ int getState(wchar_t *fileName)
 
 	std::wofstream log;
 
-    // Open stream for exclusive read
     HANDLE hStream = CreateFile(
         fileNameCStr,            // Filename
         GENERIC_READ,            // Desired access
-        FILE_SHARE_READ,         // Share flags
+        FILE_SHARE_READ | FILE_SHARE_WRITE,         // Share flags
         NULL,                    // Security Attributes
         OPEN_EXISTING,           // Creation Disposition
         0,						// Flags and Attributes
