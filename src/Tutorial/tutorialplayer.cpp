@@ -107,7 +107,7 @@ void TutorialPlayer::start()
     dialog->resize(size);
     dialog->setMinimumSize(size);
     dialog->setMaximumSize(size);
-    dialog->adjustSize();
+    // dialog->adjustSize();
     dialog->open();
 }
 

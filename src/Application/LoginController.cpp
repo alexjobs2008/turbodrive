@@ -154,7 +154,9 @@ void LoginController::showLoginForm()
 	}
 
 	loginWidget->show();
+#ifdef Q_OS_DARWIN
     showDockIcon(true);
+#endif
 }
 
 void LoginController::login(const QString& username, const QString& password)
@@ -210,7 +212,9 @@ void LoginController::closeAll()
 	if (loginWidget)
 	{
         loginWidget->doClose();
+#ifdef Q_OS_DARWIN
         showDockIcon(false);
+#endif
         delete loginWidget;
 		loginWidget = 0;
 	}
