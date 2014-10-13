@@ -22,6 +22,8 @@ TutorialPlayer::TutorialPlayer(QObject *parent) :
     dialog->setFocusPolicy(Qt::NoFocus);
     dialog->setStyleSheet("background-color: rgb(255, 255, 255);");
     dialog->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    dialog->setContentsMargins(0, 0, 0, 0);
+    layout->setContentsMargins(0, 0, 0, 0);
 
     QIcon icon;
     icon.addPixmap(QPixmap(":/appicon/16.png"));
@@ -97,8 +99,14 @@ void TutorialPlayer::start()
     currentStep = 0;
     showStep();
     QSize size = currentWidget->size();
-    // size +=
+    QPoint pos = currentWidget->pos();
+    (void)pos;
+#ifdef Q_OS_WIN
+    size += QSize(24, 24);
+#endif
     dialog->resize(size);
+    dialog->setMinimumSize(size);
+    dialog->setMaximumSize(size);
     dialog->adjustSize();
     dialog->open();
 }
