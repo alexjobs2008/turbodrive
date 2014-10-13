@@ -97,9 +97,15 @@ void TutorialPlayer::start()
     currentStep = 0;
     showStep();
     QSize size = currentWidget->size();
-    // size +=
+    QPoint pos = currentWidget->pos();
+    (void)pos;
+#ifdef Q_OS_WIN
+    size += QSize(24, 24);
+#endif
     dialog->resize(size);
-    dialog->adjustSize();
+    dialog->setMinimumSize(size);
+    dialog->setMaximumSize(size);
+    // dialog->adjustSize();
     dialog->open();
 }
 

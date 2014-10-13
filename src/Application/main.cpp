@@ -326,7 +326,7 @@ int main(int argc, char *argv[])
 
         QLOG_TRACE() << "Launching...";
 
-        if (FileSystemHelper::instance().isFirstLaunch())
+        if (1 || FileSystemHelper::instance().isFirstLaunch())
         {
             QLOG_TRACE() << "Launching tutorial";
             emit Drive::AppController::instance().tutorial();
