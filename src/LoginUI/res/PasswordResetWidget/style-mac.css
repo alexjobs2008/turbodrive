@@ -15,8 +15,10 @@ QLabel#logo {
 
 QLabel#header {
         color: black;
-        margin: 0 0 0 8px;
+        margin: 0 0 0 0;
+        min-width: 245px;
         font: bold 17pt "Segoe UI";
+        text-align: left;
 }
 
 CommonUI--SpinnerWidget {
@@ -27,11 +29,11 @@ CommonUI--SpinnerWidget {
 
 QLabel#prompt {
         margin: 0 0 0 0;
-        font: 16pt "Segoe UI";
+        font: 14pt "Segoe UI";
         line-height: 80%;
         max-width: 245px;
         min-width: 245px;
-        margin-left: 5px;
+        text-align: left;
 }
 
 
@@ -50,7 +52,7 @@ QLineEdit#phoneEdit {
         min-width: 245px;
         max-height: 34px;
         min-height: 34px;
-        font: 16pt "Segoe UI";
+        font: 14pt "Segoe UI";
 }
 
 QLineEdit#phoneEdit:disabled {
@@ -61,7 +63,7 @@ QLineEdit#phoneEdit:disabled {
 }
 
 CommonUI--LinkLabel#recalled {
-        font: 16pt "Segoe UI";
+        font: 14pt "Segoe UI";
         text-decoration: none;
         margin-bottom: 20px;
 }
@@ -71,7 +73,7 @@ CommonUI--LinkLabel#recalled:disabled {
 }
 
 CommonUI--LinkLabel#recalled[state="hover"] {
-        font: 16pt "Segoe UI";
+        font: 14pt "Segoe UI";
         text-decoration: underline;
         margin-bottom: 20px;
 }
@@ -79,11 +81,10 @@ CommonUI--LinkLabel#recalled[state="hover"] {
 /* sign in button */
 
 QPushButton#resetButton {
-        border-image: url(":/PasswordResetWidget/ResetPasswordButton.png") 5;
+        border-image: url(":/button-normal.png") 5;
         border-width: 3px;
         background: transparent;
         font: 15pt "Segoe UI";
-        font-weight: bold;
         text-decoration: none;
         color: white;
         max-width: 245px;
@@ -95,18 +96,18 @@ QPushButton#resetButton {
 }
 
 QPushButton#resetButton:hover {
-        border-image: url(":/PasswordResetWidget/ResetPasswordButton.png") 5;
+        border-image: url(":/button-hover.png") 5;
         border-width: 3px;
         color: white;
 }
 
 QPushButton#resetButton:pressed {
-        border-image: url(":/PasswordResetWidget/ResetPasswordButton.png") 5;
+        border-image: url(":/button-pressed.png") 5;
         border-width: 3px;
 }
 
 QPushButton#resetButton:disabled {
-        border-image: url(":/PasswordResetWidget/ResetPasswordButton.png") 5;
+        border-image: url(":/button-disabled.png") 5;
         border-width: 3px;
 }
 

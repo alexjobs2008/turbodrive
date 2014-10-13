@@ -426,6 +426,7 @@ void FolderIconController::handleSetState(QString &fileName, int state)
     }
 
 
+    /*
     //
     // Set file/folder mark (icon)
     //
@@ -445,6 +446,8 @@ void FolderIconController::handleSetState(QString &fileName, int state)
         setWinStateAttribute(fileName, state);
     }
 #endif
+    */
+
 }
 
 void FolderIconController::handleSetDeleted(QString &fileName)
