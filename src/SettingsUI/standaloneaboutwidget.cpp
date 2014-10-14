@@ -23,7 +23,18 @@ StandaloneAboutWidget::StandaloneAboutWidget(QWidget *parent)
 {
 	initResources();
 
-	// avoid app close on window close
+    setWindowTitle(QString(trUtf8("МТС Диск")));
+
+    QIcon icon;
+    icon.addPixmap(QPixmap(":/appicon/16.png"));
+    icon.addPixmap(QPixmap(":/appicon/24.png"));
+    icon.addPixmap(QPixmap(":/appicon/32.png"));
+    icon.addPixmap(QPixmap(":/appicon/48.png"));
+    icon.addPixmap(QPixmap(":/appicon/256.png"));
+
+    setWindowIcon(icon);
+
+    // avoid app close on window close
 	setAttribute(Qt::WA_DeleteOnClose, false);
 	setAttribute(Qt::WA_QuitOnClose, false);
 

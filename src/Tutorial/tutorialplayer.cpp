@@ -101,9 +101,6 @@ void TutorialPlayer::start()
     QSize size = currentWidget->size();
     QPoint pos = currentWidget->pos();
     (void)pos;
-#ifdef Q_OS_WIN
-    size += QSize(24, 24);
-#endif
     dialog->resize(size);
     dialog->setMinimumSize(size);
     dialog->setMaximumSize(size);
