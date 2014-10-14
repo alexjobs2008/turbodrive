@@ -33,6 +33,8 @@ public slots:
 	void requestUserData();
     void showPasswordResetWidget(const QString& username);
     void closePasswordResetWidget();
+    bool loginWidgetOpen() { return loginWidget != 0; }
+    void showLoginWidget();
 
 signals:
 	void loginFinished();

@@ -9,6 +9,8 @@
 #include <QtWidgets/QSystemTrayIcon>
 #include <QtCore/QSharedPointer>
 #include <QPointer>
+#include <QtWidgets/QMenu>
+#include <QtGui/QShowEvent>
 
 #include <memory>
 
@@ -24,6 +26,21 @@ class SettingsWidget;
 class Syncer;
 class LocalCache;
 class RemoteConfig;
+
+
+class TrayMenu: public QMenu
+{
+    Q_OBJECT
+    bool show;
+public:
+    TrayMenu(QWidget *parent = 0) : QMenu(parent), show(true) {}
+    void setShow(bool show) { this->show = show; }
+    bool isShow() { return show; }
+    void showEvent(QShowEvent * event)
+    {
+        if (!show) { event->ignore(); this->hide(); }
+    }
+};
 
 class AppController : public QMainWindow
 {
@@ -55,6 +72,7 @@ public slots:
 	void setState(State newState);
     void setStateText();
     void exitApplication();
+    void enableContextMenu(bool enabled);
 
 signals:
 	void stateChanged(Drive::State state);
@@ -104,7 +122,7 @@ private:
 
 	QPointer<TrayIcon> m_trayIcon;
 
-	QMenu *trayMenu;
+    TrayMenu /* QMenu */ *trayMenu;
 
 	QAction *actionStatus;
 	QAction *actionOpenFolder;

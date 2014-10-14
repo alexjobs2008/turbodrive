@@ -346,7 +346,19 @@ bool setBadgeIcon2(const char *path, char *imageBytes, int imageSize, char *fIma
 
 void showDockIcon(bool show)
 {
-    NSApplicationPresentationOptions options;
+    ProcessSerialNumber psn = {0, kCurrentProcess};
+
+    if (show)
+    {
+        TransformProcessType(&psn, kProcessTransformToForegroundApplication);
+    }
+    else
+    {
+        TransformProcessType(&psn, kProcessTransformToUIElementApplication);
+    }
+
+
+    /* NSApplicationPresentationOptions options;
 
     if (show)
     {
@@ -364,5 +376,5 @@ void showDockIcon(bool show)
     @catch(NSException *exception)
     {
         NSLog(@"Error.  Make sure you have a valid combination of options.");
-    }
+    } */
 }

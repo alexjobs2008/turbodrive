@@ -17,7 +17,6 @@
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QUrl>
-#include <QtWidgets/QMenu>
 #include <QtGui/QDesktopServices>
 #include <QtWidgets/QMessageBox>
 
@@ -37,6 +36,7 @@
 
 namespace Drive
 {
+
 
 AppController& AppController::instance()
 {
@@ -177,7 +177,7 @@ void AppController::createActions()
 
 void AppController::createTrayIcon()
 {
-	trayMenu = new QMenu(this);
+    trayMenu = new TrayMenu /* QMenu */ (this);
 
 	trayMenu->addAction(actionStatus);
 	trayMenu->addSeparator();
@@ -198,7 +198,8 @@ void AppController::createTrayIcon()
 
     trayMenu->setDefaultAction(actionOpenFolder);
 
-	m_trayIcon->setContextMenu(trayMenu);
+    // m_trayIcon->setContextMenu(trayMenu);
+    enableContextMenu(true);
 
 	connect(this, &AppController::stateChanged,
 			m_trayIcon.data(), &TrayIcon::setState);
@@ -266,6 +267,12 @@ void AppController::setStateText()
 void AppController::exitApplication()
 {
     on_actionExit_triggered();
+}
+
+void AppController::enableContextMenu(bool enabled)
+{
+    // m_trayIcon->setContextMenu(enabled ? trayMenu : 0);
+    trayMenu->setShow(enabled);
 }
 
 void AppController::on_actionOpenFolder_triggered()
@@ -371,6 +378,12 @@ void AppController::on_trayIcon_activated(QSystemTrayIcon::ActivationReason
     if (reason == QSystemTrayIcon::Trigger)
     {
         actionOpenFolder->trigger();
+    }
+#endif
+#ifdef Q_OS_DARWIN
+    if (LoginController::instance().loginWidgetOpen())
+    {
+        LoginController::instance().showLoginWidget();
     }
 #endif
 }

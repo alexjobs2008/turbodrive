@@ -156,6 +156,7 @@ void LoginController::showLoginForm()
 	loginWidget->show();
 #ifdef Q_OS_DARWIN
     showDockIcon(true);
+    AppController::instance().enableContextMenu(false);
 #endif
 }
 
@@ -214,6 +215,7 @@ void LoginController::closeAll()
         loginWidget->doClose();
 #ifdef Q_OS_DARWIN
         showDockIcon(false);
+        AppController::instance().enableContextMenu(true);
 #endif
         delete loginWidget;
 		loginWidget = 0;
@@ -254,6 +256,14 @@ void LoginController::closePasswordResetWidget()
     {
         passwordResetWidget->close();
         passwordResetWidget = 0;
+    }
+}
+
+void LoginController::showLoginWidget()
+{
+    if (loginWidget)
+    {
+        loginWidget->raise();
     }
 }
 
