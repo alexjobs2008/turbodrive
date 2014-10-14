@@ -179,7 +179,7 @@ endif()
 set(TARGET_PLATFORM "x86")
 
 if(WIN32)
-    set(SPACED_NAME "МТС Диск")
+    set(SPACED_NAME "MTS Disk") # "МТС Диск")
 else()
     set(SPACED_NAME "МТС Диск")
 endif()

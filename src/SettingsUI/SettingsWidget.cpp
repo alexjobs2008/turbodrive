@@ -72,6 +72,15 @@ SettingsWidget::SettingsWidget(QWidget *parent)
 	setMinimumWidth(404);
 #endif
 
+    QIcon icon;
+    icon.addPixmap(QPixmap(":/appicon/16.png"));
+    icon.addPixmap(QPixmap(":/appicon/24.png"));
+    icon.addPixmap(QPixmap(":/appicon/32.png"));
+    icon.addPixmap(QPixmap(":/appicon/48.png"));
+    icon.addPixmap(QPixmap(":/appicon/256.png"));
+
+    setWindowIcon(icon);
+
 	setupListView();
 
 	QVBoxLayout *layoutMain = new QVBoxLayout(this);

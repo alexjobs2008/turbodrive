@@ -198,7 +198,7 @@ void AppController::createTrayIcon()
 
     trayMenu->setDefaultAction(actionOpenFolder);
 
-	m_trayIcon->setContextMenu(trayMenu);
+    m_trayIcon->setContextMenu(trayMenu);
 
 	connect(this, &AppController::stateChanged,
 			m_trayIcon.data(), &TrayIcon::setState);

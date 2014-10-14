@@ -34,7 +34,7 @@ if(NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE Debug)
 endif()
 
-add_definitions(-DVERSION="1.0.0.0")
+add_definitions(-DVERSION="1.1.0.0")
 add_definitions(-DLOCAL_SERVER_NAME="AssistentDriveSA")
 add_definitions(-DQT_FORCE_ASSERTS)
 add_definitions(-DQS_LOG_LINE_NUMBERS)

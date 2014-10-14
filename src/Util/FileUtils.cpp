@@ -107,7 +107,7 @@ void FileSystemHelper::setFolderIcon(
 		.arg(QDir::toNativeSeparators(QCoreApplication::applicationFilePath()))
 		.arg(iconNumber);
 
-	desktopIni.write(content.toLocal8Bit());
+    desktopIni.write(content.toUtf8() /* toLocal8Bit() */ );
 	desktopIni.close();
 
 	SetFileAttributes(
