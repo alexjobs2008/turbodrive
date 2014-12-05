@@ -1,7 +1,9 @@
 #!/bin/bash
 
-PACKAGE_NAME=@CPACK_PACKAGE_FILE_NAME@
-PACKAGE_DIR=_CPack_Packages/Darwin/DragNDrop
+# set -x
+
+export PACKAGE_NAME=@CPACK_PACKAGE_FILE_NAME@
+export PACKAGE_DIR=_CPack_Packages/Darwin/DragNDrop
 
 # Rename application bundle
 mv $PACKAGE_DIR/$PACKAGE_NAME/drive.app $PACKAGE_DIR/$PACKAGE_NAME/МТС\ Диск.app
@@ -11,4 +13,46 @@ rm -f $PACKAGE_DIR/$PACKAGE_NAME.dmg
 
 # Create new DMG
 hdiutil create -format UDZO -volname "МТС Диск" -srcfolder $PACKAGE_DIR/$PACKAGE_NAME $PACKAGE_DIR/$PACKAGE_NAME.dmg
+
+echo
+echo ==== BEGIN Signing application
+
+# Sign application bundle for app store
+security unlock-keychain
+
+codesign --deep --force --verify --verbose --sign "3rd Party Mac Developer Application: Mobile TeleSystems SOOO" --entitlements ../res/mac/turbodrivedesktop.entitlements $PACKAGE_DIR/$PACKAGE_NAME/МТС\ Диск.app
+
+# codesign -s "Mobile TeleSystems SOOO" -f --entitlements ../res/mac/turbodrivedesktop.entitlements $PACKAGE_DIR/$PACKAGE_NAME/МТС\ Диск.app
+
+#codesign -s "Mobile TeleSystems SOOO" -f --entitlements ../res/mac/turbodrivedesktop.entitlements $PACKAGE_DIR/$PACKAGE_NAME/МТС\ Диск.app/Contents/Frameworks/QtCore.framework/Versions/5
+#codesign -s "Mobile TeleSystems SOOO" -f --entitlements ../res/mac/turbodrivedesktop.entitlements $PACKAGE_DIR/$PACKAGE_NAME/МТС\ Диск.app/Contents/Frameworks/QtGui.framework/Versions/5
+#codesign -s "Mobile TeleSystems SOOO" -f --entitlements ../res/mac/turbodrivedesktop.entitlements $PACKAGE_DIR/$PACKAGE_NAME/МТС\ Диск.app/Contents/Frameworks/QtNetwork.framework/Versions/5
+#codesign -s "Mobile TeleSystems SOOO" -f --entitlements ../res/mac/turbodrivedesktop.entitlements $PACKAGE_DIR/$PACKAGE_NAME/МТС\ Диск.app/Contents/Frameworks/QtPrintSupport.framework/Versions/5
+#codesign -s "Mobile TeleSystems SOOO" -f --entitlements ../res/mac/turbodrivedesktop.entitlements $PACKAGE_DIR/$PACKAGE_NAME/МТС\ Диск.app/Contents/Frameworks/QtWidgets.framework/Versions/5
+#codesign -s "Mobile TeleSystems SOOO" -f --entitlements ../res/mac/turbodrivedesktop.entitlements $PACKAGE_DIR/$PACKAGE_NAME/МТС\ Диск.app/Contents/PlugIns/accessible/libqtaccessiblewidgets.dylib
+#codesign -s "Mobile TeleSystems SOOO" -f --entitlements ../res/mac/turbodrivedesktop.entitlements $PACKAGE_DIR/$PACKAGE_NAME/МТС\ Диск.app/Contents/PlugIns/imageformats/libqdds.dylib
+#codesign -s "Mobile TeleSystems SOOO" -f --entitlements ../res/mac/turbodrivedesktop.entitlements $PACKAGE_DIR/$PACKAGE_NAME/МТС\ Диск.app/Contents/PlugIns/imageformats/libqgif.dylib
+#codesign -s "Mobile TeleSystems SOOO" -f --entitlements ../res/mac/turbodrivedesktop.entitlements $PACKAGE_DIR/$PACKAGE_NAME/МТС\ Диск.app/Contents/PlugIns/imageformats/libqicns.dylib
+#codesign -s "Mobile TeleSystems SOOO" -f --entitlements ../res/mac/turbodrivedesktop.entitlements $PACKAGE_DIR/$PACKAGE_NAME/МТС\ Диск.app/Contents/PlugIns/imageformats/libqico.dylib
+#codesign -s "Mobile TeleSystems SOOO" -f --entitlements ../res/mac/turbodrivedesktop.entitlements $PACKAGE_DIR/$PACKAGE_NAME/МТС\ Диск.app/Contents/PlugIns/imageformats/libqjp2.dylib
+#codesign -s "Mobile TeleSystems SOOO" -f --entitlements ../res/mac/turbodrivedesktop.entitlements $PACKAGE_DIR/$PACKAGE_NAME/МТС\ Диск.app/Contents/PlugIns/imageformats/libqjpeg.dylib
+#codesign -s "Mobile TeleSystems SOOO" -f --entitlements ../res/mac/turbodrivedesktop.entitlements $PACKAGE_DIR/$PACKAGE_NAME/МТС\ Диск.app/Contents/PlugIns/imageformats/libqmng.dylib
+#codesign -s "Mobile TeleSystems SOOO" -f --entitlements ../res/mac/turbodrivedesktop.entitlements $PACKAGE_DIR/$PACKAGE_NAME/МТС\ Диск.app/Contents/PlugIns/imageformats/libqtga.dylib
+#codesign -s "Mobile TeleSystems SOOO" -f --entitlements ../res/mac/turbodrivedesktop.entitlements $PACKAGE_DIR/$PACKAGE_NAME/МТС\ Диск.app/Contents/PlugIns/imageformats/libqtiff.dylib
+#codesign -s "Mobile TeleSystems SOOO" -f --entitlements ../res/mac/turbodrivedesktop.entitlements $PACKAGE_DIR/$PACKAGE_NAME/МТС\ Диск.app/Contents/PlugIns/imageformats/libqwbmp.dylib
+#codesign -s "Mobile TeleSystems SOOO" -f --entitlements ../res/mac/turbodrivedesktop.entitlements $PACKAGE_DIR/$PACKAGE_NAME/МТС\ Диск.app/Contents/PlugIns/imageformats/libqwebp.dylib
+#codesign -s "Mobile TeleSystems SOOO" -f --entitlements ../res/mac/turbodrivedesktop.entitlements $PACKAGE_DIR/$PACKAGE_NAME/МТС\ Диск.app/Contents/PlugIns/platforms/libqcocoa.dylib
+#codesign -s "Mobile TeleSystems SOOO" -f --entitlements ../res/mac/turbodrivedesktop.entitlements $PACKAGE_DIR/$PACKAGE_NAME/МТС\ Диск.app/Contents/PlugIns/printsupport/libcocoaprintersupport.dylib
+
+../res/mac/checksign.sh
+
+echo ==== END Signing application
+echo
+
+echo ==== Packaging application for Apple store
+
+# Create application package in .pkg file
+productbuild --component $PACKAGE_DIR/$PACKAGE_NAME/МТС\ Диск.app /Applications --sign "3rd Party Mac Developer Installer: Mobile TeleSystems SOOO" $PACKAGE_DIR/$PACKAGE_NAME/МТС\ Диск.pkg
+# productbuild --component $PACKAGE_DIR/$PACKAGE_NAME/МТС\ Диск.app /Applications $PACKAGE_DIR/$PACKAGE_NAME/МТС\ Диск.pkg
+# pkgbuild --identifier МТС\ Диск --root $PACKAGE_DIR/$PACKAGE_NAME/МТС\ Диск.app --component-plist ../res/mac/component.plist $PACKAGE_DIR/$PACKAGE_NAME/МТС\ Диск.pkg
 

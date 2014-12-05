@@ -36,10 +36,7 @@ public:
     TrayMenu(QWidget *parent = 0) : QMenu(parent), show(true) {}
     void setShow(bool show) { this->show = show; }
     bool isShow() { return show; }
-    void showEvent(QShowEvent * event)
-    {
-        if (!show) { event->ignore(); this->hide(); }
-    }
+    void showEvent(QShowEvent *event);
 };
 
 class AppController : public QMainWindow
@@ -122,7 +119,7 @@ private:
 
 	QPointer<TrayIcon> m_trayIcon;
 
-    TrayMenu /* QMenu */ *trayMenu;
+    /* TrayMenu */ QMenu  *trayMenu;
 
 	QAction *actionStatus;
 	QAction *actionOpenFolder;

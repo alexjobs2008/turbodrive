@@ -37,6 +37,19 @@
 namespace Drive
 {
 
+void TrayMenu::showEvent(QShowEvent *event)
+{
+    if (!show)
+    {
+        event->ignore();
+        hide();
+    }
+    else
+    {
+        QMenu::showEvent(event);
+    }
+}
+
 
 AppController& AppController::instance()
 {
@@ -177,7 +190,7 @@ void AppController::createActions()
 
 void AppController::createTrayIcon()
 {
-    trayMenu = new TrayMenu /* QMenu */ (this);
+    trayMenu = new /* TrayMenu */ QMenu (this);
 
 	trayMenu->addAction(actionStatus);
 	trayMenu->addSeparator();
@@ -198,8 +211,8 @@ void AppController::createTrayIcon()
 
     trayMenu->setDefaultAction(actionOpenFolder);
 
-    // m_trayIcon->setContextMenu(trayMenu);
-    enableContextMenu(true);
+    m_trayIcon->setContextMenu(trayMenu);
+    // enableContextMenu(true);
 
 	connect(this, &AppController::stateChanged,
 			m_trayIcon.data(), &TrayIcon::setState);
@@ -271,8 +284,12 @@ void AppController::exitApplication()
 
 void AppController::enableContextMenu(bool enabled)
 {
-    // m_trayIcon->setContextMenu(enabled ? trayMenu : 0);
-    trayMenu->setShow(enabled);
+    (void)enabled;
+    // trayMenu->setShow(enabled);
+    m_trayIcon->setContextMenu(enabled ? trayMenu : 0);
+    QMenu *tmpMenu = m_trayIcon->contextMenu();
+    (void)tmpMenu;
+    // m_trayIcon->show();
 }
 
 void AppController::on_actionOpenFolder_triggered()
@@ -381,10 +398,10 @@ void AppController::on_trayIcon_activated(QSystemTrayIcon::ActivationReason
     }
 #endif
 #ifdef Q_OS_DARWIN
-    if (LoginController::instance().loginWidgetOpen())
+    /* if (LoginController::instance().loginWidgetOpen())
     {
         LoginController::instance().showLoginWidget();
-    }
+    } */
 #endif
 }
 

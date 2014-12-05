@@ -263,7 +263,9 @@ void LoginController::showLoginWidget()
 {
     if (loginWidget)
     {
+        loginWidget->showNormal();
         loginWidget->raise();
+        loginWidget->activateWindow();
     }
 }
 
